@@ -24,7 +24,7 @@ div#Kopfzeile {
     padding: 0.5em 1em;
 }
 
-div#Navigation {
+div.Navigation {
     margin: 0;
     padding: 0.5em 1em;
     display: block;
@@ -34,13 +34,13 @@ div#Navigation {
     border-top: 0;
 }
 
-h2#Navigation {
+h2.Navigation {
     margin: 0;
     width: 25%;
     float: left;
 }
 
-ul#Navigation {
+ul.Navigation {
     margin: 0;
     padding: 0;
     z-index: 30;
@@ -48,7 +48,7 @@ ul#Navigation {
     text-align: right;
 }
 
-ul#Navigation li {
+ul.Navigation li {
     list-style: none;
     margin: 0;
     padding: 0;
@@ -56,7 +56,7 @@ ul#Navigation li {
     position: relative;
 }
 
-ul#Navigation li a {
+ul.Navigation li a {
     display: block;
     margin: 0 1px 0 0;
     padding: 4px 10px;
@@ -68,12 +68,12 @@ ul#Navigation li a {
     float: left;
 }
 
-ul#Navigation li a:hover {
+ul.Navigation li a:hover {
     background: #648d9f;
     font-weight: bold;
 }
 
-ul#Navigation li ul {
+ul.Navigation li ul {
     position: absolute;
     top: 2em;
     visibility: hidden;
@@ -83,11 +83,11 @@ ul#Navigation li ul {
     display: block;
 }
 
-ul#Navigation li ul li {
+ul.Navigation li ul li {
     display: block;  	
 }
 
-ul#Navigation li ul a {	
+ul.Navigation li ul a {	
     position: relative;
     display: block;
     margin: 0;
