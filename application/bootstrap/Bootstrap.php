@@ -14,7 +14,7 @@
  *     GNU General Public License for more details.
  * 
  *     You should have received a copy of the GNU General Public License
- *     along with ADEmu.  If not, see <http://www.gnu.org/licenses/>.
+ *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
  *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
  */
@@ -41,12 +41,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         }
         
         $this->_logger = $logger;
-        Zend_Registry::set('log', $logger);
-            
+        Zend_Registry::set('log', $logger);        
     }
 
-    protected function _initLocale() {
-        
+    protected function _initLocale() { 
         $this->_logger->info('Bootstrap ' . __METHOD__);
         
         $locale = new Zend_Locale('de_DE');
