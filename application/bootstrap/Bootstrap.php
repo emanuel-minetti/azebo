@@ -36,7 +36,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         $logger->addWriter($writer);
         
         if('production' == $this->getEnvironment()) {
-            $filter = new Zend_Log_Filter_Priority(Zend_Log::CRIT);
+            //TODO muss für die Produktionsumgebung angepasst werden!
+            $filter = new Zend_Log_Filter_Priority(Zend_Log::INFO);
             $logger->addFilter($filter);
         }
         
@@ -81,6 +82,18 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             'rel' => 'favicon',
             'href' => '/images/logo.ico'), 
                 'APPEND');
+    }
+    
+    protected function _initDbProfiler() {
+        $this->_logger->info('Bootstrap ' . __METHOD__);
+        
+        if('production' !== $this->getEnvironment()) {
+            $this->bootstrap('db');
+            $profiler = new Zend_Db_Profiler_Firebug('All DB Queries');
+            $profiler->setEnabled(true);
+            $this->getPluginResource('db')->getDbAdapter()
+                    ->setProfiler($profiler);
+        }
     }
 }
 
