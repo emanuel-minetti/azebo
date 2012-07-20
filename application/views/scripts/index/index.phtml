@@ -1,55 +1,147 @@
 <?= $this->doctype() ?>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="de" xml:lang="de">
     <head>
-        <?= $this->headTitle(); ?>
-
         <?= $this->headMeta(); ?>
-
-
-        <style>
-            a:link,
-            a:visited
-            {
-                color: #0398CA;
-            }
-
-            span#zf-name
-            {
-                color: #91BE3F;
-            }
-
-            div#welcome
-            {
-                color: #FFFFFF;
-                background-image: url(http://framework.zend.com/images/bkg_header.jpg);
-                width:  600px;
-                height: 400px;
-                border: 2px solid #444444;
-                overflow: hidden;
-                text-align: center;
-            }
-
-            div#more-information
-            {
-                background-image: url(http://framework.zend.com/images/bkg_body-bottom.gif);
-                height: 100%;
-            }
-        </style>
+        <?= $this->headTitle(); ?>
+        <?= $this->headLink(); ?>
+        <?= $this->headScript(); ?>
     </head>
     <body>
-        <div id="welcome">
-            <h1>Welcome to the <span id="zf-name">Zend Framework!</span></h1>
-
-            <h3>This is your project's main page</h3>
-
-            <div id="more-information">
-                <p><img src="http://framework.zend.com/images/PoweredBy_ZF_4LightBG.png" /></p>
-                <p>
-                    Helpful Links: <br />
-                    <a href="http://framework.zend.com/">Zend Framework Website</a> |
-                    <a href="http://framework.zend.com/manual/en/">Zend Framework Manual</a>
-                </p>
+        <div id="Seite">
+            <div id="Kopfzeile">
+                <h1>Zeiterfassungsbogen</h1>
+                <h2>Übersicht 2012</h2>
             </div>
+            <div id="Navigation">
+                <h2 id="Navigation">Hans Mustermann</h2>
+                <ul id="Navigation">
+                    <li><a href="uebersicht.html"
+                           onmouseover="fopen('Nav_Jahre')"
+                           onmouseout="fclosetime()">Übersicht</a>
+                        <ul id="Nav_Jahre"
+                            onmouseover="fcancelclosetime()"
+                            onmouseout="fclosetime()">
+                            <li><a href="#" >2011</a></li>
+                            <li><a href="#" style="font-weight:bold">2012</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#"
+                           onmouseover="fopen('Nav_Monate')"
+                           onmouseout="fclosetime()">Monate</a>
+                        <ul id="Nav_Monate"
+                            onmouseover="fcancelclosetime()"
+                            onmouseout="fclosetime()">
+                            <li><a href="januar.html">Januar</a></li>
+                            <li><a href="februar.html" >Februar</a></li>
+                            <li><a href="maerz.html" >März</a></li>
+                            <li><a href="april.html" >April</a></li>
+                            <li><a href="mai.html" >Mai</a></li>
+                            <li><a href="juni.html" >Juni</a></li>
+                            <li><a href="juli.html" >Juli</a></li>
+                            <li><a href="august.html" >August</a></li>
+                            <li><a href="september.html" >September</a></li>
+                            <li><a href="oktober.html" >Oktober</a></li>
+                            <li><a href="november.html" >November</a></li>
+                            <li><a href="dezember.html" >Dezember</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+                <div style="clear:both"></div>
+            </div>
+
+            <div id="Inhalt">
+                <h2>Übersicht 2012</h2>
+                <h3>Grunddaten</h3>
+                <table class="uebersicht" summary="Übersicht über die Grunddaten" >
+                    <tr>
+                        <th>Name:</th><td>Hans Mustermann</td>
+                    </tr>
+                    <tr>
+                        <th>Hochschule:</th><td>Kunsthochschule Berlin Weißensee</td>
+                    </tr>
+                    <tr>
+                        <th>Personalnummer:</th><td>0123456789</td>
+                    </tr>
+                    <tr>
+                        <th>Abteilung:</th><td>SC-IT</td>
+                    </tr>
+                    <tr>
+                        <th>Vertrag:</th><td>Angestellter</td>
+                    </tr>
+                    <tr>
+                        <th>Rahmenarbeitszeit:</th><td>8:00 - 17:00</td>
+                    </tr>
+                    <tr>
+                        <th>Kernarbeitszeit:</th>
+                        <td>
+                            <table summary="" ><tr><th>Tag</th><th>Zeit</th></tr>
+                                <tr><td>Montag</td><td>10:00 - 12.00</td></tr>
+                                <tr><td>Dienstag</td><td>10:00 - 14.00</td></tr>
+                                <tr><td>Mittwoch</td><td>10:00 - 14.00</td></tr>
+                                <tr><td>Donnerstag</td><td>10:00 - 14.00</td></tr>
+                                <tr><td>Freitag</td><td>10:00 - 15.00</td></tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Beginn der Zeiterfassung:</th><td>1. 1. 2011</td>
+                    </tr>
+                </table>
+                <h3>Gesamtübersicht</h3>
+                <table class="uebersicht" summary="Gesamtübersicht" >
+                    <tr><th>Urlaubstage 2011</th><td>7</td></tr>
+                    <tr><th>Urlaubstage 2012</th><td>20</td></tr>
+                    <tr><th>Arbeitszeit +/-</th><td style="color:green">7:45 h</td></tr>
+                </table>
+                <h3>Monatsübersicht</h3>
+                <table class="uebersicht" summary="Monatsübersicht" >
+                    <tr>
+                        <th>Monat</th><th>Abgeschlossen</th><th>Abgelegt</th>
+                    </tr>
+                    <tr>
+                        <th>Januar:</th><td style="color:green">Abgeschlossen</td><td style="color:green">Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>Februar:</th><td style="color:green">Abgeschlossen</td><td style="color:red">Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>März:</th><td style="color:green">Abgeschlossen</td><td style="color:orange">Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>März:</th><td style="color:orange">Nicht Abgeschlossen</td><td style="color:orange">Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>April:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>Mai:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>Juni:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>Juli:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>August:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>September:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>Oktober:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>November:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                    <tr>
+                        <th>Dezember:</th><td>Nicht Abgeschlossen</td><td>Nicht Abgelegt</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="Fusszeile">&copy; 2012 ServiceCenter IT. Version: 0.1</div>
         </div>
     </body>
 </html>

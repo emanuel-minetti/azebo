@@ -45,7 +45,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
             
     }
 
-
     protected function _initLocale() {
         
         $this->_logger->info('Bootstrap ' . __METHOD__);
@@ -61,15 +60,29 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
         $this->_view = $this->getResource('view');
 
-        // set encoding and doctype
+        // Encoding und Doctype setzen
         $this->_view->setEncoding('UTF-8');
         $this->_view->doctype('XHTML1_STRICT');
 
-        // set the content type and language
+        // MIME-Type und Sprache setzen
         $this->_view->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
         $this->_view->headMeta()->appendHttpEquiv('Content-Language', 'de_DE');
+        
+        //Titel für die ganze Site setzen
+        $this->_view->headTitle('Arbeitszeitbogen');
+        $this->_view->headTitle()->setSeparator(' - ');
+        
+        //CSS-Links setzen
+        $this->_view->headLink()->appendStylesheet('/css/style.css');
+        
+        //JS einbinden
+        $this->_view->headScript()->appendFile('/js/nav.js');
+        
+        //Icon setzen
+        $this->_view->headLink(array(
+            'rel' => 'favicon',
+            'href' => '/images/logo.ico'), 
+                'APPEND');
     }
-
-
 }
 
