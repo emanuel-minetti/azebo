@@ -127,7 +127,7 @@ abstract class AzeboLib_Model_Abstract implements AzeboLib_Model_Interface {
         return $this->_forms[$name];
     }
 
-    //TODO Den Namespace -Teil kommentieren
+    //TODO Den Namespace -Teil kommentieren und TESTEN!
     /**
      * 
      * Classes are named spaced using their module name
