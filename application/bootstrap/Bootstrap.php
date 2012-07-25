@@ -23,6 +23,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 {
     public $frontController;
     protected $_logger;
+    protected $_resourceLoader;
 
 
     protected function _initLogging() {
@@ -43,6 +44,34 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         
         $this->_logger = $logger;
         Zend_Registry::set('log', $logger);        
+    }
+    
+    protected function _initResourceAutoloader() {
+        $this->_logger->info('Bootstrap ' . __METHOD__);
+        
+        $this->_resourceLoader = new Zend_Loader_Autoloader_Resource(array(
+           'namespace' => 'Azebo',
+            'basePath' => APPLICATION_PATH,
+        ));
+        
+        $this->_resourceLoader->addResourceTypes(array(
+            'model' => array(
+                'path' => 'models',
+                'namespace' => 'Model',
+            ),
+            'modelResource' => array(
+                'path' => 'models/resources',
+                'namespace' => 'Resource',
+            ),
+            'form' => array(
+                'path' => 'forms',
+                'namespace' => 'Form',
+            ),
+            'service' => array(
+                'path' => 'services',
+                'namespace' => 'Service',
+            ),
+        ));
     }
 
     protected function _initLocale() { 
