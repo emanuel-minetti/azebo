@@ -27,7 +27,7 @@
  */
 interface AzeboLib_Model_Interface {
 
-    public function _construct($options = null);
+    public function __construct($options = null);
     public function init();
     public function getResource($name);
     public function getForm($name);
