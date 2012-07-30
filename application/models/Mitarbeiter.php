@@ -34,7 +34,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
 
     public function getMitarbeiterNachBenutzername($benutzername) {
         return $this->getResource('Mitarbeiter')
-                ->getMitabeiterNachBenutzername($benutzername);
+                ->getMitarbeiterNachBenutzername($benutzername);
     }
 }
 
