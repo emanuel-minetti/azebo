@@ -34,7 +34,7 @@ class LoginController extends Zend_Controller_Action {
     public function init() {
         $this->_logger = Zend_Registry::get('log');
         $this->_logger->info('LoginController ' . __METHOD__);
-        
+
         $this->_model = new Azebo_Model_Mitarbeiter();
         $this->_authService = new Azebo_Service_Authentication();
 
@@ -42,34 +42,28 @@ class LoginController extends Zend_Controller_Action {
     }
 
     public function loginAction() {
-        //TODO: HIER MUSS DER FEHLER LIEGEN!!!!!!
         $this->_logger->info('LoginController ' . __METHOD__);
-        
+
         $request = $this->getRequest();
-        
-        if(!$request->isPost()) {
-            //return $this->_helper->redirector('login');
-            //$this->_logger->info("Login fehlgeschlagen: Keine 'POST'-Daten");
+
+        if ($request->isPost()) {
+            $form = $this->_forms['login'];
+            if (!$form->isValid($request->getPost())) {
+                return $this->render('login');
+                $this->_logger->info("Login fehlgeschlagen: Validation gescheitert!");
+            }
+
+            if (!$this->_authService->authenticate($form->getValues())) {
+                $form->setDescription(
+                        'Login fehlgeschlagen! Bitte versuchen Sie es erneut!');
+                return $this->render('login');
+                $this->_logger->info("Login fehlgeschlagen: {$form->getValues()}");
+            } else {
+                $this->_logger->info("Login erfolgreich: {$form->getValues()}");
+            }
+
+            return $this->_helper->redirector->gotoSimple('index', 'index', 'default');
         }
-        else  {
-        $form = $this->_forms['login'];
-        if(!$form->isValid($request->getPost())) {
-            return $this->render('login');
-            $this->_logger->info("Login fehlgeschlagen: Validation gescheitert!");
-        }
-        
-        if(!$this->_authService->authenticate($form->getValues())) {
-            $form->setDescription(
-                    'Login fehlgeschlagen! Bitte versuchen Sie es erneut!');
-            return $this->render('login');
-            $this->_logger->info("Login fehlgeschlagen: {$form->getValues()}");
-        }
-        else {
-            $this->_logger->info("Login erfolgreich: {$form->getValues()}");
-        }
-        
-        return $this->_helper->redirector->gotoSimple('index','index','default');
-    }
     }
 
     public function getLoginForm() {
@@ -82,7 +76,7 @@ class LoginController extends Zend_Controller_Action {
                         ), 'default'
                 ));
         $this->_forms['login']->setMethod('post');
-        
+
         return $this->_forms['login'];
     }
 
