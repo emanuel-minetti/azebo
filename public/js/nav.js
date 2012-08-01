@@ -4,10 +4,10 @@ var closetimer	= 0;
 var menuitem	= 0;
 
 // open hidden layer
-function fopen(id)
+function azeboopen(id)
 {	
     // cancel close timer
-    fcancelclosetime();
+    azebocancelclosetime();
     // close old layer
     if(menuitem) menuitem.style.visibility = 'hidden';
     // get new layer and show it
@@ -16,19 +16,19 @@ function fopen(id)
 }
 
 // close showed layer
-function fclose()
+function azeboclose()
 {
     if(menuitem) menuitem.style.visibility = 'hidden';
 }
 
 // go close timer
-function fclosetime()
+function azeboclosetime()
 {
-    closetimer = window.setTimeout(fclose, timeout);
+    closetimer = window.setTimeout(azeboclose, timeout);
 }
 
 // cancel close timer
-function fcancelclosetime()
+function azebocancelclosetime()
 {
     if(closetimer)
     {
@@ -38,4 +38,4 @@ function fcancelclosetime()
 }
 
 // close layer when click-out
-document.onclick = fclose; 
+document.onclick = azeboclose; 
