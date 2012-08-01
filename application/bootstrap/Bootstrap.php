@@ -46,6 +46,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
         Zend_Registry::set('log', $logger);        
     }
     
+     protected function _initSetFrontController() {
+        $this->_logger->info('Bootstrap ' . __METHOD__);
+        
+        $this->bootstrap('frontController');
+        $this->frontController = Zend_Controller_Front::getInstance();
+     }
+    
     protected function _initResourceAutoloader() {
         $this->_logger->info('Bootstrap ' . __METHOD__);
         
@@ -71,7 +78,30 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                 'path' => 'services',
                 'namespace' => 'Service',
             ),
+            'plugin' => array(
+                'path' => 'plugins',
+                'namespace' => 'Plugin',
+            ),
         ));
+    }
+    
+    protected function _initLoadAclIni() {
+        $this->_logger->info('Bootstrap ' . __METHOD__);
+        
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/acl.ini');
+        Zend_Registry::set('acl', $config);
+    }
+
+
+    protected function _initAclFrontControllerPlugins() {
+        $this->_logger->info('Bootstrap ' . __METHOD__);
+        
+        $this->bootstrap('frontController');
+        $this->bootstrap('loadAclIni');
+
+        
+        $plugin = new Azebo_Plugin_Acl(new AzeboLib_Acl_Acl());
+        $this->frontController->registerPlugin($plugin);
     }
 
     protected function _initLocale() { 

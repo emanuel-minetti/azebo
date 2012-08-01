@@ -29,6 +29,7 @@ class Azebo_Form_Mitarbeiter_Login extends AzeboLib_Form_Abstract{
 
     public function init() {
         $this->addElement('text', 'benutzername', array(
+            //TODO validieren!
 //            'filters' => array('StringTrim', 'StringToLower'),
 //            'validators' => array(
 //                array('StringLength', true, array(3, 128)),

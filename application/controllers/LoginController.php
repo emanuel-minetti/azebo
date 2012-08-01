@@ -27,10 +27,14 @@
  */
 class LoginController extends Zend_Controller_Action {
 
+    protected $_logger;
     protected $_model;
     protected $_authService;
 
     public function init() {
+        $this->_logger = Zend_Registry::get('log');
+        $this->_logger->info('LoginController ' . __METHOD__);
+        
         $this->_model = new Azebo_Model_Mitarbeiter();
         $this->_authService = new Azebo_Service_Authentication();
 
@@ -38,29 +42,34 @@ class LoginController extends Zend_Controller_Action {
     }
 
     public function loginAction() {
+        //TODO: HIER MUSS DER FEHLER LIEGEN!!!!!!
+        $this->_logger->info('LoginController ' . __METHOD__);
         
-    }
-
-    public function authenticateAction() {
         $request = $this->getRequest();
         
         if(!$request->isPost()) {
-            return $this->_helper->redirector('login');
+            //return $this->_helper->redirector('login');
+            //$this->_logger->info("Login fehlgeschlagen: Keine 'POST'-Daten");
         }
-        
+        else  {
         $form = $this->_forms['login'];
         if(!$form->isValid($request->getPost())) {
             return $this->render('login');
+            $this->_logger->info("Login fehlgeschlagen: Validation gescheitert!");
         }
         
-        //TODO warum 'false === ...'
         if(!$this->_authService->authenticate($form->getValues())) {
             $form->setDescription(
                     'Login fehlgeschlagen! Bitte versuchen Sie es erneut!');
             return $this->render('login');
+            $this->_logger->info("Login fehlgeschlagen: {$form->getValues()}");
+        }
+        else {
+            $this->_logger->info("Login erfolgreich: {$form->getValues()}");
         }
         
         return $this->_helper->redirector->gotoSimple('index','index','default');
+    }
     }
 
     public function getLoginForm() {
@@ -69,7 +78,7 @@ class LoginController extends Zend_Controller_Action {
         $this->_forms['login'] = $this->_model->getForm('mitarbeiterLogin');
         $this->_forms['login']->setAction($urlHelper->url(array(
                     'controller' => 'login',
-                    'action' => 'authenticate',
+                    'action' => 'login',
                         ), 'default'
                 ));
         $this->_forms['login']->setMethod('post');

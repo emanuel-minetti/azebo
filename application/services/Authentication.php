@@ -26,17 +26,23 @@
  * @author Emanuel Minetti
  */
 class Azebo_Service_Authentication {
+    protected $_logger;
 
     protected $_authAdapter;
     protected $_mitarbeiterModell;
     protected $_auth;
 
     public function __construct(Azebo_Model_Mitarbeiter $model = null) {
+        $this->_logger = Zend_Registry::get('log');
+        $this->_logger->info('Azebo_Service_Authentication ' . __METHOD__);
+        
         $this->_mitarbeiterModell = null === $model ?
                 new Azebo_Model_Mitarbeiter() : $model;
     }
 
     public function authenticate($daten) {
+        $this->_logger->info('Azebo_Service_Authentication ' . __METHOD__);
+        
         $adapter = $this->getAuthAdapter($daten);
         $auth = $this->getAuth();
         $ergebnis = $auth->authenticate($adapter);
