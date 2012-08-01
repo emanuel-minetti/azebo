@@ -25,7 +25,7 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Form_Mitarbeiter_Login extends AzeboLib_Form_Abstract{
+class Azebo_Form_Mitarbeiter_Login extends AzeboLib_Form_Abstract {
 
     public function init() {
         $this->addElement('text', 'benutzername', array(

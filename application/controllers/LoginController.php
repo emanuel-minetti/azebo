@@ -45,9 +45,9 @@ class LoginController extends Zend_Controller_Action {
         $this->_logger->info('LoginController ' . __METHOD__);
 
         $request = $this->getRequest();
+        $form = $this->_forms['login'];
 
         if ($request->isPost()) {
-            $form = $this->_forms['login'];
             if (!$form->isValid($request->getPost())) {
                 return $this->render('login');
                 $this->_logger->info("Login fehlgeschlagen: Validation gescheitert!");
@@ -63,8 +63,14 @@ class LoginController extends Zend_Controller_Action {
             }
 
             return $this->_helper->redirector->gotoSimple('index', 'index', 'default');
+        } else {
+            $form->setDescription('Bitte melden Sie sich mit Ihrem Benutzernamen und Passwort an.');
         }
     }
+    
+     public function logoutAction() {
+         $this->_authService->clear();
+     }
 
     public function getLoginForm() {
         $urlHelper = $this->_helper->getHelper('url');
