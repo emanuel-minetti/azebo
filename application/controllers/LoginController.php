@@ -49,22 +49,26 @@ class LoginController extends Zend_Controller_Action {
 
         if ($request->isPost()) {
             if (!$form->isValid($request->getPost())) {
+                $this->_logger->info("Anmeldung fehlgeschlagen: Validation gescheitert! {$form->getValues()}");
+                $form->setDescription(
+                        'Anmeldung fehlgeschlagen! Beachten Sie die Fehlermedungen:');
                 return $this->render('login');
-                $this->_logger->info("Anmeldung fehlgeschlagen: Validation gescheitert!");
+                
             }
 
             if (!$this->_authService->authenticate($form->getValues())) {
+                 $this->_logger->info("Anmeldung fehlgeschlagen: {$form->getValues()}");
                 $form->setDescription(
-                        'Anmeldung fehlgeschlagen! Bitte versuchen Sie es erneut!');
+                        'Anmeldung fehlgeschlagen! Bitte versuchen Sie es erneut.');
                 return $this->render('login');
-                $this->_logger->info("Anmeldung fehlgeschlagen: {$form->getValues()}");
+                $this->_logger->info("Anmeldung fehlgeschlagen: ");
             } else {
                 $this->_logger->info("Anmeldung erfolgreich: {$form->getValues()}");
             }
 
             return $this->_helper->redirector->gotoSimple('index', 'index', 'default');
         } else {
-            $form->setDescription('Bitte melden Sie sich mit Ihrem Benutzernamen und Passwort an.');
+            $form->setDescription('');
         }
     }
     
