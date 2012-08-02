@@ -29,27 +29,60 @@ class Azebo_Plugin_Acl extends Zend_Controller_Plugin_Abstract {
 
     protected $_auth;
     protected $_acl;
-    
     protected $_controller;
     protected $_action;
     protected $_role;
+    protected $_errors;
 
-    public function __construct(Zend_Acl $acl) {       
+    public function __construct(Zend_Acl $acl) {
         $this->_auth = Zend_Auth::getInstance();
         $this->_acl = $acl;
     }
 
     public function preDispatch(Zend_Controller_Request_Abstract $request) {
-        
+
         $this->_init($request);
 
-        if (!$this->_acl->isAllowed($this->_role, $this->_controller, $this->_action)) {
+        if (!$this->_acl->hasRole($this->_role)) {
+            //Die Rolle des Butzers existiert nicht in der ACL!
+            //Also 500!
+            $this->_errors->type =
+                    Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
+            $this->_errors->request = $request;
+            $this->_errors->exception = new AzeboLib_Exception(
+                            'Die Rolle des Benutzers existiert nicht!',
+                            null, null);
+            $request->setControllerName('error');
+            $request->setActionName('error');
+            $request->setParam('error_handler', $this->_errors);
+        } elseif (!$this->_acl->has($this->_controller)) {
+            //Der angefragte Controller existiert nicht in der ACL.
+            //Also 404!
+            $this->_errors->type =
+                    Zend_Controller_Plugin_ErrorHandler::EXCEPTION_NO_CONTROLLER;
+            $this->_errors->request = $request;
+            $this->_errors->exception = new AzeboLib_Exception(
+                            'Der angefragte Controller existiert nicht!',
+                            null, null);
+            $request->setControllerName('error');
+            $request->setActionName('error');
+            $request->setParam('error_handler', $this->_errors);
+        } elseif (!$this->_acl->isAllowed(
+                        $this->_role, $this->_controller, $this->_action)) {
             // der Benutzer darf die angefragte Seite nicht sehen
             if ($this->_role == 'gast') {
-                // der Benutzer ist nicht angemeldet
+                // Der Benutzer ist nicht angemeldet
+                // Also anmelden!
                 $request->setControllerName('login');
                 $request->setActionName('login');
             } else {
+                // Der Besucher macht was boeses!!
+                //Also 403!
+                $this->_errors->request = $request;
+                $this->_errors->exception = new AzeboLib_Exception(
+                                'Auf diese Seite haben Sie keinen Zugriff!',
+                                null, null);
+                $request->setParam('error_handler', $this->_errors);
                 $request->setControllerName('error');
                 $request->setActionName('nichterlaubt');
             }
@@ -60,6 +93,7 @@ class Azebo_Plugin_Acl extends Zend_Controller_Plugin_Abstract {
         $this->_action = $request->getActionName();
         $this->_controller = $request->getControllerName();
         $this->_role = $this->_getCurrentUserRole();
+        $this->_errors = new ArrayObject(array());
     }
 
     protected function _getCurrentUserRole() {
@@ -67,10 +101,9 @@ class Azebo_Plugin_Acl extends Zend_Controller_Plugin_Abstract {
             $authData = $this->_auth->getIdentity();
             $role = isset($authData->rolle) ?
                     strtolower($authData->rolle) : 'gast';
-        }
-        else {
+        } else {
             $role = 'gast';
-        }    
+        }
         return $role;
     }
 
