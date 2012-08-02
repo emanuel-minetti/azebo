@@ -86,6 +86,7 @@ class LoginController extends Zend_Controller_Action {
                         ), 'default'
                 ));
         $this->_forms['login']->setMethod('post');
+        $this->_forms['login']->setName('loginForm');
 
         return $this->_forms['login'];
     }

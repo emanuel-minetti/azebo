@@ -36,6 +36,7 @@ class Azebo_Form_Mitarbeiter_Login extends AzeboLib_Form_Abstract {
             ),
             'required' => true,
             'label' => 'Benutzername',
+            'tabindex' => 1,
         ));
 
         $this->addElement('password', 'passwort', array(
@@ -45,18 +46,20 @@ class Azebo_Form_Mitarbeiter_Login extends AzeboLib_Form_Abstract {
             ),
             'required' => true,
             'label' => 'Passwort',
+            'tabindex' => 2,
         ));
 
         $this->addElement('submit', 'login', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Login',
+            'tabindex' => 3,
         ));
         $this->setDecorators(array(
             'FormElements',
             array('HtmlTag', array('tag' => 'dl', 'class' => 'zend_form')),
             array('Description', array('placement' => 'prepend', 'class' => 'error')),
-            'Form'
+            'Form',
         ));
     }
 
