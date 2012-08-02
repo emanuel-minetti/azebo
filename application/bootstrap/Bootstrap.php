@@ -160,6 +160,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                     ->setProfiler($profiler);
         }
     }
+    
+    protected function _initRoutes() {
+        $this->bootstrap('frontController');
+        $router = $this->frontController->getRouter();
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/routes.ini');
+        $router->addDefaultRoutes();
+        $router->addConfig($config, 'routes');
+        
+    }
 
 }
 

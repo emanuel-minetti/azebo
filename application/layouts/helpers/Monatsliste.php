@@ -25,18 +25,26 @@
  *
  * @author Emanuel Minetti
  */
-class Zend_Layout_Helper_Monatsliste extends Zend_View_Helper_Abstract {
+class Zend_View_Helper_Monatsliste extends Zend_View_Helper_Abstract {
+
     public function monatsliste() {
         $html = "";
         $date = new Zend_Date();
+        
         $date->setDate($date->getYear());
         for ($i = 0; $i < 12; $i++) {
-            $html .= '<li><a href="">';
+            $html .= '<li><a href="';
+            $html .= $this->view->url(array(
+                'monat' => $date->toString('M'),
+                'jahr' => $date->toString('yyyy'),
+                    ), 'monat', true);
+            $html .= '">';
             $html .= $date->toString('MMMM');
             $html .= '</a></li>';
             $date->addMonth(1);
         }
         return $html;
     }
+
 }
 
