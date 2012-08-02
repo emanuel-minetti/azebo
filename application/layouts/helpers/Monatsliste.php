@@ -25,7 +25,7 @@
  *
  * @author Emanuel Minetti
  */
-class Zend_View_Helper_Monatsliste extends Zend_View_Helper_Abstract {
+class Zend_Layout_Helper_Monatsliste extends Zend_View_Helper_Abstract {
     public function monatsliste() {
         $html = "";
         $date = new Zend_Date();
