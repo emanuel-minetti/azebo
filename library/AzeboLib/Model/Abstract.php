@@ -73,7 +73,7 @@ abstract class AzeboLib_Model_Abstract implements AzeboLib_Model_Interface {
     }
 
     /**
-     * Optionen stzen mit den setter-Methoden der konkreten Klasse.
+     * Optionen setzen mit den setter-Methoden der konkreten Klasse.
      *
      * @param array $options
      * @return SF_Model_Abstract 
@@ -127,13 +127,12 @@ abstract class AzeboLib_Model_Abstract implements AzeboLib_Model_Interface {
         return $this->_forms[$name];
     }
 
-    //TODO Den Namespace -Teil kommentieren und TESTEN!
     /**
-     * 
-     * Classes are named spaced using their module name
-     * this returns that module name or the first class name segment.
+     * Um den Zend-AutoLoader korrekt zu benuten wird der 'AzeboLib'-Namensraum
+     * eingeführt. Die implementierenden Klassen können so Ihren Namensraum
+     * bestimmen.
      *
-     * @return string This class namespace
+     * @return string Den Namensraum dieser Klasse
      */
     private function _getNamespace() {
         $ns = explode('_', get_class($this));

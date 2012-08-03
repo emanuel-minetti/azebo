@@ -21,7 +21,10 @@
  */
 
 /**
- * Description of Monatsliste
+ * Erzeugt über die öffentliche Methode die Listenelemente füe die
+ * Monatsnavigation.
+ * 
+ * Sucht das gegenwärtige Jahr, und setzt die Links entsprechend.
  *
  * @author Emanuel Minetti
  */
@@ -40,7 +43,7 @@ class Zend_View_Helper_Monatsliste extends Zend_View_Helper_Abstract {
                     ), 'monat', true);
             $html .= '">';
             $html .= $date->toString('MMMM');
-            $html .= '</a></li>';
+            $html .= "</a></li>\n";
             $date->addMonth(1);
         }
         return $html;

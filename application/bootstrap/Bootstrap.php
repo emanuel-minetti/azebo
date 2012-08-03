@@ -37,7 +37,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $logger->addWriter($writer);
 
         if ('production' == $this->getEnvironment()) {
-            //TODO muss für die Produktionsumgebung angepasst werden!
+            //TODO Das Logging muss auf vernünftige Beine gestellt werden!
             $filter = new Zend_Log_Filter_Priority(Zend_Log::INFO);
             $logger->addFilter($filter);
         }

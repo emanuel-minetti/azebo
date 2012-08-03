@@ -20,6 +20,8 @@
  *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
  */
 
+
+//TODO Authentifizierungs-Service Kommentieren
 /**
  * Description of Authentication
  *
@@ -96,4 +98,3 @@ class Azebo_Service_Authentication {
         return $this->_authAdapter;
     }
 }
-

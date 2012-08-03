@@ -21,7 +21,7 @@
  */
 
 /**
- * Description of Acl
+ * Erstellt eine Zend_Acl-Klasse aus einer config-Datei
  *
  * @author Emanuel Minetti
  */

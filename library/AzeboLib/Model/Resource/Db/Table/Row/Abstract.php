@@ -21,7 +21,10 @@
  */
 
 /**
- * Description of Abstract
+ * Diese Klasse sollte von allen Azebo_Model_Resource_Item-Klassen erweitert
+ * werden, die eine DB-Tabelle zur Grundlage haben.
+ * 
+ * Ein einfacher Wrapper zur Zend_Db_Table_Row-Klasse
  *
  * @author Emanuel Minetti
  */
