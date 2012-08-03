@@ -51,7 +51,7 @@ class LoginController extends Zend_Controller_Action {
             if (!$form->isValid($request->getPost())) {
                 $this->_logger->info("Anmeldung fehlgeschlagen: Validation gescheitert! {$form->getValues()}");
                 $form->setDescription(
-                        'Anmeldung fehlgeschlagen! Beachten Sie die Fehlermedungen:');
+                        'Anmeldung fehlgeschlagen! Bitte beachten Sie die Fehlermedungen:');
                 return $this->render('login');
                 
             }

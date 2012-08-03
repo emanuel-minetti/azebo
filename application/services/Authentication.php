@@ -82,7 +82,9 @@ class Azebo_Service_Authentication {
     public function setAuthAdapter(Zend_Auth_Adapter_Interface $adapter) {
         $this->_authAdapter = $adapter;
     }
-
+     
+    //TODO Dros nach testusern und LDAP fragen
+    //TODO LDAP implementieren
     public function getAuthAdapter($daten) {
         if (null === $this->_authAdapter) {
             $authAdapter = new Zend_Auth_Adapter_DbTable(

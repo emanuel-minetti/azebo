@@ -1,4 +1,6 @@
-<h2 class="Navigation"><?= $this->name ?></h2>
+<? $this->setHelperPath(APPLICATION_PATH . '/layouts/helpers') ?>
+
+<h2 class="Navigation"><?= $this->name() ?></h2>
 <ul class="Navigation">
     <li><a href="uebersicht.html"
            onmouseover="azeboopen('Nav_Jahre')"
@@ -15,8 +17,7 @@
            onmouseout="azeboclosetime()">Monate</a>
         <ul id="Nav_Monate"
             onmouseover="azebocancelclosetime()"
-            onmouseout="azeboclosetime()">
-                <? $this->setHelperPath(APPLICATION_PATH . '/layouts/helpers') ?>
+            onmouseout="azeboclosetime()">               
                 <?= "\n" . $this->monatsliste() ?>
         </ul>
     </li>

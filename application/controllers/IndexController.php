@@ -7,10 +7,7 @@ class IndexController extends Zend_Controller_Action {
     }
 
     public function indexAction() {
-        $authService = new Azebo_Service_Authentication();
-        if($authService->getIdentity()) {
-            $this->view->name = $authService->getIdentity()->getName();
-        }
+        
     }
 
 }
