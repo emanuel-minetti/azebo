@@ -29,17 +29,17 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     protected function _initLogging() {
         $this->bootstrap('frontController');
         $logger = new Zend_Log();
-
-        $writer = 'production' == $this->getEnvironment() ?
-                new Zend_Log_Writer_Stream(APPLICATION_PATH .
-                        '/../data/logs/azebo.log') :
-                new Zend_Log_Writer_Firebug();
-        $logger->addWriter($writer);
+        
+        $streamWriter = new Zend_Log_Writer_Stream(APPLICATION_PATH .
+                        '/../data/logs/azebo.log');
+        $logger->addWriter($streamWriter);
 
         if ('production' == $this->getEnvironment()) {
-            //TODO Das Logging muss auf vernünftige Beine gestellt werden!
-            $filter = new Zend_Log_Filter_Priority(Zend_Log::INFO);
+            $filter = new Zend_Log_Filter_Priority(Zend_Log::WARN);
             $logger->addFilter($filter);
+        } else {
+            $firebugWriter = new Zend_Log_Writer_Firebug();
+            $logger->addWriter($firebugWriter);
         }
 
         $this->_logger = $logger;

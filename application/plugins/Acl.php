@@ -76,7 +76,7 @@ class Azebo_Plugin_Acl extends Zend_Controller_Plugin_Abstract {
                 $request->setControllerName('login');
                 $request->setActionName('login');
             } else {
-                // Der Besucher macht was boeses!!
+                // Der Besucher macht was böses!!
                 //Also 403!
                 $this->_errors->request = $request;
                 $this->_errors->exception = new AzeboLib_Exception(
