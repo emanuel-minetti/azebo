@@ -44,6 +44,11 @@ abstract class AzeboLib_Controller_Abstract extends Zend_Controller_Action {
         $this->_log = Zend_Registry::get('log');
         $this->_seitenName = $this->getSeitenName();
         $this->view->seitenName = $this->_seitenName;
+        if($this->_request->getParam('istBueroleitung', false)) {
+            $this->view->istBueroleitung = true;
+        } else {
+            $this->view->istBueroleitung = false;
+        }
     }
     
     /**

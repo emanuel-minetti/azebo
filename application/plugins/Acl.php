@@ -87,25 +87,35 @@ class Azebo_Plugin_Acl extends Zend_Controller_Plugin_Abstract {
                 $request->setActionName('nichterlaubt');
             }
         }
+        else {
+            // Der Besucher darf die angefragte Seite sehen.
+            // Also nur noch prüfen ob die 'Büroleitung'-Navigation eigeblendet
+            // werden soll.
+            if($this->_acl->isAllowed($this->_role, 'bueroleitung')) {
+                $request->setParam('istBueroleitung', true);
+            }
+        }
     }
 
     protected function _init($request) {
         $this->_action = $request->getActionName();
         $this->_controller = $request->getControllerName();
-        $this->_role = $this->_getCurrentUserRole();
+        $this->_role = $this->_getBenutzerRolle();
         $this->_errors = new ArrayObject(array());
     }
 
-    protected function _getCurrentUserRole() {
+    protected function _getBenutzerRolle() {
         if ($this->_auth->hasIdentity()) {
             $authData = $this->_auth->getIdentity();
-            $role = isset($authData->rolle) ?
+            $rolle = isset($authData->rolle) ?
                     strtolower($authData->rolle) : 'gast';
         } else {
-            $role = 'gast';
+            $rolle = 'gast';
         }
-        return $role;
+        return $rolle;
     }
+    
+    
 
 }
 
