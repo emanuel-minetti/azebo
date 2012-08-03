@@ -1,14 +1,18 @@
 <?php
 
-class IndexController extends Zend_Controller_Action {
+class IndexController extends AzeboLib_Controller_Abstract {
 
     public function init() {
-        /* Initialize action controller here */
+        parent::init();
+        $this->_log->info(__METHOD__);
+    }
+    public function getSeitenName() {
+        return 'Übersicht';
     }
 
     public function indexAction() {
         
     }
-
+    
 }
 

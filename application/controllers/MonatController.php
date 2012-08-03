@@ -1,11 +1,14 @@
 <?php
 
-class MonatController extends Zend_Controller_Action
-{
+class MonatController extends AzeboLib_Controller_Abstract {
 
     public function init()
     {
-        /* Initialize action controller here */
+        parent::init();
+    }
+    
+    public function getSeitenName() {
+        return 'Monatsübersicht';
     }
 
     public function indexAction()

@@ -1,17 +1,21 @@
 <?php
 
-class BueroleitungController extends Zend_Controller_Action
-{
+class BueroleitungController extends AzeboLib_Controller_Abstract {
 
     public function init()
     {
-        /* Initialize action controller here */
+        parent::init();
+    }
+    public function getSeitenName() {
+        return 'Büroleitung';
     }
 
     public function indexAction()
     {
-        // action body
+        
     }
+
+ 
 
 
 }

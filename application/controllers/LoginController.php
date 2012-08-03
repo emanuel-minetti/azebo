@@ -25,31 +25,34 @@
  *
  * @author Emanuel Minetti
  */
-class LoginController extends Zend_Controller_Action {
+class LoginController extends AzeboLib_Controller_Abstract {
 
-    protected $_logger;
     protected $_model;
     protected $_authService;
 
     public function init() {
-        $this->_logger = Zend_Registry::get('log');
-        $this->_logger->info('LoginController ' . __METHOD__);
+        parent::init();
+        $this->_log->info('LoginController ' . __METHOD__);
 
         $this->_model = new Azebo_Model_Mitarbeiter();
         $this->_authService = new Azebo_Service_Authentication();
 
         $this->view->loginForm = $this->getLoginForm();
     }
+    
+    public function getSeitenName() {
+        return 'Login';
+    }
 
     public function loginAction() {
-        $this->_logger->info('LoginController ' . __METHOD__);
+        $this->_log->info('LoginController ' . __METHOD__);
 
         $request = $this->getRequest();
         $form = $this->_forms['login'];
 
         if ($request->isPost()) {
             if (!$form->isValid($request->getPost())) {
-                $this->_logger->info("Anmeldung fehlgeschlagen: Validation gescheitert! {$form->getValues()}");
+                $this->_log->info("Anmeldung fehlgeschlagen: Validation gescheitert! {$form->getValues()}");
                 $form->setDescription(
                         'Anmeldung fehlgeschlagen! Bitte beachten Sie die Fehlermedungen:');
                 return $this->render('login');
@@ -57,13 +60,13 @@ class LoginController extends Zend_Controller_Action {
             }
 
             if (!$this->_authService->authenticate($form->getValues())) {
-                 $this->_logger->info("Anmeldung fehlgeschlagen: {$form->getValues()}");
+                 $this->_log->info("Anmeldung fehlgeschlagen: {$form->getValues()}");
                 $form->setDescription(
                         'Anmeldung fehlgeschlagen! Bitte versuchen Sie es erneut.');
                 return $this->render('login');
-                $this->_logger->info("Anmeldung fehlgeschlagen: ");
+                $this->_log->info("Anmeldung fehlgeschlagen: ");
             } else {
-                $this->_logger->info("Anmeldung erfolgreich: {$form->getValues()}");
+                $this->_log->info("Anmeldung erfolgreich: {$form->getValues()}");
             }
 
             return $this->_helper->redirector->gotoSimple('index', 'index', 'default');

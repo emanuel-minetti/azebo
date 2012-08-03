@@ -1,7 +1,16 @@
 <?php
 
-class ErrorController extends Zend_Controller_Action {
+class ErrorController extends AzeboLib_Controller_Abstract {
+    
+    public function init() {
+        parent::init();
+    }
 
+
+    public function getSeitenName() {
+        return 'Fehler';
+    }
+    
     public function errorAction() {
         $errors = $this->_getParam('error_handler');
 
@@ -38,20 +47,10 @@ class ErrorController extends Zend_Controller_Action {
         $this->view->request = $errors->request;
     }
 
-    protected function _getLog() {
-        $logger = Zend_Registry::get('log');
-        if ($logger === null) {
-            return false;
-        }
-        return $logger;
-    }
-
     protected function _log($priority, $errors) {
-        $log = $this->_getLog();
-        if ($log) {
-            $log->log($this->view->message . ': ' . $errors->exception->getMessage() , $priority);
-            $log->log('Request Parameters: ' . var_export($errors->request->getParams(), true), $priority);
-        }
+        $this->_log->log($this->view->message . ': ' . $errors->exception->getMessage() , $priority);
+        $this->_log->log('Request Parameters: ' . var_export($errors->request->getParams(), true), $priority);
+            
     }
 
     public function nichterlaubtAction() {
@@ -73,8 +72,7 @@ class ErrorController extends Zend_Controller_Action {
             $this->view->exception = $errors->exception;
         }
 
-        $this->view->request = $errors->request;
-        
+        $this->view->request = $errors->request;        
     }
 
 }
