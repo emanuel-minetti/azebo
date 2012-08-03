@@ -9,7 +9,9 @@
     <body>
         <div id="Seite">
             <div id="Kopfzeile">
-                <h1><?= $this->placeholder('Zend_View_Helper_HeadTitle') ?></h1>
+                <h1><a href="
+                       <?=$this->baseUrl() ?>
+                       "><?= $this->placeholder('Zend_View_Helper_HeadTitle') ?></a></h1>
                 <h2><?= $this->seitenName ?></h2>
             </div>
             <div class="Navigation">

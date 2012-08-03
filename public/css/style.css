@@ -24,6 +24,10 @@ div#Kopfzeile {
     padding: 0.5em 1em;
 }
 
+div#Kopfzeile h1 a {
+    background: none;
+}
+
 div.Navigation {
     margin: 0;
     padding: 0.5em 1em;

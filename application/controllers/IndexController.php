@@ -7,7 +7,7 @@ class IndexController extends AzeboLib_Controller_Abstract {
         $this->_log->info(__METHOD__);
     }
     public function getSeitenName() {
-        return 'Übersicht';
+        return 'Index';
     }
 
     public function indexAction() {

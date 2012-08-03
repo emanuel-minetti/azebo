@@ -2,17 +2,26 @@
 
 <h2 class="Navigation"><?= $this->name() ?></h2>
 <ul class="Navigation">
-    <li><a href="uebersicht.html"
+    <li><a href="
+        <?
+        $date = new Zend_Date();
+        $url = $this->url(array(
+            'jahr' => $date->toString('yyyy'),
+                ), 'uebersicht', true);
+        echo $url;
+        ?>
+           "
            onmouseover="azeboopen('Nav_Jahre')"
            onmouseout="azeboclosetime()">Übersicht</a>
         <ul id="Nav_Jahre"
             onmouseover="azebocancelclosetime()"
             onmouseout="azeboclosetime()">
-            <li><a href="#" >2011</a></li>
-            <li><a href="#" style="font-weight:bold">2012</a></li>
+                <?= "\n" . $this->jahresliste() ?>
         </ul>
     </li>
-    <li><a href="#"
+    <li><a href="
+        <?= $this->baseUrl() ?>
+           "
            onmouseover="azeboopen('Nav_Monate')"
            onmouseout="azeboclosetime()">Monate</a>
         <ul id="Nav_Monate"
@@ -22,7 +31,7 @@
         </ul>
     </li>
     <li><a href="
-        <?= $this->url(array('controller' => 'login', 'action' => 'logout',),'default',true) ?>
+        <?= $this->url(array('controller' => 'login', 'action' => 'logout',), 'default', true) ?>
            ">Abmelden</a></li>
 </ul>
 <div style="clear:both"></div>
