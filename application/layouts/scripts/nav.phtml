@@ -17,11 +17,11 @@
             onmouseover="azebocancelclosetime()"
             onmouseout="azeboclosetime()">
                 <? $this->setHelperPath(APPLICATION_PATH . '/layouts/helpers') ?>
-                <?= $this->monatsliste() ?>
+                <?= "\n" . $this->monatsliste() ?>
         </ul>
     </li>
     <li><a href="
-        <?= $this->url(array('controller' => 'login', 'action' => 'logout',)) ?>
+        <?= $this->url(array('controller' => 'login', 'action' => 'logout',),'default',true) ?>
            ">Abmelden</a></li>
 </ul>
 <div style="clear:both"></div>
