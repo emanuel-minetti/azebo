@@ -36,7 +36,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
     }
     
     public function indexAction() {
-        
+        $this->view->jahr = $this->_getParam('jahr'); 
     }
 }
 
