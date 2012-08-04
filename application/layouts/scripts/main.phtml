@@ -5,8 +5,16 @@
         <?= $this->headTitle(); ?>
         <?= $this->headLink(); ?>
         <?= $this->headScript(); ?>
+        <? if($this->dojo()->isEnabled()) {
+            $this->dojo()->setLocalPath('/javascript/dojo/dojo.js')
+                    ->addStyleSheetModule('dijit.themes.tundra')
+                    ->addStyleSheet('/javascript/dojox/grid/resources/Grid.css')
+                    ->addStyleSheet('/javascript/dojox/grid/resources/tundraGrid.css');
+            echo $this->dojo();
+        }
+        ?>
     </head>
-    <body>
+    <body class="tundra">
         <div id="Seite">
             <div id="Kopfzeile">
                 <h1><a href="
@@ -21,7 +29,7 @@
                 <?= $this->layout()->content ?>
             </div>
 
-            <div id="Fusszeile">&copy; 2012 ServiceCenter IT. Version: 0.1</div>
+            <div id="Fusszeile">&copy; 2012 ServiceCenter IT. Version: <?= $this->version?></div>
         </div>
     </body>
 </html>

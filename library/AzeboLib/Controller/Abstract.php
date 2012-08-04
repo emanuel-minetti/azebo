@@ -55,5 +55,10 @@ abstract class AzeboLib_Controller_Abstract extends Zend_Controller_Action {
      *Sollte einen Seitennamen zurückliefern. 
      */
     abstract function getSeitenName();
+    
+    public function erweitereSeitenName($erweiterung) {
+        $this->_seitenName .= $erweiterung;
+        $this->view->seitenName = $this->_seitenName;
+    }
 }
 

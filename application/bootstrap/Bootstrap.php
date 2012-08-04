@@ -147,6 +147,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $this->_view->headLink(array(
             'rel' => 'favicon',
             'href' => '/images/logo.ico'), 'APPEND');
+        
+        //Dojo View Helper aktivieren
+        $this->_view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
+        //Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
+        
+        //Die Version festlegen
+        $this->_view->version = '0.2';
     }
 
     protected function _initDbProfiler() {
