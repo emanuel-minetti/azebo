@@ -37,6 +37,7 @@ class Azebo_Form_Mitarbeiter_Login extends AzeboLib_Form_Abstract {
             'required' => true,
             'label' => 'Benutzername',
             'tabindex' => 1,
+            'autofocus' => true,
         ));
 
         $this->addElement('password', 'passwort', array(

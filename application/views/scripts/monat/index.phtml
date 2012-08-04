@@ -1,17 +1,20 @@
-<br /><br />
 <div id="view-content">
-    <p>View-Script für Controller <b>Monat</b> und Script/Action Name <b>index</b></p>
-    <p>Der Monat ist <?= $this->monat ?>.</p>
-    <p>Das Jahr ist <?= $this->jahr ?>.</p>
+    <h3><?= $this->seitenName?></h3>
     
-    <div style="width: 460px; height: 200px">
+    <div style="width: 935px; height: 1280px">
         <table id="monatstabelle" dojoType="dojox.grid.DataGrid">
             <thead>
                 <tr>
-                    <th field="number">Number</th>
-                    <th field="name">Name</th>
-                    <th field="position">Position</th>
-                    <th field="victories" width="180px">Super Bowl Victories</th>
+                    <th field="datum" width="85px">Datum</th>
+                    <th field="beginn" width="60px">Beginn</th>
+                    <th field="ende" width="60px">Ende</th>
+                    <th field="befreiung" width="120px">Dienstbefreiung</th>
+                    <th field="bemerkung" width="220px">Bemerkung</th>
+                    <th field="pause" width="50px">ohne Pause</th>
+                    <th field="anwesend" width="75px">Anwesend</th>
+                    <th field="ist" width="60px">Ist</th>
+                    <th field="soll" width="60px">Soll</th>
+                    <th field="summe" width="60px"> +/- </th>
                 </tr>
             </thead>  
         </table>
@@ -20,11 +23,11 @@
 
 <script type="text/javascript">
 dojo.ready(function() {
-    var theGreatestTeamOfAllTime = <?=$this->daten->toJson() ?>;
+    var monatsDaten = <?=$this->monatsDaten->toJson() ?>;
  
     var dataStore =
     new dojo.data.ItemFileReadStore(
-        { data:theGreatestTeamOfAllTime }
+        { data:monatsDaten }
     );
     var grid = dijit.byId("monatstabelle");
     grid.setStore(dataStore);

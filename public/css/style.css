@@ -103,12 +103,14 @@ ul.Navigation li ul a {
     color: black;
     font: 80% arial;
     float: left;
+    z-index: 2;
 }
 
 div#Inhalt {
     margin: 0;
     padding: 1em;
     clear: both;
+    z-index: 1;
 }
 
 div#Inhalt h2 {

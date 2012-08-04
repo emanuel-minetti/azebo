@@ -18,46 +18,33 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->view->jahr = $jahr;
         
         $datum = new Zend_Date();
+        // setze $datum auf den ersten des Monats
         $datum->setDay(1);
         $datum->setMonth($monat);
         $datum->setYear($jahr);
         
+        // setze den Seitennamen
         $this->erweitereSeitenName($datum->toString(' MMMM'));
         $this->erweitereSeitenName($datum->toString(' yyyy'));
 
+        //aktiviere Dojo
         $this->view->dojo()->enable()
                 ->setDjConfigOption('parseOnLoad', true)
                 ->requireModule('dojox.grid.DataGrid')
                 ->requireModule('dojo.data.ItemFileReadStore')
                 ->requireModule('dojo._base.connect');
-
-        $daten = new Zend_Dojo_Data();
-        $daten->setIdentifier('number');
-        $daten->addItem(array(
-            'number' => '12',
-            'name' => 'Jim Kelly',
-            'position' => 'QB',
-            'victories' => '0',
-        ));
-        $daten->addItem(array(
-            'number' => '34',
-            'name' => 'Thurman Thomas',
-            'position' => 'RB',
-            'victories' => '0',
-        ));
-        $daten->addItem(array(
-            'number' => '89',
-            'name' => 'Steve Tasker',
-            'position' => 'WR',
-            'victories' => '0',
-        ));
-        $daten->addItem(array(
-            'number' => '78',
-            'name' => 'Bruce Smith',
-            'position' => 'DE',
-            'victories' => '0',
-        ));
-        $this->view->daten = $daten;
+        
+        // befülle die Reihen
+        $monatsDaten = new Zend_Dojo_Data();
+        $monatsDaten->setIdentifier('datum');
+        for ($tag = 1; $tag <= $datum->get(Zend_Date::MONTH_DAYS) ; $tag++) {
+            $datum->setDay($tag);
+            $monatsDaten->addItem(array(
+                'datum' => $datum->toString('EE, dd.MM.YYYY'),
+            ));
+        }
+        
+        $this->view->monatsDaten = $monatsDaten;
     }
 
 }
