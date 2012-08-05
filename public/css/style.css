@@ -194,13 +194,13 @@ td.monatsuebersicht textarea{
     font-size: 80%;
 }
 
-tr.feier {
+/*tr.feier {
     color: #fe3c1a;
-}
+}*/
 
-tr.gerade {
+/*tr.gerade {
     background-color: #d8d0ae;
-}
+}*/
 
 table.mituebersicht{
     border-collapse: collapse;

@@ -25,8 +25,16 @@
                 {'name':'Soll','field':'soll','width':'60px'},
                 {'name':'+/-','field':'summe','width':'60px'},
             ]];
+        
+        /*TODO ins Stylesheet verlagern */
     
-        function feiertagsStyleRow(row){
+        function azeboStyleRow(row){
+            if(row.odd) {
+                row.customStyles += "background-color: #d8d0ae;";
+            }
+            if(row.over) {
+                row.customStyles += "background-color: #648d9f;";
+            }
             var item = grid.getItem(row.index);
             if(item) {
                 var istFeiertag = dataStore.getValue(item,"feiertag",null);
@@ -42,7 +50,7 @@
             id:'monatstabelle',
             store:dataStore,
             structure:layout,
-            onStyleRow:feiertagsStyleRow
+            onStyleRow:azeboStyleRow
         });
             
         grid.placeAt('gridDiv');
