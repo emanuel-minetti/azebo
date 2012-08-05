@@ -1,39 +1,56 @@
 <div id="view-content">
-    <h3><?= $this->seitenName?></h3>
-    
-    <div style="width: 935px; height: 1280px">
-        <table id="monatstabelle" dojoType="dojox.grid.DataGrid">
-            <thead>
-                <tr>
-                    <th field="datum" width="85px">Datum</th>
-                    <th field="beginn" width="60px">Beginn</th>
-                    <th field="ende" width="60px">Ende</th>
-                    <th field="befreiung" width="120px">Dienstbefreiung</th>
-                    <th field="bemerkung" width="220px">Bemerkung</th>
-                    <th field="pause" width="50px">ohne Pause</th>
-                    <th field="anwesend" width="75px">Anwesend</th>
-                    <th field="ist" width="60px">Ist</th>
-                    <th field="soll" width="60px">Soll</th>
-                    <th field="summe" width="60px"> +/- </th>
-                </tr>
-            </thead>  
-        </table>
-    </div>
+    <h3><?= $this->seitenName ?></h3>
+
+    <div id="gridDiv" style="width: 940px; height: 1280px"></div>
 </div>
 
 <script type="text/javascript">
-dojo.ready(function() {
-    var monatsDaten = <?=$this->monatsDaten->toJson() ?>;
+    dojo.ready(function() {
+        var monatsDaten = <?= $this->monatsDaten->toJson() ?>;
  
-    var dataStore =
-    new dojo.data.ItemFileReadStore(
+        var dataStore =
+            new dojo.data.ItemFileReadStore(
         { data:monatsDaten }
     );
-    var grid = dijit.byId("monatstabelle");
-    grid.setStore(dataStore);
-    dojo.connect(grid, "onRowClick", null, function(e){
-        console.debug("Reihe geclickt!");
-        console.debug(e.rowIndex);
-    });   
-});
+        
+        var layout =[[
+                {'name':'Datum','field':'datum','width':'90px'},
+                {'name':'Beginn','field':'beginn','width':'60px'},
+                {'name':'Ende','field':'ende','width':'60px'},
+                {'name':'Dienstbefreiung','field':'befreiung','width':'120px'},
+                {'name':'Bemerkung','field':'bemerkung','width':'220px'},
+                {'name':'ohne Pause','field':'pause','width':'50px'},
+                {'name':'Anwesend','field':'anwesend','width':'75px'},
+                {'name':'Ist','field':'ist','width':'60px'},
+                {'name':'Soll','field':'soll','width':'60px'},
+                {'name':'+/-','field':'summe','width':'60px'},
+            ]];
+    
+        function feiertagsStyleRow(row){
+            var item = grid.getItem(row.index);
+            if(item) {
+                var istFeiertag = dataStore.getValue(item,"feiertag",null);
+                if(!!istFeiertag) {
+                    row.customStyles += "color: #fe3c1a;";
+                }
+            }
+            grid.focus.styleRow(row);
+            grid.edit.styleRow(row);
+        }
+    
+        var grid = new dojox.grid.DataGrid({
+            id:'monatstabelle',
+            store:dataStore,
+            structure:layout,
+            onStyleRow:feiertagsStyleRow
+        });
+            
+        grid.placeAt('gridDiv');
+        grid.startup();
+        
+        dojo.connect(grid, "onRowClick", null, function(e){
+            console.debug("Reihe geclickt!");
+            console.debug(e.rowIndex);
+        });   
+    });
 </script>
