@@ -11,7 +11,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function indexAction() {
-        $feiertagsService = new Azebo_Service_Feiertag();
         
         $monat = $this->_getParam('monat');
         $jahr = $this->_getParam('jahr');
@@ -19,6 +18,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->view->monat = $monat;
         $this->view->jahr = $jahr;
         
+        $feiertagsService = new Azebo_Service_Feiertag($jahr);        
         $datum = new Zend_Date();
         // setze $datum auf den ersten des Monats
         $datum->setDay(1);
@@ -41,13 +41,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $monatsDaten->setIdentifier('datum');
         for ($tag = 1; $tag <= $datum->get(Zend_Date::MONTH_DAYS) ; $tag++) {
             $datum->setDay($tag);
-            $feiertag = $feiertagsService->istFeiertag($datum);
-            if($tag == 10) {
-                $feiertag = true;
-            }
+            $feiertag = $feiertagsService->feiertag($datum);
             $monatsDaten->addItem(array(
-                'datum' => $datum->toString('EE, dd.MM.YYYY'),
-                'feiertag' => $feiertag,
+                'datum' => $feiertag['name'] . ' ' . $datum->toString('EE, dd.MM.YYYY'),
+                'feiertag' => $feiertag['feiertag'],
             ));
         }
         

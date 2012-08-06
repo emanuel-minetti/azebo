@@ -139,6 +139,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         //CSS-Links setzen
         $this->_view->headLink()->appendStylesheet('/css/style.css');
+        $this->_view->headLink()->appendStylesheet('/css/tundraGrid.css');
 
         //JS einbinden
         $this->_view->headScript()->appendFile('/js/nav.js');
@@ -150,7 +151,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         
         //Dojo View Helper aktivieren
         $this->_view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
-        //Zend_Dojo_View_Helper_Dojo::setUseDeclarative();
         
         //Die Version festlegen
         $this->_view->version = '0.2';

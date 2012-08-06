@@ -249,3 +249,11 @@ div#Fusszeile {
     background-color: #d8d0ae;
     border: 2px solid #8d9a94;
 }
+
+.tundra .dojoxGridRowOver {
+    background-color: #648d9f !important;
+}
+
+.tundra .dojoxGridRowOdd {
+    background-color: #d8d0ae !important;      
+}

@@ -1,7 +1,7 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
 
-    <div id="gridDiv" style="width: 940px; height: 1280px"></div>
+    <div id="gridDiv" style="width: 970px; height: 900px"></div>
 </div>
 
 <script type="text/javascript">
@@ -14,7 +14,7 @@
     );
         
         var layout =[[
-                {'name':'Datum','field':'datum','width':'90px'},
+                {'name':'Datum','field':'datum','width':'120px'},
                 {'name':'Beginn','field':'beginn','width':'60px'},
                 {'name':'Ende','field':'ende','width':'60px'},
                 {'name':'Dienstbefreiung','field':'befreiung','width':'120px'},
@@ -26,15 +26,12 @@
                 {'name':'+/-','field':'summe','width':'60px'},
             ]];
         
-        /*TODO ins Stylesheet verlagern */
-    
-        function azeboStyleRow(row){
-            if(row.odd) {
-                row.customStyles += "background-color: #d8d0ae;";
-            }
-            if(row.over) {
-                row.customStyles += "background-color: #648d9f;";
-            }
+        var grid = new dojox.grid.DataGrid({
+            store:dataStore,
+            structure:layout
+        });
+         
+        dojo.connect(grid, "onStyleRow", function(row){
             var item = grid.getItem(row.index);
             if(item) {
                 var istFeiertag = dataStore.getValue(item,"feiertag",null);
@@ -44,18 +41,11 @@
             }
             grid.focus.styleRow(row);
             grid.edit.styleRow(row);
-        }
-    
-        var grid = new dojox.grid.DataGrid({
-            id:'monatstabelle',
-            store:dataStore,
-            structure:layout,
-            onStyleRow:azeboStyleRow
         });
-            
+         
         grid.placeAt('gridDiv');
         grid.startup();
-        
+               
         dojo.connect(grid, "onRowClick", null, function(e){
             console.debug("Reihe geclickt!");
             console.debug(e.rowIndex);
