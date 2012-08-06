@@ -21,7 +21,7 @@
  */
 
 /**
- * Description of Feiertag
+ * Stellt die gesetzlichen Feiertage in Berlin zur Verfügung
  *
  * @author Emanuel Minetti
  */
@@ -34,7 +34,11 @@ class Azebo_Service_Feiertag {
     public $himmelfahrt;
     public $pfingstmontag;
 
-
+/**
+ *Stellt die beweglichen Feiertage des Jahres zur Verfügung
+ * 
+ * @param int|string $jahr 
+ */
     public function __construct($jahr) {
         $this->log = Zend_Registry::get('log');
         
@@ -52,7 +56,18 @@ class Azebo_Service_Feiertag {
         $this->pfingstmontag = new Zend_Date($ostersonntag);
         $this->pfingstmontag->add(50, Zend_Date::DAY);
     }
-
+/**
+ *Prüft ob ein Datum ein gesetzlicher Feiertag in Berlin ist.
+ * Berücksichtigt auch Samstage und Sonntage.
+ * 
+ * Liefert ein Array mit den Eigenschaften 'name' und 'feiertag'
+ * zurück. 'name' ist ein string mit dem Namen des Feiertags.
+ * 'feiertag' ist ein boolean, der true ist falls das Datum ein
+ * Feiertag ist.
+ * 
+ * @param Zend_Date $datum
+ * @return array 
+ */
     public function feiertag(Zend_Date $datum) {
         /*
          * Die festen gesetzlichen Feiertage in Berlin sind:
