@@ -1,7 +1,7 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
 
-    <div id="gridDiv" style="width: 970px; height: 900px"></div>
+    <div id="gridDiv" style="width: 879px; height: 1400px"></div>
 </div>
 
 <script type="text/javascript">
@@ -14,15 +14,15 @@
     );
         
         var layout =[[
-                {'name':'Datum','field':'datum','width':'120px'},
-                {'name':'Beginn','field':'beginn','width':'60px'},
-                {'name':'Ende','field':'ende','width':'60px'},
+                {'name':'Datum','field':'datum','width':'80px'},
+                {'name':'Beginn','field':'beginn','width':'55px'},
+                {'name':'Ende','field':'ende','width':'55px'},
                 {'name':'Dienstbefreiung','field':'befreiung','width':'120px'},
                 {'name':'Bemerkung','field':'bemerkung','width':'220px'},
-                {'name':'ohne Pause','field':'pause','width':'50px'},
-                {'name':'Anwesend','field':'anwesend','width':'75px'},
-                {'name':'Ist','field':'ist','width':'60px'},
-                {'name':'Soll','field':'soll','width':'60px'},
+                {'name':'ohne Pause','field':'pause','width':'43px'},
+                {'name':'An- wesend','field':'anwesend','width':'55px'},
+                {'name':'Ist','field':'ist','width':'55px'},
+                {'name':'Soll','field':'soll','width':'55px'},
                 {'name':'+/-','field':'summe','width':'60px'},
             ]];
         
@@ -49,6 +49,8 @@
         dojo.connect(grid, "onRowClick", null, function(e){
             console.debug("Reihe geclickt!");
             console.debug(e.rowIndex);
+            var item = e.grid.getItem(e.rowIndex);
+            console.debug(item.getAttributes);
         });   
     });
 </script>

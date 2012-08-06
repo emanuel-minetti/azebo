@@ -131,7 +131,7 @@ class Azebo_Service_Feiertag {
                     'day' => 25,
                     'month' => 12,
                     'year' => $datum->toString('yyyy')))) == 0) {
-            $erg['name'] = '1. Weihnachtsfeiertag';
+            $erg['name'] = '1. Feiertag';
             $erg['feiertag'] = true;
             return $erg;
         }
@@ -142,7 +142,7 @@ class Azebo_Service_Feiertag {
                     'day' => 26,
                     'month' => 12,
                     'year' => $datum->toString('yyyy')))) == 0) {
-            $erg['name'] = '2. Weihnachtsfeiertag';
+            $erg['name'] = '2. Feiertag';
             $erg['feiertag'] = true;
             return $erg;
         }
@@ -163,7 +163,7 @@ class Azebo_Service_Feiertag {
         
         //Christi Himmelfahrt
         if($datum->compareDate($this->himmelfahrt) == 0) {
-            $erg['name'] = 'Christi Himmelfahrt';
+            $erg['name'] = 'Himmelfahrt';
             $erg['feiertag'] = true;
             return $erg;
         }

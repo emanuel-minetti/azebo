@@ -20,6 +20,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         
         $feiertagsService = new Azebo_Service_Feiertag($jahr);        
         $datum = new Zend_Date();
+        
         // setze $datum auf den ersten des Monats
         $datum->setDay(1);
         $datum->setMonth($monat);
