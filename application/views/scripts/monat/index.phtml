@@ -1,7 +1,7 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
 
-    <div id="gridDiv" style="width: 879px; height: 1400px"></div>
+    <div id="gridDiv" style="width: 874px; height: <?= $this->tageImMonat * 41 + 55 ?>px"></div>
 </div>
 
 <script type="text/javascript">
@@ -9,9 +9,7 @@
         var monatsDaten = <?= $this->monatsDaten->toJson() ?>;
  
         var dataStore =
-            new dojo.data.ItemFileReadStore(
-        { data:monatsDaten }
-    );
+            new dojo.data.ItemFileReadStore({ data:monatsDaten });
         
         var layout =[[
                 {'name':'Datum','field':'datum','width':'80px'},
@@ -23,12 +21,13 @@
                 {'name':'An- wesend','field':'anwesend','width':'55px'},
                 {'name':'Ist','field':'ist','width':'55px'},
                 {'name':'Soll','field':'soll','width':'55px'},
-                {'name':'+/-','field':'summe','width':'60px'},
+                {'name':'+/-','field':'summe','width':'55px'},
             ]];
         
         var grid = new dojox.grid.DataGrid({
             store:dataStore,
-            structure:layout
+            structure:layout,
+            selectionMode:"none"
         });
          
         dojo.connect(grid, "onStyleRow", function(row){
@@ -49,8 +48,15 @@
         dojo.connect(grid, "onRowClick", null, function(e){
             console.debug("Reihe geclickt!");
             console.debug(e.rowIndex);
-            var item = e.grid.getItem(e.rowIndex);
-            console.debug(item.getAttributes);
+            
+            var url = "<?=$this->url(array(
+                'monat' => $this->monat,
+                'jahr' => $this->jahr,
+                    ), 'monat', true); ?>";
+            var tag = e.rowIndex + 1;
+            url += "/" + tag;
+            console.debug(url);
+            location.href = url;
         });   
     });
 </script>
