@@ -26,7 +26,7 @@
  * @author Emanuel Minetti
  */
 class Azebo_Service_Feiertag {
-    
+
     public $log;
     
     public $karfreitag;
@@ -34,19 +34,18 @@ class Azebo_Service_Feiertag {
     public $himmelfahrt;
     public $pfingstmontag;
 
-/**
- *Stellt die beweglichen Feiertage des Jahres zur Verfügung
- * 
- * @param int|string $jahr 
- */
+    /**
+     * Stellt die beweglichen Feiertage des Jahres zur Verfügung
+     * 
+     * @param Zend_Date $jahr 
+     */
     public function __construct($jahr) {
         $this->log = Zend_Registry::get('log');
-        
+
         $tageNach21Maerz = easter_days($jahr);
         $ostersonntag = new Zend_Date('21.3.' . $jahr);
         $ostersonntag->add($tageNach21Maerz, Zend_Date::DAY);
         
-        $this->log->info('Ostersonntag ist: ' . $ostersonntag);
         $this->karfreitag = new Zend_Date($ostersonntag);
         $this->karfreitag->add('-2', Zend_Date::DAY);
         $this->ostermontag = new Zend_Date($ostersonntag);
@@ -56,19 +55,39 @@ class Azebo_Service_Feiertag {
         $this->pfingstmontag = new Zend_Date($ostersonntag);
         $this->pfingstmontag->add(50, Zend_Date::DAY);
     }
-/**
- *Prüft ob ein Datum ein gesetzlicher Feiertag in Berlin ist.
- * Berücksichtigt auch Samstage und Sonntage.
- * 
- * Liefert ein Array mit den Eigenschaften 'name' und 'feiertag'
- * zurück. 'name' ist ein string mit dem Namen des Feiertags.
- * 'feiertag' ist ein boolean, der true ist falls das Datum ein
- * Feiertag ist.
- * 
- * @param Zend_Date $datum
- * @return array 
- */
-    public function feiertag(Zend_Date $datum) {
+    
+    /**
+     * Liefert ein array mit den Daten des Monatsparameters im Format
+     * 'dd.MM.yyyy' als Schlüssel und als Wert ein array mit den Schlüsseln
+     * 'name' und 'feiertag'.
+     * 
+     * @param Zend_Date $monat
+     * @return array
+     */
+    public function feiertage(Zend_Date $monat) {
+        $feiertage = array();
+        $datum = new Zend_Date($monat);
+        for($tag = 1; $tag <= $datum->get(Zend_Date::MONTH_DAYS); $tag++) {
+            $datum->setDay($tag);
+            $feiertag = $this->_feiertag($datum);
+            $feiertage[$datum->toString('dd.MM.yyyy')] = $feiertag;
+        }
+        return $feiertage;
+    }
+
+    /**
+     * Prüft ob ein Datum ein gesetzlicher Feiertag in Berlin ist.
+     * Berücksichtigt auch Samstage und Sonntage.
+     * 
+     * Liefert ein Array mit den Eigenschaften 'name' und 'feiertag'
+     * zurück. 'name' ist ein string mit dem Namen des Feiertags.
+     * 'feiertag' ist ein boolean, der true ist falls das Datum ein
+     * Feiertag ist.
+     * 
+     * @param Zend_Date $datum
+     * @return array 
+     */
+    protected function _feiertag(Zend_Date $datum) {
         /*
          * Die festen gesetzlichen Feiertage in Berlin sind:
          * 
@@ -85,104 +104,93 @@ class Azebo_Service_Feiertag {
          * -Christi Himmelfahrt (Ostersonntag + 39)
          * -Pfingstmontag (Ostersonntag + 50)
          */
-        
+
         //Normalfall
-        $erg = array(
+        $feiertag = array(
             'feiertag' => false,
             'name' => '',
         );
-        
+
         //Neujahr
-        if($datum->compareDate(
-                new Zend_Date(array(
-                    'day' => 1,
-                    'month' => 1,
-                    'year' => $datum->toString('yyyy')))) == 0) {
-            $erg['name'] = 'Neujahr';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->get(Zend_Date::MONTH) == 1) {
+            if ($datum->get(Zend_Date::DAY) == 1) {
+                $feiertag['name'] = 'Neujahr';
+                $feiertag['feiertag'] = true;
+                return $feiertag;
+            }
         }
-        
+
         //Tag der Arbeit
-        if($datum->compareDate(
-                new Zend_Date(array(
-                    'day' => 1,
-                    'month' => 5,
-                    'year' => $datum->toString('yyyy')))) == 0) {
-            $erg['name'] = 'Tag der Arbeit';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->get(Zend_Date::MONTH) == 5) {
+            if ($datum->get(Zend_Date::DAY) == 1) {
+                $feiertag['name'] = 'Tag der Arbeit';
+                $feiertag['feiertag'] = true;
+                return $feiertag;
+            }
         }
-        
+
         //Tag der dt. Einheit
-        if($datum->compareDate(
-                new Zend_Date(array(
-                    'day' => 3,
-                    'month' => 10,
-                    'year' => $datum->toString('yyyy')))) == 0) {
-            $erg['name'] = 'Tag der dt. Einheit';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->get(Zend_Date::MONTH) == 10) {
+            if ($datum->get(Zend_Date::DAY) == 3) {
+                $feiertag['name'] = 'Tag der dt. Einheit';
+                $feiertag['feiertag'] = true;
+                return $feiertag;
+            }
         }
-        
+
         //1. Weihnachtsfeiertag
-        if($datum->compareDate(
-                new Zend_Date(array(
-                    'day' => 25,
-                    'month' => 12,
-                    'year' => $datum->toString('yyyy')))) == 0) {
-            $erg['name'] = '1. Feiertag';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->get(Zend_Date::MONTH) == 12) {
+            if ($datum->get(Zend_Date::DAY) == 25) {
+                $feiertag['name'] = '1. Feiertag';
+                $feiertag['feiertag'] = true;
+                return $feiertag;
+            }
         }
-        
+
         //2. Weihnachtsfeiertag
-        if($datum->compareDate(
-                new Zend_Date(array(
-                    'day' => 26,
-                    'month' => 12,
-                    'year' => $datum->toString('yyyy')))) == 0) {
-            $erg['name'] = '2. Feiertag';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->get(Zend_Date::MONTH) == 12) {
+            if ($datum->get(Zend_Date::DAY) == 26) {
+                $feiertag['name'] = '2. Feiertag';
+                $feiertag['feiertag'] = true;
+                return $feiertag;
+            }
         }
-        
+
         //Karfreitag
-        if($datum->compareDate($this->karfreitag) == 0) {
-            $erg['name'] = 'Karfreitag';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->compareDate($this->karfreitag) == 0) {
+            $feiertag['name'] = 'Karfreitag';
+            $feiertag['feiertag'] = true;
+            return $feiertag;
         }
-        
+
         //Ostermontag
-        if($datum->compareDate($this->ostermontag) == 0) {
-            $erg['name'] = 'Ostermontag';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->compareDate($this->ostermontag) == 0) {
+            $feiertag['name'] = 'Ostermontag';
+            $feiertag['feiertag'] = true;
+            return $feiertag;
         }
-        
+
         //Christi Himmelfahrt
-        if($datum->compareDate($this->himmelfahrt) == 0) {
-            $erg['name'] = 'Himmelfahrt';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->compareDate($this->himmelfahrt) == 0) {
+            $feiertag['name'] = 'Himmelfahrt';
+            $feiertag['feiertag'] = true;
+            return $feiertag;
         }
-        
+
         //Pfingstmontag
-        if($datum->compareDate($this->pfingstmontag) == 0) {
-            $erg['name'] = 'Pfingstmontag';
-            $erg['feiertag'] = true;
-            return $erg;
+        if ($datum->compareDate($this->pfingstmontag) == 0) {
+            $feiertag['name'] = 'Pfingstmontag';
+            $feiertag['feiertag'] = true;
+            return $feiertag;
         }
-        
+
         //Samstag und Sonntag
-        if($datum->get(Zend_Date::WEEKDAY_DIGIT) == 0 ||
+        if ($datum->get(Zend_Date::WEEKDAY_DIGIT) == 0 ||
                 $datum->get(Zend_Date::WEEKDAY_DIGIT) == 6) {
-            $erg['feiertag'] = true;
+            $feiertag['feiertag'] = true;
         }
-        
-        return $erg;
+
+        return $feiertag;
     }
 
 }
-
