@@ -25,7 +25,9 @@
  * @author Emanuel Minetti
  */
 interface Azebo_Resource_Mitarbeiter_Interface
-    extends AzeboLib_Model_Resource_Db_Interface {
+extends AzeboLib_Model_Resource_Db_Interface {
+
     public function getMitarbeiterNachId($id);
+
     public function getMitarbeiterNachBenutzername($benutzername);
 }

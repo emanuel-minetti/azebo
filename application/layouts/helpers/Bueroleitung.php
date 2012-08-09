@@ -35,9 +35,9 @@ class Zend_View_Helper_Bueroleitung extends Zend_View_Helper_Abstract {
                 'controller' => 'bueroleitung',
                 'action' => 'index',
                     ));
-            $html .= '"onmouseover="azeboopen(\'Nav_Buero\')" onmouseout="azeboclosetime()">';
-            $html .= 'Büroleitung';
-            $html .= '</a><ul id="Nav_Buero" onmouseover="azebocancelclosetime()" onmouseout="azeboclosetime()">';
+            $html .= '"onmouseover="azeboopen(\'Nav_Buero\')" onmouseout="azeboclosetime()">' . "\n";
+            $html .= 'Büroleitung' . "\n";
+            $html .= '</a><ul id="Nav_Buero" onmouseover="azebocancelclosetime()" onmouseout="azeboclosetime()">' . "\n";
             $html .= '<li><a href="';
             $html .= $this->view->url(array(
                 'controller' => 'bueroleitung',
@@ -46,15 +46,14 @@ class Zend_View_Helper_Bueroleitung extends Zend_View_Helper_Abstract {
             $html .= '" >';
             $html .= 'Mitarbeiter';
             //TODO Erkennen welche Seite dargestellt wird!
-            //TODO Ein paar newlines einfügen
             $html .= '</a></li><li><a style="font-weight:bold" href="';
             $html .= $this->view->url(array(
                 'controller' => 'bueroleitung',
                 'action' => 'monate',
                     ));
-            $html .= '">';
-            $html .= 'Monate';
-            $html .= '</a></li></ul></li>';
+            $html .= '">' . "\n";
+            $html .= 'Monate' . "\n";
+            $html .= '</a></li></ul></li> . "\n"';
         }
         return $html;
     }

@@ -32,5 +32,12 @@ class Azebo_Resource_Mitarbeiter_Item
     public function getName() {
         return $this->getRow()->vorname . ' ' . $this->getRow()->nachname;
     }
+
+    public function getArbeitstagNachTag(Zend_Date $tag) {
+        $select = $this->select()->where('tag = ?', $tag->toString('yyyy-MM-dd'));
+        $row = $this->findDependentRowset('Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
+        return $row->current();
+    }
+       
 }
 

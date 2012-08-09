@@ -21,29 +21,28 @@
  */
 
 /**
- * Description of Mitarbeiter
+ * Schnittstelle zur MySQL-Tabelle 'mitarbeiter'.
  *
  * @author Emanuel Minetti
  */
-class Azebo_Resource_Mitarbeiter extends AzeboLib_Model_Resource_Db_Table_Abstract
-    implements Azebo_Resource_Mitarbeiter_Interface {
+class Azebo_Resource_Mitarbeiter
+extends AzeboLib_Model_Resource_Db_Table_Abstract
+implements Azebo_Resource_Mitarbeiter_Interface {
 
     protected $_name = 'mitarbeiter';
     protected $_primary = 'id';
-    protected $_benutzername = 'benutzername';
     protected $_rowClass = 'Azebo_Resource_Mitarbeiter_Item';
 
     public function getMitarbeiterNachId($id) {
         return $this->find($id)->current();
     }
 
-
     public function getMitarbeiterNachBenutzername($benutzername) {
         $select = $this->select();
         $select->where('benutzername = ?', $benutzername);
-        
+
         return $this->fetchRow($select);
     }
-    
+
 }
 

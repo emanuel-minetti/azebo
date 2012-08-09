@@ -24,9 +24,7 @@
  *
  * @author Emanuel Minetti
  */
-interface Azebo_Resource_Mitarbeiter_Item_Interface {
-
-    public function getName();
-
-    public function getArbeitstagNachTag(Zend_Date $tag);
+interface Azebo_Resource_Arbeitstag_Item_Interface {
+    
 }
+

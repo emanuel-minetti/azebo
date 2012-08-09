@@ -141,6 +141,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->view->monatsDatenUnten = $monatsDatenUnten;
         $this->view->hoheTageImMonatOben = $anzahlHoheTageOben;
         $this->view->hoheTageImMonatUnten = $anzahlHoheTageUnten;
+        
+        $authService = new Azebo_Service_Authentication();
+        $mitarbeiter = $authService->getIdentity();
+        //TODO testcode entfernen
+        $arbeitstag = $mitarbeiter->getArbeitstagNachTag($this->zuBearbeitendesDatum);
+        $this->_log->info("Beginn: {$arbeitstag->beginn}");
     }
 
 }
