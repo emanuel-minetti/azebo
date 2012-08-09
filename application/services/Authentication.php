@@ -66,13 +66,19 @@ class Azebo_Service_Authentication {
         }
         return $this->_auth;
     }
-
+    
+    /**
+     * Gibt ein 'Azebo_Mitarbeiter_Resource_Item' zurück, oder 'null' falls
+     * der Benuter nicht angemeldet ist.
+     * 
+     * @return Azebo_Mitarbeiter_Resource_Item
+     */
     public function getIdentity() {
         $auth = $this->getAuth();
         if ($auth->hasIdentity()) {
             return $auth->getIdentity();
         }
-        return false;
+        return null;
     }
 
     public function clear() {
