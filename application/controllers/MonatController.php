@@ -127,14 +127,27 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $this->view->monatsDatenOben = null;
             $this->view->hoheTageImMonatOben = 0;
         }
-        
-        if(count($this->arbeitstage) !== 0 &&
+
+        //Falls ein arbeitstag für diesen Tag existiert, entferne
+        //ihn aus dem 'arbeitstage'-Array.
+        if (count($this->arbeitstage) !== 0 &&
                 $this->zuBearbeitendesDatum->compareDate(
                         $this->arbeitstage[0]->tag, 'yyyy-MM-dd') === 0) {
             $arbeitstag = array_shift($this->arbeitstage);
         }
         //TODO Form einfügen
-        //
+        $model = new Azebo_Model_Mitarbeiter();
+        $form = $model->getForm('mitarbeiterTag');
+        $urlHelper = $this->_helper->getHelper('url');
+        $form->setAction($urlHelper->url(array(
+                    'tag' => $this->tag,
+                    'monat' => $this->monat,
+                    'jahr' => $this->jahr,
+                ), 'monatEdit', true));
+        $form->setMethod('post');
+        $form->setName('tagForm');
+        $this->view->tagForm = $form;
+
         //befülle die untere Tabelle
         if ($this->tag != $this->tageImMonat) {
             $erg = $this->_befuelleDieTabelle($datum, $this->tag + 1, $this->tageImMonat);

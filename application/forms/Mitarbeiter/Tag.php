@@ -21,20 +21,11 @@
  */
 
 /**
- * Erweitert 'Zend_Form' um das (zugehörige) Modell
+ * Description of TagBearbeiten
  *
  * @author Emanuel Minetti
  */
-abstract class AzeboLib_Form_Abstract extends Zend_Dojo_Form {
+class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
     
-    protected $_model;
-    
-    public function setModel(AzeboLib_Model_Interface $model) {
-        $this->_model = $model;
-    }
-    
-    public function getModel() {
-        return $this->_model;
-    }
 }
 

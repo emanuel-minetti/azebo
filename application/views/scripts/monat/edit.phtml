@@ -2,8 +2,10 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <div id="view-content">
-        <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag -1) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
+        <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag - 1) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
         <a name="form"></a>
+            <?= $this->tagForm; ?>
+        
         <div id="gridUntenDiv" style="width: 881px; height: <?= ($this->tageImMonat - $this->tag) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
     </div>
 </div>
@@ -23,73 +25,73 @@
             ]];
         
 <? if ($this->monatsDatenOben !== null): ?>
-        
-        var monatsDatenOben = <?= $this->monatsDatenOben->toJson() ?>;
- 
-        var dataStoreOben =
-            new dojo.data.ItemFileReadStore({ data:monatsDatenOben });
-        
-        var gridOben = new dojox.grid.DataGrid({
-            store:dataStoreOben,
-            structure:layout,
-            selectionMode:"none"
-        });
-         
-        dojo.connect(gridOben, "onStyleRow", function(row){
-            var item = gridOben.getItem(row.index);
-            if(item) {
-                var istFeiertag = dataStoreOben.getValue(item,"feiertag",null);
-                if(!!istFeiertag) {
-                    row.customStyles += "color: #fe3c1a;";
-                }
-            }
-            gridOben.focus.styleRow(row);
-            gridOben.edit.styleRow(row);
-        });
-        
-        gridOben.placeAt('gridObenDiv');
-        gridOben.startup();
             
-        dojo.connect(gridOben, "onRowClick", null, function(e){
-            var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
-            url += "/" + (e.rowIndex + 1) + "#form";
-            location.href = url;
-        });        
+            var monatsDatenOben = <?= $this->monatsDatenOben->toJson() ?>;
+     
+            var dataStoreOben =
+                new dojo.data.ItemFileReadStore({ data:monatsDatenOben });
+            
+            var gridOben = new dojox.grid.DataGrid({
+                store:dataStoreOben,
+                structure:layout,
+                selectionMode:"none"
+            });
+             
+            dojo.connect(gridOben, "onStyleRow", function(row){
+                var item = gridOben.getItem(row.index);
+                if(item) {
+                    var istFeiertag = dataStoreOben.getValue(item,"feiertag",null);
+                    if(!!istFeiertag) {
+                        row.customStyles += "color: #fe3c1a;";
+                    }
+                }
+                gridOben.focus.styleRow(row);
+                gridOben.edit.styleRow(row);
+            });
+            
+            gridOben.placeAt('gridObenDiv');
+            gridOben.startup();
+                
+            dojo.connect(gridOben, "onRowClick", null, function(e){
+                var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
+                url += "/" + (e.rowIndex + 1) + "#form";
+                location.href = url;
+            });        
 <? endif; ?>
 <? if ($this->monatsDatenUnten !== null): ?>
-        
-        var monatsDatenUnten = <?= $this->monatsDatenUnten->toJson() ?>;
- 
-        var dataStoreUnten =
-            new dojo.data.ItemFileReadStore({ data:monatsDatenUnten });
-        
-        var gridUnten = new dojox.grid.DataGrid({
-            store:dataStoreUnten,
-            structure:layout,
-            selectionMode:"none"
-        });
-         
-        dojo.connect(gridUnten, "onStyleRow", function(row){
-            var item = gridUnten.getItem(row.index);
-            if(item) {
-                var istFeiertag = dataStoreUnten.getValue(item,"feiertag",null);
-                if(!!istFeiertag) {
-                    row.customStyles += "color: #fe3c1a;";
-                }
-            }
-            gridUnten.focus.styleRow(row);
-            gridUnten.edit.styleRow(row);
-        });
-        
-        gridUnten.placeAt('gridUntenDiv');
-        gridUnten.startup();
             
-        dojo.connect(gridUnten, "onRowClick", null, function(e){
-            var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
-            url += "/" + (e.rowIndex + 1 + <?= $this->tag ?>) + "#form";
-            location.href = url;
-        });        
+            var monatsDatenUnten = <?= $this->monatsDatenUnten->toJson() ?>;
+     
+            var dataStoreUnten =
+                new dojo.data.ItemFileReadStore({ data:monatsDatenUnten });
+            
+            var gridUnten = new dojox.grid.DataGrid({
+                store:dataStoreUnten,
+                structure:layout,
+                selectionMode:"none"
+            });
+             
+            dojo.connect(gridUnten, "onStyleRow", function(row){
+                var item = gridUnten.getItem(row.index);
+                if(item) {
+                    var istFeiertag = dataStoreUnten.getValue(item,"feiertag",null);
+                    if(!!istFeiertag) {
+                        row.customStyles += "color: #fe3c1a;";
+                    }
+                }
+                gridUnten.focus.styleRow(row);
+                gridUnten.edit.styleRow(row);
+            });
+            
+            gridUnten.placeAt('gridUntenDiv');
+            gridUnten.startup();
+                
+            dojo.connect(gridUnten, "onRowClick", null, function(e){
+                var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
+                url += "/" + (e.rowIndex + 1 + <?= $this->tag ?>) + "#form";
+                location.href = url;
+            });        
 <? endif; ?>
-});
+    });
  
 </script>
