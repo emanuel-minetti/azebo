@@ -22,6 +22,9 @@
 
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
+    /**
+     * @var Zend_controller_Front 
+     */
     public $frontController;
     protected $_logger;
     protected $_resourceLoader;
@@ -122,6 +125,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $this->_logger->info('Bootstrap ' . __METHOD__);
 
         $this->bootstrap('view');
+        $this->bootstrap('frontController');
 
         $this->_view = $this->getResource('view');
 

@@ -36,12 +36,16 @@ class Zend_View_Helper_Monatsliste extends Zend_View_Helper_Abstract {
         
         $date->setDate($date->getYear());
         for ($i = 0; $i < 12; $i++) {
-            $html .= '<li><a href="';
-            $html .= $this->view->url(array(
+            $url = $this->view->url(array(
                 'monat' => $date->toString('M'),
                 'jahr' => $date->toString('yyyy'),
                     ), 'monat', true);
-            $html .= '">';
+            $html .= '<li><a href="';
+            $html .= $url . '"';
+            if($url == $this->view->requestURI) {
+                $html .= 'style="font-weight:bold;"';
+            }
+            $html .= '>';
             $html .= $date->toString('MMMM');
             $html .= "</a></li>\n";
             $date->addMonth(1);

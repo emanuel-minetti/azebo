@@ -110,7 +110,7 @@ abstract class AzeboLib_Model_Abstract implements AzeboLib_Model_Interface {
     }
 
     /**
-     * Ein Form des Modells holen
+     * Eine Form des Modells holen
      * 
      * @param string $name
      * @return Zend_Form 

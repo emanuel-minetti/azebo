@@ -35,11 +35,14 @@ class Zend_View_Helper_Jahresliste extends Zend_View_Helper_Abstract {
         $date->setDate($date->getYear());
         
         for ($i = 0; $i < 2; $i++) {
-            $html .= '<li><a href="';
-            $html .= $this->view->url(array(
+            $url = $this->view->url(array(
                 'jahr' => $date->toString('yyyy'),
                     ), 'uebersicht', true);
-            $html .= '">';
+            $html .= '<li><a href="' . $url . '"';
+            if($url == $this->view->requestURI) {
+                $html .= 'style="font-weight:bold;"';
+            }
+            $html .= '>';
             $html .= $date->toString('yyyy');
             $html .= "</a></li>\n";
             $date->addYear(-1);

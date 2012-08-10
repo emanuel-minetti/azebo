@@ -30,28 +30,40 @@ class Zend_View_Helper_Bueroleitung extends Zend_View_Helper_Abstract {
     public function bueroleitung() {
         $html = '';
         if ($this->view->istBueroleitung) {
-            $html .= '<li><a href="';
-            $html .= $this->view->url(array(
+            $url = $this->view->url(array(
                 'controller' => 'bueroleitung',
                 'action' => 'index',
                     ));
-            $html .= '"onmouseover="azeboopen(\'Nav_Buero\')" onmouseout="azeboclosetime()">' . "\n";
+            $html .= '<li><a href="';
+            $html .= $url . '"';
+            if($url == $this->view->requestURI) {
+                $html .= 'style="font-weight:bold;"';
+            }
+            $html .= 'onmouseover="azeboopen(\'Nav_Buero\')" onmouseout="azeboclosetime()">' . "\n";
             $html .= 'Büroleitung' . "\n";
             $html .= '</a><ul id="Nav_Buero" onmouseover="azebocancelclosetime()" onmouseout="azeboclosetime()">' . "\n";
             $html .= '<li><a href="';
-            $html .= $this->view->url(array(
+            $url = $this->view->url(array(
                 'controller' => 'bueroleitung',
                 'action' => 'mitarbeiter',
                     ));
-            $html .= '" >';
+            $html .= $url . '"';
+            if($url == $this->view->requestURI) {
+                $html .= 'style="font-weight:bold;"';
+            }
+            $html .= ' >';
             $html .= 'Mitarbeiter';
-            //TODO Erkennen welche Seite dargestellt wird!
-            $html .= '</a></li><li><a href="';
-            $html .= $this->view->url(array(
+            $html .= '</a></li>' . "\n";
+            $html .= '<li><a href="';
+            $url = $this->view->url(array(
                 'controller' => 'bueroleitung',
                 'action' => 'monate',
                     ));
-            $html .= '">' . "\n";
+            $html .= $url . '"';
+            if($url == $this->view->requestURI) {
+                $html .= 'style="font-weight:bold;"';
+            }
+            $html .= '>' . "\n";
             $html .= 'Monate' . "\n";
             $html .= '</a></li></ul></li>' . "\n";
         }
