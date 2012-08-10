@@ -46,14 +46,14 @@ class Zend_View_Helper_Bueroleitung extends Zend_View_Helper_Abstract {
             $html .= '" >';
             $html .= 'Mitarbeiter';
             //TODO Erkennen welche Seite dargestellt wird!
-            $html .= '</a></li><li><a style="font-weight:bold" href="';
+            $html .= '</a></li><li><a href="';
             $html .= $this->view->url(array(
                 'controller' => 'bueroleitung',
                 'action' => 'monate',
                     ));
             $html .= '">' . "\n";
             $html .= 'Monate' . "\n";
-            $html .= '</a></li></ul></li> . "\n"';
+            $html .= '</a></li></ul></li>' . "\n";
         }
         return $html;
     }

@@ -32,7 +32,7 @@ class Zend_View_Helper_Name extends Zend_View_Helper_Abstract {
         $authService = new Azebo_Service_Authentication();
         $identity = $authService->getIdentity();
         $name = '';
-        if($identity !== false) {
+        if($identity !== null) {
             $name = $identity->getName();
         }
         return $name;

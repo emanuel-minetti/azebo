@@ -35,8 +35,34 @@ class Azebo_Resource_Mitarbeiter_Item
 
     public function getArbeitstagNachTag(Zend_Date $tag) {
         $select = $this->select()->where('tag = ?', $tag->toString('yyyy-MM-dd'));
-        $row = $this->findDependentRowset('Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
+        $row = $this->findDependentRowset('Azebo_Resource_Arbeitstag',
+                'Arbeitstag',
+                $select);
         return $row->current();
+    }
+
+    /**
+     * @param Zend_Date $monat
+     * @return array 
+     */
+    public function getArbeitstageNachMonat(Zend_Date $monat) {
+        $erster = new Zend_Date($monat);
+        $erster->setDay(1);
+        $letzter = new Zend_Date($monat);
+        $letzter->setDay($monat->get(Zend_Date::MONTH_DAYS));
+        
+        $select = $this->select();
+        $select->where('tag >= ?', $erster->toString('yyyy-MM-dd'))
+                ->where('tag <= ?', $letzter->toString('yyyy-MM-dd'))
+                ->order('tag ASC');
+        $rowset = $this->findDependentRowset('Azebo_Resource_Arbeitstag',
+                'Arbeitstag',
+                $select);
+        $arbeitstage = array();
+        foreach ($rowset as $arbeitstag) {
+            array_push($arbeitstage, $arbeitstag);
+        }
+        return $arbeitstage;
     }
        
 }

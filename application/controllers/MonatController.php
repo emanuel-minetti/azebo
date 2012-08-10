@@ -1,5 +1,25 @@
 <?php
 
+/*
+ * 
+ *     This file is part of azebo.
+ * 
+ *     azebo is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ * 
+ *     azebo is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ * 
+ *     You should have received a copy of the GNU General Public License
+ *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
+ *  
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ */
+
 class MonatController extends AzeboLib_Controller_Abstract {
 
     public $tag;
@@ -17,6 +37,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
      * @var array
      */
     public $feiertage;
+
+    /**
+     * @var Azebo_Resource_Mitarbeiter_Item_Interface 
+     */
+    public $mitarbeiter;
+    
+    /**
+     * @var array 
+     */
+    public $arbeitstage;
 
     public function init() {
         parent::init();
@@ -40,12 +70,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ));
 
         // Ermittle die Anzahl der Tage des Monats
-        $this->tageImMonat = $this->zuBearbeitendesDatum->get(Zend_Date::MONTH_DAYS);
+        $this->tageImMonat = $this->zuBearbeitendesDatum
+                ->get(Zend_Date::MONTH_DAYS);
         $this->view->tageImMonat = $this->tageImMonat;
 
         // Hohle ein Array mit den Feiertagsdaten des Monats
         $feiertagsservice = new Azebo_Service_Feiertag($this->jahr);
-        $this->feiertage = $feiertagsservice->feiertage($this->zuBearbeitendesDatum);
+        $this->feiertage = $feiertagsservice->
+                feiertage($this->zuBearbeitendesDatum);
 
         // Aktiviere Dojo
         $this->view->dojo()->enable()
@@ -53,6 +85,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ->requireModule('dojox.grid.DataGrid')
                 ->requireModule('dojo.data.ItemFileReadStore')
                 ->requireModule('dojo._base.connect');
+
+        // lade den mitarbeiter und die Arbeitstage
+        $authService = new Azebo_Service_Authentication();
+        $this->mitarbeiter = $authService->getIdentity();
+        $this->arbeitstage = $this->mitarbeiter
+                ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
     }
 
     public function getSeitenName() {
@@ -72,16 +110,48 @@ class MonatController extends AzeboLib_Controller_Abstract {
         for ($tag = 1; $tag <= $this->tageImMonat; $tag++) {
             $datum->setDay($tag);
             $feiertag = $this->feiertage[$datum->toString('dd.MM.yyyy')];
-            $monatsDaten->addItem(array(
-                'datum' => $feiertag['name'] . ' ' . $datum->toString('EE, dd.MM.YYYY'),
-                'feiertag' => $feiertag['feiertag'],
-            ));
+
+            //prüfe ob noch Einträge in 'arbeitstage' vorhanden sind
+            //und wenn ja ob der erste Eintrag zu diesem Tag passt.
+            if ((count($this->arbeitstage)) !== 0 &&
+                    ($datum->compareDate(
+                            $this->arbeitstage[0]->tag, 'yyyy-MM-dd') === 0)) {
+                $arbeitstag = array_shift($this->arbeitstage);
+                $beginn = null;
+                $ende = null;
+                if ($arbeitstag->beginn !== null) {
+                    $beginn = $datum->setTime($arbeitstag->beginn)->toString('HH:mm');
+                }
+                if ($arbeitstag->ende !== null) {
+                    $ende = $datum->setTime($arbeitstag->ende)->toString('HH:mm');
+                }
+                $monatsDaten->addItem(array(
+                    'datum' => $feiertag['name'] . ' ' . $datum->toString('EE, dd.MM.YYYY'),
+                    'feiertag' => $feiertag['feiertag'],
+                    'beginn' => $beginn,
+                    'ende' => $ende,
+                    'befreiung' => $arbeitstag->befreiung,
+                    'bemerkung' => $arbeitstag->bemerkung,
+                    'pause' => $arbeitstag->pause,
+                ));
+            } else { //kein Eintrag in 'arbeitstage' für diesen Tag
+                $monatsDaten->addItem(array(
+                    'datum' => $feiertag['name'] . ' ' . $datum->toString('EE, dd.MM.YYYY'),
+                    'feiertag' => $feiertag['feiertag'],
+                    'pause' => '-',
+                ));
+            }
+
+            //Neujahr und Karfreitag passen in eine Zeile mit dem Wochentag,
+            //sind also keine 'hohen' Tage.
             if ($feiertag['name'] != '') {
-                if ($feiertag['name'] != 'Neujahr' && $feiertag['name'] != 'Karfreitag') {
+                if ($feiertag['name'] != 'Neujahr' &&
+                        $feiertag['name'] != 'Karfreitag') {
                     $anzahlHoheTage++;
                 }
             }
-        }
+        } //for($tag)
+
         $this->view->monatsDaten = $monatsDaten;
         $this->view->hoheTageImMonat = $anzahlHoheTage;
     }
@@ -91,7 +161,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // setze den Seitennamen
         $this->erweitereSeitenName('-Bearbeite ');
-        $this->erweitereSeitenName($this->zuBearbeitendesDatum->toString('d.M.yy'));
+        $this->erweitereSeitenName($this->zuBearbeitendesDatum
+                        ->toString('d.M.yy'));
 
         // befülle die obere Tabelle
         $anzahlHoheTageOben = 0;
@@ -141,12 +212,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->view->monatsDatenUnten = $monatsDatenUnten;
         $this->view->hoheTageImMonatOben = $anzahlHoheTageOben;
         $this->view->hoheTageImMonatUnten = $anzahlHoheTageUnten;
-        
-        $authService = new Azebo_Service_Authentication();
-        $mitarbeiter = $authService->getIdentity();
-        //TODO testcode entfernen
-        $arbeitstag = $mitarbeiter->getArbeitstagNachTag($this->zuBearbeitendesDatum);
-        $this->_log->info("Beginn: {$arbeitstag->beginn}");
     }
 
 }

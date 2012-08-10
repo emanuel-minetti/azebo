@@ -29,4 +29,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     public function getName();
 
     public function getArbeitstagNachTag(Zend_Date $tag);
+    
+    public function getArbeitstageNachMonat(Zend_Date $monat);
 }
