@@ -2,11 +2,8 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <div id="view-content">
-        <p>View-Script für Controller <b>Monat</b> und Script/Action Name <b>edit</b></p>
-        <p>Das Jahr ist <?= $this->jahr ?>.</p>
-        <p>Der Monat ist <?= $this->monat ?>.</p>
-        <p>Der Tag ist <?= $this->tag ?>.</p>
         <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag -1) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
+        <a name="form"></a>
         <div id="gridUntenDiv" style="width: 881px; height: <?= ($this->tageImMonat - $this->tag) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
     </div>
 </div>
@@ -55,7 +52,7 @@
             
         dojo.connect(gridOben, "onRowClick", null, function(e){
             var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
-            url += "/" + (e.rowIndex + 1);
+            url += "/" + (e.rowIndex + 1) + "#form";
             location.href = url;
         });        
 <? endif; ?>
@@ -89,7 +86,7 @@
             
         dojo.connect(gridUnten, "onRowClick", null, function(e){
             var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
-            url += "/" + (e.rowIndex + 1 + <?= $this->tag ?>);
+            url += "/" + (e.rowIndex + 1 + <?= $this->tag ?>) + "#form";
             location.href = url;
         });        
 <? endif; ?>

@@ -46,15 +46,12 @@
         grid.startup();
                
         dojo.connect(grid, "onRowClick", null, function(e){
-            console.debug("Reihe geclickt!");
-            console.debug(e.rowIndex);
-            
             var url = "<?=$this->url(array(
                 'monat' => $this->monat,
                 'jahr' => $this->jahr,
                     ), 'monat', true); ?>";
             var tag = e.rowIndex + 1;
-            url += "/" + tag;
+            url += "/" + tag + "#form";
             console.debug(url);
             location.href = url;
         });   
