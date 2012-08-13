@@ -114,7 +114,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
 
         // setze den Seitennamen
-        $this->erweitereSeitenName('-Bearbeite ');
+        $this->erweitereSeitenName(' - Bearbeite ');
         $this->erweitereSeitenName($this->zuBearbeitendesDatum
                         ->toString('d.M.yy'));
 
@@ -135,7 +135,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         $this->arbeitstage[0]->tag, 'yyyy-MM-dd') === 0) {
             $arbeitstag = array_shift($this->arbeitstage);
         }
-        //TODO Form einfügen
+        //TODO Form implementieren
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterTag');
         $urlHelper = $this->_helper->getHelper('url');

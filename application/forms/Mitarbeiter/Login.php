@@ -28,11 +28,10 @@
 class Azebo_Form_Mitarbeiter_Login extends AzeboLib_Form_Abstract {
 
     public function init() {
-        //TODO Dros nach Regeln fragen!
         $this->addElement('text', 'benutzername', array(
             'filters' => array('StringTrim', 'StringToLower'),
             'validators' => array(
-                array('StringLength', true, array(3, 128)),
+                array('StringLength', true, array(3, 50)),
             ),
             'required' => true,
             'label' => 'Benutzername',
@@ -43,7 +42,7 @@ class Azebo_Form_Mitarbeiter_Login extends AzeboLib_Form_Abstract {
         $this->addElement('password', 'passwort', array(
             'filters' => array('StringTrim'),
             'validators' => array(
-                array('StringLength', true, array(4, 128))
+                array('StringLength', true, array(8, 50))
             ),
             'required' => true,
             'label' => 'Passwort',

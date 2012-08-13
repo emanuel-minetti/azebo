@@ -141,9 +141,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $this->_view->headTitle('Arbeitszeitbogen');
         $this->_view->headTitle()->setSeparator(' - ');
 
-        //CSS-Links setzen
+        //CSS-Link setzen
         $this->_view->headLink()->appendStylesheet('/css/style.css');
-        $this->_view->headLink()->appendStylesheet('/css/tundraGrid.css');
 
         //JS einbinden
         $this->_view->headScript()->appendFile('/js/nav.js');

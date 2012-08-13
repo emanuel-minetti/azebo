@@ -33,9 +33,9 @@ class Zend_View_Helper_Bueroleitung extends Zend_View_Helper_Abstract {
             $url = $this->view->url(array(
                 'controller' => 'bueroleitung',
                 'action' => 'index',
-                    ));
+                    ),'default',true);
             $html .= '<li><a href="';
-            $html .= $url . '"';
+            $html .= $url . '" ';
             if($url == $this->view->requestURI) {
                 $html .= 'style="font-weight:bold;"';
             }
@@ -46,7 +46,7 @@ class Zend_View_Helper_Bueroleitung extends Zend_View_Helper_Abstract {
             $url = $this->view->url(array(
                 'controller' => 'bueroleitung',
                 'action' => 'mitarbeiter',
-                    ));
+                    ), 'default', true);
             $html .= $url . '"';
             if($url == $this->view->requestURI) {
                 $html .= 'style="font-weight:bold;"';
@@ -58,7 +58,7 @@ class Zend_View_Helper_Bueroleitung extends Zend_View_Helper_Abstract {
             $url = $this->view->url(array(
                 'controller' => 'bueroleitung',
                 'action' => 'monate',
-                    ));
+                    ), 'default', true);
             $html .= $url . '"';
             if($url == $this->view->requestURI) {
                 $html .= 'style="font-weight:bold;"';
