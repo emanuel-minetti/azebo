@@ -36,7 +36,6 @@ class Azebo_Service_Authentication {
 
     public function __construct(Azebo_Model_Mitarbeiter $model = null) {
         $this->_logger = Zend_Registry::get('log');
-        $this->_logger->info('Azebo_Service_Authentication ' . __METHOD__);
         
         $this->_mitarbeiterModell = null === $model ?
                 new Azebo_Model_Mitarbeiter() : $model;
@@ -53,6 +52,8 @@ class Azebo_Service_Authentication {
             return false;
         }
 
+        //sicherstellen, dass ein Azebo_Mitarbeiter_Resource_Item in der
+        //Session gespeichert wird. Darauf wird häufig zugegriffen.
         $mitarbeiter = $this->_mitarbeiterModell
                 ->getMitarbeiterNachBenutzername($daten['benutzername']);
         $auth->getStorage()->write($mitarbeiter);
@@ -76,6 +77,7 @@ class Azebo_Service_Authentication {
     public function getIdentity() {
         $auth = $this->getAuth();
         if ($auth->hasIdentity()) {
+            $this->_logger->info('Identität ' . $auth->getIdentity()->getName());
             return $auth->getIdentity();
         }
         return null;

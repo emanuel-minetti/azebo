@@ -130,12 +130,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         //Falls ein arbeitstag für diesen Tag existiert, entferne
         //ihn aus dem 'arbeitstage'-Array.
+        $arbeitstag = null;
         if (count($this->arbeitstage) !== 0 &&
                 $this->zuBearbeitendesDatum->compareDate(
                         $this->arbeitstage[0]->tag, 'yyyy-MM-dd') === 0) {
             $arbeitstag = array_shift($this->arbeitstage);
         }
-        //TODO Form implementieren
+        
+        //TODO Form: post-Daten verarbeiten!
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterTag');
         $urlHelper = $this->_helper->getHelper('url');
