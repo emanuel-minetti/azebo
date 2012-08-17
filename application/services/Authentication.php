@@ -20,7 +20,6 @@
  *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
  */
 
-
 //TODO Authentifizierungs-Service Kommentieren
 /**
  * Description of Authentication
@@ -28,25 +27,33 @@
  * @author Emanuel Minetti
  */
 class Azebo_Service_Authentication {
-    protected $_logger;
 
+    protected $_log;
     protected $_authAdapter;
     protected $_mitarbeiterModell;
     protected $_auth;
 
     public function __construct(Azebo_Model_Mitarbeiter $model = null) {
-        $this->_logger = Zend_Registry::get('log');
-        
+        $this->_log = Zend_Registry::get('log');
+
         $this->_mitarbeiterModell = null === $model ?
                 new Azebo_Model_Mitarbeiter() : $model;
     }
 
     public function authenticate($daten) {
-        $this->_logger->info('Azebo_Service_Authentication ' . __METHOD__);
-        
+        $this->_log->info('Azebo_Service_Authentication ' . __METHOD__);
+
         $adapter = $this->getAuthAdapter($daten);
         $auth = $this->getAuth();
         $ergebnis = $auth->authenticate($adapter);
+
+//        $nachrichten = $ergebnis->getMessages();
+//        foreach ($nachrichten as $i => $nachricht) {
+//            if ($i-- > 1) { // $messages[2] and up are log messages
+//                $nachricht = str_replace("\n", "\n  ", $nachricht);
+//                $this->_log->log("Ldap: $i: $nachricht", Zend_Log::DEBUG);
+//            }
+//        }
 
         if (!$ergebnis->isValid()) {
             return false;
@@ -54,8 +61,11 @@ class Azebo_Service_Authentication {
 
         //sicherstellen, dass ein Azebo_Mitarbeiter_Resource_Item in der
         //Session gespeichert wird. Darauf wird häufig zugegriffen.
+//        $mitarbeiter = $this->_mitarbeiterModell
+//                ->getMitarbeiterNachBenutzername($daten['benutzername']);
+        //TODO den angemeldeten Benutzer in der Tabelle finden!
         $mitarbeiter = $this->_mitarbeiterModell
-                ->getMitarbeiterNachBenutzername($daten['benutzername']);
+                ->getMitarbeiterNachBenutzername('erster');
         $auth->getStorage()->write($mitarbeiter);
 
         return true;
@@ -67,7 +77,7 @@ class Azebo_Service_Authentication {
         }
         return $this->_auth;
     }
-    
+
     /**
      * Gibt ein 'Azebo_Mitarbeiter_Resource_Item' zurück, oder 'null' falls
      * der Benuter nicht angemeldet ist.
@@ -77,7 +87,7 @@ class Azebo_Service_Authentication {
     public function getIdentity() {
         $auth = $this->getAuth();
         if ($auth->hasIdentity()) {
-            $this->_logger->info('Identität ' . $auth->getIdentity()->getName());
+            $this->_log->info('Identität: ' . $auth->getIdentity()->getName());
             return $auth->getIdentity();
         }
         return null;
@@ -90,21 +100,15 @@ class Azebo_Service_Authentication {
     public function setAuthAdapter(Zend_Auth_Adapter_Interface $adapter) {
         $this->_authAdapter = $adapter;
     }
-     
-    //TODO Dros nach testusern und LDAP fragen
-    //TODO LDAP implementieren
+
     public function getAuthAdapter($daten) {
         if (null === $this->_authAdapter) {
-            $authAdapter = new Zend_Auth_Adapter_DbTable(
-                            Zend_Db_Table_Abstract::getDefaultAdapter(),
-                            'mitarbeiter',
-                            'benutzername',
-                            'passwort',
-                            '');
+            $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+            $options = $config->ldap->toArray();
+            $authAdapter = new Zend_Auth_Adapter_Ldap($options, $daten['benutzername'], $daten['passwort']);
             $this->setAuthAdapter($authAdapter);
-            $this->_authAdapter->setIdentity($daten['benutzername']);
-            $this->_authAdapter->setCredential($daten['passwort']);
         }
         return $this->_authAdapter;
     }
+
 }
