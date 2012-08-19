@@ -26,6 +26,10 @@
  */
 interface Azebo_Resource_Mitarbeiter_Item_Interface {
 
+    public function setRolle(array $gruppen);
+    
+    public function getRolle();
+
     public function getName();
 
     public function getArbeitstagNachTag(Zend_Date $tag);

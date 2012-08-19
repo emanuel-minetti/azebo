@@ -29,6 +29,10 @@ class Azebo_Resource_Mitarbeiter_Item
     extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
     implements Azebo_Resource_Mitarbeiter_Item_Interface {
     
+    protected $_rolle = null;
+    protected $_hochschule;
+
+
     public function getName() {
         return $this->getRow()->vorname . ' ' . $this->getRow()->nachname;
     }
@@ -63,6 +67,32 @@ class Azebo_Resource_Mitarbeiter_Item
             array_push($arbeitstage, $arbeitstag);
         }
         return $arbeitstage;
+    }
+
+    /**
+     * Setzt die (ACL-)Rolle eines Mitarbeiters.
+     * Erwartet ein Array mit den Namen
+     * der (LDAP-)Gruppen in denen der Mitarbeiter Mitglied ist.
+     * 
+     * @param array $gruppen 
+     */
+    public function setRolle(array $gruppen) {
+        foreach ($gruppen as $gruppe) {
+            if($gruppe == 'HFS-Zeit' || $gruppe == 'HFM-Zeit' ||
+                    $gruppe == 'KHB-Zeit') {
+                $this->_rolle = 'bueroleitung';
+            }
+            if($gruppe == 'SC-IT-Admin') {
+                $this->_rolle = 'scit';
+            }
+        }
+        if ($this->_rolle === null) {
+            $this->_rolle = 'mitarbeiter';
+        }
+    }
+    
+    public function getRolle() {
+        return $this->_rolle;
     }
        
 }

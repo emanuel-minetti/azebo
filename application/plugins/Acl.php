@@ -107,8 +107,8 @@ class Azebo_Plugin_Acl extends Zend_Controller_Plugin_Abstract {
     protected function _getBenutzerRolle() {
         if ($this->_auth->hasIdentity()) {
             $authData = $this->_auth->getIdentity();
-            $rolle = isset($authData->rolle) ?
-                    strtolower($authData->rolle) : 'gast';
+            $rolle = $authData->getRolle() !== null ?
+                    strtolower($authData->getRolle()) : 'gast';
         } else {
             $rolle = 'gast';
         }

@@ -32,6 +32,10 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         return $this->getResource('Mitarbeiter')->getMitarbeiterNachId($id);
     }
 
+    /**
+     * @param string $benutzername
+     * @return Azebo_Resource_Mitarbeiter_Item_Interface
+     */
     public function getMitarbeiterNachBenutzername($benutzername) {
         return $this->getResource('Mitarbeiter')
                 ->getMitarbeiterNachBenutzername($benutzername);

@@ -30,6 +30,9 @@ class Azebo_Service_Authentication {
 
     protected $_log;
     protected $_authAdapter;
+    /**
+     * @var Azebo_Model_Mitarbeiter 
+     */
     protected $_mitarbeiterModell;
     protected $_auth;
 
@@ -59,13 +62,28 @@ class Azebo_Service_Authentication {
             return false;
         }
 
+        //hole die Gruppen in denen der Benutzer Mitglied ist
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+        $options = $config->ldap->physalis->toArray();
+        $gruppen = array();
+        $attributes = array('cn');
+        $ldap = new Zend_Ldap($options);
+        $users = $ldap->search('(&(objectClass=posixGroup)(memberUid=' . $daten['benutzername'] . '))',
+                'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de',
+                Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
+        foreach ($users as $user) {
+            $gruppen[] = $user['cn'][0];
+        }
+        $this->_log->debug('Gruppen: ' . print_r($gruppen, true));
+        
+        //Hole den Mitarbeiter aus dem Modell und setze Rolle und Hochschule
+        $mitarbeiter = $this->_mitarbeiterModell
+                ->getMitarbeiterNachBenutzername($daten['benutzername']);
+        $mitarbeiter->setRolle($gruppen);
+        $this->_log->debug('Rolle: ' . $mitarbeiter->getRolle());
+               
         //sicherstellen, dass ein Azebo_Mitarbeiter_Resource_Item in der
         //Session gespeichert wird. Darauf wird häufig zugegriffen.
-//        $mitarbeiter = $this->_mitarbeiterModell
-//                ->getMitarbeiterNachBenutzername($daten['benutzername']);
-        //TODO den angemeldeten Benutzer in der Tabelle finden!
-        $mitarbeiter = $this->_mitarbeiterModell
-                ->getMitarbeiterNachBenutzername('erster');
         $auth->getStorage()->write($mitarbeiter);
 
         return true;
