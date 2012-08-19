@@ -114,8 +114,5 @@ class Azebo_Plugin_Acl extends Zend_Controller_Plugin_Abstract {
         }
         return $rolle;
     }
-    
-    
-
 }
 

@@ -59,7 +59,7 @@ class Azebo_Service_Authentication {
 //        }
 
         if (!$ergebnis->isValid()) {
-            return false;
+            return 'FehlerLDAP';
         }
 
         //hole die Gruppen in denen der Benutzer Mitglied ist
@@ -79,14 +79,18 @@ class Azebo_Service_Authentication {
         //Hole den Mitarbeiter aus dem Modell und setze Rolle und Hochschule
         $mitarbeiter = $this->_mitarbeiterModell
                 ->getMitarbeiterNachBenutzername($daten['benutzername']);
+        if($mitarbeiter === null) {
+            $this->clear();
+            return 'FehlerDB';
+        }
         $mitarbeiter->setRolle($gruppen);
-        $this->_log->debug('Rolle: ' . $mitarbeiter->getRolle());
+        $mitarbeiter->setHochschule($gruppen);
                
         //sicherstellen, dass ein Azebo_Mitarbeiter_Resource_Item in der
         //Session gespeichert wird. Darauf wird häufig zugegriffen.
         $auth->getStorage()->write($mitarbeiter);
 
-        return true;
+        return 'Erfolg';
     }
 
     public function getAuth() {

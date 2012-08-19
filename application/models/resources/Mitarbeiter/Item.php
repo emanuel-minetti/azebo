@@ -25,13 +25,10 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Resource_Mitarbeiter_Item
-    extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
-    implements Azebo_Resource_Mitarbeiter_Item_Interface {
-    
-    protected $_rolle = null;
-    protected $_hochschule;
+class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Mitarbeiter_Item_Interface {
 
+    protected $_rolle = null;
+    protected $_hochschule = null;
 
     public function getName() {
         return $this->getRow()->vorname . ' ' . $this->getRow()->nachname;
@@ -39,9 +36,7 @@ class Azebo_Resource_Mitarbeiter_Item
 
     public function getArbeitstagNachTag(Zend_Date $tag) {
         $select = $this->select()->where('tag = ?', $tag->toString('yyyy-MM-dd'));
-        $row = $this->findDependentRowset('Azebo_Resource_Arbeitstag',
-                'Arbeitstag',
-                $select);
+        $row = $this->findDependentRowset('Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
         return $row->current();
     }
 
@@ -54,14 +49,12 @@ class Azebo_Resource_Mitarbeiter_Item
         $erster->setDay(1);
         $letzter = new Zend_Date($monat);
         $letzter->setDay($monat->get(Zend_Date::MONTH_DAYS));
-        
+
         $select = $this->select();
         $select->where('tag >= ?', $erster->toString('yyyy-MM-dd'))
                 ->where('tag <= ?', $letzter->toString('yyyy-MM-dd'))
                 ->order('tag ASC');
-        $rowset = $this->findDependentRowset('Azebo_Resource_Arbeitstag',
-                'Arbeitstag',
-                $select);
+        $rowset = $this->findDependentRowset('Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
         $arbeitstage = array();
         foreach ($rowset as $arbeitstag) {
             array_push($arbeitstage, $arbeitstag);
@@ -78,11 +71,11 @@ class Azebo_Resource_Mitarbeiter_Item
      */
     public function setRolle(array $gruppen) {
         foreach ($gruppen as $gruppe) {
-            if($gruppe == 'HFS-Zeit' || $gruppe == 'HFM-Zeit' ||
+            if ($gruppe == 'HFS-Zeit' || $gruppe == 'HFM-Zeit' ||
                     $gruppe == 'KHB-Zeit') {
                 $this->_rolle = 'bueroleitung';
             }
-            if($gruppe == 'SC-IT-Admin') {
+            if ($gruppe == 'SC-IT-Admin') {
                 $this->_rolle = 'scit';
             }
         }
@@ -90,10 +83,24 @@ class Azebo_Resource_Mitarbeiter_Item
             $this->_rolle = 'mitarbeiter';
         }
     }
-    
+
     public function getRolle() {
         return $this->_rolle;
     }
-       
+
+    public function setHochschule($gruppen) {
+        foreach ($gruppen as $gruppe) {
+            if ($gruppe == 'HFS-Mitglied'){
+                $this->_hochschule = 'hfs';
+            }
+            else if ($gruppe == 'HFM-Mitglied') {
+                $this->_hochschule = 'hfm';
+            }
+            else if ($gruppe == 'KHB-Mitglied') {
+                $this->_hochschule = 'khb';
+            }
+        }
+    }
+
 }
 

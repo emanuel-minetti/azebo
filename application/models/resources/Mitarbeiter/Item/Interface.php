@@ -26,6 +26,8 @@
  */
 interface Azebo_Resource_Mitarbeiter_Item_Interface {
 
+    public function setHochschule($gruppen);
+
     public function setRolle(array $gruppen);
     
     public function getRolle();
