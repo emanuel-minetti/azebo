@@ -27,14 +27,8 @@
  */
 class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
 
-    /**
-     * @var Azebo_Resource_Arbeitstag_Item_Interface 
-     */
-    protected $_arbeitstag;
-
     public function init() {
-        $log = Zend_Registry::get('log');
-
+        //$log = Zend_Registry::get('log');
 
         $authService = new Azebo_Service_Authentication();
         $mitarbeiter = $authService->getIdentity();
@@ -66,21 +60,16 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'invalidMessage' => 'Bitte geben Sie die Uhrzeit im Format ss:mm ein!',
                 ));
 
-        //TODO in die Datenbank verschieben!
-        $befreiungOptionen = array(
-            'keine' => '',
-            'urlaub' => 'Urlaub',
-            'azv' => 'AZV',
-        );
-
+        $befreiungService = new Azebo_Service_Befreiung();
+        $befreiungOptionen = $befreiungService->getOptionen($mitarbeiter);
         $befreiungElement = new Zend_Dojo_Form_Element_FilteringSelect('befreiung', array(
                     'label' => 'Dienstbefreiung',
                     'multiOptions' => $befreiungOptionen,
                     'invalidMessage' => 'Bitte wählen Sie eine der Optionen aus!',
                 ));
 
-        $begruendungElement = new Zend_Dojo_Form_Element_Textarea('begruendung', array(
-                    'label' => 'Begündung',
+        $bemerkungElement = new Zend_Dojo_Form_Element_Textarea('bemerkung', array(
+                    'label' => 'Bemerkung',
                     'style' => 'width: 300px;',
                 ));
 
@@ -90,26 +79,33 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'uncheckedValue' => '-',
                 ));
 
+        // Bevölkere das Formular
         if ($arbeitstag !== null) {
             if ($arbeitstag->beginn !== null) {
                 $beginnElement->setValue('T' . $arbeitstag->beginn);
             }
             if ($arbeitstag->ende !== null) {
                 $endeElement->setValue('T' . $arbeitstag->ende);
-            } else {
-                if ($arbeitstag->beginn !== null) {
-                    $endeElement->setValue('T' . $arbeitstag->beginn);
-                }
             }
             if ($arbeitstag->befreiung !== null) {
                 $befreiungElement->setValue($arbeitstag->befreiung);
+            }
+            if ($arbeitstag->bemerkung !== null) {
+                $bemerkungElement->setValue($arbeitstag->bemerkung);
+            }
+            if ($arbeitstag->pause !== null) {
+                if ($arbeitstag->pause == 'x') {
+                    $pauseElement->setChecked(true);
+                } else {
+                    $pauseElement->setChecked(false);
+                }
             }
         }
 
         $this->addElement($beginnElement);
         $this->addElement($endeElement);
         $this->addElement($befreiungElement);
-        $this->addElement($begruendungElement);
+        $this->addElement($bemerkungElement);
         $this->addElement($pauseElement);
 
         $this->addElement('SubmitButton', 'absenden', array(
@@ -117,6 +113,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             'ignore' => true,
             'label' => 'Absenden',
         ));
+
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
             'required' => false,
             'ignore' => true,

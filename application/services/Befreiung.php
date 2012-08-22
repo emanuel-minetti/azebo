@@ -21,43 +21,36 @@
  */
 
 /**
+ * Stellt die Befreiungsoptionen für einen Mitarbeiter zur Verfügung.
+ * 
+ * Diese Klasse definiert die Klassenkonstanten, die wiederum die einzelnen
+ * zulässigen Werte in der Tabelle 'arbeitstag' definieren.
  *
  * @author Emanuel Minetti
  */
-interface Azebo_Resource_Mitarbeiter_Item_Interface {
-
-    public function setHochschule(array $gruppen);
-
-    public function getHochschule();
+class Azebo_Service_Befreiung {
+    
+    //Konstanten
+    const KEINE = 'keine';
+    const URLAUB = 'urlaub';
+    const AZV = 'azv';
 
     /**
-     * Setzt die (ACL-)Rolle eines Mitarbeiters.
-     * Erwartet ein Array mit den Namen
-     * der (LDAP-)Gruppen in denen der Mitarbeiter Mitglied ist.
+     * Gibt die für einen Mitarbeiter zulässigen Befreiungsoptionen zurück.
+     * Das zurückgelieferte Array enthält die zugehörige Konstante als Index
+     * und das zugehörige Label als Wert.
      * 
-     * @param array $gruppen 
-     */
-    public function setRolle(array $gruppen);
-
-    public function getRolle();
-
-    public function getName();
-
-    /**
-     * @param Zend_Date $tag
-     * @return null|Azebo_Resource_Arbeitstag_Item
-     */
-    public function getArbeitstagNachTag(Zend_Date $tag);
-
-    /**
-     * @param Zend_Date $monat
+     * @param Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter
      * @return array 
      */
-    public function getArbeitstageNachMonat(Zend_Date $monat);
+    public function getOptionen(
+            Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter) {
+        return array(
+            self::KEINE => '',
+            self::URLAUB => 'Urlaub',
+            self::AZV => 'AZV',
+        );
+    }
 
-    /**
-     * @param Zend_Date $tag
-     * @param array $daten
-     */
-    public function saveArbeitstag(Zend_Date $tag, array $daten);
 }
+

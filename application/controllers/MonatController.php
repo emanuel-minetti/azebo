@@ -86,7 +86,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ->requireModule('dojo.data.ItemFileReadStore')
                 ->requireModule('dojo._base.connect');
 
-        // lade den mitarbeiter und die Arbeitstage
+        // Lade den mitarbeiter und die Arbeitstage
         $authService = new Azebo_Service_Authentication();
         $this->mitarbeiter = $authService->getIdentity();
         $this->arbeitstage = $this->mitarbeiter
@@ -111,6 +111,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function editAction() {
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            //TODO 'zuruecksetzen' implementieren
+            //TODO Tag-Form: post-Daten filtern und validieren!
+            $daten = $request->getPost();
+            $this->mitarbeiter->saveArbeitstag($this->zuBearbeitendesDatum, $daten) ;            
+        }
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
 
         // setze den Seitennamen
@@ -137,15 +144,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $arbeitstag = array_shift($this->arbeitstage);
         }
         
-        //TODO Form: post-Daten verarbeiten!
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterTag');
         $urlHelper = $this->_helper->getHelper('url');
-        $form->setAction($urlHelper->url(array(
+        $url = $urlHelper->url(array(
                     'tag' => $this->tag,
                     'monat' => $this->monat,
                     'jahr' => $this->jahr,
-                ), 'monatEdit', true));
+                ), 'monatEdit', true);
+        //$url .= '#form';
+        $form->setAction($url);
         $form->setMethod('post');
         $form->setName('tagForm');
         $this->view->tagForm = $form;
@@ -162,6 +170,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     private function _befuelleDieTabelle(Zend_date $datum, $erster, $letzter) {
+        //TODO Die lästigen 'keine' loswerden in der Tabelle!
         $tabellenDaten = new Zend_Dojo_Data();
         $tabellenDaten->setIdentifier('datum');
         $anzahlHoheTage = 0;

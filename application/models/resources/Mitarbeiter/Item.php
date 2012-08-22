@@ -25,10 +25,12 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Mitarbeiter_Item_Interface {
+class Azebo_Resource_Mitarbeiter_Item 
+    extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
+    implements Azebo_Resource_Mitarbeiter_Item_Interface {
 
-    protected $_rolle = null;
-    protected $_hochschule = null;
+    private $_rolle = null;
+    private $_hochschule = null;
 
     public function getName() {
         return $this->getRow()->vorname . ' ' . $this->getRow()->nachname;
@@ -40,10 +42,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $row->current();
     }
 
-    /**
-     * @param Zend_Date $monat
-     * @return array 
-     */
     public function getArbeitstageNachMonat(Zend_Date $monat) {
         $erster = new Zend_Date($monat);
         $erster->setDay(1);
@@ -62,13 +60,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $arbeitstage;
     }
 
-    /**
-     * Setzt die (ACL-)Rolle eines Mitarbeiters.
-     * Erwartet ein Array mit den Namen
-     * der (LDAP-)Gruppen in denen der Mitarbeiter Mitglied ist.
-     * 
-     * @param array $gruppen 
-     */
     public function setRolle(array $gruppen) {
         foreach ($gruppen as $gruppe) {
             if ($gruppe == 'HFS-Zeit' || $gruppe == 'HFM-Zeit' ||
@@ -88,18 +79,46 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $this->_rolle;
     }
 
-    public function setHochschule($gruppen) {
+    public function setHochschule(array $gruppen) {
         foreach ($gruppen as $gruppe) {
-            if ($gruppe == 'HFS-Mitglied'){
+            if ($gruppe == 'HFS-Mitglied') {
                 $this->_hochschule = 'hfs';
-            }
-            else if ($gruppe == 'HFM-Mitglied') {
+            } else if ($gruppe == 'HFM-Mitglied') {
                 $this->_hochschule = 'hfm';
-            }
-            else if ($gruppe == 'KHB-Mitglied') {
+            } else if ($gruppe == 'KHB-Mitglied') {
                 $this->_hochschule = 'khb';
             }
         }
+    }
+
+    public function getHochschule() {
+        return $this->_hochschule;
+    }
+
+    
+    public function saveArbeitstag(Zend_Date $tag, array $daten) {
+        //$log = Zend_Registry::get('log');
+        
+        //Hohle den Arbeitstag aus der Tabelle
+        $arbeitstag = $this->getArbeitstagNachTag($tag);
+        
+        //Falls der Arbeitstag noch nicht in der Tabelle existierte,
+        //setze die Spalten, die nicht NULL sein dürfen.
+        if($arbeitstag === null) {
+            $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
+            $arbeitstag = $arbeitstagTabelle->createRow();
+            $arbeitstag->mitarbeiter_id = $this->id;
+            $arbeitstag->tag = $tag->toString('yyyy-MM-dd');
+        }
+        
+        //Setze die Daten
+        $arbeitstag->beginn = substr($daten['beginn'], 1);
+        $arbeitstag->ende = substr($daten['ende'], 1);
+        $arbeitstag->befreiung = $daten['befreiung'];
+        $arbeitstag->bemerkung = $daten['bemerkung'];
+        $arbeitstag->pause = $daten['pause'];
+       
+        $arbeitstag->save();
     }
 
 }

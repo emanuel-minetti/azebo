@@ -87,7 +87,7 @@ class Azebo_Service_Feiertag {
      * @param Zend_Date $datum
      * @return array 
      */
-    protected function _feiertag(Zend_Date $datum) {
+    private function _feiertag(Zend_Date $datum) {
         /*
          * Die festen gesetzlichen Feiertage in Berlin sind:
          * 
