@@ -29,7 +29,7 @@
 class Zend_View_Helper_Name extends Zend_View_Helper_Abstract {
     
     public function name() {
-        $authService = new Azebo_Service_Authentication();
+        $authService = new Azebo_Service_Authentifizierung();
         $identity = $authService->getIdentity();
         $name = '';
         if($identity !== null) {

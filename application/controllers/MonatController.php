@@ -87,7 +87,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ->requireModule('dojo._base.connect');
 
         // Lade den mitarbeiter und die Arbeitstage
-        $authService = new Azebo_Service_Authentication();
+        $authService = new Azebo_Service_Authentifizierung();
         $this->mitarbeiter = $authService->getIdentity();
         $this->arbeitstage = $this->mitarbeiter
                 ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);

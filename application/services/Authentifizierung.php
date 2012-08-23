@@ -20,13 +20,13 @@
  *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
  */
 
-//TODO Authentifizierungs-Service Kommentieren
 /**
- * Description of Authentication
+ * Stellt den Authentifizierungs-Service zur Verfügung. Die Authentifizierung
+ * des Benutzers wird via LDAP vorgenommen.
  *
  * @author Emanuel Minetti
  */
-class Azebo_Service_Authentication {
+class Azebo_Service_Authentifizierung {
 
     protected $_log;
     protected $_authAdapter;
@@ -43,13 +43,27 @@ class Azebo_Service_Authentication {
                 new Azebo_Model_Mitarbeiter() : $model;
     }
 
-    public function authenticate($daten) {
-        $this->_log->info('Azebo_Service_Authentication ' . __METHOD__);
+    /**
+     * Authentifiziert den Benutzer via LDAP. Falls das erfolgreich ist, werden
+     * die Gruppen aus dem LDAP geholt in denen der Mitarbeiter Mitglied ist.
+     * Mithilfe dieser Gruppen wird die Rolle und die Hochschulzugehörikeit
+     * des Mitarbeiters festgelegt. Ist der Benutzer noch nicht in der DB 
+     * angelegt, so wird eine Fehlermeldung zurückgegeben. War die gesammte
+     * Authentifizierung erfolgreich wird ein
+     * Azebo_Mitarbeiter_Resource_Item_Interface in der Session abgelegt.
+     * 
+     * @param array $daten Ein Array mit den Felder 'benutzername' und 'passwort'.
+     * 
+     * @return string Entweder 'FehlerLDAP' oder 'FehlerDB' oder 'Erfolg'.
+     */
+    public function authentifiziere(array $daten) {
+        $this->_log->info(__METHOD__);
 
-        $adapter = $this->getAuthAdapter($daten);
-        $auth = $this->getAuth();
+        $adapter = $this->_getAuthAdapter($daten);
+        $auth = $this->_getAuth();
         $ergebnis = $auth->authenticate($adapter);
 
+        //logge die Nachrichten des LDAP-Servers
 //        $nachrichten = $ergebnis->getMessages();
 //        foreach ($nachrichten as $i => $nachricht) {
 //            if ($i-- > 1) { // $messages[2] and up are log messages
@@ -93,7 +107,10 @@ class Azebo_Service_Authentication {
         return 'Erfolg';
     }
 
-    public function getAuth() {
+    /**
+     * @return Zend_Auth  
+     */
+    private function _getAuth() {
         if (null === $this->_auth) {
             $this->_auth = Zend_Auth::getInstance();
         }
@@ -104,10 +121,10 @@ class Azebo_Service_Authentication {
      * Gibt ein 'Azebo_Mitarbeiter_Resource_Item' zurück, oder 'null' falls
      * der Benuter nicht angemeldet ist.
      * 
-     * @return Azebo_Mitarbeiter_Resource_Item
+     * @return null|Azebo_Mitarbeiter_Resource_Item
      */
     public function getIdentity() {
-        $auth = $this->getAuth();
+        $auth = $this->_getAuth();
         if ($auth->hasIdentity()) {
             $this->_log->info('Identität: ' . $auth->getIdentity()->getName());
             return $auth->getIdentity();
@@ -115,15 +132,27 @@ class Azebo_Service_Authentication {
         return null;
     }
 
+    /**
+     * Löscht den Mitarbeiter aus der Session. 
+     */
     public function clear() {
-        $this->getAuth()->clearIdentity();
+        $this->_getAuth()->clearIdentity();
     }
 
+    /**
+     * Zum Debuggen und Testen.
+     * @param Zend_Auth_Adapter_Interface $adapter 
+     */
     public function setAuthAdapter(Zend_Auth_Adapter_Interface $adapter) {
         $this->_authAdapter = $adapter;
     }
 
-    public function getAuthAdapter($daten) {
+    /**
+     *
+     * @param array $daten Ein Array mit den Feldern 'benutzername' und 'passwort'.
+     * @return Zend_Auth_Adapter_Ldap
+     */
+    private function _getAuthAdapter($daten) {
         if (null === $this->_authAdapter) {
             $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
             $options = $config->ldap->toArray();

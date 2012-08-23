@@ -35,7 +35,7 @@ class LoginController extends AzeboLib_Controller_Abstract {
         $this->_log->info('LoginController ' . __METHOD__);
 
         $this->_model = new Azebo_Model_Mitarbeiter();
-        $this->_authService = new Azebo_Service_Authentication();
+        $this->_authService = new Azebo_Service_Authentifizierung();
 
         $this->view->loginForm = $this->getLoginForm();
     }
@@ -59,7 +59,7 @@ class LoginController extends AzeboLib_Controller_Abstract {
                 
             }
             
-            $ergebnis = $this->_authService->authenticate($form->getValues());
+            $ergebnis = $this->_authService->authentifiziere($form->getValues());
 
             if ($ergebnis === 'FehlerLDAP') {
                  $this->_log->info("Anmeldung fehlgeschlagen: {$form->getValues()}");

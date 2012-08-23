@@ -30,7 +30,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
     public function init() {
         //$log = Zend_Registry::get('log');
 
-        $authService = new Azebo_Service_Authentication();
+        $authService = new Azebo_Service_Authentifizierung();
         $mitarbeiter = $authService->getIdentity();
 
         $datum = new Zend_Date();
