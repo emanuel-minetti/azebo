@@ -112,11 +112,19 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
     public function editAction() {
         $request = $this->getRequest();
-        if($request->isPost()) {
-            //TODO 'zuruecksetzen' implementieren
+        if ($request->isPost()) {
             //TODO Tag-Form: post-Daten filtern und validieren!
+
             $daten = $request->getPost();
-            $this->mitarbeiter->saveArbeitstag($this->zuBearbeitendesDatum, $daten) ;            
+            //$this->_log->debug('Postdaten: ' . print_r($daten, true));
+            if (isset($daten['absenden'])) {
+                $this->mitarbeiter->saveArbeitstag($this->zuBearbeitendesDatum, $daten);
+                $redirector = $this->_helper->getHelper('Redirector');
+                $redirector->gotoRoute(array(
+                    'jahr' => $this->jahr,
+                    'monat' => $this->monat,
+                ), 'monat');
+            }
         }
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
 
@@ -143,14 +151,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         $this->arbeitstage[0]->tag, 'yyyy-MM-dd') === 0) {
             $arbeitstag = array_shift($this->arbeitstage);
         }
-        
+
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterTag');
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
-                    'tag' => $this->tag,
-                    'monat' => $this->monat,
-                    'jahr' => $this->jahr,
+            'tag' => $this->tag,
+            'monat' => $this->monat,
+            'jahr' => $this->jahr,
                 ), 'monatEdit', true);
         //$url .= '#form';
         $form->setAction($url);
@@ -170,10 +178,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     private function _befuelleDieTabelle(Zend_date $datum, $erster, $letzter) {
-        //TODO Die lästigen 'keine' loswerden in der Tabelle!
+        // Hole die Befreiungsoptionen für diesen Mitarbeiter
+        $befreiungService = new Azebo_Service_Befreiung();
+        $befreiungOptionen = $befreiungService->getOptionen($this->mitarbeiter);
+
+        // Initialisiere die Daten
         $tabellenDaten = new Zend_Dojo_Data();
         $tabellenDaten->setIdentifier('datum');
         $anzahlHoheTage = 0;
+
+        // Iteriere über die Tage
         for ($tag = $erster; $tag <= $letzter; $tag++) {
             $datum->setDay($tag);
             $feiertag = $this->feiertage[$datum->toString('dd.MM.yyyy')];
@@ -186,18 +200,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $arbeitstag = array_shift($this->arbeitstage);
                 $beginn = null;
                 $ende = null;
+                $befreiung = null;
                 if ($arbeitstag->beginn !== null) {
                     $beginn = $datum->setTime($arbeitstag->beginn)->toString('HH:mm');
                 }
                 if ($arbeitstag->ende !== null) {
                     $ende = $datum->setTime($arbeitstag->ende)->toString('HH:mm');
                 }
+                if ($arbeitstag->befreiung !== null) {
+                    $befreiung = $befreiungOptionen[$arbeitstag->befreiung];
+                }
                 $tabellenDaten->addItem(array(
                     'datum' => $feiertag['name'] . ' ' . $datum->toString('EE, dd.MM.YYYY'),
                     'feiertag' => $feiertag['feiertag'],
                     'beginn' => $beginn,
                     'ende' => $ende,
-                    'befreiung' => $arbeitstag->befreiung,
+                    'befreiung' => $befreiung,
                     'bemerkung' => $arbeitstag->bemerkung,
                     'pause' => $arbeitstag->pause,
                 ));

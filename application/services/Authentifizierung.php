@@ -76,6 +76,7 @@ class Azebo_Service_Authentifizierung {
             return 'FehlerLDAP';
         }
 
+        //TODO Hohle den Namen aus dem LDAP
         //hole die Gruppen in denen der Benutzer Mitglied ist
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
         $options = $config->ldap->physalis->toArray();

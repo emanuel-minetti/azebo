@@ -111,9 +111,13 @@ class Azebo_Resource_Mitarbeiter_Item
             $arbeitstag->tag = $tag->toString('yyyy-MM-dd');
         }
         
+        //Falls Beginn oder Ende leer sind, setze sie auf NULL
+        $beginn = $daten['beginn'] == '' ? null : substr($daten['beginn'], 1);
+        $ende = $daten['ende'] == '' ? null : substr($daten['ende'], 1);
+        
         //Setze die Daten
-        $arbeitstag->beginn = substr($daten['beginn'], 1);
-        $arbeitstag->ende = substr($daten['ende'], 1);
+        $arbeitstag->beginn = $beginn;
+        $arbeitstag->ende = $ende;
         $arbeitstag->befreiung = $daten['befreiung'];
         $arbeitstag->bemerkung = $daten['bemerkung'];
         $arbeitstag->pause = $daten['pause'];
