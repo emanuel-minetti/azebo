@@ -26,6 +26,9 @@
  * @author Emanuel Minetti
  */
 class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
+    
+    const UNGUELTIGE_UHRZEIT = 'Bitte geben Sie die Uhrzeit als vierstellige Zahl ein!';
+    const UNGUELTIGE_OPTION = 'Bitte wählen Sie eine der Optionen aus!';
 
     public function init() {
         //$log = Zend_Registry::get('log');
@@ -39,6 +42,12 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                 ->setDay($this->getView()->tag);
 
         $arbeitstag = $mitarbeiter->getArbeitstagNachTag($datum);
+        
+        $this->addElementPrefixPath(
+            'Azebo_Filter',
+            APPLICATION_PATH . '/models/filter/',
+            'filter'
+        );
 
         $beginnElement = new Zend_Dojo_Form_Element_TimeTextBox('beginn', array(
                     'label' => 'Beginn',
@@ -47,9 +56,8 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'visibleRange' => 'T02:00:00',
                     'visibleIncrement' => 'T00:10:00',
                     'clickableIncrement' => 'T00:10:00',
-                    'invalidMessage' => 'Bitte geben Sie die Uhrzeit im Format ss:mm ein!',
-                    'hasDownArrow' => 'true',
-                    'openOnClick' => false,
+                    'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
+                    'filters' => array('StringTrim','AlsDatum'),
                 ));
 
         $endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
@@ -59,7 +67,8 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'visibleRange' => 'T02:00:00',
                     'visibleIncrement' => 'T00:10:00',
                     'clickableIncrement' => 'T00:10:00',
-                    'invalidMessage' => 'Bitte geben Sie die Uhrzeit im Format ss:mm ein!',
+                    'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
+                    'filters' => array('StringTrim', 'AlsDatum'),
                 ));
 
         $befreiungService = new Azebo_Service_Befreiung();
@@ -67,18 +76,21 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         $befreiungElement = new Zend_Dojo_Form_Element_FilteringSelect('befreiung', array(
                     'label' => 'Dienstbefreiung',
                     'multiOptions' => $befreiungOptionen,
-                    'invalidMessage' => 'Bitte wählen Sie eine der Optionen aus!',
+                    'invalidMessage' => self::UNGUELTIGE_OPTION,
+                    'filters' => array('StringTrim', 'Alpha'),
                 ));
 
         $bemerkungElement = new Zend_Dojo_Form_Element_Textarea('bemerkung', array(
                     'label' => 'Bemerkung',
                     'style' => 'width: 300px;',
+                    'filters' => array('StringTrim'),
                 ));
 
         $pauseElement = new Zend_Dojo_Form_Element_CheckBox('pause', array(
                     'label' => 'Ohne Pause',
                     'checkedValue' => 'x',
                     'uncheckedValue' => '-',
+                    'filters' => array('StringTrim'),
                 ));
 
         // Bevölkere das Formular
@@ -124,4 +136,3 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
     }
 
 }
-

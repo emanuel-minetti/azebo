@@ -112,20 +112,25 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
     public function editAction() {
         $request = $this->getRequest();
-        
+
         if ($request->isPost()) {
-            //TODO Tag-Form: post-Daten filtern und validieren!
-            $daten = $request->getPost();
-            if (isset($daten['absenden'])) {
+            //TODO Tag-Form: post-Daten validieren!
+            //TODO kommentieren!
+            $postDaten = $request->getPost();
+            $form = $this->_getMitarbeiterTagForm();
+            $form->isValid($postDaten);
+            $daten = $form->getValues();
+            $this->_log->debug('Daten: ' . print_r($daten, true));
+            if (isset($postDaten['absenden'])) {
                 $this->mitarbeiter->saveArbeitstag($this->zuBearbeitendesDatum, $daten);
                 $redirector = $this->_helper->getHelper('Redirector');
                 $redirector->gotoRoute(array(
                     'jahr' => $this->jahr,
                     'monat' => $this->monat,
-                ), 'monat');
+                        ), 'monat');
             }
         }
-        
+
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
 
         // setze den Seitennamen
@@ -152,18 +157,19 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $arbeitstag = array_shift($this->arbeitstage);
         }
 
-        $model = new Azebo_Model_Mitarbeiter();
-        $form = $model->getForm('mitarbeiterTag');
-        $urlHelper = $this->_helper->getHelper('url');
-        $url = $urlHelper->url(array(
-            'tag' => $this->tag,
-            'monat' => $this->monat,
-            'jahr' => $this->jahr,
-                ), 'monatEdit', true);
-        //$url .= '#form';
-        $form->setAction($url);
-        $form->setMethod('post');
-        $form->setName('tagForm');
+//        $model = new Azebo_Model_Mitarbeiter();
+//        $form = $model->getForm('mitarbeiterTag');
+//        $urlHelper = $this->_helper->getHelper('url');
+//        $url = $urlHelper->url(array(
+//            'tag' => $this->tag,
+//            'monat' => $this->monat,
+//            'jahr' => $this->jahr,
+//                ), 'monatEdit', true);
+//        //$url .= '#form';
+//        $form->setAction($url);
+//        $form->setMethod('post');
+//        $form->setName('tagForm');
+        $form = $this->_getMitarbeiterTagForm();
         $this->view->tagForm = $form;
 
         //befülle die untere Tabelle
@@ -175,6 +181,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $this->view->monatsDatenUnten = null;
             $this->view->hoheTageImMonatUnten = 0;
         }
+    }
+
+    private function _getMitarbeiterTagForm() {
+        $model = new Azebo_Model_Mitarbeiter();
+        $form = $model->getForm('mitarbeiterTag');
+        $urlHelper = $this->_helper->getHelper('url');
+        $url = $urlHelper->url(array(
+            'tag' => $this->tag,
+            'monat' => $this->monat,
+            'jahr' => $this->jahr,
+                ), 'monatEdit', true);
+        $form->setAction($url);
+        $form->setMethod('post');
+        $form->setName('tagForm');
+        //$this->view->tagForm = $form;
+        return $form;
     }
 
     private function _befuelleDieTabelle(Zend_date $datum, $erster, $letzter) {

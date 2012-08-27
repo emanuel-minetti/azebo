@@ -25,9 +25,7 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Resource_Mitarbeiter_Item 
-    extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
-    implements Azebo_Resource_Mitarbeiter_Item_Interface {
+class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Mitarbeiter_Item_Interface {
 
     private $_vorname = '';
     private $_nachname = '';
@@ -97,33 +95,34 @@ class Azebo_Resource_Mitarbeiter_Item
         return $this->_hochschule;
     }
 
-    
     public function saveArbeitstag(Zend_Date $tag, array $daten) {
         //$log = Zend_Registry::get('log');
-        
+        //
         //Hohle den Arbeitstag aus der Tabelle
         $arbeitstag = $this->getArbeitstagNachTag($tag);
-        
+
         //Falls der Arbeitstag noch nicht in der Tabelle existierte,
         //setze die Spalten, die nicht NULL sein dürfen.
-        if($arbeitstag === null) {
+        if ($arbeitstag === null) {
             $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
             $arbeitstag = $arbeitstagTabelle->createRow();
             $arbeitstag->mitarbeiter_id = $this->id;
             $arbeitstag->tag = $tag->toString('yyyy-MM-dd');
         }
-        
-        //Falls Beginn oder Ende leer sind, setze sie auf NULL
-        $beginn = $daten['beginn'] == '' ? null : substr($daten['beginn'], 1);
-        $ende = $daten['ende'] == '' ? null : substr($daten['ende'], 1);
-        
+
+        //Falls Beginn und/oder Ende gesetzt wurden, wandle sie in einen string
+        $beginn = $daten['beginn'] === null ?
+                null : $daten['beginn']->toString('HH:mm:ss');
+        $ende = $daten['ende'] === null ?
+                null : $daten['ende']->toString('HH:mm:ss');
+
         //Setze die Daten
         $arbeitstag->beginn = $beginn;
         $arbeitstag->ende = $ende;
         $arbeitstag->befreiung = $daten['befreiung'];
         $arbeitstag->bemerkung = $daten['bemerkung'];
         $arbeitstag->pause = $daten['pause'];
-       
+
         $arbeitstag->save();
     }
 
