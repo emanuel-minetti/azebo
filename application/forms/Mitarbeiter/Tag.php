@@ -42,17 +42,19 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
 
         $beginnElement = new Zend_Dojo_Form_Element_TimeTextBox('beginn', array(
                     'label' => 'Beginn',
-                    'timePattern' => 'HH:mm',
+                    'timePattern' => 'HHmm',
                     'required' => false,
                     'visibleRange' => 'T02:00:00',
                     'visibleIncrement' => 'T00:10:00',
                     'clickableIncrement' => 'T00:10:00',
                     'invalidMessage' => 'Bitte geben Sie die Uhrzeit im Format ss:mm ein!',
+                    'hasDownArrow' => 'true',
+                    'openOnClick' => false,
                 ));
 
         $endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
                     'label' => 'Ende',
-                    'timePattern' => 'HH:mm',
+                    'timePattern' => 'HHmm',
                     'required' => false,
                     'visibleRange' => 'T02:00:00',
                     'visibleIncrement' => 'T00:10:00',

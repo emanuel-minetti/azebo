@@ -112,11 +112,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
     public function editAction() {
         $request = $this->getRequest();
+        
         if ($request->isPost()) {
             //TODO Tag-Form: post-Daten filtern und validieren!
-
             $daten = $request->getPost();
-            //$this->_log->debug('Postdaten: ' . print_r($daten, true));
             if (isset($daten['absenden'])) {
                 $this->mitarbeiter->saveArbeitstag($this->zuBearbeitendesDatum, $daten);
                 $redirector = $this->_helper->getHelper('Redirector');
@@ -126,6 +125,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ), 'monat');
             }
         }
+        
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
 
         // setze den Seitennamen

@@ -29,11 +29,13 @@ class Azebo_Resource_Mitarbeiter_Item
     extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
     implements Azebo_Resource_Mitarbeiter_Item_Interface {
 
+    private $_vorname = '';
+    private $_nachname = '';
     private $_rolle = null;
     private $_hochschule = null;
 
     public function getName() {
-        return $this->getRow()->vorname . ' ' . $this->getRow()->nachname;
+        return $this->_vorname . ' ' . $this->_nachname;
     }
 
     public function getArbeitstagNachTag(Zend_Date $tag) {
@@ -123,6 +125,14 @@ class Azebo_Resource_Mitarbeiter_Item
         $arbeitstag->pause = $daten['pause'];
        
         $arbeitstag->save();
+    }
+
+    public function setNachname($nachname) {
+        $this->_nachname = $nachname;
+    }
+
+    public function setVorname($vorname) {
+        $this->_vorname = $vorname;
     }
 
 }

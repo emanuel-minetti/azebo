@@ -26,6 +26,10 @@
  */
 interface Azebo_Resource_Mitarbeiter_Item_Interface {
 
+    public function setVorname($vorname);
+
+    public function setNachname($nachname);
+
     public function setHochschule(array $gruppen);
 
     public function getHochschule();

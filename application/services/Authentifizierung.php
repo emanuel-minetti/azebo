@@ -30,6 +30,7 @@ class Azebo_Service_Authentifizierung {
 
     protected $_log;
     protected $_authAdapter;
+
     /**
      * @var Azebo_Model_Mitarbeiter 
      */
@@ -76,31 +77,41 @@ class Azebo_Service_Authentifizierung {
             return 'FehlerLDAP';
         }
 
-        //TODO Hohle den Namen aus dem LDAP
+
         //hole die Gruppen in denen der Benutzer Mitglied ist
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
         $options = $config->ldap->physalis->toArray();
         $gruppen = array();
         $attributes = array('cn');
         $ldap = new Zend_Ldap($options);
-        $users = $ldap->search('(&(objectClass=posixGroup)(memberUid=' . $daten['benutzername'] . '))',
-                'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de',
-                Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
+        $users = $ldap->search('(&(objectClass=posixGroup)(memberUid=' . $daten['benutzername'] . '))', 'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de', Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
         foreach ($users as $user) {
             $gruppen[] = $user['cn'][0];
         }
-        $this->_log->debug('Gruppen: ' . print_r($gruppen, true));
-        
-        //Hole den Mitarbeiter aus dem Modell und setze Rolle und Hochschule
+        //$this->_log->debug('Gruppen: ' . print_r($gruppen, true));
+
+        //Hole den Namen aus dem LDAP
+        $ldap->bind();        
+        $benutzer = $ldap->getEntry('uid=' . $daten['benutzername'] . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
+        $vorname = $benutzer['givenname'][0];
+        $nachname = $benutzer['sn'][0];
+        //$this->_log->debug('Vorname: ' . $vorname);
+        //$this->_log->debug('Nachname: ' . $nachname);
+
+        //Hole den Mitarbeiter aus dem Modell
         $mitarbeiter = $this->_mitarbeiterModell
                 ->getMitarbeiterNachBenutzername($daten['benutzername']);
-        if($mitarbeiter === null) {
+        if ($mitarbeiter === null) {
             $this->clear();
             return 'FehlerDB';
         }
+        
+        //Setze Rolle, Hochschule, Vor- und Nachname
         $mitarbeiter->setRolle($gruppen);
         $mitarbeiter->setHochschule($gruppen);
-               
+        $mitarbeiter->setVorname($vorname);
+        $mitarbeiter->setNachname($nachname);
+
         //sicherstellen, dass ein Azebo_Mitarbeiter_Resource_Item in der
         //Session gespeichert wird. Darauf wird häufig zugegriffen.
         $auth->getStorage()->write($mitarbeiter);
