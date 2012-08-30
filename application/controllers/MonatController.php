@@ -112,25 +112,35 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
     public function editAction() {
         $request = $this->getRequest();
+        $form = $this->_getMitarbeiterTagForm();
 
         if ($request->isPost()) {
             //TODO Tag-Form: post-Daten validieren!
-            //TODO kommentieren!
+            // ist Post-Request, also prüfen ob 'absenden' gedrückt wurde
             $postDaten = $request->getPost();
-            $form = $this->_getMitarbeiterTagForm();
-            $form->isValid($postDaten);
-            $daten = $form->getValues();
-            $this->_log->debug('Daten: ' . print_r($daten, true));
             if (isset($postDaten['absenden'])) {
-                $this->mitarbeiter->saveArbeitstag($this->zuBearbeitendesDatum, $daten);
-                $redirector = $this->_helper->getHelper('Redirector');
-                $redirector->gotoRoute(array(
-                    'jahr' => $this->jahr,
-                    'monat' => $this->monat,
-                        ), 'monat');
+                // 'absenden' wurde gedrückt, also Daten filtern und validieren!
+                $valid = $form->isValid($postDaten);
+                $daten = $form->getValues();
+                if ($valid) {
+                    // ist valide also, speichen und redirect
+                    $this->mitarbeiter->saveArbeitstag(
+                            $this->zuBearbeitendesDatum, $daten);
+                    $redirector = $this->_helper->getHelper('Redirector');
+                    $redirector->gotoRoute(array(
+                        'jahr' => $this->jahr,
+                        'monat' => $this->monat,
+                            ), 'monat');
+                }
+                // nicht valide, also tue nichts und rendere die Seite mit
+                // Fehlermeldungen neu.
             }
+            // 'zrücksetzen' wurde gedrückt, also tue nichts sondern, rendere
+            // einfach die Seite neu
         }
-
+        
+        // Kein Post, also rendere die Seite
+        $this->view->tagForm = $form;
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
 
         // setze den Seitennamen
@@ -157,21 +167,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $arbeitstag = array_shift($this->arbeitstage);
         }
 
-//        $model = new Azebo_Model_Mitarbeiter();
-//        $form = $model->getForm('mitarbeiterTag');
-//        $urlHelper = $this->_helper->getHelper('url');
-//        $url = $urlHelper->url(array(
-//            'tag' => $this->tag,
-//            'monat' => $this->monat,
-//            'jahr' => $this->jahr,
-//                ), 'monatEdit', true);
-//        //$url .= '#form';
-//        $form->setAction($url);
-//        $form->setMethod('post');
-//        $form->setName('tagForm');
-        $form = $this->_getMitarbeiterTagForm();
-        $this->view->tagForm = $form;
-
         //befülle die untere Tabelle
         if ($this->tag != $this->tageImMonat) {
             $erg = $this->_befuelleDieTabelle($datum, $this->tag + 1, $this->tageImMonat);
@@ -195,7 +190,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $form->setAction($url);
         $form->setMethod('post');
         $form->setName('tagForm');
-        //$this->view->tagForm = $form;
         return $form;
     }
 
