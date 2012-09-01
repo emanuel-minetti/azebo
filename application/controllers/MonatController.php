@@ -120,8 +120,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $postDaten = $request->getPost();
             if (isset($postDaten['absenden'])) {
                 // 'absenden' wurde gedrückt, also Daten filtern und validieren!
-                $valid = $form->isValid($postDaten);
                 $daten = $form->getValues();
+                $valid = $form->isValid($daten);
                 if ($valid) {
                     // ist valide also, speichen und redirect
                     $this->mitarbeiter->saveArbeitstag(
@@ -187,6 +187,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             'monat' => $this->monat,
             'jahr' => $this->jahr,
                 ), 'monatEdit', true);
+        $url .= '#form';
         $form->setAction($url);
         $form->setMethod('post');
         $form->setName('tagForm');

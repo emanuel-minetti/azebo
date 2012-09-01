@@ -154,6 +154,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         
         //Dojo View Helper aktivieren
         $this->_view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
+        $this->_view->addHelperPath('AzeboLib/View/Helper/', 'AzeboLib_View_Helper');
         
         //Die Version festlegen
         $this->_view->version = '0.2';
