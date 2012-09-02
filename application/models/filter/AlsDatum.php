@@ -36,7 +36,7 @@ class Azebo_Filter_AlsDatum implements Zend_Filter_Interface {
             $datum = null;
         } else {
             $datum = new Zend_Date();
-            $datum->set($wert, Zend_Date::TIMES);
+            $datum->setTime($wert, 'HH:mm:ss');
         }
         return $datum;
     }

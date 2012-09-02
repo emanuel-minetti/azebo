@@ -115,13 +115,15 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $form = $this->_getMitarbeiterTagForm();
 
         if ($request->isPost()) {
-            //TODO Tag-Form: post-Daten validieren!
             // ist Post-Request, also prüfen ob 'absenden' gedrückt wurde
             $postDaten = $request->getPost();
             if (isset($postDaten['absenden'])) {
                 // 'absenden' wurde gedrückt, also Daten filtern und validieren!
+                $valid = $form->isValid($postDaten);
                 $daten = $form->getValues();
-                $valid = $form->isValid($daten);
+                // bevölkere das Beginn- und Ende-ElementS
+                $form->setBeginn($daten['beginn']);
+                $form->setEnde($daten['ende']);
                 if ($valid) {
                     // ist valide also, speichen und redirect
                     $this->mitarbeiter->saveArbeitstag(
@@ -139,7 +141,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             // einfach die Seite neu
         }
         
-        // Kein Post, also rendere die Seite
+        // rendere die Seite
         $this->view->tagForm = $form;
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
 
@@ -219,10 +221,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $ende = null;
                 $befreiung = null;
                 if ($arbeitstag->beginn !== null) {
-                    $beginn = $datum->setTime($arbeitstag->beginn)->toString('HH:mm');
+                    $beginn = $arbeitstag->beginn->toString('HH:mm');
                 }
                 if ($arbeitstag->ende !== null) {
-                    $ende = $datum->setTime($arbeitstag->ende)->toString('HH:mm');
+                    $ende = $arbeitstag->ende->toString('HH:mm');
                 }
                 if ($arbeitstag->befreiung !== null) {
                     $befreiung = $befreiungOptionen[$arbeitstag->befreiung];

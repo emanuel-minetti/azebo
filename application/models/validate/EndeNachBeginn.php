@@ -37,11 +37,22 @@ class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
         
         $this->_setValue($value);
         
+        $log = Zend_Registry::get('log');
+        $log->debug(__METHOD__);
+        
         if(is_array($context)) {
             if(isset($context['beginn'])) {
                 $ende = new Zend_Date($value);
-                $beginn = new Zend_Date($context['beginn']);
-                if($ende->isEarlier($beginn, Zend_Date::TIMES)) {
+                //TODO Kommentieren!
+                $contextBeginn = $context['beginn'];
+                $beginnWert = $contextBeginn == '' ? null : substr($contextBeginn, 1);
+                $beginn = new Zend_Date($beginnWert, Zend_Date::TIME_MEDIUM);
+                //$beginn = new Zend_Date($context['beginn']);
+                $log->debug('Ende: ' . $ende->toString());
+                $log->debug('Beginn: ' . $beginn->toString());
+                $log->debug('EndeWert: ' . $value);
+                $log->debug('ContextBeginn: ' . $contextBeginn);
+                if($ende->isEarlier($beginn, Zend_Date::TIME_MEDIUM)) {
                     $this->_error(self::BEGINN_NACH_ENDE);
                     return false;
                 }

@@ -25,6 +25,16 @@
  * @author Emanuel Minetti
  */
 interface Azebo_Resource_Arbeitstag_Item_Interface {
+
+    /**
+     * @return Zend_Date|null 
+     */
+    public function getBeginn();
+    
+    /**
+     * @return Zend_Date|null 
+     */
+    public function getEnde();
     
 }
 

@@ -26,8 +26,24 @@
  * @author Emanuel Minetti
  */
 class Azebo_Resource_Arbeitstag_Item
-extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
-implements Azebo_Resource_Arbeitstag_Item_Interface {
-    
+    extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
+    implements Azebo_Resource_Arbeitstag_Item_Interface {
+
+    public function getBeginn() {
+        if ($this->_row->beginn !== null) {
+            return new Zend_Date($this->_row->beginn, Zend_Date::TIME_MEDIUM);
+        } else {
+            return null;
+        }
+    }
+
+    public function getEnde() {
+        if ($this->_row->ende !== null) {
+            return new Zend_Date($this->_row->ende, Zend_Date::TIME_MEDIUM);
+        } else {
+            return null;
+        }
+    }
+
 }
 

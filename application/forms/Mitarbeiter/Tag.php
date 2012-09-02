@@ -29,9 +29,12 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
 
     const UNGUELTIGE_UHRZEIT = 'Bitte geben Sie die Uhrzeit als vierstellige Zahl ein!';
     const UNGUELTIGE_OPTION = 'Bitte wählen Sie eine der Optionen aus!';
+    
+    private $beginnElement;
+    private $endeElement;
 
     public function init() {
-        $log = Zend_Registry::get('log');
+        //$log = Zend_Registry::get('log');
 
         $authService = new Azebo_Service_Authentifizierung();
         $mitarbeiter = $authService->getIdentity();
@@ -46,7 +49,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         $this->addElementPrefixPath(
                 'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
 
-        $beginnElement = new Zend_Dojo_Form_Element_TimeTextBox('beginn', array(
+        $this->beginnElement = new Zend_Dojo_Form_Element_TimeTextBox('beginn', array(
                     'label' => 'Beginn',
                     'timePattern' => 'HHmm',
                     'required' => false,
@@ -57,7 +60,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'filters' => array('StringTrim', 'AlsDatum',),
                 ));
 
-        $endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
+        $this->endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
                     'label' => 'Ende',
                     'timePattern' => 'HHmm',
                     'required' => false,
@@ -81,8 +84,6 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         $bemerkungElement = new Zend_Dojo_Form_Element_Textarea('bemerkung', array(
                     'label' => 'Bemerkung',
                     'required' => false,
-                    //'ignore' => true,
-                    //'requiredMessage' => self::UNGUELTIGE_OPTION,
                     'style' => 'width: 300px;',
                     'filters' => array('StringTrim'),
                 ));
@@ -96,16 +97,12 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                 ));
 
         // Bevölkere das Formular
-        //TODO Beginn und Ende erscheinen nicht!
         if ($arbeitstag !== null) {
             if ($arbeitstag->beginn !== null) {
-                $log->debug('Beginn: x' . $arbeitstag->beginn . 'x');
-                $log->debug('Value: x' . 'T' . $arbeitstag->beginn . 'x');
-                //$beginnElement->setValue('T' . $arbeitstag->beginn);
-                $beginnElement->setValue('T10:00:00');
+                $this->setBeginn($arbeitstag->beginn);
             }
             if ($arbeitstag->ende !== null) {
-                $endeElement->setValue('T' . $arbeitstag->ende);
+                $this->setEnde($arbeitstag->ende);
             }
             if ($arbeitstag->befreiung !== null) {
                 $befreiungElement->setValue($arbeitstag->befreiung);
@@ -122,8 +119,8 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             }
         }
 
-        $this->addElement($beginnElement);
-        $this->addElement($endeElement);
+        $this->addElement($this->beginnElement);
+        $this->addElement($this->endeElement);
         $this->addElement($befreiungElement);
         $this->addElement($bemerkungElement);
         $this->addElement($pauseElement);
@@ -134,11 +131,21 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             'label' => 'Absenden',
         ));
 
-        $this->addElement('Button', 'zuruecksetzen', array(
+        $this->addElement('SubmitButton', 'zuruecksetzen', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Zurücksetzen',
         ));
+    }
+
+    public function setBeginn(Zend_Date $beginn) {
+        $displayedValue = $beginn->toString('HHmm');
+        $this->beginnElement->setDijitParam('displayedValue', $displayedValue);
+    }
+    
+    public function setEnde(Zend_Date $ende) {
+        $displayedValue = $ende->toString('HHmm');
+        $this->endeElement->setDijitParam('displayedValue', $displayedValue);
     }
 
 }
