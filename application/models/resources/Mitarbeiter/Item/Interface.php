@@ -64,4 +64,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
      * @param array $daten
      */
     public function saveArbeitstag(Zend_Date $tag, array $daten);
+    
+    public function getArbeitsregelNachMonat(Zend_Date $monat);
 }

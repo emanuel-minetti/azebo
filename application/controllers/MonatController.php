@@ -121,7 +121,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 // 'absenden' wurde gedrückt, also Daten filtern und validieren!
                 $valid = $form->isValid($postDaten);
                 $daten = $form->getValues();
-                // bevölkere das Beginn- und Ende-ElementS
+                // bevölkere das Beginn- und Ende-Element
                 $form->setBeginn($daten['beginn']);
                 $form->setEnde($daten['ende']);
                 if ($valid) {
@@ -238,6 +238,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     'bemerkung' => $arbeitstag->bemerkung,
                     'pause' => $arbeitstag->pause,
                 ));
+                //TODO soll aus dem Modell lesen!
             } else { //kein Eintrag in 'arbeitstage' für diesen Tag
                 $tabellenDaten->addItem(array(
                     'datum' => $feiertag['name'] . ' ' . $datum->toString('EE, dd.MM.YYYY'),

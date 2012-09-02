@@ -25,9 +25,7 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Resource_Arbeitstag_Item
-    extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
-    implements Azebo_Resource_Arbeitstag_Item_Interface {
+class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Arbeitstag_Item_Interface {
 
     public function getBeginn() {
         if ($this->_row->beginn !== null) {
@@ -43,6 +41,16 @@ class Azebo_Resource_Arbeitstag_Item
         } else {
             return null;
         }
+    }
+
+    public function setBeginn($beginn) {
+        $this->_row->beginn = $beginn === null ?
+                null : $beginn->toString('HH:mm:ss');
+    }
+
+    public function setEnde($ende) {
+        $this->_row->ende = $ende === null ?
+                null : $ende->toString('HH:mm:ss');
     }
 
 }

@@ -95,6 +95,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'uncheckedValue' => '-',
                     'filters' => array('StringTrim'),
                 ));
+        //TODO Pause validieren!
 
         // Bevölkere das Formular
         if ($arbeitstag !== null) {
@@ -138,13 +139,14 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         ));
     }
 
-    public function setBeginn(Zend_Date $beginn) {
-        $displayedValue = $beginn->toString('HHmm');
+    public function setBeginn($beginn) {
+        $displayedValue = $beginn === null ? '' : $beginn->toString('HHmm');
         $this->beginnElement->setDijitParam('displayedValue', $displayedValue);
     }
     
-    public function setEnde(Zend_Date $ende) {
-        $displayedValue = $ende->toString('HHmm');
+    public function setEnde($ende) {
+        //$displayedValue = $ende->toString('HHmm');
+        $displayedValue = $ende === null ? '' : $ende->toString('HHmm');
         $this->endeElement->setDijitParam('displayedValue', $displayedValue);
     }
 

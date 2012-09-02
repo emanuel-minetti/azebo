@@ -21,24 +21,13 @@
  */
 
 /**
+ * Description of Item
  *
  * @author Emanuel Minetti
  */
-interface Azebo_Resource_Arbeitstag_Item_Interface {
+class Azebo_Resource_Arbeitsregel_Item
+    extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
+    implements Azebo_Resource_Arbeitsregel_Item_Interface {
 
-    /**
-     * @return Zend_Date|null 
-     */
-    public function getBeginn();
-    
-    /**
-     * @return Zend_Date|null 
-     */
-    public function getEnde();
-    
-    public function setBeginn($beginn);
-    
-    public function setEnde($ende);
-    
 }
 

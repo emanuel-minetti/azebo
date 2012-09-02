@@ -24,21 +24,7 @@
  *
  * @author Emanuel Minetti
  */
-interface Azebo_Resource_Arbeitstag_Item_Interface {
+interface Azebo_Resource_Arbeitsregel_Item_Interface {
 
-    /**
-     * @return Zend_Date|null 
-     */
-    public function getBeginn();
-    
-    /**
-     * @return Zend_Date|null 
-     */
-    public function getEnde();
-    
-    public function setBeginn($beginn);
-    
-    public function setEnde($ende);
-    
 }
 

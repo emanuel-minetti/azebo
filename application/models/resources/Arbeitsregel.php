@@ -21,24 +21,24 @@
  */
 
 /**
+ * Schnittstelle zur MySQL-Tabelle 'arbeitstag'.
  *
  * @author Emanuel Minetti
  */
-interface Azebo_Resource_Arbeitstag_Item_Interface {
-
-    /**
-     * @return Zend_Date|null 
-     */
-    public function getBeginn();
+class Azebo_Resource_Arbeitsregel
+extends AzeboLib_Model_Resource_Db_Table_Abstract
+implements Azebo_Resource_Arbeitsregel_Interface {
     
-    /**
-     * @return Zend_Date|null 
-     */
-    public function getEnde();
-    
-    public function setBeginn($beginn);
-    
-    public function setEnde($ende);
+    protected $_name = 'arbeitsregel';
+    protected $_id = 'id';
+    protected $_rowClass = 'Azebo_Resource_Arbeitsregel_Item';
+    protected $_referenceMap = array(
+        'Arbeitsregel' => array(
+            'columns' => 'mitarbeiter_id',
+            'refTableClass' => 'Azebo_Resource_Mitarbeiter',
+            'refColumns' => 'id',
+        ),
+    );
     
 }
 

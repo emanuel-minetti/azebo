@@ -110,15 +110,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $arbeitstag->tag = $tag->toString('yyyy-MM-dd');
         }
 
-        //Falls Beginn und/oder Ende gesetzt wurden, wandle sie in einen string
-        $beginn = $daten['beginn'] === null ?
-                null : $daten['beginn']->toString('HH:mm:ss');
-        $ende = $daten['ende'] === null ?
-                null : $daten['ende']->toString('HH:mm:ss');
-
         //Setze die Daten
-        $arbeitstag->beginn = $beginn;
-        $arbeitstag->ende = $ende;
+        $arbeitstag->setBeginn($daten['beginn']);
+        $arbeitstag->setEnde($daten['ende']);
         $arbeitstag->befreiung = $daten['befreiung'];
         $arbeitstag->bemerkung = $daten['bemerkung'];
         $arbeitstag->pause = $daten['pause'];
@@ -132,6 +126,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function setVorname($vorname) {
         $this->_vorname = $vorname;
+    }
+
+    public function getArbeitsregelNachMonat(Zend_Date $monat) {
+        //TODO Implementieren!
     }
 
 }
