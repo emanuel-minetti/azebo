@@ -75,7 +75,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->view->tageImMonat = $this->tageImMonat;
 
         // Hohle ein Array mit den Feiertagsdaten des Monats
+        //TODO anpassen!
         $feiertagsservice = new Azebo_Service_Feiertag($this->jahr);
+        $ns = new Zend_Session_Namespace();
+        $ns->feiertagsservice = $feiertagsservice;
         $this->feiertage = $feiertagsservice->
                 feiertage($this->zuBearbeitendesDatum);
 

@@ -43,6 +43,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getArbeitstageNachMonat(Zend_Date $monat) {
+        //TODO kommentieren!
         $erster = new Zend_Date($monat);
         $erster->setDay(1);
         $letzter = new Zend_Date($monat);
@@ -52,11 +53,28 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $select->where('tag >= ?', $erster->toString('yyyy-MM-dd'))
                 ->where('tag <= ?', $letzter->toString('yyyy-MM-dd'))
                 ->order('tag ASC');
-        $rowset = $this->findDependentRowset('Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
+        $dbTage = $this->findDependentRowset(
+                'Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
+        $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
         $arbeitstage = array();
-        foreach ($rowset as $arbeitstag) {
-            array_push($arbeitstage, $arbeitstag);
+
+        $tag = new Zend_Date($erster);  
+        while ($tag->compareDay($letzter) == -1) {
+            if ($dbTage->current() !== null &&
+                    $dbTage->current()->getTag()->equals(
+                            $tag, Zend_Date::DATE_MEDIUM)) {
+                array_push($arbeitstage, $dbTage->current());
+                $dbTage->next();
+            } else {
+                $arbeitstag = $arbeitstagTabelle->createRow();
+                $arbeitstag->setTag($tag);
+                //TODO setze Arbeitsregel!
+                array_push($arbeitstage, $arbeitstag);
+            }
+
+            $tag->addDay(1);
         }
+
         return $arbeitstage;
     }
 
@@ -129,7 +147,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getArbeitsregelNachMonat(Zend_Date $monat) {
-        //TODO Implementieren!
+        //TODO Implementieren oder auch nicht!
     }
 
 }

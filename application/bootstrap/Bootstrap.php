@@ -32,7 +32,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     protected function _initLogging() {
         $this->bootstrap('frontController');
         $logger = new Zend_Log();
-        
+
         $streamWriter = new Zend_Log_Writer_Stream(APPLICATION_PATH .
                         '/../data/logs/azebo.log');
         $logger->addWriter($streamWriter);
@@ -149,13 +149,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         //Icon setzen
         $this->_view->headLink(array(
-            'rel' => 'favicon',
-            'href' => '/images/logo.ico'), 'APPEND');
-        
+            'rel' => 'shortcut icon',
+            'href' => '/images/favicon.ico',
+            'type' => 'image/x-icon',
+                ), 'APPEND');
+
         //Dojo View Helper aktivieren
         $this->_view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
         $this->_view->addHelperPath('AzeboLib/View/Helper/', 'AzeboLib_View_Helper');
-        
+
         //Die Version festlegen
         $this->_view->version = '0.2';
     }
@@ -171,14 +173,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                     ->setProfiler($profiler);
         }
     }
-    
+
     protected function _initRoutes() {
         $this->bootstrap('frontController');
         $router = $this->frontController->getRouter();
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/routes.ini');
         $router->addDefaultRoutes();
         $router->addConfig($config, 'routes');
-        
     }
 
 }

@@ -69,7 +69,7 @@ class Azebo_Service_Feiertag {
         $datum = new Zend_Date($monat);
         for($tag = 1; $tag <= $datum->get(Zend_Date::MONTH_DAYS); $tag++) {
             $datum->setDay($tag);
-            $feiertag = $this->_feiertag($datum);
+            $feiertag = $this->feiertag($datum);
             $feiertage[$datum->toString('dd.MM.yyyy')] = $feiertag;
         }
         return $feiertage;
@@ -87,7 +87,7 @@ class Azebo_Service_Feiertag {
      * @param Zend_Date $datum
      * @return array 
      */
-    private function _feiertag(Zend_Date $datum) {
+    public function feiertag(Zend_Date $datum) {
         /*
          * Die festen gesetzlichen Feiertage in Berlin sind:
          * 

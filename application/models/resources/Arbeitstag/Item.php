@@ -27,6 +27,9 @@
  */
 class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Arbeitstag_Item_Interface {
 
+    protected $_feiertagsService;
+    protected $_feiertag;
+
     public function getBeginn() {
         if ($this->_row->beginn !== null) {
             return new Zend_Date($this->_row->beginn, Zend_Date::TIME_MEDIUM);
@@ -51,6 +54,33 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     public function setEnde($ende) {
         $this->_row->ende = $ende === null ?
                 null : $ende->toString('HH:mm:ss');
+    }
+
+    public function getTag() {
+        if ($this->_row->tag !== null) {
+            return new Zend_Date($this->_row->tag, 'yyyy-MM-dd');
+        } else {
+            return null;
+        }
+    }
+
+    public function setTag($tag) {
+        $this->_row->tag = $tag === null ?
+                null : $tag->toString('yyyy-MM-dd');
+    }
+
+    public function getFeiertag() {
+        if ($this->_feiertag === null) {
+            if ($this->_feiertagsService === null) {
+                $ns = new Zend_Session_Namespace();
+                $this->_feiertagsService = $ns->feiertagsservice;
+            }
+            if ($this->_feiertagsService !== null) {
+                $this->_feiertag =
+                        $this->_feiertagsService->feiertag($this->getTag());
+            }
+        }
+        return $this->_feiertag;
     }
 
 }

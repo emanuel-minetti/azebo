@@ -25,7 +25,7 @@
  * @author Emanuel Minetti
  */
 interface Azebo_Resource_Arbeitstag_Item_Interface {
-
+    
     /**
      * @return Zend_Date|null 
      */
@@ -39,6 +39,15 @@ interface Azebo_Resource_Arbeitstag_Item_Interface {
     public function setBeginn($beginn);
     
     public function setEnde($ende);
+    
+    /**
+     * @return Zend_Date|null 
+     */
+    public function getTag();
+    
+    public function setTag($tag);
+    
+    public function getFeiertag();
     
 }
 
