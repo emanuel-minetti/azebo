@@ -41,9 +41,16 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $row = $this->findDependentRowset('Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
         return $row->current();
     }
-
+    
+    /**
+     * Gibt ein Array von Arbeitstagen für den angegebenen Monat zurück.
+     * Falls ein Arbeitstag in der DB existiert wird dieser eingefügt, falls
+     * nicht ein frisch intialisierter Arbeitstag.
+     * 
+     * @param Zend_Date $monat
+     * @return array 
+     */
     public function getArbeitstageNachMonat(Zend_Date $monat) {
-        //TODO kommentieren!
         $erster = new Zend_Date($monat);
         $erster->setDay(1);
         $letzter = new Zend_Date($monat);
@@ -151,4 +158,3 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
 }
-

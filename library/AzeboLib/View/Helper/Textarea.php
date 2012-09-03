@@ -21,12 +21,17 @@
  */
 
 /**
- * Description of AzeboTextarea
+ * Behebt einen Bug im Zusammenspiel von HTML5, ZF 1.12 und Dojo 1.8.
+ * 
+ * In HTML5 wird der Wert des Attributes 'required' nicht mehr ausgewertet,
+ * sondern das Attribut funktioniert als Schalter. Dojo 1.8 wertet das
+ * HTML-Required-Attribut gar nicht mehr aus, sonder verwendet einen eigenen
+ * Namensraum. ZF 1.12 setzt aber noch das HTML-Attribut. Dieser angepasste
+ * View-Helper verhindert das.
  *
  * @author Emanuel Minetti
  */
 class AzeboLib_View_Helper_Textarea extends Zend_Dojo_View_Helper_Textarea {
-    //TODO Kommentieren!
 
     /**
      * dijit.form.Textarea
@@ -39,12 +44,16 @@ class AzeboLib_View_Helper_Textarea extends Zend_Dojo_View_Helper_Textarea {
      */
     public function textarea($id, $value = null, array $params = array(), array $attribs = array()) {
 
+        // Hier wird der Bug behoben.
+        if (isset($params['required']) && $params['required'] != true) {
+            unset($params['required']);
+        }
+
         if (!array_key_exists('id', $attribs)) {
             $attribs['id'] = $id;
         }
         $attribs['name'] = $id;
 
-        $params = $this->_dijitParams($params);
         $attribs = $this->_prepareDijit($attribs, $params, 'textarea');
 
         $html = '<textarea' . $this->_htmlAttribs($attribs) . '>'
@@ -52,13 +61,6 @@ class AzeboLib_View_Helper_Textarea extends Zend_Dojo_View_Helper_Textarea {
                 . "</textarea>\n";
 
         return $html;
-    }
-
-    protected function _dijitParams($params) {
-        if (isset($params['required']) && $params['required'] == false) {
-            unset($params['required']);
-        }
-        return $params;
     }
 
 }

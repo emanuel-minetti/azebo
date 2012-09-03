@@ -21,7 +21,7 @@
  */
 
 /**
- * Description of EndeNachBeginn
+ * Prüft ob das Ende eines Arbeitstages nach dem Beginn liegt.
  *
  * @author Emanuel Minetti
  */
@@ -43,16 +43,14 @@ class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
         if(is_array($context)) {
             if(isset($context['beginn'])) {
                 $ende = new Zend_Date($value);
-                //TODO Kommentieren!
+                
+                // In context liegen die Daten ungefiltert vor, also filtere
+                // selber
                 $contextBeginn = $context['beginn'];
                 $beginnWert = $contextBeginn == '' ? null : substr($contextBeginn, 1);
                 $beginn = new Zend_Date($beginnWert, Zend_Date::TIME_MEDIUM);
-                //$beginn = new Zend_Date($context['beginn']);
-                $log->debug('Ende: ' . $ende->toString());
-                $log->debug('Beginn: ' . $beginn->toString());
-                $log->debug('EndeWert: ' . $value);
-                $log->debug('ContextBeginn: ' . $contextBeginn);
-                if($ende->isEarlier($beginn, Zend_Date::TIME_MEDIUM)) {
+                
+                if($ende->compare($beginn, Zend_Date::TIME_MEDIUM) != 1) {
                     $this->_error(self::BEGINN_NACH_ENDE);
                     return false;
                 }

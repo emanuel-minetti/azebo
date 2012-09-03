@@ -21,18 +21,20 @@
  */
 
 /**
- * Description of CheckBox
+ * Behebt einen Bug im Zusammenspiel von HTML5, ZF 1.12 und Dojo 1.8.
+ * 
+ * In HTML5 wird der Wert des Attributes 'required' nicht mehr ausgewertet,
+ * sondern das Attribut funktioniert als Schalter. Dojo 1.8 wertet das
+ * HTML-Required-Attribut gar nicht mehr aus, sonder verwendet einen eigenen
+ * Namensraum. ZF 1.12 setzt aber noch das HTML-Attribut. Dieser angepasste
+ * View-Helper verhindert das.
  *
  * @author Emanuel Minetti
  */
 class AzeboLib_View_Helper_CheckBox extends Zend_Dojo_View_Helper_CheckBox {
      public function checkBox($id, $value = null, array $params = array(), array $attribs = array(), array $checkedOptions = null)
     {
-         //TODO Kommentieren!
-//         $log = Zend_Registry::get('log');
-//         $log->debug(__METHOD__);
-//         $log->debug('Attribs: ' . print_r($attribs, true));
-//         $log->debug('Params: ' . print_r($params, true));
+         // Hier wird der Bug behoben.
          if(isset($params['required']) && $params['required'] != true) {
              unset($params['required']);
          }

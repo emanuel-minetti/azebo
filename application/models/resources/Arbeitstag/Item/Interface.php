@@ -25,29 +25,39 @@
  * @author Emanuel Minetti
  */
 interface Azebo_Resource_Arbeitstag_Item_Interface {
-    
+
     /**
      * @return Zend_Date|null 
      */
     public function getBeginn();
-    
+
     /**
      * @return Zend_Date|null 
      */
     public function getEnde();
-    
+
     public function setBeginn($beginn);
-    
+
     public function setEnde($ende);
-    
+
     /**
      * @return Zend_Date|null 
      */
     public function getTag();
-    
+
     public function setTag($tag);
-    
+
+    /**
+     * Prüft ob ein Datum ein gesetzlicher Feiertag in Berlin ist.
+     * Berücksichtigt auch Samstage und Sonntage.
+     * 
+     * Liefert ein Array mit den Eigenschaften 'name' und 'feiertag'
+     * zurück. 'name' ist ein string mit dem Namen des Feiertags.
+     * 'feiertag' ist ein boolean, der true ist falls das Datum ein
+     * Feiertag ist.
+     * 
+     * @return array 
+     */
     public function getFeiertag();
-    
 }
 
