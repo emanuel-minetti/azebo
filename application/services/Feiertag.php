@@ -55,25 +55,6 @@ class Azebo_Service_Feiertag {
         $this->pfingstmontag = new Zend_Date($ostersonntag);
         $this->pfingstmontag->add(50, Zend_Date::DAY);
     }
-    
-    /**
-     * Liefert ein array mit den Daten des Monatsparameters im Format
-     * 'dd.MM.yyyy' als Schlüssel und als Wert ein array mit den Schlüsseln
-     * 'name' und 'feiertag'.
-     * 
-     * @param Zend_Date $monat
-     * @return array
-     */
-    public function feiertage(Zend_Date $monat) {
-        $feiertage = array();
-        $datum = new Zend_Date($monat);
-        for($tag = 1; $tag <= $datum->get(Zend_Date::MONTH_DAYS); $tag++) {
-            $datum->setDay($tag);
-            $feiertag = $this->feiertag($datum);
-            $feiertage[$datum->toString('dd.MM.yyyy')] = $feiertag;
-        }
-        return $feiertage;
-    }
 
     /**
      * Prüft ob ein Datum ein gesetzlicher Feiertag in Berlin ist.

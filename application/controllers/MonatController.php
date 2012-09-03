@@ -34,11 +34,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     public $zuBearbeitendesDatum;
 
     /**
-     * @var array
-     */
-    public $feiertage;
-
-    /**
      * @var Azebo_Resource_Mitarbeiter_Item_Interface 
      */
     public $mitarbeiter;
@@ -74,13 +69,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ->get(Zend_Date::MONTH_DAYS);
         $this->view->tageImMonat = $this->tageImMonat;
 
-        // Hohle ein Array mit den Feiertagsdaten des Monats
-        //TODO anpassen!
+        // Initialisiere den Feiertagsservice mit dem zu bearbeitendem Jahr
+        // und übergebe den Service an die Session. Arbeitstag_Item greift
+        // darauf zu.
         $feiertagsservice = new Azebo_Service_Feiertag($this->jahr);
         $ns = new Zend_Session_Namespace();
         $ns->feiertagsservice = $feiertagsservice;
-        $this->feiertage = $feiertagsservice->
-                feiertage($this->zuBearbeitendesDatum);
 
         // Aktiviere Dojo
         $this->view->dojo()->enable()
@@ -107,10 +101,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->erweitereSeitenName($datum->toString(' MMMM yyyy'));
 
         // befülle die Reihen
-        $erg = $this->_befuelleDieTabelle($datum, 1, $this->tageImMonat);
+        $erster = new Zend_Date($this->zuBearbeitendesDatum);
+        $letzter = new Zend_Date($this->zuBearbeitendesDatum);
+        $erster->setDay(1);
+        $letzter->setDay($this->tageImMonat);
+        $tabelle = $this->_befuelleDieTabelle($erster, $letzter);
 
-        $this->view->monatsDaten = $erg['tabellenDaten'];
-        $this->view->hoheTageImMonat = $erg['hoheTage'];
+        $this->view->monatsDaten = $tabelle['tabellenDaten'];
+        $this->view->hoheTageImMonat = $tabelle['hoheTage'];
     }
 
     public function editAction() {
@@ -143,40 +141,38 @@ class MonatController extends AzeboLib_Controller_Abstract {
             // 'zrücksetzen' wurde gedrückt, also tue nichts sondern, rendere
             // einfach die Seite neu
         }
-        
+
         // rendere die Seite
         $this->view->tagForm = $form;
-        $datum = new Zend_Date($this->zuBearbeitendesDatum);
-
+        //$datum = new Zend_Date($this->zuBearbeitendesDatum);
         // setze den Seitennamen
         $this->erweitereSeitenName(' - Bearbeite ');
         $this->erweitereSeitenName($this->zuBearbeitendesDatum
                         ->toString('d.M.yy'));
 
+        // initialisiere zwei Daten
+        $erster = new Zend_Date($this->zuBearbeitendesDatum);
+        $letzter = new Zend_Date($this->zuBearbeitendesDatum);
+
         // befülle die obere Tabelle
         if ($this->tag != 1) {
-            $erg = $this->_befuelleDieTabelle($datum, 1, $this->tag - 1);
-            $this->view->monatsDatenOben = $erg['tabellenDaten'];
-            $this->view->hoheTageImMonatOben = $erg['hoheTage'];
+            $erster->setDay(1);
+            $letzter->setDay($this->tag - 1);
+            $tabelle = $this->_befuelleDieTabelle($erster, $letzter);
+            $this->view->monatsDatenOben = $tabelle['tabellenDaten'];
+            $this->view->hoheTageImMonatOben = $tabelle['hoheTage'];
         } else {
             $this->view->monatsDatenOben = null;
             $this->view->hoheTageImMonatOben = 0;
         }
 
-        //Falls ein arbeitstag für diesen Tag existiert, entferne
-        //ihn aus dem 'arbeitstage'-Array.
-        $arbeitstag = null;
-        if (count($this->arbeitstage) !== 0 &&
-                $this->zuBearbeitendesDatum->compareDate(
-                        $this->arbeitstage[0]->tag, 'yyyy-MM-dd') === 0) {
-            $arbeitstag = array_shift($this->arbeitstage);
-        }
-
         //befülle die untere Tabelle
         if ($this->tag != $this->tageImMonat) {
-            $erg = $this->_befuelleDieTabelle($datum, $this->tag + 1, $this->tageImMonat);
-            $this->view->monatsDatenUnten = $erg['tabellenDaten'];
-            $this->view->hoheTageImMonatUnten = $erg['hoheTage'];
+            $erster->setDay($this->tag + 1);
+            $letzter->setDay($this->tageImMonat);
+            $tabelle = $this->_befuelleDieTabelle($erster, $letzter);
+            $this->view->monatsDatenUnten = $tabelle['tabellenDaten'];
+            $this->view->hoheTageImMonatUnten = $tabelle['hoheTage'];
         } else {
             $this->view->monatsDatenUnten = null;
             $this->view->hoheTageImMonatUnten = 0;
@@ -199,7 +195,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         return $form;
     }
 
-    private function _befuelleDieTabelle(Zend_date $datum, $erster, $letzter) {
+    private function _befuelleDieTabelle(Zend_Date $erster, Zend_Date $letzter) {
         // Hole die Befreiungsoptionen für diesen Mitarbeiter
         $befreiungService = new Azebo_Service_Befreiung();
         $befreiungOptionen = $befreiungService->getOptionen($this->mitarbeiter);
@@ -210,19 +206,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $anzahlHoheTage = 0;
 
         // Iteriere über die Tage
-        for ($tag = $erster; $tag <= $letzter; $tag++) {
-            $datum->setDay($tag);
-            $feiertag = $this->feiertage[$datum->toString('dd.MM.yyyy')];
+        foreach ($this->arbeitstage as $arbeitstag) {
+            if ($arbeitstag->tag->compare($erster, Zend_Date::DATE_MEDIUM) != -1 &&
+                    $arbeitstag->tag->compare($letzter, Zend_Date::DATE_MEDIUM) != 1) {
 
-            //prüfe ob noch Einträge in 'arbeitstage' vorhanden sind
-            //und wenn ja ob der erste Eintrag zu diesem Tag passt.
-            if ((count($this->arbeitstage)) !== 0 &&
-                    ($datum->compareDate(
-                            $this->arbeitstage[0]->tag, 'yyyy-MM-dd') === 0)) {
-                $arbeitstag = array_shift($this->arbeitstage);
+                $tag = $arbeitstag->tag;
+                $feiertag = $arbeitstag->feiertag;
                 $beginn = null;
                 $ende = null;
                 $befreiung = null;
+
                 if ($arbeitstag->beginn !== null) {
                     $beginn = $arbeitstag->beginn->toString('HH:mm');
                 }
@@ -232,8 +225,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($arbeitstag->befreiung !== null) {
                     $befreiung = $befreiungOptionen[$arbeitstag->befreiung];
                 }
+
                 $tabellenDaten->addItem(array(
-                    'datum' => $feiertag['name'] . ' ' . $datum->toString('EE, dd.MM.YYYY'),
+                    'datum' => $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.YYYY'),
                     'feiertag' => $feiertag['feiertag'],
                     'beginn' => $beginn,
                     'ende' => $ende,
@@ -241,24 +235,17 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     'bemerkung' => $arbeitstag->bemerkung,
                     'pause' => $arbeitstag->pause,
                 ));
-                //TODO soll aus dem Modell lesen!
-            } else { //kein Eintrag in 'arbeitstage' für diesen Tag
-                $tabellenDaten->addItem(array(
-                    'datum' => $feiertag['name'] . ' ' . $datum->toString('EE, dd.MM.YYYY'),
-                    'feiertag' => $feiertag['feiertag'],
-                    'pause' => '-',
-                ));
-            }
 
-            //Neujahr und Karfreitag passen in eine Zeile mit dem Wochentag,
-            //sind also keine 'hohen' Tage.
-            if ($feiertag['name'] != '') {
-                if ($feiertag['name'] != 'Neujahr' &&
-                        $feiertag['name'] != 'Karfreitag') {
-                    $anzahlHoheTage++;
+                //Neujahr und Karfreitag passen in eine Zeile mit dem Wochentag,
+                //sind also keine 'hohen' Tage.
+                if ($feiertag['name'] != '') {
+                    if ($feiertag['name'] != 'Neujahr' &&
+                            $feiertag['name'] != 'Karfreitag') {
+                        $anzahlHoheTage++;
+                    }
                 }
             }
-        } //for($tag)
+        }
 
         return array(
             'tabellenDaten' => $tabellenDaten,
