@@ -25,9 +25,31 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Resource_Arbeitsregel_Item
-    extends AzeboLib_Model_Resource_Db_Table_Row_Abstract
-    implements Azebo_Resource_Arbeitsregel_Item_Interface {
+class Azebo_Resource_Arbeitsregel_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Arbeitsregel_Item_Interface {
+    
+    protected $_dzService;
+
+    public function __construct($config) {
+        parent::__construct($config);
+        $this->_dzService = new Azebo_Service_DatumUndZeitUmwandler();
+    }
+
+    public function getBis() {
+        return $this->_dzService->datumSqlZuPhp($this->_row->bis);
+    }
+
+    public function setBis($bis) {
+        $this->_row->bis = $this->_dzService->datumPhpZuSql($bis);
+        
+    }
+
+    public function getVon() {
+        return $this->_dzService->datumSqlZuPhp($this->_row->von);
+    }
+
+    public function setVon($von) {
+        $this->_row->von = $this->_dzService->datumPhpZuSql($von);
+    }
 
 }
 

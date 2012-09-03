@@ -21,17 +21,27 @@
  */
 
 /**
+ * Description of DatumUndZeitUmwandler
  *
  * @author Emanuel Minetti
  */
-interface Azebo_Resource_Arbeitsregel_Item_Interface {
-
-    public function getVon();
+class Azebo_Service_DatumUndZeitUmwandler {
     
-    public function setVon();
+    static public function datumPhpZuSql($phpDatum) {
+        return $phpDatum === null ? null : $phpDatum->toString('yyyy-MM-dd');
+    }
     
-    public function getBis();
+    static public function zeitPhpZuSql($phpDatum) {
+        return $phpDatum === null ? null : $phpDatum->toString('HH:mm:ss');
+    }
     
-    public function setBis();
+    static public function datumSqlZuPhp($sqlDatum) {
+        return $sqlDatum === null ? null : new Zend_Date($sqlDatum, 'yyyy-MM-dd');
+    }
+    
+    static public function zeitSqlZuPhp($sqlDatum) {
+        return $sqlDatum === null ? null : new Zend_Date($sqlDatum, 'HH:mm:ss');
+    }
+    
 }
 

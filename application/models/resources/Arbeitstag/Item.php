@@ -29,57 +29,46 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
     protected $_feiertagsService;
     protected $_feiertag;
+    protected $_dzService;
+
+
+    public function __construct($config) {
+        parent::__construct($config);
+        $this->_dzService = new Azebo_Service_DatumUndZeitUmwandler();
+        $ns = new Zend_Session_Namespace();
+        $this->_feiertagsService = $ns->feiertagsservice;
+    }
 
     public function getBeginn() {
-        if ($this->_row->beginn !== null) {
-            return new Zend_Date($this->_row->beginn, Zend_Date::TIME_MEDIUM);
-        } else {
-            return null;
-        }
+        return $this->_dzService->zeitSqlZuPhp($this->_row->beginn);
     }
 
     public function getEnde() {
-        if ($this->_row->ende !== null) {
-            return new Zend_Date($this->_row->ende, Zend_Date::TIME_MEDIUM);
-        } else {
-            return null;
-        }
+        return $this->_dzService->zeitSqlZuPhp(
+                        $this->_row->ende);
     }
 
     public function setBeginn($beginn) {
-        $this->_row->beginn = $beginn === null ?
-                null : $beginn->toString('HH:mm:ss');
+        $this->_row->beginn = $this->_dzService->zeitPhpZuSql($beginn);
     }
 
     public function setEnde($ende) {
-        $this->_row->ende = $ende === null ?
-                null : $ende->toString('HH:mm:ss');
+        $this->_row->ende =$this->_dzService->zeitPhpZuSql($ende);
     }
 
     public function getTag() {
-        if ($this->_row->tag !== null) {
-            return new Zend_Date($this->_row->tag, 'yyyy-MM-dd');
-        } else {
-            return null;
-        }
+        return $this->_dzService->datumSqlZuPhp($this->_row->tag);
     }
 
     public function setTag($tag) {
-        $this->_row->tag = $tag === null ?
-                null : $tag->toString('yyyy-MM-dd');
+        $this->_row->tag =$this->_dzService->datumPhpZuSql($tag);
     }
 
     public function getFeiertag() {
-        if ($this->_feiertag === null) {
-            if ($this->_feiertagsService === null) {
-                $ns = new Zend_Session_Namespace();
-                $this->_feiertagsService = $ns->feiertagsservice;
-            }
-            if ($this->_feiertagsService !== null) {
+        if ($this->_feiertag === null && $this->_feiertagsService !== null) {
                 $this->_feiertag =
                         $this->_feiertagsService->feiertag($this->getTag());
             }
-        }
         return $this->_feiertag;
     }
 

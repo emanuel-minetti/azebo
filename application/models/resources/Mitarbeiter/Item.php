@@ -41,7 +41,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $row = $this->findDependentRowset('Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
         return $row->current();
     }
-    
+
     /**
      * Gibt ein Array von Arbeitstagen für den angegebenen Monat zurück.
      * Falls ein Arbeitstag in der DB existiert wird dieser eingefügt, falls
@@ -65,7 +65,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
         $arbeitstage = array();
 
-        $tag = new Zend_Date($erster);  
+        $tag = new Zend_Date($erster);
         while ($tag->compareDay($letzter) == -1) {
             if ($dbTage->current() !== null &&
                     $dbTage->current()->getTag()->equals(
@@ -123,11 +123,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function saveArbeitstag(Zend_Date $tag, array $daten) {
         //$log = Zend_Registry::get('log');
         //
-        //Hohle den Arbeitstag aus der Tabelle
+        //Hohle den Arbeitstag aus der DB
         $arbeitstag = $this->getArbeitstagNachTag($tag);
 
-        //Falls der Arbeitstag noch nicht in der Tabelle existierte,
-        //setze die Spalten, die nicht NULL sein dürfen.
+        //Falls der Arbeitstag noch nicht in der DB existierte,
+        //initialisiere ihn
         if ($arbeitstag === null) {
             $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
             $arbeitstag = $arbeitstagTabelle->createRow();
@@ -153,8 +153,14 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $this->_vorname = $vorname;
     }
 
-    public function getArbeitsregelNachMonat(Zend_Date $monat) {
-        //TODO Implementieren oder auch nicht!
+    public function getArbeitsregelnNachMonat(Zend_Date $monat) {
+        //TODO Hier weitermachen!
+        $select = $this->select();
+        $dbRegeln = $this->findDependentRowset(
+                'Azebo_Resource_Arbeitsregel', 'Arbeitsregel', $select);
+        foreach ($dbRegeln as $dbRegel) {
+            
+        }
     }
 
 }
