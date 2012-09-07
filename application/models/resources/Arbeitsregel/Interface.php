@@ -24,8 +24,12 @@
  *
  * @author Emanuel Minetti
  */
-interface Azebo_Resource_Arbeitregel_Interface
+interface Azebo_Resource_Arbeitsregel_Interface
 extends AzeboLib_Model_Resource_Db_Interface {
-    //put your code here
+    
+public function getArbeitsregelNachMonatUndMitarbeiter(
+        Zend_Date $monat,
+        Azebo_Mitarbeite_Resource_Item_Interface $mitarbeiter);
+
 }
 

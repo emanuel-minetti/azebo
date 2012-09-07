@@ -26,6 +26,14 @@
  */
 interface Azebo_Resource_Arbeitstag_Interface
 extends AzeboLib_Model_Resource_Db_Interface {
-    //put your code here
+    
+    public function getArbeitstagNachTagUndMitarbeiterId(
+            Zend_Date $tag, $mitarbeiterId);
+
+    public function getArbeitstageNachMonatUndMitarbeiterId(
+            Zend_Date $monat, $mitarbeiterId);
+
+    public function saveArbeitstag(
+            Zend_Date $tag, $mitarbeiterId, array $daten);
 }
 

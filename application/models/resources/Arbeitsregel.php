@@ -25,10 +25,8 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Resource_Arbeitsregel
-extends AzeboLib_Model_Resource_Db_Table_Abstract
-implements Azebo_Resource_Arbeitsregel_Interface {
-    
+class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstract implements Azebo_Resource_Arbeitsregel_Interface {
+
     protected $_name = 'arbeitsregel';
     protected $_id = 'id';
     protected $_rowClass = 'Azebo_Resource_Arbeitsregel_Item';
@@ -39,6 +37,37 @@ implements Azebo_Resource_Arbeitsregel_Interface {
             'refColumns' => 'id',
         ),
     );
-    
+
+    public function getArbeitsregelNachMonatUndMitarbeiter(
+    Zend_Date $monat, Azebo_Mitarbeite_Resource_Item_Interface $mitarbeiter) {
+        // Ersten und Letzten des Monats finden
+        $mitarbeiterId = $mitarbeiter->id;
+        $erster = new Zend_Date($monat);
+        $letzter = new Zend_Date($monat);
+        $erster->setDay(1);
+        $letzter->setDay($monat->get(Zend_Date::MONTH_DAYS));
+
+        // alle Regeln für den Mitarbeiter finden
+        $select = $this->select();
+        $select->where('mitarbeiter_id = ?', $mitarbeiterId);
+        $dbRegeln = $this->fetchAll($select);
+
+        // die Regeln, die diesen Monat gelten finden
+        $regeln = array();
+        foreach ($dbRegeln as $dbRegel) {
+            if ($dbRegel->von->compare($erster) != 1) {
+                if ($dbRegel->bis === null) {
+                    array_push($regeln, $dbRegel);
+                } else {
+                    if ($dbRegel->bis->compare($letzter) == 1) {
+                        array_push($regeln, $dbRegel);
+                    }
+                }
+            }
+        }
+
+        return $regeln;
+    }
+
 }
 

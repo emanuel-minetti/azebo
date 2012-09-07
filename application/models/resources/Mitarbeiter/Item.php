@@ -38,51 +38,23 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function getArbeitstagNachTag(Zend_Date $tag) {
         $select = $this->select()->where('tag = ?', $tag->toString('yyyy-MM-dd'));
-        $row = $this->findDependentRowset('Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
+        $row = $this->findDependentRowset(
+                'Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
         return $row->current();
     }
 
     /**
      * Gibt ein Array von Arbeitstagen für den angegebenen Monat zurück.
      * Falls ein Arbeitstag in der DB existiert wird dieser eingefügt, falls
-     * nicht ein frisch intialisierter Arbeitstag.
+     * nicht wird ein frisch intialisierter Arbeitstag eingefügt.
      * 
      * @param Zend_Date $monat
      * @return array 
      */
     public function getArbeitstageNachMonat(Zend_Date $monat) {
-        $erster = new Zend_Date($monat);
-        $erster->setDay(1);
-        $letzter = new Zend_Date($monat);
-        $letzter->setDay($monat->get(Zend_Date::MONTH_DAYS));
-
-        $select = $this->select();
-        $select->where('tag >= ?', $erster->toString('yyyy-MM-dd'))
-                ->where('tag <= ?', $letzter->toString('yyyy-MM-dd'))
-                ->order('tag ASC');
-        $dbTage = $this->findDependentRowset(
-                'Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
         $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
-        $arbeitstage = array();
-
-        $tag = new Zend_Date($erster);
-        while ($tag->compareDay($letzter) == -1) {
-            if ($dbTage->current() !== null &&
-                    $dbTage->current()->getTag()->equals(
-                            $tag, Zend_Date::DATE_MEDIUM)) {
-                array_push($arbeitstage, $dbTage->current());
-                $dbTage->next();
-            } else {
-                $arbeitstag = $arbeitstagTabelle->createRow();
-                $arbeitstag->setTag($tag);
-                //TODO setze Arbeitsregel!
-                array_push($arbeitstage, $arbeitstag);
-            }
-
-            $tag->addDay(1);
-        }
-
-        return $arbeitstage;
+        return $arbeitstagTabelle->getArbeitstageNachMonatUndMitarbeiterId(
+                        $monat, $this->id);
     }
 
     public function setRolle(array $gruppen) {
@@ -121,28 +93,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function saveArbeitstag(Zend_Date $tag, array $daten) {
-        //$log = Zend_Registry::get('log');
-        //
-        //Hohle den Arbeitstag aus der DB
-        $arbeitstag = $this->getArbeitstagNachTag($tag);
-
-        //Falls der Arbeitstag noch nicht in der DB existierte,
-        //initialisiere ihn
-        if ($arbeitstag === null) {
-            $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
-            $arbeitstag = $arbeitstagTabelle->createRow();
-            $arbeitstag->mitarbeiter_id = $this->id;
-            $arbeitstag->tag = $tag->toString('yyyy-MM-dd');
-        }
-
-        //Setze die Daten
-        $arbeitstag->setBeginn($daten['beginn']);
-        $arbeitstag->setEnde($daten['ende']);
-        $arbeitstag->befreiung = $daten['befreiung'];
-        $arbeitstag->bemerkung = $daten['bemerkung'];
-        $arbeitstag->pause = $daten['pause'];
-
-        $arbeitstag->save();
+        $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
+        $arbeitstagTabelle->saveArbeitstag($tag, $this->id, $daten);
     }
 
     public function setNachname($nachname) {
@@ -151,16 +103,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function setVorname($vorname) {
         $this->_vorname = $vorname;
-    }
-
-    public function getArbeitsregelnNachMonat(Zend_Date $monat) {
-        //TODO Hier weitermachen!
-        $select = $this->select();
-        $dbRegeln = $this->findDependentRowset(
-                'Azebo_Resource_Arbeitsregel', 'Arbeitsregel', $select);
-        foreach ($dbRegeln as $dbRegel) {
-            
-        }
     }
 
 }

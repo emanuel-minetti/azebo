@@ -44,8 +44,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function getEnde() {
-        return $this->_dzService->zeitSqlZuPhp(
-                        $this->_row->ende);
+        return $this->_dzService->zeitSqlZuPhp($this->_row->ende);
     }
 
     public function setBeginn($beginn) {
