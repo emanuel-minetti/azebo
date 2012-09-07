@@ -28,10 +28,12 @@ interface Azebo_Resource_Arbeitsregel_Item_Interface {
 
     public function getVon();
     
-    public function setVon();
+    public function setVon($von);
     
     public function getBis();
     
-    public function setBis();
+    public function setBis($bis);
+    
+    public function getSoll();
 }
 

@@ -28,9 +28,9 @@
 class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Arbeitstag_Item_Interface {
 
     protected $_feiertagsService;
-    protected $_feiertag;
     protected $_dzService;
-
+    protected $_feiertag;
+    protected $_regel;
 
     public function __construct($config) {
         parent::__construct($config);
@@ -52,7 +52,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function setEnde($ende) {
-        $this->_row->ende =$this->_dzService->zeitPhpZuSql($ende);
+        $this->_row->ende = $this->_dzService->zeitPhpZuSql($ende);
     }
 
     public function getTag() {
@@ -60,15 +60,55 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function setTag($tag) {
-        $this->_row->tag =$this->_dzService->datumPhpZuSql($tag);
+        $this->_row->tag = $this->_dzService->datumPhpZuSql($tag);
     }
 
     public function getFeiertag() {
         if ($this->_feiertag === null && $this->_feiertagsService !== null) {
-                $this->_feiertag =
-                        $this->_feiertagsService->feiertag($this->getTag());
-            }
+            $this->_feiertag =
+                    $this->_feiertagsService->feiertag($this->getTag());
+        }
         return $this->_feiertag;
+    }
+
+    public function getRegel() {
+        if ($this->_regel === null) {
+            $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
+            $arbeitsregeln = $arbeitsregelTabelle->
+                    getArbeitsregelNachMonatUndMitarbeiterId(
+                    $this->getTag(), $this->mitarbeiter_id);
+            foreach ($arbeitsregeln as $arbeitsregel) {
+                if ($arbeitsregel->wochentag == 'alle') {
+                    if ($arbeitsregel->kalenderwoche == 'alle') {
+                        $this->_regel = $arbeitsregel;
+                        break;
+                    } else {
+                        $kwUngerade = $this->getTag()->get(Zend_Date::WEEK) % 2;
+                        if (($kwUngerade && $arbeitsregel->kalenderwoche == 'ungerade') ||
+                                (!$kwUngerade && $arbeitsregel->kalenderwoche == 'gerade')) {
+                            $this->_regel = $arbeitsregel;
+                            break;
+                        }
+                    }
+                } else {
+                    if ($arbeitsregel->wochentag ==
+                            strtolower($this->getTag()->get(Zend_Date::WEEKDAY))) {
+                        if ($arbeitsregel->kalenderwoche == 'alle') {
+                            $this->_regel = $arbeitsregel;
+                            break;
+                        } else {
+                            $kwUngerade = $this->getTag()->get(Zend_Date::WEEK) % 2;
+                            if (($kwUngerade && $arbeitsregel->kalenderwoche == 'ungerade') ||
+                                    (!$kwUngerade && $arbeitsregel->kalenderwoche == 'gerade')) {
+                                $this->_regel = $arbeitsregel;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $this->_regel;
     }
 
 }

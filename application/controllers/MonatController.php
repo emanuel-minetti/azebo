@@ -225,6 +225,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($arbeitstag->befreiung !== null) {
                     $befreiung = $befreiungOptionen[$arbeitstag->befreiung];
                 }
+                if($arbeitstag->getRegel() !== null) {
+                    $soll = $arbeitstag->regel->soll->toString('HH:mm');
+                }
 
                 $tabellenDaten->addItem(array(
                     'datum' => $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.YYYY'),
@@ -234,6 +237,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     'befreiung' => $befreiung,
                     'bemerkung' => $arbeitstag->bemerkung,
                     'pause' => $arbeitstag->pause,
+                    'soll' => $soll,
                 ));
 
                 //Neujahr und Karfreitag passen in eine Zeile mit dem Wochentag,

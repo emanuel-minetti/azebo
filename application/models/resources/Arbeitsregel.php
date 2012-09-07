@@ -38,10 +38,10 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
         ),
     );
 
-    public function getArbeitsregelNachMonatUndMitarbeiter(
-    Zend_Date $monat, Azebo_Mitarbeite_Resource_Item_Interface $mitarbeiter) {
+    public function getArbeitsregelNachMonatUndMitarbeiterId(
+            Zend_Date $monat, $mitarbeiterId) {
+        
         // Ersten und Letzten des Monats finden
-        $mitarbeiterId = $mitarbeiter->id;
         $erster = new Zend_Date($monat);
         $letzter = new Zend_Date($monat);
         $erster->setDay(1);

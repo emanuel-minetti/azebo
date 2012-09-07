@@ -59,5 +59,7 @@ interface Azebo_Resource_Arbeitstag_Item_Interface {
      * @return array 
      */
     public function getFeiertag();
+    
+    public function getRegel();
 }
 
