@@ -252,14 +252,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         }
                     }
                     $ist = $zeitDate->toString('HH:mm');
-                    $sollDate = new Zend_Date($arbeitstag->regel->soll);
-                    if ($zeitDate->compare($sollDate, Zend_Date::TIMES) == -1) {
-                        // ist < soll
-                        $saldo = $sollDate->sub($zeitDate, Zend_Date::TIMES)
-                                ->toString('- HH:mm');
+                    if ($arbeitstag->regel !== null) {
+                        //es gibt eine Regel für diesen Tag, also berechne
+                        //'saldo'
+                        $sollDate = new Zend_Date($arbeitstag->regel->soll);
+                        if ($zeitDate->compare(
+                                        $sollDate, Zend_Date::TIMES) == -1) {
+                            // 'ist' < 'soll'
+                            $saldo = $sollDate->sub($zeitDate, Zend_Date::TIMES)
+                                    ->toString('- HH:mm');
+                        } else {
+                            $saldo = $zeitDate->sub($sollDate, Zend_Date::TIMES)
+                                    ->toString('HH:mm');
+                        }
                     } else {
-                        $saldo = $zeitDate->sub($sollDate, Zend_Date::TIMES)
-                                ->toString('HH:mm');
+                        //keine Regel für diesen Tag, also 'saldo' = 'ist'
+                        $saldo = $ist;
                     }
                 }
 
