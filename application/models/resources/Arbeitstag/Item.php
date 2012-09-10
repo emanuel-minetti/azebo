@@ -86,7 +86,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
      * oder Samstag wird NULL zurückgegeben, ansonsten Ein Objekt vom Typ
      * Azebo_Resource_Arbeitsregel_Item_Interface
      * 
-     * @return null|Azebo_Resource_Arbeitsregel_Item_Interface 
+     * @return null/Azebo_Resource_Arbeitsregel_Item_Interface die Regel
      */
     public function getRegel() {
         //Prüfe, ob die Regel für diesen Tag schon gesetzt ist. Falls ja,
