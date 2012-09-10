@@ -72,6 +72,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function getRegel() {
+        //TODO Kommentieren!
         if ($this->_regel === null) {
             $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
             $arbeitsregeln = $arbeitsregelTabelle->

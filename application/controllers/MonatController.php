@@ -215,6 +215,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $beginn = null;
                 $ende = null;
                 $befreiung = null;
+                $anwesend = null;
+                $ist = null;
+                $soll = null;
+                $saldo = null;
+
 
                 if ($arbeitstag->beginn !== null) {
                     $beginn = $arbeitstag->beginn->toString('HH:mm');
@@ -225,8 +230,37 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($arbeitstag->befreiung !== null) {
                     $befreiung = $befreiungOptionen[$arbeitstag->befreiung];
                 }
-                if($arbeitstag->getRegel() !== null) {
+                if ($arbeitstag->getRegel() !== null) {
                     $soll = $arbeitstag->regel->soll->toString('HH:mm');
+                }
+                //TODO Hier muss irgendwie die 3-Uhr-Regel rein!
+                //Falls beginn und ende gesetzt sind, berechne anwesend, ist und
+                //saldo. 
+                if ($beginn !== null && $ende !== null) {
+                    $endeKopie = new Zend_Date($arbeitstag->ende);
+                    $zeitDate = $endeKopie->sub(
+                            $arbeitstag->beginn, Zend_Date::TIMES);
+                    $anwesend = $zeitDate->toString('HH:mm');
+                    if ($arbeitstag->pause == '-') {
+                        $neunStunden = new Zend_Date(
+                                        '00:09:00', Zend_Date::TIMES);
+                        if ($zeitDate->compare(
+                                        $neunStunden, Zend_Date::TIMES) == -1) {
+                            $zeitDate->sub('00:30:00', Zend_Date::TIMES);
+                        } else {
+                            $zeitDate->sub('00:45:00', Zend_Date::TIMES);
+                        }
+                    }
+                    $ist = $zeitDate->toString('HH:mm');
+                    $sollDate = new Zend_Date($arbeitstag->regel->soll);
+                    if ($zeitDate->compare($sollDate, Zend_Date::TIMES) == -1) {
+                        // ist < soll
+                        $saldo = $sollDate->sub($zeitDate, Zend_Date::TIMES)
+                                ->toString('- HH:mm');
+                    } else {
+                        $saldo = $zeitDate->sub($sollDate, Zend_Date::TIMES)
+                                ->toString('HH:mm');
+                    }
                 }
 
                 $tabellenDaten->addItem(array(
@@ -237,7 +271,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     'befreiung' => $befreiung,
                     'bemerkung' => $arbeitstag->bemerkung,
                     'pause' => $arbeitstag->pause,
+                    'anwesend' => $anwesend,
+                    'ist' => $ist,
                     'soll' => $soll,
+                    'saldo' => $saldo,
                 ));
 
                 //Neujahr und Karfreitag passen in eine Zeile mit dem Wochentag,

@@ -33,6 +33,7 @@ class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
         self::BEGINN_NACH_ENDE => 'Der eingegebene Beginn liegt nach dem Ende!',
     );
     
+     //TODO 3-Uhr-Regel implementieren!
     public function isValid($value, $context = null) {
         
         $this->_setValue($value);
