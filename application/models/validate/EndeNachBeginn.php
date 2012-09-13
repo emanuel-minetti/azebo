@@ -30,10 +30,9 @@ class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
     const BEGINN_NACH_ENDE = 'BeginnNachEnde';
     
      protected $_messageTemplates = array(
-        self::BEGINN_NACH_ENDE => 'Der eingegebene Beginn liegt nach dem Ende!',
+        self::BEGINN_NACH_ENDE => 'Das eingegebene Ende liegt vor dem Beginn!',
     );
-    
-     //TODO 3-Uhr-Regel implementieren!
+     
     public function isValid($value, $context = null) {
         
         $this->_setValue($value);
@@ -48,12 +47,19 @@ class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
                 // In context liegen die Daten ungefiltert vor, also filtere
                 // selber
                 $contextBeginn = $context['beginn'];
-                $beginnWert = $contextBeginn == '' ? null : substr($contextBeginn, 1);
-                $beginn = new Zend_Date($beginnWert, Zend_Date::TIME_MEDIUM);
-                
-                if($ende->compare($beginn, Zend_Date::TIME_MEDIUM) != 1) {
-                    $this->_error(self::BEGINN_NACH_ENDE);
-                    return false;
+                if($contextBeginn == '') {
+                    // Kein Beginn eingetragen, also gültig.
+                    return true;
+                }
+                else {
+                    // Beginn und Ende eingetragen, also teste
+                    $beginnWert = substr($contextBeginn, 1);
+                    $beginn = new Zend_Date($beginnWert, Zend_Date::TIMES);
+                    $zeitService = new Azebo_Service_Zeitrechner();
+                    if($zeitService->anwesend($beginn, $ende) === null) {
+                        $this->_error(self::BEGINN_NACH_ENDE);
+                        return false;
+                    }
                 }
             }
         }

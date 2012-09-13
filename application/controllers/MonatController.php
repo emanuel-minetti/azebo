@@ -83,7 +83,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ->requireModule('dojo.data.ItemFileReadStore')
                 ->requireModule('dojo._base.connect');
 
-        // Lade den mitarbeiter und die Arbeitstage
+        // Lade den Mitarbeiter und die Arbeitstage
         $authService = new Azebo_Service_Authentifizierung();
         $this->mitarbeiter = $authService->getIdentity();
         $this->arbeitstage = $this->mitarbeiter
@@ -144,7 +144,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // rendere die Seite
         $this->view->tagForm = $form;
-        //$datum = new Zend_Date($this->zuBearbeitendesDatum);
         // setze den Seitennamen
         $this->erweitereSeitenName(' - Bearbeite ');
         $this->erweitereSeitenName($this->zuBearbeitendesDatum
@@ -233,42 +232,45 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($arbeitstag->getRegel() !== null) {
                     $soll = $arbeitstag->regel->soll->toString('HH:mm');
                 }
-                //TODO Hier muss irgendwie die 3-Uhr-Regel rein!
+                
                 //Falls beginn und ende gesetzt sind, berechne anwesend, ist und
                 //saldo. 
                 if ($beginn !== null && $ende !== null) {
-                    $endeKopie = new Zend_Date($arbeitstag->ende);
-                    $zeitDate = $endeKopie->sub(
-                            $arbeitstag->beginn, Zend_Date::TIMES);
-                    $anwesend = $zeitDate->toString('HH:mm');
+                    $zeitService = new Azebo_Service_Zeitrechner();
+                    $anwesend = $zeitService->anwesend($arbeitstag->beginn, $arbeitstag->ende);
+                    
+                    $ist = new Zend_Date($anwesend);
                     if ($arbeitstag->pause == '-') {
+                        //TODO richtig machen!!
                         $neunStunden = new Zend_Date(
                                         '00:09:00', Zend_Date::TIMES);
-                        if ($zeitDate->compare(
+                        if ($anwesend->compare(
                                         $neunStunden, Zend_Date::TIMES) == -1) {
-                            $zeitDate->sub('00:30:00', Zend_Date::TIMES);
+                            $ist->sub('00:30:00', Zend_Date::TIMES);
                         } else {
-                            $zeitDate->sub('00:45:00', Zend_Date::TIMES);
+                            $ist->sub('00:45:00', Zend_Date::TIMES);
                         }
-                    }
-                    $ist = $zeitDate->toString('HH:mm');
+                    }            
+                    
+                    $saldo = new Zend_Date($ist); 
                     if ($arbeitstag->regel !== null) {
                         //es gibt eine Regel für diesen Tag, also berechne
                         //'saldo'
                         $sollDate = new Zend_Date($arbeitstag->regel->soll);
-                        if ($zeitDate->compare(
+                        if ($ist->compare(
                                         $sollDate, Zend_Date::TIMES) == -1) {
                             // 'ist' < 'soll'
-                            $saldo = $sollDate->sub($zeitDate, Zend_Date::TIMES)
-                                    ->toString('- HH:mm');
+                            $saldo = $sollDate->sub($ist, Zend_Date::TIMES)->toString('- HH:mm');
                         } else {
-                            $saldo = $zeitDate->sub($sollDate, Zend_Date::TIMES)
-                                    ->toString('HH:mm');
+                            $saldo->sub($sollDate, Zend_Date::TIMES);
+                            $saldo = $saldo->toString('HH:mm');
                         }
                     } else {
                         //keine Regel für diesen Tag, also 'saldo' = 'ist'
-                        $saldo = $ist;
+                        $saldo = $ist->toString('HH:mm');
                     }
+                    $anwesend = $anwesend->toString('HH:mm');
+                    $ist = $ist->toString('HH:mm');
                 }
 
                 $tabellenDaten->addItem(array(
