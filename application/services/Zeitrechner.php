@@ -26,9 +26,8 @@
  *
  * @author Emanuel Minetti
  */
-
 class Azebo_Service_Zeitrechner {
-    
+
     /**
      * Gibt bei gegebenen Beginn und Ende die Anwesenheitszeit zurück, oder NULL
      * falls die gegebenen Zeiten nicht gültig sind. Der Arbeitstag beginnt
@@ -39,11 +38,11 @@ class Azebo_Service_Zeitrechner {
      * @return Zend_Date|null 
      */
     public function anwesend(Zend_Date $beginn, Zend_Date $ende) {
-        if(($beginn->compareTime('03:01:00') != -1 && $ende->compareTime('03:01:00') != -1) || 
+        if (($beginn->compareTime('03:01:00') != -1 && $ende->compareTime('03:01:00') != -1) ||
                 ($beginn->compareTime('03:00:00') != 1 && $ende->compareTime('03:00:00') != 1)) {
             // Beginn und Ende beide nach 03:00 bzw. beide vor oder gleich 03:00,
             // also alles normal
-            if($beginn->compareTime($ende) == -1) {
+            if ($beginn->compareTime($ende) == -1) {
                 // Beginn vor Ende, also gültig
                 $anwesend = new Zend_Date($ende);
                 $anwesend->subTime($beginn);
@@ -51,10 +50,10 @@ class Azebo_Service_Zeitrechner {
             } else {
                 // Beginn gleich oder nach Ende, also ungültig
                 return null;
-            } 
+            }
         } else {
             //Eine Zeit vor oder gleich 03:00, die andere danach
-            if($beginn->compareTime('03:00:00') != 1) {
+            if ($beginn->compareTime('03:00:00') != 1) {
                 //Beginn vor oder gleich 03:00 und Ende nach 03:00, also ungültig
                 return null;
             } else {
@@ -63,9 +62,56 @@ class Azebo_Service_Zeitrechner {
                 $anwesend->subTime($beginn);
                 $anwesend->addTime($ende);
                 return $anwesend;
-            }   
+            }
         }
     }
-    
+
+    /**
+     * Gibt die Ist-Arbeitszeit zurück.
+     * Erwartet eine Anwesenheitszeit und optional eine Angabe, ob eine Pause
+     * abgezogen werden soll oder nicht.
+     * 
+     * @param Zend_Date $anwesend
+     * @param boolean $ohnePause
+     * @return Zend_Date 
+     */
+    public function ist(Zend_Date $anwesend, $ohnePause = false) {
+        $ist = new Zend_Date($anwesend);
+        if (!$ohnePause) {
+            //TODO darf nicht abziehen, falls Anwesend < Pause
+            $neunStunden = new Zend_Date(
+                            '09:00:00', Zend_Date::TIMES);
+            if ($anwesend->compare(
+                            $neunStunden, Zend_Date::TIMES) == -1) {
+                $ist->sub('00:30:00', Zend_Date::TIMES);
+            } else {
+                $ist->sub('00:45:00', Zend_Date::TIMES);
+            }
+        }
+        return $ist;
+    }
+
+    public function saldo(Zend_Date $ist, $regel) {
+        //TODO kommentieren!
+        $saldo = new Zend_Date($ist);
+        $positiv = true;
+        if ($regel !== null) {
+            $soll = new Zend_Date($regel->soll);
+            if ($ist->compare($soll, Zend_Date::TIMES) == -1) {
+                // 'ist' < 'soll'
+                $saldo = $soll->sub($ist, Zend_Date::TIMES);
+                $positiv = false;
+            } else {
+                $saldo->sub($soll, Zend_Date::TIMES);
+            }
+        }
+        
+        $erg = array(
+            'saldo' => $saldo,
+            'positiv' => $positiv,
+        );
+        return $erg;
+    }
+
 }
 

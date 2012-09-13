@@ -232,45 +232,23 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($arbeitstag->getRegel() !== null) {
                     $soll = $arbeitstag->regel->soll->toString('HH:mm');
                 }
-                
+
                 //Falls beginn und ende gesetzt sind, berechne anwesend, ist und
                 //saldo. 
                 if ($beginn !== null && $ende !== null) {
                     $zeitService = new Azebo_Service_Zeitrechner();
+
                     $anwesend = $zeitService->anwesend($arbeitstag->beginn, $arbeitstag->ende);
-                    
-                    $ist = new Zend_Date($anwesend);
-                    if ($arbeitstag->pause == '-') {
-                        //TODO richtig machen!!
-                        $neunStunden = new Zend_Date(
-                                        '00:09:00', Zend_Date::TIMES);
-                        if ($anwesend->compare(
-                                        $neunStunden, Zend_Date::TIMES) == -1) {
-                            $ist->sub('00:30:00', Zend_Date::TIMES);
-                        } else {
-                            $ist->sub('00:45:00', Zend_Date::TIMES);
-                        }
-                    }            
-                    
-                    $saldo = new Zend_Date($ist); 
-                    if ($arbeitstag->regel !== null) {
-                        //es gibt eine Regel für diesen Tag, also berechne
-                        //'saldo'
-                        $sollDate = new Zend_Date($arbeitstag->regel->soll);
-                        if ($ist->compare(
-                                        $sollDate, Zend_Date::TIMES) == -1) {
-                            // 'ist' < 'soll'
-                            $saldo = $sollDate->sub($ist, Zend_Date::TIMES)->toString('- HH:mm');
-                        } else {
-                            $saldo->sub($sollDate, Zend_Date::TIMES);
-                            $saldo = $saldo->toString('HH:mm');
-                        }
-                    } else {
-                        //keine Regel für diesen Tag, also 'saldo' = 'ist'
-                        $saldo = $ist->toString('HH:mm');
-                    }
                     $anwesend = $anwesend->toString('HH:mm');
+
+                    $ohnePause = $arbeitstag->pause == '-' ? false : true;
+                    $ist = $zeitService->ist($anwesend, $ohnePause);
                     $ist = $ist->toString('HH:mm');
+
+                    $saldoErg = $zeitService->saldo($ist, $arbeitstag->regel);
+                    $saldo = $saldoErg['positiv'] ?
+                            $saldoErg['saldo']->toString('HH:mm') :
+                            $saldoErg['saldo']->toString('- HH:mm');
                 }
 
                 $tabellenDaten->addItem(array(
