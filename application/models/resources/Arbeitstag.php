@@ -61,7 +61,7 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
         $arbeitstage = array();
 
         $tag = new Zend_Date($erster);
-        while ($tag->compareDay($letzter) == -1) {
+        while ($tag->compareMonth($monat) == 0) {
             
             if ($dbTage->current() !== null &&
                     $dbTage->current()->getTag()->equals(

@@ -78,10 +78,6 @@ class Azebo_Service_Zeitrechner {
     public function ist(Zend_Date $anwesend, $ohnePause = false) {
         $ist = new Zend_Date($anwesend);
         if (!$ohnePause) {
-            //Nichts abziehen, falls Anwesend <= Pause
-            if($anwesend->compareTime('00:30:00') != 1) {
-                return $ist;
-            }
             $neunStunden = new Zend_Date(
                             '09:00:00', Zend_Date::TIMES);
             if ($anwesend->compare(

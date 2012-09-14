@@ -94,8 +94,8 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'checkedValue' => 'x',
                     'uncheckedValue' => '-',
                     'filters' => array('StringTrim'),
+                    'validators' => array('Pause',),
                 ));
-        //TODO Pause validieren!
 
         // Bevölkere das Formular
         if ($arbeitstag !== null) {
