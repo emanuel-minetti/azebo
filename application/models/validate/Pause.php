@@ -26,7 +26,6 @@
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Pause extends Zend_Validate_Abstract {
-    //TODO Implementieren!
 
     const OHNE_ZEIT = 'OhneZeit';
     const ZU_KURZ = 'ZuKurz';
