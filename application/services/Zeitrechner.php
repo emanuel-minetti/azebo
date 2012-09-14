@@ -78,7 +78,10 @@ class Azebo_Service_Zeitrechner {
     public function ist(Zend_Date $anwesend, $ohnePause = false) {
         $ist = new Zend_Date($anwesend);
         if (!$ohnePause) {
-            //TODO darf nicht abziehen, falls Anwesend < Pause
+            //Nichts abziehen, falls Anwesend <= Pause
+            if($anwesend->compareTime('00:30:00') != 1) {
+                return $ist;
+            }
             $neunStunden = new Zend_Date(
                             '09:00:00', Zend_Date::TIMES);
             if ($anwesend->compare(
@@ -91,8 +94,19 @@ class Azebo_Service_Zeitrechner {
         return $ist;
     }
 
+    /**
+     * Gibt den Saldo eines Tages als array zurück. Das Array enthält unter dem
+     * Schlüssel 'saldo' ein Zend_Date-Objekt und unter dem Schlüssel 'positiv'
+     * ein Bool-Wert, der anzeigt ob der Saldo positiv oder negativ zu sehen
+     * ist. Die Funktion erwartet ein Zend_Date mit der Ist-Zeit und eine Regel,
+     * die entweder Azebo_Resource_Arbeitsregel_Item_Interface implementiert
+     * oder NULL ist.
+     *
+     * @param Zend_Date $ist
+     * @param Azebo_Resource_Arbeitsregel_Item_Interface|null $regel
+     * @return array
+     */
     public function saldo(Zend_Date $ist, $regel) {
-        //TODO kommentieren!
         $saldo = new Zend_Date($ist);
         $positiv = true;
         if ($regel !== null) {

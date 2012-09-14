@@ -26,9 +26,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
     public $monat;
     public $jahr;
     public $tageImMonat;
+    
+    /**
+     * @var Azebo_Service_Zeitrechner
+     */
+    public $zeitrechner;
 
     /**
-     *
      * @var Zend_Date 
      */
     public $zuBearbeitendesDatum;
@@ -88,6 +92,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->mitarbeiter = $authService->getIdentity();
         $this->arbeitstage = $this->mitarbeiter
                 ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
+        
+        // Stelle den Zeitrechner-Service zur Verfügung
+        $this->zeitrechner = new Azebo_Service_Zeitrechner();
     }
 
     public function getSeitenName() {
@@ -219,7 +226,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $soll = null;
                 $saldo = null;
 
-
                 if ($arbeitstag->beginn !== null) {
                     $beginn = $arbeitstag->beginn->toString('HH:mm');
                 }
@@ -236,19 +242,18 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 //Falls beginn und ende gesetzt sind, berechne anwesend, ist und
                 //saldo. 
                 if ($beginn !== null && $ende !== null) {
-                    $zeitService = new Azebo_Service_Zeitrechner();
-
-                    $anwesend = $zeitService->anwesend($arbeitstag->beginn, $arbeitstag->ende);
-                    $anwesend = $anwesend->toString('HH:mm');
+                    $anwesend = $this->zeitrechner->anwesend($arbeitstag->beginn, $arbeitstag->ende);
 
                     $ohnePause = $arbeitstag->pause == '-' ? false : true;
-                    $ist = $zeitService->ist($anwesend, $ohnePause);
-                    $ist = $ist->toString('HH:mm');
+                    $ist = $this->zeitrechner->ist($anwesend, $ohnePause);
 
-                    $saldoErg = $zeitService->saldo($ist, $arbeitstag->regel);
+                    $saldoErg = $this->zeitrechner->saldo($ist, $arbeitstag->regel);
                     $saldo = $saldoErg['positiv'] ?
                             $saldoErg['saldo']->toString('HH:mm') :
                             $saldoErg['saldo']->toString('- HH:mm');
+                    
+                    $anwesend = $anwesend->toString('HH:mm');
+                    $ist = $ist->toString('HH:mm');
                 }
 
                 $tabellenDaten->addItem(array(
