@@ -29,7 +29,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
 
     const UNGUELTIGE_UHRZEIT = 'Bitte geben Sie die Uhrzeit als vierstellige Zahl ein!';
     const UNGUELTIGE_OPTION = 'Bitte wählen Sie eine der Optionen aus!';
-    
+
     private $beginnElement;
     private $endeElement;
 
@@ -58,6 +58,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'clickableIncrement' => 'T00:10:00',
                     'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
                     'filters' => array('StringTrim', 'AlsDatum',),
+                    'validators' => array('RahmenBeginn',),
                 ));
 
         $this->endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
@@ -69,7 +70,10 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'clickableIncrement' => 'T00:10:00',
                     'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
                     'filters' => array('StringTrim', 'AlsDatum'),
-                    'validators' => array('EndeNachBeginn','Feiertag'),
+                    'validators' => array(
+                        'EndeNachBeginn',
+                        'Feiertag',
+                        'RahmenEnde',),
                 ));
 
         $befreiungService = new Azebo_Service_Befreiung();
@@ -96,11 +100,10 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'filters' => array('StringTrim'),
                     'validators' => array('Pause',),
                 ));
-        
+
         $tagElement = new Zend_Form_Element_Hidden('tag');
         //TODO Kernzeit validieren
-        //TODO Rahmen validieren
-
+        
         // Bevölkere das Formular
         if ($arbeitstag !== null) {
             if ($arbeitstag->beginn !== null) {
@@ -149,7 +152,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         $displayedValue = $beginn === null ? '' : $beginn->toString('HHmm');
         $this->beginnElement->setDijitParam('displayedValue', $displayedValue);
     }
-    
+
     public function setEnde($ende) {
         //$displayedValue = $ende->toString('HHmm');
         $displayedValue = $ende === null ? '' : $ende->toString('HHmm');
