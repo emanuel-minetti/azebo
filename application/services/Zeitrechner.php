@@ -76,14 +76,17 @@ class Azebo_Service_Zeitrechner {
      * @return Zend_Date 
      */
     public function ist(Zend_Date $anwesend, $ohnePause = false) {
-        //TODO Nur abziehen, falls länger als Pause!! 
         $ist = new Zend_Date($anwesend);
         if (!$ohnePause) {
             $neunStunden = new Zend_Date(
                             '09:00:00', Zend_Date::TIMES);
             if ($anwesend->compare(
                             $neunStunden, Zend_Date::TIMES) == -1) {
-                $ist->sub('00:30:00', Zend_Date::TIMES);
+                //weniger als 9 Stunden anwesend
+                if ($anwesend->compareTime('00:30:00') == 1) {
+                    //mehr als eine halbe Stunde anwesend, also ziehe Pause ab
+                    $ist->sub('00:30:00', Zend_Date::TIMES);
+                }
             } else {
                 $ist->sub('00:45:00', Zend_Date::TIMES);
             }
@@ -116,7 +119,7 @@ class Azebo_Service_Zeitrechner {
                 $saldo->sub($soll, Zend_Date::TIMES);
             }
         }
-        
+
         $erg = array(
             'saldo' => $saldo,
             'positiv' => $positiv,
