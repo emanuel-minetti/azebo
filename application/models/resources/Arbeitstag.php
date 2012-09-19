@@ -38,13 +38,31 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
         ),
     );
     
+    /**
+     * @param Zend_Date $tag
+     * @param $mitarbeiterId
+     * @return Azebo_Resource_Arbeitstag_Item_Interface 
+     */
     public function getArbeitstagNachTagUndMitarbeiterId(Zend_Date $tag, $mitarbeiterId) {
         $select = $this->select();
         $select->where('mitarbeiter_id = ?', $mitarbeiterId)
                 ->where('tag = ?', Azebo_Service_DatumUndZeitUmwandler::datumPhpZuSql($tag));
-        return $this->fetchRow($select);
+        $arbeitstag = $this->fetchRow($select);
+        if($arbeitstag === null) {
+            $arbeitstag = $this->createRow();
+            $arbeitstag->setTag($tag);
+            $arbeitstag->mitarbeiter_id = $mitarbeiterId;
+        }
+        return $arbeitstag;
     }
 
+    /**
+     *Gibt ein Array von Azebo_Resource_Arbeitstag_Item_Interface zurück.
+     * 
+     * @param Zend_Date $monat
+     * @param $mitarbeiterId
+     * @return array 
+     */
     public function getArbeitstageNachMonatUndMitarbeiterId(Zend_Date $monat,
             $mitarbeiterId) {
         $erster = new Zend_Date($monat);

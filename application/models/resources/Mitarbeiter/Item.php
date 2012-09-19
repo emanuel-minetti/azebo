@@ -36,11 +36,19 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $this->_vorname . ' ' . $this->_nachname;
     }
 
+    /**
+     * Gibt einen Arbeitstag für den angegbenen Tag zurück.
+     * Falls ein Arbeitstag in der DB für den angegebenen Tag existiert,
+     * wird dieser zurückgegeben, ansonsten ein frisch initialisierter
+     * Arbeitstag.
+     * 
+     * @param Zend_Date $tag
+     * @return Azebo_Resource_Arbeitstag_Item_Interface 
+     */
     public function getArbeitstagNachTag(Zend_Date $tag) {
-        $select = $this->select()->where('tag = ?', $tag->toString('yyyy-MM-dd'));
-        $row = $this->findDependentRowset(
-                'Azebo_Resource_Arbeitstag', 'Arbeitstag', $select);
-        return $row->current();
+        $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
+        return $arbeitstagTabelle->getArbeitstagNachTagUndMitarbeiterId(
+                        $tag, $this->id);
     }
 
     /**

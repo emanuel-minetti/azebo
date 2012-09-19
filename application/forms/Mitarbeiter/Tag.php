@@ -69,7 +69,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'clickableIncrement' => 'T00:10:00',
                     'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
                     'filters' => array('StringTrim', 'AlsDatum'),
-                    'validators' => array('EndeNachBeginn',),
+                    'validators' => array('EndeNachBeginn','Feiertag'),
                 ));
 
         $befreiungService = new Azebo_Service_Befreiung();
@@ -96,6 +96,10 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'filters' => array('StringTrim'),
                     'validators' => array('Pause',),
                 ));
+        
+        $tagElement = new Zend_Form_Element_Hidden('tag');
+        //TODO Kernzeit validieren
+        //TODO Rahmen validieren
 
         // Bevölkere das Formular
         if ($arbeitstag !== null) {
@@ -118,6 +122,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     $pauseElement->setChecked(false);
                 }
             }
+            $tagElement->setValue($arbeitstag->getTag()->toString('dd.MM.YYYY'));
         }
 
         $this->addElement($this->beginnElement);
@@ -125,6 +130,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         $this->addElement($befreiungElement);
         $this->addElement($bemerkungElement);
         $this->addElement($pauseElement);
+        $this->addElement($tagElement);
 
         $this->addElement('SubmitButton', 'absenden', array(
             'required' => false,

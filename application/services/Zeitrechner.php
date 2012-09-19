@@ -76,6 +76,7 @@ class Azebo_Service_Zeitrechner {
      * @return Zend_Date 
      */
     public function ist(Zend_Date $anwesend, $ohnePause = false) {
+        //TODO Nur abziehen, falls länger als Pause!! 
         $ist = new Zend_Date($anwesend);
         if (!$ohnePause) {
             $neunStunden = new Zend_Date(
