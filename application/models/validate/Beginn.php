@@ -21,26 +21,38 @@
  */
 
 /**
- * Description of RahmenBeginn
+ * Description of Beginn
  *
  * @author Emanuel Minetti
  */
-class Azebo_Validate_RahmenBeginn extends Zend_Validate_Abstract {
+class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
 
     const VOR_RAHMEN = 'BeginnVorRahmen';
+    const NACH_KERN = 'BeginnNachKern';
 
     protected $_messageTemplates = array(
-        self::VOR_RAHMEN => 'Der eingetragene Beginn liegt vor dem Beginn der Rahmenarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
+        self::VOR_RAHMEN => 'Der eingetragene Beginn liegt vor dem Beginn der
+            Rahmenarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
+        self::NACH_KERN => 'Der eingetragene Beginn liegt nach dem Beginn der
+            Kernarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
     );
-    
+
     public function isValid($value, $context = null) {
         $rahmenBeginn = new Zend_Date('07:00:00', Zend_Date::TIMES);
+        $kernBeginn = new Zend_Date('09:30:00', Zend_Date::TIMES);
+        $bemerkung = $context['bemerkung'];
+        $bemerkung = trim($bemerkung);
         if ($value->compareTime($rahmenBeginn) == -1) {
             //vor Beginn der Rahmenarbeitszeit
-            $bemerkung = $context['bemerkung'];
-            $bemerkung = trim($bemerkung);
             if ($bemerkung == '') {
                 $this->_error(self::VOR_RAHMEN);
+                return false;
+            }
+        }
+        if ($value->compareTime($kernBeginn) == 1) {
+            //nach Beginn der Kernarbeitszeit
+            if ($bemerkung == '') {
+                $this->_error(self::NACH_KERN);
                 return false;
             }
         }

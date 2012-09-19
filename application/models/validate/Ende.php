@@ -25,12 +25,14 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Validate_RahmenEnde extends Zend_Validate_Abstract {
+class Azebo_Validate_Ende extends Zend_Validate_Abstract {
+    //TODO Kernzeit validieren
 
-    const NACH_RAHMEN = 'BeginnVorRahmen';
+    const NACH_RAHMEN = 'EndeNachRahmen';
 
     protected $_messageTemplates = array(
-        self::NACH_RAHMEN => 'Das eingetragene Ende liegt nach dem Ende der Rahmenarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
+        self::NACH_RAHMEN => 'Das eingetragene Ende liegt nach dem Ende der
+            Rahmenarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
     );
     
     public function isValid($value, $context = null) {
