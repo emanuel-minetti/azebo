@@ -38,7 +38,6 @@ class Azebo_Validate_Feiertag extends Zend_Validate_Abstract {
     public function isValid($value, $context = null) {
         //hole und filtere die Daten
         $tag = new Zend_Date($context['tag'], 'dd.MM.YYYY');
-        $ende = $value;
         $beginn = $context['beginn'];
         $beginn = substr($beginn, 1);
         if ($beginn != '') {
@@ -47,18 +46,12 @@ class Azebo_Validate_Feiertag extends Zend_Validate_Abstract {
         $bemerkung = $context['bemerkung'];
         $bemerkung = trim($bemerkung);
 
-        $log = Zend_Registry::get('log');
-        $log->debug(__METHOD__);
-        $log->debug('Datum: ' . $tag);
-        $log->debug('Ende: ' . $ende);
-        $log->debug('Beginn: ' . $beginn);
-
+        //teste
         $ns = new Zend_Session_Namespace();
         $feiertagsservice = $ns->feiertagsservice;
         $feiertag = $feiertagsservice->feiertag($tag);
         if ($feiertag['feiertag'] == true) {
             //ist Feiertag, also teste
-            $log->debug('Feiertag: true');
             if ($beginn != '') {
                 //beginn und ende gesetzt, also teste
                 if ($bemerkung == '') {
