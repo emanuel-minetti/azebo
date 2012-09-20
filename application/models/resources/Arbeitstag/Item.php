@@ -83,7 +83,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
      * Holt die Arbeitsregel für diesen Tag aus der DB.
      * 
      * Gibt es für diesen Tag keine Regel oder ist dieser Tag ein Feier-, Sonn-
-     * oder Samstag wird NULL zurückgegeben, ansonsten Ein Objekt vom Typ
+     * oder Samstag wird NULL zurückgegeben, ansonsten ein Objekt vom Typ
      * Azebo_Resource_Arbeitsregel_Item_Interface
      * 
      * @return null/Azebo_Resource_Arbeitsregel_Item_Interface die Regel

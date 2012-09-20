@@ -49,7 +49,7 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
 
     /**
      * @param Zend_Date $tag
-     * @return null|Azebo_Resource_Arbeitstag_Item
+     * @return Azebo_Resource_Arbeitstag_Item
      */
     public function getArbeitstagNachTag(Zend_Date $tag);
 

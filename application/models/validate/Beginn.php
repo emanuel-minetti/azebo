@@ -21,7 +21,9 @@
  */
 
 /**
- * Description of Beginn
+ * Prüft den eingetragenen Beginn der Arbeitszeit gegen den in der DB oder der
+ * Konfiguration festgelegten Rahmen- und Kernbeginn. An Feiertagen wird nicht
+ * geprüft.
  *
  * @author Emanuel Minetti
  */
@@ -35,7 +37,6 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
     //Fehlermeldungen
     const VOR_RAHMEN = 'BeginnVorRahmen';
     const NACH_KERN = 'BeginnNachKern';
-
     protected $_messageTemplates = array(
         self::VOR_RAHMEN => 'Der eingetragene Beginn liegt vor dem Beginn der
             Rahmenarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
@@ -50,12 +51,26 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
         $ns = new Zend_Session_Namespace();
         $feiertagsservice = $ns->feiertagsservice;
         $feiertag = $feiertagsservice->feiertag($tag);
-        
+
         if ($feiertag['feiertag'] == false) {
             //kein Feiertag, also prüfen
+            
             //hole die Daten
-            $rahmenBeginn = new Zend_Date(self::RAHMEN_BEGINN, Zend_Date::TIMES);
-            $kernBeginn = new Zend_Date(self::KERN_BEGINN, Zend_Date::TIMES);
+            $mitarbeiter = $ns->mitarbeiter;
+            $arbeitstag = $mitarbeiter->getArbeitstagNachTag($tag);
+            $arbeitsregel = $arbeitstag->getRegel();
+            $rahmenBeginn = null;
+            $kernBeginn = null;
+            if ($arbeitsregel !== null) {
+                $rahmenBeginn = $arbeitsregel->getRahmenAnfang();
+                $kernBeginn = $arbeitsregel->getKernAnfang();
+            }
+            if ($rahmenBeginn === null) {
+                $rahmenBeginn = new Zend_Date(self::RAHMEN_BEGINN, Zend_Date::TIMES);
+            }
+            if ($kernBeginn === null) {
+                $kernBeginn = new Zend_Date(self::KERN_BEGINN, Zend_Date::TIMES);
+            }
             $bemerkung = $context['bemerkung'];
             $bemerkung = trim($bemerkung);
             $befreiung = $context['befreiung'];

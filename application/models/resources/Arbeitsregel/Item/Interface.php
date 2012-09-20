@@ -35,5 +35,13 @@ interface Azebo_Resource_Arbeitsregel_Item_Interface {
     public function setBis($bis);
     
     public function getSoll();
+    
+    public function getRahmenAnfang();
+    
+    public function getKernAnfang();
+    
+    public function getRahmenEnde();
+    
+    public function getKernEnde();
 }
 

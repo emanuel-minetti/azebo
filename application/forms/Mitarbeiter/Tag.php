@@ -103,7 +103,6 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                 ));
 
         $tagElement = new Zend_Form_Element_Hidden('tag');
-        //TODO Rahmen- und Kernzeit aus der Arbeitsregel holen!
         
         // Bevölkere das Formular
         if ($arbeitstag !== null) {

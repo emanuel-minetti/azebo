@@ -93,6 +93,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->arbeitstage = $this->mitarbeiter
                 ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
         
+        // Speichere den Mitarbeiter in der Session
+        //TODO Stellvertreter implementieren!
+        $ns->mitarbeiter = $this->mitarbeiter;
+        
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
     }

@@ -55,5 +55,21 @@ class Azebo_Resource_Arbeitsregel_Item extends AzeboLib_Model_Resource_Db_Table_
         return $this->_dzService->zeitSqlZuPhp($this->_row->soll);
     }
 
+    public function getKernAnfang() {
+        return $this->_dzService->zeitSqlZuPhp($this->_row->kernanfang);
+    }
+
+    public function getKernEnde() {
+        return $this->_dzService->zeitSqlZuPhp($this->_row->kernende);
+    }
+
+    public function getRahmenAnfang() {
+        return $this->_dzService->zeitSqlZuPhp($this->_row->rahmenanfang);
+    }
+
+    public function getRahmenEnde() {
+        return $this->_dzService->zeitSqlZuPhp($this->_row->rahmenende);
+    }
+
 }
 
