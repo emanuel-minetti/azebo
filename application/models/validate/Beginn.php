@@ -29,14 +29,9 @@
  */
 class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
     
-    //Zeiten
-    //TODO Konfiguration für die Zeiten!
-    const RAHMEN_BEGINN = '07:00:00';
-    const KERN_BEGINN = '09:30:00';
-
-    //Fehlermeldungen
     const VOR_RAHMEN = 'BeginnVorRahmen';
     const NACH_KERN = 'BeginnNachKern';
+
     protected $_messageTemplates = array(
         self::VOR_RAHMEN => 'Der eingetragene Beginn liegt vor dem Beginn der
             Rahmenarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
@@ -54,8 +49,18 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
 
         if ($feiertag['feiertag'] == false) {
             //kein Feiertag, also prüfen
-            
             //hole die Daten
+            //TODO Sommerzeitregelung!
+            $zeitenConfig = new Zend_Config_Ini(
+                            APPLICATION_PATH . '/configs/zeiten.ini', 'alle');
+            $rahmenBeginnAlle = $zeitenConfig->rahmen->beginn->normal;
+            $kernBeginnAlle = $zeitenConfig->kern->beginn;
+            
+//            $log = Zend_Registry::get('log');
+//            $log->debug('Rahmen Beginn: ' . $rahmenBeginnAlle);
+//            $log->debug('Kern Beginn: ' . $kernBeginnAlle);
+            
+            
             $mitarbeiter = $ns->mitarbeiter;
             $arbeitstag = $mitarbeiter->getArbeitstagNachTag($tag);
             $arbeitsregel = $arbeitstag->getRegel();
@@ -66,10 +71,10 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
                 $kernBeginn = $arbeitsregel->getKernAnfang();
             }
             if ($rahmenBeginn === null) {
-                $rahmenBeginn = new Zend_Date(self::RAHMEN_BEGINN, Zend_Date::TIMES);
+                $rahmenBeginn = new Zend_Date($rahmenBeginnAlle, Zend_Date::TIMES);
             }
             if ($kernBeginn === null) {
-                $kernBeginn = new Zend_Date(self::KERN_BEGINN, Zend_Date::TIMES);
+                $kernBeginn = new Zend_Date($kernBeginnAlle, Zend_Date::TIMES);
             }
             $bemerkung = $context['bemerkung'];
             $bemerkung = trim($bemerkung);

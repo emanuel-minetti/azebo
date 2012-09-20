@@ -28,16 +28,10 @@
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Ende extends Zend_Validate_Abstract {
-    
-    //Zeiten
-    //TODO Konfiguration für die Zeiten!
-    const RAHMEN_ENDE = '20:00:00';
-    const KERN_ENDE_NORM = '14:30:00';
-    const KERN_ENDE_FR = '14:00:00';
 
-    //Fehlermeldungen
     const NACH_RAHMEN = 'EndeNachRahmen';
     const VOR_KERN = 'EndeVorKern';
+
     protected $_messageTemplates = array(
         self::NACH_RAHMEN => 'Das eingetragene Ende liegt nach dem Ende der
             Rahmenarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
@@ -55,8 +49,12 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
 
         if ($feiertag['feiertag'] == false) {
             //kein Feiertag, also prüfen
-            
             //hole die Daten
+            $zeitenConfig = new Zend_Config_Ini(
+                            APPLICATION_PATH . '/configs/zeiten.ini', 'alle');
+            $rahmenEndeAlle = $zeitenConfig->rahmen->ende->normal;
+            $kernEndeNormalAlle = $zeitenConfig->kern->ende->normal;
+            $kernEndeFreitagAlle = $zeitenConfig->kern->ende->freitag;
             $mitarbeiter = $ns->mitarbeiter;
             $arbeitstag = $mitarbeiter->getArbeitstagNachTag($tag);
             $arbeitsregel = $arbeitstag->getRegel();
@@ -67,11 +65,11 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
                 $kernEnde = $arbeitsregel->getKernEnde();
             }
             if ($rahmenEnde === null) {
-                $rahmenEnde = new Zend_Date(self::RAHMEN_ENDE, Zend_Date::TIMES);
+                $rahmenEnde = new Zend_Date($rahmenEndeAlle, Zend_Date::TIMES);
             }
             if ($kernEnde === null) {
-                $kernEndeNorm = new Zend_Date(self::KERN_ENDE_NORM, Zend_Date::TIMES);
-                $kernEndeFr = new Zend_Date(self::KERN_ENDE_FR, Zend_Date::TIMES);
+                $kernEndeNorm = new Zend_Date($kernEndeNormalAlle, Zend_Date::TIMES);
+                $kernEndeFr = new Zend_Date($kernEndeFreitagAlle, Zend_Date::TIMES);
                 if ($tag->get(Zend_Date::WEEKDAY_DIGIT) == 5) {
                     $kernEnde = $kernEndeFr;
                 } else {
