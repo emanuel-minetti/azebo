@@ -26,7 +26,13 @@
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
+    
+    //Zeiten
+    //TODO Konfiguration für die Zeiten!
+    const RAHMEN_BEGINN = '07:00:00';
+    const KERN_BEGINN = '09:30:00';
 
+    //Fehlermeldungen
     const VOR_RAHMEN = 'BeginnVorRahmen';
     const NACH_KERN = 'BeginnNachKern';
 
@@ -34,26 +40,41 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
         self::VOR_RAHMEN => 'Der eingetragene Beginn liegt vor dem Beginn der
             Rahmenarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
         self::NACH_KERN => 'Der eingetragene Beginn liegt nach dem Beginn der
-            Kernarbeitszeit! Bitte geben Sie eine Bemerkung ein.',
+            Kernarbeitszeit! Bitte geben Sie eine Bemerkung und/oder
+            Dienstbefeiung ein.',
     );
 
     public function isValid($value, $context = null) {
-        $rahmenBeginn = new Zend_Date('07:00:00', Zend_Date::TIMES);
-        $kernBeginn = new Zend_Date('09:30:00', Zend_Date::TIMES);
-        $bemerkung = $context['bemerkung'];
-        $bemerkung = trim($bemerkung);
-        if ($value->compareTime($rahmenBeginn) == -1) {
-            //vor Beginn der Rahmenarbeitszeit
-            if ($bemerkung == '') {
-                $this->_error(self::VOR_RAHMEN);
-                return false;
+        //hole den Tag und prüfe auf Feiertag
+        $tag = new Zend_Date($context['tag'], 'dd.MM.YYYY');
+        $ns = new Zend_Session_Namespace();
+        $feiertagsservice = $ns->feiertagsservice;
+        $feiertag = $feiertagsservice->feiertag($tag);
+        
+        if ($feiertag['feiertag'] == false) {
+            //kein Feiertag, also prüfen
+            //hole die Daten
+            $rahmenBeginn = new Zend_Date(self::RAHMEN_BEGINN, Zend_Date::TIMES);
+            $kernBeginn = new Zend_Date(self::KERN_BEGINN, Zend_Date::TIMES);
+            $bemerkung = $context['bemerkung'];
+            $bemerkung = trim($bemerkung);
+            $befreiung = $context['befreiung'];
+            $befreiung = trim($befreiung);
+
+            //prüfe
+            if ($value->compareTime($rahmenBeginn) == -1) {
+                //vor Beginn der Rahmenarbeitszeit
+                if ($bemerkung == '') {
+                    $this->_error(self::VOR_RAHMEN);
+                    return false;
+                }
             }
-        }
-        if ($value->compareTime($kernBeginn) == 1) {
-            //nach Beginn der Kernarbeitszeit
-            if ($bemerkung == '') {
-                $this->_error(self::NACH_KERN);
-                return false;
+            if ($value->compareTime($kernBeginn) == 1) {
+                //nach Beginn der Kernarbeitszeit
+                if ($bemerkung == '' && $befreiung == 'keine') {
+                    $this->_error(self::NACH_KERN);
+                    return false;
+                }
             }
         }
         return true;
