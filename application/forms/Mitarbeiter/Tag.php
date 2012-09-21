@@ -35,6 +35,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
 
     public function init() {
         //$log = Zend_Registry::get('log');
+        //TODO Fokus und Tabindex hinzufügen!
 
         $authService = new Azebo_Service_Authentifizierung();
         $mitarbeiter = $authService->getIdentity();

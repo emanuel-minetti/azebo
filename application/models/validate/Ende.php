@@ -28,6 +28,7 @@
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Ende extends Zend_Validate_Abstract {
+    //TODO Arbeitstag endet um 3:00!!!
 
     const NACH_RAHMEN = 'EndeNachRahmen';
     const VOR_KERN = 'EndeVorKern';
@@ -61,13 +62,18 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
             $rahmenEnde = null;
             $kernEnde = null;
             if ($arbeitsregel !== null) {
+                // Mitarbeiter hat indviduelle Arbeitszeitregelung, also anwenden
                 $rahmenEnde = $arbeitsregel->getRahmenEnde();
                 $kernEnde = $arbeitsregel->getKernEnde();
             }
             if ($rahmenEnde === null) {
+                // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,
+                // also Normalfall anwenden
                 $rahmenEnde = new Zend_Date($rahmenEndeAlle, Zend_Date::TIMES);
             }
             if ($kernEnde === null) {
+                // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,
+                // also Normalfall anwenden
                 $kernEndeNorm = new Zend_Date($kernEndeNormalAlle, Zend_Date::TIMES);
                 $kernEndeFr = new Zend_Date($kernEndeFreitagAlle, Zend_Date::TIMES);
                 if ($tag->get(Zend_Date::WEEKDAY_DIGIT) == 5) {
@@ -102,4 +108,3 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
     }
 
 }
-

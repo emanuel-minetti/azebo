@@ -28,7 +28,7 @@
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
-    
+
     const VOR_RAHMEN = 'BeginnVorRahmen';
     const NACH_KERN = 'BeginnNachKern';
 
@@ -50,30 +50,45 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
         if ($feiertag['feiertag'] == false) {
             //kein Feiertag, also prüfen
             //hole die Daten
-            //TODO Sommerzeitregelung!
-            $zeitenConfig = new Zend_Config_Ini(
-                            APPLICATION_PATH . '/configs/zeiten.ini', 'alle');
-            $rahmenBeginnAlle = $zeitenConfig->rahmen->beginn->normal;
-            $kernBeginnAlle = $zeitenConfig->kern->beginn;
-            
-//            $log = Zend_Registry::get('log');
-//            $log->debug('Rahmen Beginn: ' . $rahmenBeginnAlle);
-//            $log->debug('Kern Beginn: ' . $kernBeginnAlle);
-            
-            
             $mitarbeiter = $ns->mitarbeiter;
+            $hochschule = $mitarbeiter->getHochschule();
+            $zeitenConfig = new Zend_Config_Ini(
+                            APPLICATION_PATH . '/configs/zeiten.ini', $hochschule);
+            $kernBeginnAlle = $zeitenConfig->kern->beginn;
+            if ($hochschule == 'hfm') {
+                //Sommerzeitregelung der HfM
+                $jahr = 'jahr' . $tag->toString('YYYY');
+                $rahmenSommerVon = $zeitenConfig->rahmen->sommer->von->$jahr;
+                $rahmenSommerVon = new Zend_Date($rahmenSommerVon, 'dd.MM.YYYY');
+                $rahmenSommerBis = $zeitenConfig->rahmen->sommer->bis->$jahr;
+                $rahmenSommerBis = new Zend_Date($rahmenSommerBis, 'dd.MM.YYYY');
+                if ($tag->compare($rahmenSommerVon) == 1 &&
+                        $tag->compare($rahmenSommerBis) == -1) {
+                    $rahmenBeginnAlle = $zeitenConfig->rahmen->beginn->sommer->$jahr;
+                } else {
+                    $rahmenBeginnAlle = $zeitenConfig->rahmen->beginn->normal;
+                }
+            } else {
+                // $hochschule != 'hfm'
+                $rahmenBeginnAlle = $zeitenConfig->rahmen->beginn->normal;
+            }
             $arbeitstag = $mitarbeiter->getArbeitstagNachTag($tag);
             $arbeitsregel = $arbeitstag->getRegel();
             $rahmenBeginn = null;
             $kernBeginn = null;
             if ($arbeitsregel !== null) {
+                // Mitarbeiter hat indviduelle Arbeitszeitregelung, also anwenden
                 $rahmenBeginn = $arbeitsregel->getRahmenAnfang();
                 $kernBeginn = $arbeitsregel->getKernAnfang();
             }
             if ($rahmenBeginn === null) {
+                // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,
+                // also Normalfall anwenden
                 $rahmenBeginn = new Zend_Date($rahmenBeginnAlle, Zend_Date::TIMES);
             }
             if ($kernBeginn === null) {
+                // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,
+                // also Normalfall anwenden
                 $kernBeginn = new Zend_Date($kernBeginnAlle, Zend_Date::TIMES);
             }
             $bemerkung = $context['bemerkung'];
@@ -101,4 +116,3 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
     }
 
 }
-
