@@ -111,13 +111,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // setze den Seitennamen
         $this->erweitereSeitenName($datum->toString(' MMMM yyyy'));
 
-        // befülle die Reihen
+        // befülle die Reihen der Tabelle
         $erster = new Zend_Date($this->zuBearbeitendesDatum);
         $letzter = new Zend_Date($this->zuBearbeitendesDatum);
         $erster->setDay(1);
         $letzter->setDay($this->tageImMonat);
         $tabelle = $this->_befuelleDieTabelle($erster, $letzter);
 
+        // füge die Tabelle dem View hinzu
         $this->view->monatsDaten = $tabelle['tabellenDaten'];
         $this->view->hoheTageImMonat = $tabelle['hoheTage'];
     }
