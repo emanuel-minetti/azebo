@@ -35,7 +35,6 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
 
     public function init() {
         //$log = Zend_Registry::get('log');
-        //TODO Fokus und Tabindex hinzufügen!
 
         $authService = new Azebo_Service_Authentifizierung();
         $mitarbeiter = $authService->getIdentity();
@@ -61,6 +60,8 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'filters' => array('StringTrim', 'AlsDatum',),
                     'validators' => array(
                         'Beginn',),
+                    'tabindex' => 1,
+                    'autofocus' => true,
                 ));
 
         $this->endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
@@ -76,6 +77,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                         'EndeNachBeginn',
                         'Feiertag',
                         'Ende',),
+                    'tabindex' => 2,
                 ));
 
         $befreiungService = new Azebo_Service_Befreiung();
@@ -85,6 +87,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'multiOptions' => $befreiungOptionen,
                     'invalidMessage' => self::UNGUELTIGE_OPTION,
                     'filters' => array('StringTrim', 'Alpha'),
+                    'tabindex' => 4,
                 ));
 
         $bemerkungElement = new Zend_Dojo_Form_Element_Textarea('bemerkung', array(
@@ -92,6 +95,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'required' => false,
                     'style' => 'width: 300px;',
                     'filters' => array('StringTrim'),
+                    'tabindex' => 5,
                 ));
 
         $pauseElement = new Zend_Dojo_Form_Element_CheckBox('pause', array(
@@ -104,7 +108,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                 ));
 
         $tagElement = new Zend_Form_Element_Hidden('tag');
-        
+
         // Bevölkere das Formular
         if ($arbeitstag !== null) {
             if ($arbeitstag->beginn !== null) {
@@ -140,12 +144,14 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Absenden',
+            'tabindex' => 3,
         ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Zurücksetzen',
+            'tabindex' => 6,
         ));
     }
 
