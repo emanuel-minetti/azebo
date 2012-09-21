@@ -28,7 +28,6 @@
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Ende extends Zend_Validate_Abstract {
-    //TODO Arbeitstag endet um 3:00!!!
 
     const NACH_RAHMEN = 'EndeNachRahmen';
     const VOR_KERN = 'EndeVorKern';
@@ -87,10 +86,15 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
             $befreiung = $context['befreiung'];
             $befreiung = trim($befreiung);
 
+            //Uhrzeiten für die 3-Uhr-Regelung
+            $mitternacht = new Zend_Date('00:00:00', Zend_Date::TIMES);
+            $dreiUhr = new Zend_Date('03:00:00', Zend_Date::TIMES);
 
             //prüfe
-            if ($value->compareTime($rahmenEnde) == 1) {
-                //nach Ende der Rahmenarbeitszeit
+            if ($value->compareTime($rahmenEnde) == 1 ||
+                    ($value->compareTime($mitternacht) != -1 &&
+                    $value->compareTime($dreiUhr) != 1)) {
+                // ende nach dem Rahmenende oder zwischen 0:00 und 3:00
                 if ($bemerkung == '') {
                     $this->_error(self::NACH_RAHMEN);
                     return false;
