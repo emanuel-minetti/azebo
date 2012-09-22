@@ -29,6 +29,7 @@
  * @author Emanuel Minetti
  */
 class Azebo_Service_Befreiung {
+    //TODO Dienstbefreiungsoptionen ergänzen!
     
     //Konstanten
     const KEINE = 'keine';

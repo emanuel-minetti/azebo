@@ -26,7 +26,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     public $monat;
     public $jahr;
     public $tageImMonat;
-    
+
     /**
      * @var Azebo_Service_Zeitrechner
      */
@@ -92,11 +92,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->mitarbeiter = $authService->getIdentity();
         $this->arbeitstage = $this->mitarbeiter
                 ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
-        
+
         // Speichere den Mitarbeiter in der Session
         //TODO Stellvertreter implementieren!
         $ns->mitarbeiter = $this->mitarbeiter;
-        
+
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
     }
@@ -106,6 +106,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function indexAction() {
+
+        $request = $this->getRequest();
+        $abschlussForm = $this->_getMitarbeiterAbschlussForm();
+        if ($request->isPost()) {
+            // ist Post-Request, also prüfen ob 'absenden' gedrückt wurde
+            $postDaten = $request->getPost();
+            $valid = $abschlussForm->isValid($postDaten);
+            $daten = $abschlussForm->getValues();
+        }
+
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
 
         // setze den Seitennamen
@@ -121,6 +131,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // füge die Tabelle dem View hinzu
         $this->view->monatsDaten = $tabelle['tabellenDaten'];
         $this->view->hoheTageImMonat = $tabelle['hoheTage'];
+
+        //TODO Ein Formular für den Monatsabschluss hinzufügen!
+
+        $this->view->monatForm = $abschlussForm;
     }
 
     public function editAction() {
@@ -206,6 +220,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
         return $form;
     }
 
+    public function _getMitarbeiterAbschlussForm() {
+        //TODO Implementieren!
+        $model = new Azebo_Model_Mitarbeiter();
+        $form = $model->getForm('mitarbeiterAbschluss');
+        $urlHelper = $this->_helper->getHelper('url');
+        $url = $urlHelper->url(array(
+            'monat' => $this->monat,
+            'jahr' => $this->jahr,
+                ), 'monat', true);
+        //$url .= '#form';
+        $form->setAction($url);
+        $form->setMethod('post');
+        $form->setName('monatForm');
+        return $form;
+    }
+
     private function _befuelleDieTabelle(Zend_Date $erster, Zend_Date $letzter) {
         // Hole die Befreiungsoptionen für diesen Mitarbeiter
         $befreiungService = new Azebo_Service_Befreiung();
@@ -256,7 +286,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $saldo = $saldoErg['positiv'] ?
                             $saldoErg['saldo']->toString('HH:mm') :
                             $saldoErg['saldo']->toString('- HH:mm');
-                    
+
                     $anwesend = $anwesend->toString('HH:mm');
                     $ist = $ist->toString('HH:mm');
                 }
