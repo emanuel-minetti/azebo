@@ -112,8 +112,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         if ($request->isPost()) {
             // ist Post-Request, also prüfen ob 'absenden' gedrückt wurde
             $postDaten = $request->getPost();
-            $valid = $abschlussForm->isValid($postDaten);
-            $daten = $abschlussForm->getValues();
+            if (isset($postDaten['pruefen'])) {
+                $valid = $abschlussForm->isValid($postDaten);
+                $daten = $abschlussForm->getValues();
+            }
         }
 
         $datum = new Zend_Date($this->zuBearbeitendesDatum);
@@ -132,8 +134,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->view->monatsDaten = $tabelle['tabellenDaten'];
         $this->view->hoheTageImMonat = $tabelle['hoheTage'];
 
-        //TODO Ein Formular für den Monatsabschluss hinzufügen!
-
+        // die Form für den Monatsabschluss hinzufügen
         $this->view->monatForm = $abschlussForm;
     }
 
@@ -220,8 +221,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         return $form;
     }
 
-    public function _getMitarbeiterAbschlussForm() {
-        //TODO Implementieren!
+    private function _getMitarbeiterAbschlussForm() {
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterAbschluss');
         $urlHelper = $this->_helper->getHelper('url');
@@ -233,6 +233,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $form->setAction($url);
         $form->setMethod('post');
         $form->setName('monatForm');
+
+        $monatElement = $form->getElement('monat');
+        $monatElement->setValue($this->zuBearbeitendesDatum->toString('MM.YYYY'));
         return $form;
     }
 

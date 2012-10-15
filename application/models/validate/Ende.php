@@ -66,6 +66,7 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
                 $kernEnde = $arbeitsregel->getKernEnde();
             }
             if ($rahmenEnde === null) {
+                //TODO FALSCH!!!!!!! Auch Standardregel muss gesetzt sein!!!!
                 // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,
                 // also Normalfall anwenden
                 $rahmenEnde = new Zend_Date($rahmenEndeAlle, Zend_Date::TIMES);

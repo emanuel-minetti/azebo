@@ -145,7 +145,6 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Absenden',
-            'validators' => array('Monat',),
             'tabindex' => 3,
         ));
 

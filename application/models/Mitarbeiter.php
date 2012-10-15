@@ -38,7 +38,15 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
      */
     public function getMitarbeiterNachBenutzername($benutzername) {
         return $this->getResource('Mitarbeiter')
-                ->getMitarbeiterNachBenutzername($benutzername);
+                        ->getMitarbeiterNachBenutzername($benutzername);
     }
+
+    public function getArbeitstageNachMonatUndMitarbeiter(
+    Zend_Date $monat, Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter) {
+        return $this->getResource('Arbeitstag')
+                        ->getArbeitstageNachMonatUndMitarbeiterId(
+                                $monat, $mitarbeiter->id);
+    }
+    
 }
 

@@ -84,6 +84,7 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
             if ($rahmenBeginn === null) {
                 // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,
                 // also Normalfall anwenden
+                //TODO FALSCH!!!!!!! Auch Standardregel muss gesetzt sein!!!!
                 $rahmenBeginn = new Zend_Date($rahmenBeginnAlle, Zend_Date::TIMES);
             }
             if ($kernBeginn === null) {

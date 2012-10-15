@@ -86,7 +86,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
      * oder Samstag wird NULL zurückgegeben, ansonsten ein Objekt vom Typ
      * Azebo_Resource_Arbeitsregel_Item_Interface
      * 
-     * @return null/Azebo_Resource_Arbeitsregel_Item_Interface die Regel
+     * @return null|Azebo_Resource_Arbeitsregel_Item_Interface die Regel
      */
     public function getRegel() {
         //Prüfe, ob die Regel für diesen Tag schon gesetzt ist. Falls ja,
@@ -95,7 +95,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
             //Hole die Regeln für den ganzen Monat
             $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
             $arbeitsregeln = $arbeitsregelTabelle->
-                    getArbeitsregelNachMonatUndMitarbeiterId(
+                    getArbeitsregelnNachMonatUndMitarbeiterId(
                     $this->getTag(), $this->mitarbeiter_id);
             //Iteriere über die Regeln
             foreach ($arbeitsregeln as $arbeitsregel) {

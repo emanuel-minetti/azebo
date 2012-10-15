@@ -29,10 +29,12 @@
 class Azebo_Form_Mitarbeiter_Abschluss extends AzeboLib_Form_Abstract {
 
     public function init() {
-        //TODO implementieren!
+        //TODO 'Monat Abschließen' hinzufügen!
 
         $this->addElementPrefixPath(
                 'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
+        
+        $this->addElement('Hidden', 'monat', array());
 
         $this->addElement('SubmitButton', 'pruefen', array(
             'required' => false,

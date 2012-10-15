@@ -26,19 +26,44 @@
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Monat extends Zend_Validate_Abstract {
-    
+
     const TEST = 'Test';
 
     protected $_messageTemplates = array(
         self::TEST => 'Dies ist ein Test!',
     );
-    
-    //TODO Implementieren!
-    public function isValid($value, $context=null) {
+
+    public function isValid($value, $context = null) {
         $log = Zend_Registry::get('log');
         $log->debug(__METHOD__);
+
+        // hole die Daten
+        $monat = new Zend_Date($context['monat'], 'MM.YYYY');
+        $ns = new Zend_Session_Namespace();
+        $mitarbeiter = $ns->mitarbeiter;
+        $model = new Azebo_Model_Mitarbeiter();
+        $arbeitstage = $model->getArbeitstageNachMonatUndMitarbeiter(
+                $monat, $mitarbeiter);
+        
+        $log->debug('Zu prüfenden Monat: ' . $monat->toString('MM.YYYY'));
+        $log->debug('Mitarbeiter: ' . $mitarbeiter->getName());
+        foreach ($arbeitstage as $arbeitstag) {
+            if ($arbeitstag !== null && $arbeitstag->getBeginn() !== null) {
+                $log->debug('Arbeitstag: ' . $arbeitstag->getTag()->toString('dd.MM') . ' ' . $arbeitstag->getBeginn()->toString('HH:mm'));
+            }
+        }
+        
+        //TODO prüfen, ob alle nötigen Tage ausgefüllt sind
+        foreach ($arbeitstage as $arbeitstag) {
+            if($arbeitstag->getRegel() !== null) {
+                
+            }
+        }
+
+
         $this->_error(self::TEST);
         return false;
     }
+
 }
 
