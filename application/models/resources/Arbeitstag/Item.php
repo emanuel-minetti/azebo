@@ -29,14 +29,20 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
     protected $_feiertagsService;
     protected $_dzService;
+    protected $_zeitrechnerService;
+    
     protected $_feiertag;
     protected $_regel;
+    protected $_ist;
+    protected $_anwesend;
+    protected $_saldo;
 
     public function __construct($config) {
         parent::__construct($config);
         $this->_dzService = new Azebo_Service_DatumUndZeitUmwandler();
         $ns = new Zend_Session_Namespace();
         $this->_feiertagsService = $ns->feiertagsservice;
+        $this->_zeitrechnerService = new Azebo_Service_Zeitrechner();
     }
 
     public function getBeginn() {
@@ -139,5 +145,38 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_regel;
     }
 
-}
+    public function getAnwesend() {
+        if ($this->_anwesend === null) {
+            if ($this->getBeginn() !== null && $this->getEnde() !== null) {
+                $this->_anwesend = $this->_zeitrechnerService->anwesend(
+                        $this->getBeginn(), $this->getEnde());
+            }
+        }
 
+        return $this->_anwesend;
+    }
+
+    public function getIst() {
+        if ($this->_ist === null) {
+            if ($this->getAnwesend() !== null) {
+                $ohnePause = $this->pause == '-' ? false : true;
+                $this->_ist = $this->_zeitrechnerService->ist(
+                        $this->_anwesend, $ohnePause);
+            }
+        }
+
+        return $this->_ist;
+    }
+
+    public function getSaldo() {
+        if ($this->_saldo === null) {
+            if ($this->getIst() !== null) {
+                $this->_saldo = $this->_zeitrechnerService->saldo(
+                        $this->_ist, $this->getRegel());
+            }
+        }
+
+        return $this->_saldo;
+    }
+
+}

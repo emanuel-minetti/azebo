@@ -26,7 +26,7 @@
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Feiertag extends Zend_Validate_Abstract {
-    //TODO Prüfe ob Arbeitsregel vorhanden ist!!!!!!!!!!!!!!!!!!!!!!!
+    //TODO Prüfe ob Arbeitsregel fürs Wochende vorhanden ist!
 
     const WE_OHNE_BEM = 'WochenendeOhneBemerkung';
     const FT_OHNE_BEM = 'FeiertagOhneBemerkung';

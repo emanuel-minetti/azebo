@@ -61,5 +61,11 @@ interface Azebo_Resource_Arbeitstag_Item_Interface {
     public function getFeiertag();
     
     public function getRegel();
+    
+    public function getAnwesend();
+
+    public function getIst();
+    
+    public function getSaldo();
 }
 

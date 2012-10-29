@@ -229,7 +229,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             'monat' => $this->monat,
             'jahr' => $this->jahr,
                 ), 'monat', true);
-        //$url .= '#form';
+        $url .= '#monatForm';
         $form->setAction($url);
         $form->setMethod('post');
         $form->setName('monatForm');
@@ -277,22 +277,33 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $soll = $arbeitstag->regel->soll->toString('HH:mm');
                 }
 
-                //Falls beginn und ende gesetzt sind, berechne anwesend, ist und
-                //saldo. 
-                if ($beginn !== null && $ende !== null) {
-                    $anwesend = $this->zeitrechner->anwesend($arbeitstag->beginn, $arbeitstag->ende);
-
-                    $ohnePause = $arbeitstag->pause == '-' ? false : true;
-                    $ist = $this->zeitrechner->ist($anwesend, $ohnePause);
-
-                    $saldoErg = $this->zeitrechner->saldo($ist, $arbeitstag->regel);
+                $anwesend = $arbeitstag->getAnwesend();
+                $ist = $arbeitstag->getIst();
+                $saldoErg = $arbeitstag->getSaldo();
+                if($anwesend !== null) {
+                    $anwesend = $anwesend->toString('HH:mm');
+                    $ist = $ist->toString('HH:mm');
                     $saldo = $saldoErg['positiv'] ?
                             $saldoErg['saldo']->toString('HH:mm') :
                             $saldoErg['saldo']->toString('- HH:mm');
-
-                    $anwesend = $anwesend->toString('HH:mm');
-                    $ist = $ist->toString('HH:mm');
                 }
+                
+//                //Falls beginn und ende gesetzt sind, berechne anwesend, ist und
+//                //saldo. 
+//                if ($beginn !== null && $ende !== null) {
+//                    //$anwesend = $this->zeitrechner->anwesend($arbeitstag->beginn, $arbeitstag->ende);
+//
+////                    $ohnePause = $arbeitstag->pause == '-' ? false : true;
+////                    $ist = $this->zeitrechner->ist($anwesend, $ohnePause);
+//
+////                    $saldoErg = $this->zeitrechner->saldo($ist, $arbeitstag->regel);
+////                    $saldo = $saldoErg['positiv'] ?
+////                            $saldoErg['saldo']->toString('HH:mm') :
+////                            $saldoErg['saldo']->toString('- HH:mm');
+//
+////                    $anwesend = $anwesend->toString('HH:mm');
+////                    $ist = $ist->toString('HH:mm');
+//                }
 
                 $tabellenDaten->addItem(array(
                     'datum' => $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.YYYY'),

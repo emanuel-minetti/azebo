@@ -60,12 +60,14 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
             $arbeitsregel = $arbeitstag->getRegel();
             $rahmenEnde = null;
             $kernEnde = null;
+            //TODO 'arbeitsregel === null' testen und kommentieren!!!
             if ($arbeitsregel !== null) {
-                //TODO FALSCH!!!!!!! Prüfe ob Regel gleich NULL, falls ja 'soll' der Mitarbeiter
-                //an diesem Tag nicht arbeiten!
                 // Mitarbeiter hat indviduelle Arbeitszeitregelung, also anwenden
                 $rahmenEnde = $arbeitsregel->getRahmenEnde();
                 $kernEnde = $arbeitsregel->getKernEnde();
+            } else {
+                //TODO Nachfragen, was passieren soll!!
+                return true;
             }
             if ($rahmenEnde === null) {
                 // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,

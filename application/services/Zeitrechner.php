@@ -106,6 +106,7 @@ class Azebo_Service_Zeitrechner {
      * @param Azebo_Resource_Arbeitsregel_Item_Interface|null $regel
      * @return array
      */
+    //TODO Gleitzeittag!!
     public function saldo(Zend_Date $ist, $regel) {
         $saldo = new Zend_Date($ist);
         $positiv = true;
