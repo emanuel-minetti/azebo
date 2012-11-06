@@ -65,4 +65,9 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
      */
     public function saveArbeitstag(Zend_Date $tag, array $daten);
     
+    /**
+     *@return boolean 
+     */
+    public function getBeamter();
+    
 }

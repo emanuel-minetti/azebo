@@ -113,4 +113,12 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $this->_vorname = $vorname;
     }
 
+    public function getBeamter() {
+        if($this->getRow()->beamter == 'ja') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 }

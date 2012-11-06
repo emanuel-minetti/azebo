@@ -29,13 +29,21 @@
  * @author Emanuel Minetti
  */
 class Azebo_Service_Befreiung {
-    //TODO Dienstbefreiungsoptionen ergänzen!
     
     //Konstanten
     const KEINE = 'keine';
     const URLAUB = 'urlaub';
     const AZV = 'azv';
-
+    const REISE = 'reise';
+    const FA = 'fa';
+    const FORTBILDUNG = 'fortbildung';
+    const KRANKHEIT = 'krankheit';
+    const KUR = 'kur';
+    const SONSTIGE = 'sonstige';
+    const SONDER = 'sonder';
+    const FT = 'ft';
+    const GLEITZEIT = 'gleitzeit';
+    
     /**
      * Gibt die für einen Mitarbeiter zulässigen Befreiungsoptionen zurück.
      * Das zurückgelieferte Array enthält die zugehörige Konstante als Index
@@ -46,12 +54,26 @@ class Azebo_Service_Befreiung {
      */
     public function getOptionen(
             Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter) {
-        return array(
+        $optionen = array(
             self::KEINE => '',
             self::URLAUB => 'Urlaub',
-            self::AZV => 'AZV',
+            self::REISE => 'Dienstreise',
+            self::FA => 'FA',
+            self::FORTBILDUNG => 'Fortbildung',
+            self::KRANKHEIT => 'Krankheit',
+            self::KUR => 'Kur',
+            self::SONSTIGE => 'Sonstige Dienstbefreiung',
+            self::SONDER => 'Sonderurlaub',
+            self::GLEITZEIT => 'Gleitzeittag',
         );
+        
+        if($mitarbeiter->getBeamter() === true) {
+            $optionen[self::AZV] = 'AZV'; 
+        } else {
+            $optionen[self::FT] = 'FT';
+        }
+        
+        return $optionen;
     }
 
 }
-
