@@ -99,6 +99,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
+        
+        //Saldo bis zum Vormonat berechnen
+        $saldo = $this->mitarbeiter->getSaldouebertrag();
+        $saldoString = $saldo['positiv'] == true ? '+ ' : '- ';
+        $saldoString .= $saldo['saldo']->toString('HH:mm');
+        $this->view->saldoBisher = $saldoString;
     }
 
     public function getSeitenName() {
@@ -110,7 +116,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $request = $this->getRequest();
         $abschlussForm = $this->_getMitarbeiterAbschlussForm();
         if ($request->isPost()) {
-            // ist Post-Request, also prüfen ob 'absenden' gedrückt wurde
+            // ist Post-Request, also prüfen ob 'prüfen' gedrückt wurde
             $postDaten = $request->getPost();
             if (isset($postDaten['pruefen'])) {
                 $valid = $abschlussForm->isValid($postDaten);

@@ -70,4 +70,16 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
      */
     public function getBeamter();
     
+    /**
+     * Gibt den Saldo-Übertrag des Mitarbeiters als array zurück.
+     * 
+     * Das Array enthält unter dem
+     * Schlüssel 'saldo' ein Zend_Date-Objekt und unter dem Schlüssel 'positiv'
+     * ein Bool-Wert, der anzeigt ob der Saldo positiv oder negativ zu sehen
+     * ist. 
+     *
+     * @return array
+     */
+    public function getSaldouebertrag();
+    
 }

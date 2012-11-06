@@ -114,11 +114,27 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getBeamter() {
-        if($this->getRow()->beamter == 'ja') {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->getRow()->beamter == 'ja' ? true : false;
+    }
+
+    /**
+     * Gibt den Saldo-Übertrag des Mitarbeiters als array zurück.
+     * 
+     * Das Array enthält unter dem
+     * Schlüssel 'saldo' ein Zend_Date-Objekt und unter dem Schlüssel 'positiv'
+     * ein Bool-Wert, der anzeigt ob der Saldo positiv oder negativ zu sehen
+     * ist. 
+     *
+     * @return array
+     */
+    public function getSaldouebertrag() {
+        $dzService = new Azebo_Service_DatumUndZeitUmwandler();
+        $saldo = $dzService->zeitSqlZuPhp($this->getRow()->saldouebertrag);
+        $positiv = $this->getRow()->saldouebertragpositiv == 'ja' ? true : false;
+        return array(
+            'saldo' => $saldo,
+            'positiv' => $positiv,
+        );
     }
 
 }
