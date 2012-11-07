@@ -105,6 +105,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $saldoString = $saldo['positiv'] == true ? '+ ' : '- ';
         $saldoString .= $saldo['saldo']->toString('HH:mm');
         $this->view->saldoBisher = $saldoString;
+        $dbMonate = $this->mitarbeiter->getArbeitsmonate();
     }
 
     public function getSeitenName() {
@@ -290,26 +291,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $anwesend = $anwesend->toString('HH:mm');
                     $ist = $ist->toString('HH:mm');
                     $saldo = $saldoErg['positiv'] ?
-                            $saldoErg['saldo']->toString('HH:mm') :
+                            $saldoErg['saldo']->toString('+ HH:mm') :
                             $saldoErg['saldo']->toString('- HH:mm');
                 }
-                
-//                //Falls beginn und ende gesetzt sind, berechne anwesend, ist und
-//                //saldo. 
-//                if ($beginn !== null && $ende !== null) {
-//                    //$anwesend = $this->zeitrechner->anwesend($arbeitstag->beginn, $arbeitstag->ende);
-//
-////                    $ohnePause = $arbeitstag->pause == '-' ? false : true;
-////                    $ist = $this->zeitrechner->ist($anwesend, $ohnePause);
-//
-////                    $saldoErg = $this->zeitrechner->saldo($ist, $arbeitstag->regel);
-////                    $saldo = $saldoErg['positiv'] ?
-////                            $saldoErg['saldo']->toString('HH:mm') :
-////                            $saldoErg['saldo']->toString('- HH:mm');
-//
-////                    $anwesend = $anwesend->toString('HH:mm');
-////                    $ist = $ist->toString('HH:mm');
-//                }
 
                 $tabellenDaten->addItem(array(
                     'datum' => $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.YYYY'),

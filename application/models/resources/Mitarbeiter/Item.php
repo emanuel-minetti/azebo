@@ -1,5 +1,4 @@
 <?php
-
 /*
  * 
  *     This file is part of azebo.
@@ -135,6 +134,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             'saldo' => $saldo,
             'positiv' => $positiv,
         );
+    }
+
+    public function getArbeitsmonate() {
+        $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
+        return $monatsTabelle->getArbeitsmonateNachMitarbeiterId($this->id);
     }
 
 }
