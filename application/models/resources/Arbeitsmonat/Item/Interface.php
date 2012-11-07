@@ -25,5 +25,6 @@
  * @author Emanuel Minetti
  */
 interface Azebo_Resource_Arbeitsmonat_Item_Interface {
-    
+
+    public function getSaldo();
 }
