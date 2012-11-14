@@ -122,10 +122,8 @@ class Azebo_Service_Zeitrechner {
         }
 
         $saldoArray = $saldo->toArray();
-        $stunden = $saldoArray['hour'];
+        $stunden = (int) $saldoArray['hour'];
         $minuten = (int) $saldoArray['minute'];
-        $log = Zend_Registry::get('log');
-        $log->debug('Minuten: ' . $minuten);
         $erg = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
         
         return $erg;
