@@ -80,11 +80,6 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
             $this->_error(self::FEHLT);
         }
 
-        
-        if ($isValid) {
-            //TODO In der Session den Monat als geprüft markieren!
-        }
-        
         return $isValid;
     }
 

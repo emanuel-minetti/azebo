@@ -99,9 +99,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
-        
+
         //Saldo bis zum Vormonat setzen
         $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher();
+        $this->view->saldo = 'Saldo wird berechnet nachdem der Monat geprüft wurde';
     }
 
     public function getSeitenName() {
@@ -117,7 +118,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $postDaten = $request->getPost();
             if (isset($postDaten['pruefen'])) {
                 $valid = $abschlussForm->isValid($postDaten);
-                $daten = $abschlussForm->getValues();
+                if ($valid) {
+                    $daten = $abschlussForm->getValues();
+                    $monat = new Zend_Date($daten['monat'], 'MM.YYYY');
+                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat);
+                    //TODO In der Session den Monat als geprüft markieren!
+                }
             }
         }
 
@@ -283,12 +289,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $anwesend = $arbeitstag->getAnwesend();
                 $ist = $arbeitstag->getIst();
                 $saldoErg = $arbeitstag->getSaldo();
-                if($anwesend !== null) {
+                if ($anwesend !== null) {
                     $anwesend = $anwesend->toString('HH:mm');
                     $ist = $ist->toString('HH:mm');
-                    $saldo = $saldoErg['positiv'] ?
-                            $saldoErg['saldo']->toString('+ HH:mm') :
-                            $saldoErg['saldo']->toString('- HH:mm');
+                    $saldo = $saldoErg->getString();
                 }
 
                 $tabellenDaten->addItem(array(

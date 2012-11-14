@@ -28,12 +28,17 @@
 class Azebo_Resource_Arbeitsmonat_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Arbeitsmonat_Item_Interface {
     
 public function getSaldo() {
-        $saldo = array(
-            'stunden' => $this->getRow()->saldostunden,
-            'minuten' => $this->getRow()->saldominuten,
-            'positiv' => $this->getRow()->saldopositiv == 'ja' ? true : false,
-        );
+        $stunden = $this->getRow()->saldostunden;
+        $minuten = $this->getRow()->saldominuten;
+        $positiv = $this->getRow()->saldopositiv == 'ja' ? true : false;
+        $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
         return $saldo;
+//        $saldo = array(
+//            'stunden' => $this->getRow()->saldostunden,
+//            'minuten' => $this->getRow()->saldominuten,
+//            'positiv' => $this->getRow()->saldopositiv == 'ja' ? true : false,
+//        );
+//        return $saldo;
     }
 }
 

@@ -86,4 +86,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getSaldoBisher();
     
+    public function getSaldo(Zend_Date $monat);
+    
 }

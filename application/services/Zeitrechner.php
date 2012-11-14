@@ -104,7 +104,7 @@ class Azebo_Service_Zeitrechner {
      *
      * @param Zend_Date $ist
      * @param Azebo_Resource_Arbeitsregel_Item_Interface|null $regel
-     * @return array
+     * @return Azebo_Model_Saldo
      */
     //TODO Gleitzeittag!!
     public function saldo(Zend_Date $ist, $regel) {
@@ -121,10 +121,13 @@ class Azebo_Service_Zeitrechner {
             }
         }
 
-        $erg = array(
-            'saldo' => $saldo,
-            'positiv' => $positiv,
-        );
+        $saldoArray = $saldo->toArray();
+        $stunden = $saldoArray['hour'];
+        $minuten = (int) $saldoArray['minute'];
+        $log = Zend_Registry::get('log');
+        $log->debug('Minuten: ' . $minuten);
+        $erg = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        
         return $erg;
     }
 

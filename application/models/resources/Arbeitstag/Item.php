@@ -173,6 +173,9 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
             if ($this->getIst() !== null) {
                 $this->_saldo = $this->_zeitrechnerService->saldo(
                         $this->_ist, $this->getRegel());
+            } else {
+                //TODO Gleitzeittage anrechnen!!!!
+                $this->_saldo = new Azebo_Model_Saldo(0, 0, true);
             }
         }
 

@@ -118,12 +118,17 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     //TODO Kommentieren!
+    /**
+     *
+     * @return \Azebo_Model_Saldo 
+     */
     public function getSaldouebertrag() {
-        return array(
-            'stunden' => $this->getRow()->saldouebertragstunden,
-            'minuten' => $this->getRow()->saldouebertragminuten,
-            'positiv' => $this->getRow()->saldouebertragpositiv == 'ja' ? true : false,
-        );
+        $stunden = $this->getRow()->saldouebertragstunden;
+        $minuten = $this->getRow()->saldouebertragminuten;
+        $positiv = $this->getRow()->saldouebertragpositiv == 'ja' ?
+                true : false;
+        $uebertrag = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        return $uebertrag;
     }
 
     public function getArbeitsmonate() {
@@ -132,94 +137,27 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getSaldoBisher() {
-        $uebertrag = $this->getSaldouebertrag();
+        $saldo = $this->getSaldouebertrag();
         $monate = $this->getArbeitsmonate();
-        $saldo = array(
-            'stunden' => $uebertrag['stunden'],
-            'minuten' => $uebertrag['minuten'],
-            'positiv' => $uebertrag['positiv'],
-        );
-      
         foreach ($monate as $monat) {
             $monatsSaldo = $monat->getSaldo();
+            $saldo->add($monatsSaldo);
+       }
+       //TODO Mehr als 10 Defizitstunden
+       return $saldo->getString();
+    }
 
-            if ($saldo['positiv']) {
-                if($monatsSaldo['positiv']) {
-                    $saldo['stunden'] += $monatsSaldo['stunden'];
-                    $saldo['minuten'] += $monatsSaldo['minuten'];
-                    //Überschlag
-                    if($saldo['minuten'] >= 60) {
-                        $saldo['minuten'] -= 60;
-                        $saldo['stunden']++;
-                    }
-                    //Kappungsgrenze
-                    if($saldo['stunden'] > 100) {
-                        $saldo['stunden'] = 100;
-                    }
-                    if($saldo['stunden'] == 100) {
-                        $saldo['minuten'] = 0;
-                    }
-                } else {   
-                    //Monatssaldo negativ
-                    if($saldo['minuten'] > $monatsSaldo['minuten']) {
-                       $saldo['minuten'] -= $monatsSaldo['minuten'];
-                    } else {
-                       $saldo['minuten'] = 60 - ($monatsSaldo['minuten'] - $saldo['minuten']);
-                       $saldo['stunden']--;
-                    }
-                    if($saldo['stunden'] >= $monatsSaldo['stunden']) {
-                        $saldo['stunden'] -= $monatsSaldo['stunden'];
-                    } else {
-                        $saldo['stunden'] = $monatsSaldo['stunden'] - $saldo['stunden'];
-                        $saldo['minuten'] = 60 - $saldo['minuten'];
-                        $saldo['positiv'] = false;
-                    }
-                }
-            } else {
-                // Saldo negativ
-                if(!$monatsSaldo['positiv']) {
-                    // MonatsSaldo negativ
-                    $saldo['stunden'] += $monatsSaldo['stunden'];
-                    $saldo['minuten'] += $monatsSaldo['minuten'];
-                    //Überschlag
-                    if($saldo['minuten'] >= 60) {
-                        $saldo['minuten'] -= 60;
-                        $saldo['stunden']++;
-                    }
-                    //TODO Mehr als 10 Defizitstunden!
-                } else {
-                    // MonatsSaldo positiv
-                    if($saldo['minuten'] > $monatsSaldo['minuten']) {
-                       $saldo['minuten'] -= $monatsSaldo['minuten'];
-                    } else {
-                       $saldo['minuten'] = 60 - ($monatsSaldo['minuten'] - $saldo['minuten']);
-                       $saldo['stunden']--;
-                    }
-                    if($saldo['stunden'] >= $monatsSaldo['stunden']) {
-                        $saldo['stunden'] -= $monatsSaldo['stunden'];
-                    } else {
-                        $saldo['stunden'] = $monatsSaldo['stunden'] - $saldo['stunden'];
-                        $saldo['minuten'] = 60 - $saldo['minuten'];
-                        $saldo['positiv'] = true;
-                    }
-                    
-                }  
-            }
+    public function getSaldo(Zend_Date $monat) {
+        $arbeitstage = $this->getArbeitstageNachMonat($monat);
+        $saldo = new Azebo_Model_Saldo(0, 0, true);
+
+        foreach ($arbeitstage as $arbeitstag) {
+            $tagesSaldo = $arbeitstag->getSaldo();
+            $saldo->add($tagesSaldo);
+
         }
-        
-//        $log = Zend_Registry::get('log');
-//        $log->debug(__METHOD__);
-//        $log->debug('Saldo: Betrag:' . $saldo['saldo']->toString() . ' Positiv: ' . $saldo['positiv']);
-        
-        $saldoString = $saldo['positiv'] == true ? '+ ' : '- ';
-        $saldoString .= $saldo['stunden'] . ':';
-        if ($saldo['minuten'] <= 9) {
-            $saldoString .= '0' . $saldo['minuten'];
-        } else {
-            $saldoString .= $saldo['minuten'];
-        }
-        
-        return $saldoString;
+
+        return $saldo->getString();
     }
 
 }
