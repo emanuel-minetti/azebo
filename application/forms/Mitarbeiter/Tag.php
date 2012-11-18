@@ -63,8 +63,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'tabindex' => 1,
                     'autofocus' => true,
                 ));
-
-        //TODO Die tägliche Arbeitszeit darf dabei grundsätzlich zehn Stunden ...
+        
         $this->endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
                     'label' => 'Ende',
                     'timePattern' => 'HHmm',
@@ -77,7 +76,9 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'validators' => array(
                         'EndeNachBeginn',
                         'Feiertag',
-                        'Ende',),
+                        'Ende',
+                        'ZehnStunden',
+                        ),
                     'tabindex' => 2,
                 ));
 
