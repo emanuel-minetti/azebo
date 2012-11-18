@@ -65,9 +65,6 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
                 // Mitarbeiter hat indviduelle Arbeitszeitregelung, also anwenden
                 $rahmenEnde = $arbeitsregel->getRahmenEnde();
                 $kernEnde = $arbeitsregel->getKernEnde();
-            } else {
-                //TODO Nachfragen, was passieren soll!!
-                return true;
             }
             if ($rahmenEnde === null) {
                 // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,

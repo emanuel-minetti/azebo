@@ -78,6 +78,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                         'Feiertag',
                         'Ende',
                         'ZehnStunden',
+                        'IstArbeitstag',
                         ),
                     'tabindex' => 2,
                 ));
