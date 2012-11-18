@@ -95,37 +95,46 @@ class Azebo_Service_Zeitrechner {
     }
 
     /**
-     * Gibt den Saldo eines Tages als array zurück. Das Array enthält unter dem
-     * Schlüssel 'saldo' ein Zend_Date-Objekt und unter dem Schlüssel 'positiv'
-     * ein Bool-Wert, der anzeigt ob der Saldo positiv oder negativ zu sehen
-     * ist. Die Funktion erwartet ein Zend_Date mit der Ist-Zeit und eine Regel,
+     * Gibt den Saldo eines Tages als Azebo_Model_Saldo zurück.
+     * Die Funktion erwartet ein Zend_Date oder NULL mit der Ist-Zeit und eine Regel,
      * die entweder Azebo_Resource_Arbeitsregel_Item_Interface implementiert
      * oder NULL ist.
      *
-     * @param Zend_Date $ist
+     * @param Zend_Date|null $ist
      * @param Azebo_Resource_Arbeitsregel_Item_Interface|null $regel
      * @return Azebo_Model_Saldo
      */
-    //TODO Gleitzeittag!!
-    public function saldo(Zend_Date $ist, $regel) {
-        $saldo = new Zend_Date($ist);
-        $positiv = true;
-        if ($regel !== null) {
-            $soll = new Zend_Date($regel->soll);
-            if ($ist->compare($soll, Zend_Date::TIMES) == -1) {
-                // 'ist' < 'soll'
-                $saldo = $soll->sub($ist, Zend_Date::TIMES);
-                $positiv = false;
+    public function saldo($ist, $regel) {
+        if ($ist !== null) {
+            $saldo = new Zend_Date($ist);
+            $positiv = true;
+            if ($regel !== null) {
+                $soll = new Zend_Date($regel->soll);
+                if ($ist->compare($soll, Zend_Date::TIMES) == -1) {
+                    // 'ist' < 'soll'
+                    $saldo = $soll->sub($ist, Zend_Date::TIMES);
+                    $positiv = false;
+                } else {
+                    $saldo->sub($soll, Zend_Date::TIMES);
+                }
+            }
+            $saldoArray = $saldo->toArray();
+            $stunden = (int) $saldoArray['hour'];
+            $minuten = (int) $saldoArray['minute'];
+            $erg = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        } else {
+            // $ist === null
+            if ($regel === null) {
+                $erg = new Azebo_Model_Saldo(0, 0, true);
             } else {
-                $saldo->sub($soll, Zend_Date::TIMES);
+                $soll = $regel->getSoll();
+                $saldoArray = $soll->toArray();
+                $stunden = (int) $saldoArray['hour'];
+                $minuten = (int) $saldoArray['minute'];
+                $erg = new Azebo_Model_Saldo($stunden, $minuten, false);
             }
         }
 
-        $saldoArray = $saldo->toArray();
-        $stunden = (int) $saldoArray['hour'];
-        $minuten = (int) $saldoArray['minute'];
-        $erg = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
-        
         return $erg;
     }
 

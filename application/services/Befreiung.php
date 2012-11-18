@@ -42,7 +42,7 @@ class Azebo_Service_Befreiung {
     const SONSTIGE = 'sonstige';
     const SONDER = 'sonder';
     const FT = 'ft';
-    const GLEITZEIT = 'gleitzeit';
+//    const GLEITZEIT = 'gleitzeit';
     
     /**
      * Gibt die für einen Mitarbeiter zulässigen Befreiungsoptionen zurück.
@@ -58,19 +58,19 @@ class Azebo_Service_Befreiung {
             self::KEINE => '',
             self::URLAUB => 'Urlaub',
             self::REISE => 'Dienstreise',
-            self::FA => 'FA',
+            self::FA => 'Freizeitausgleich',
             self::FORTBILDUNG => 'Fortbildung',
             self::KRANKHEIT => 'Krankheit',
             self::KUR => 'Kur',
             self::SONSTIGE => 'Sonstige Dienstbefreiung',
             self::SONDER => 'Sonderurlaub',
-            self::GLEITZEIT => 'Gleitzeittag',
+//            self::GLEITZEIT => 'Gleitzeittag',
         );
         
         if($mitarbeiter->getBeamter() === true) {
             $optionen[self::AZV] = 'AZV'; 
         } else {
-            $optionen[self::FT] = 'FT';
+            $optionen[self::FT] = 'Freistellungstag';
         }
         
         return $optionen;

@@ -293,6 +293,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $anwesend = $anwesend->toString('HH:mm');
                     $ist = $ist->toString('HH:mm');
                     $saldo = $saldoErg->getString();
+                } else {
+                    if($arbeitstag->befreiung == 'fa') {
+                       $saldo = $saldoErg->getString(); 
+                    }
                 }
 
                 $tabellenDaten->addItem(array(
