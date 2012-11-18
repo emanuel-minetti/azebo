@@ -27,4 +27,6 @@
 interface Azebo_Resource_Arbeitsmonat_Item_Interface {
 
     public function getSaldo();
+    
+    public function getMonat();
 }
