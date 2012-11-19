@@ -46,7 +46,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
      * @var array 
      */
     public $arbeitstage;
-    
+
     /**
      * @var boolean
      */
@@ -107,13 +107,15 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         //Saldo bis zum Vormonat setzen
         $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher();
-        $this->view->saldo = $this->mitarbeiter->getSaldo($this->zuBearbeitendesDatum, true);
-        
-        //TODO prüfe ob bereits abgeschlossen
+        $this->view->saldo = $this->mitarbeiter->getSaldo(
+                $this->zuBearbeitendesDatum, true);
+
+        //prüfe ob bereits abgeschlossen
         $this->bearbeitbar = true;
         $arbeitmonate = $this->mitarbeiter->getArbeitsmonate();
         foreach ($arbeitmonate as $arbeitsmonat) {
-            if($this->zuBearbeitendesDatum->compareMonth($arbeitsmonat->getMonat()) == 0) {
+            if ($this->zuBearbeitendesDatum->compareMonth(
+                            $arbeitsmonat->getMonat()) == 0) {
                 $this->bearbeitbar = false;
                 break;
             }
@@ -138,7 +140,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.YYYY');
                     $this->view->saldo = $this->mitarbeiter->getSaldo($monat);
-                    //TODO In der Session den Monat als geprüft markieren!
+                    // markiere den Monat in der Session als geprüft
+                    $ns = new Zend_Session_Namespace();
+                    $ns->geprueft[$monat->toString('MM-YYYY')] = true;
+                    // lade die Form neu, um den richtigen Button anzuzeigen
+                    $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
             }
         }
@@ -165,6 +171,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
     public function editAction() {
         $request = $this->getRequest();
+
+        // falls der Monat nicht bearbeitbar ist, gibt es keinen Link hierher.
+        // Der User versucht etwas Böses!
+        if (!$this->bearbeitbar) {
+            $errors = new ArrayObject();
+            $errors->type =
+                    Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
+            $errors->request = $request;
+            $errors->exception = new AzeboLib_Exception(
+                            'Auf diese Seite haben Sie keinen Zugriff!',
+                            null, null);
+            $request->setParam('error_handler', $errors);
+            $this->_forward('nichterlaubt', 'error');
+        }
+
+
         $form = $this->_getMitarbeiterTagForm();
 
         if ($request->isPost()) {
@@ -178,9 +200,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $form->setBeginn($daten['beginn']);
                 $form->setEnde($daten['ende']);
                 if ($valid) {
-                    // ist valide also, speichen und redirect
+                    // ist valide also, speichen, in der Session als ungeprüft
+                    // markieren und redirect
                     $this->mitarbeiter->saveArbeitstag(
                             $this->zuBearbeitendesDatum, $daten);
+                    $ns = new Zend_Session_Namespace();
+                    $ns->geprueft[
+                            $this->zuBearbeitendesDatum->toString('MM-YYYY')] =
+                            false;
                     $redirector = $this->_helper->getHelper('Redirector');
                     $redirector->gotoRoute(array(
                         'jahr' => $this->jahr,
@@ -259,6 +286,28 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $form->setMethod('post');
         $form->setName('monatForm');
 
+        // füge den 'Prüfen'- oder den 'Abschließen'-Button hinzu, je nachdem ob
+        // der Monat bereits geprüft ist
+        $ns = new Zend_Session_Namespace();
+        if ($ns->geprueft[$this->zuBearbeitendesDatum->toString('MM-YYYY')]) {
+            $form->addElement('SubmitButton', 'abschliessen', array(
+                'required' => false,
+                'ignore' => true,
+                'label' => 'Monat abschließen',
+                'decorators' => array('DijitElement', 'Errors',),
+                'tabindex' => 1,
+            ));
+        } else {
+            $form->addElement('SubmitButton', 'pruefen', array(
+                'required' => false,
+                'ignore' => true,
+                'label' => 'Monat prüfen',
+                'validators' => array('Monat',),
+                'decorators' => array('DijitElement', 'Errors',),
+                'tabindex' => 1,
+            ));
+        }
+
         $monatElement = $form->getElement('monat');
         $monatElement->setValue($this->zuBearbeitendesDatum->toString('MM.YYYY'));
         return $form;
@@ -310,8 +359,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $ist = $ist->toString('HH:mm');
                     $saldo = $saldoErg->getString();
                 } else {
-                    if($arbeitstag->befreiung == 'fa') {
-                       $saldo = $saldoErg->getString(); 
+                    if ($arbeitstag->befreiung == 'fa') {
+                        $saldo = $saldoErg->getString();
                     }
                 }
 

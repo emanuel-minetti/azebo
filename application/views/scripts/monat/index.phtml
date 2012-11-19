@@ -49,6 +49,7 @@
         grid.placeAt('gridDiv');
         grid.startup();
                
+        <? if($this->bearbeitbar): ?>       
         dojo.connect(grid, "onRowClick", null, function(e){
             var url = "<?=$this->url(array(
                 'monat' => $this->monat,
@@ -58,6 +59,7 @@
             url += "/" + tag + "#form";
             console.debug(url);
             location.href = url;
-        });   
+        }); 
+        <? endif ?>
     });
 </script>
