@@ -148,7 +148,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $monatsSaldo = $monat->getSaldo();
             $saldo->add($monatsSaldo);
         }
-        //TODO Mehr als 10 Defizitstunden
         return $saldo;
     }
 

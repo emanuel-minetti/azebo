@@ -108,7 +108,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         //Saldo bis zum Vormonat setzen
         $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher()->getString();
         $this->view->saldo = $this->mitarbeiter->getSaldo(
-                $this->zuBearbeitendesDatum, true)->getString();
+                        $this->zuBearbeitendesDatum, true)->getString();
 
         //prüfe ob bereits abgeschlossen
         $this->bearbeitbar = true;
@@ -143,6 +143,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     // markiere den Monat in der Session als geprüft
                     $ns = new Zend_Session_Namespace();
                     $ns->geprueft[$monat->toString('MM-YYYY')] = true;
+                    //TODO Mehr als 10 Defizitstunden
                     // lade die Form neu, um den richtigen Button anzuzeigen
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
@@ -309,7 +310,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 'decorators' => array('DijitElement', 'Errors',),
                 'tabindex' => 1,
             ));
-        } elseif(!$this->bearbeitbar) {
+        } elseif (!$this->bearbeitbar) {
             $form->addElement('SubmitButton', 'ausdrucken', array(
                 'required' => false,
                 'ignore' => true,
