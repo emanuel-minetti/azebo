@@ -59,7 +59,7 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
                 if ($dbRegel->bis === null) {
                     array_push($regeln, $dbRegel);
                 } else {
-                    if ($dbRegel->bis->compare($letzter) == 1) {
+                    if ($dbRegel->bis->compare($letzter) != -1) {
                         array_push($regeln, $dbRegel);
                     }
                 }

@@ -296,15 +296,24 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $form->setMethod('post');
         $form->setName('monatForm');
 
-        // füge den 'Prüfen'- oder den 'Abschließen'-Button hinzu, je nachdem ob
-        // der Monat bereits geprüft ist
+        // füge den 'Prüfen'-, 'Abschließen'-, oder 'Ausdrucken'-Button hinzu,
+        // je nachdem ob der Monat bereits geprüft bzw. abgeschlossen ist.
         $ns = new Zend_Session_Namespace();
-        //TODO prüfen ob Index und Array existieren!!
-        if ($ns->geprueft[$this->zuBearbeitendesDatum->toString('MM-YYYY')]) {
+        $geprueft = $ns->geprueft;
+        $index = $this->zuBearbeitendesDatum->toString('MM-YYYY');
+        if ($geprueft !== null && isset($geprueft[$index]) && $geprueft[$index]) {
             $form->addElement('SubmitButton', 'abschliessen', array(
                 'required' => false,
                 'ignore' => true,
                 'label' => 'Monat abschließen',
+                'decorators' => array('DijitElement', 'Errors',),
+                'tabindex' => 1,
+            ));
+        } elseif(!$this->bearbeitbar) {
+            $form->addElement('SubmitButton', 'ausdrucken', array(
+                'required' => false,
+                'ignore' => true,
+                'label' => 'Bogen ausdrucken',
                 'decorators' => array('DijitElement', 'Errors',),
                 'tabindex' => 1,
             ));
