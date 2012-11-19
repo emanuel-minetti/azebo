@@ -65,6 +65,8 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
      */
     public function saveArbeitstag(Zend_Date $tag, array $daten);
     
+    public function saveArbeitsmonat(Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0);
+    
     /**
      *@return boolean 
      */

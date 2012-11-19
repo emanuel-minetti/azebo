@@ -44,8 +44,17 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         $select->where('mitarbeiter_id = ?', $mitarbeiterId);
         $dbMonate = $this->fetchAll($select);
         //TODO Nochmal anschauen!
-        
+
         return $dbMonate;
+    }
+
+    public function saveArbeitsmonat($mitarbeiterId, Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0) {
+        $arbeitsmonat = $this->createRow();
+        $arbeitsmonat->mitarbeiter_id = $mitarbeiterId;
+        $arbeitsmonat->setMonat($monat);
+        $arbeitsmonat->setSaldo($saldo);
+        $arbeitsmonat->urlaub = $urlaub;
+        $arbeitsmonat->save();
     }
 
 }

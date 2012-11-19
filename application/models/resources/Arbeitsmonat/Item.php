@@ -45,12 +45,21 @@ class Azebo_Resource_Arbeitsmonat_Item extends AzeboLib_Model_Resource_Db_Table_
         return $saldo;
     }
     
+    public function setSaldo(Azebo_Model_Saldo $saldo) {
+        $this->getRow()->saldostunden = $saldo->getStunden();
+        $this->getRow()->saldominuten = $saldo->getMinuten();
+        $this->getRow()->saldopositiv = $saldo->getPositiv() ? 'ja' : 'nein';
+    }
+    
     /**
      * @return Zend_Date 
      */
     public function getMonat() {
         return $this->_dzService->datumSqlZuPhp($this->_row->monat);
     }
-
+    
+    public function setMonat(Zend_Date $monat) {
+        $this->_row->monat = $this->_dzService->datumPhpZuSql($monat);
+    }
 }
 

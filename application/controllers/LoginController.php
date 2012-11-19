@@ -85,6 +85,8 @@ class LoginController extends AzeboLib_Controller_Abstract {
     
      public function logoutAction() {
          $this->_authService->clear();
+         $ns = new Zend_Session_Namespace();
+         $ns->unsetAll();
      }
 
     public function getLoginForm() {

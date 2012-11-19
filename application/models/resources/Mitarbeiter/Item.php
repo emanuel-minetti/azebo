@@ -104,6 +104,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
         $arbeitstagTabelle->saveArbeitstag($tag, $this->id, $daten);
     }
+    
+    public function saveArbeitsmonat(Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0) {
+        $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
+        $arbeitsmonatTabelle->saveArbeitsmonat($this->id, $monat, $saldo, $urlaub);
+    }
 
     public function setNachname($nachname) {
         $this->_nachname = $nachname;
@@ -165,7 +170,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             }
         }
 
-        return $saldo->getString();
+        return $saldo;
     }
 
 }

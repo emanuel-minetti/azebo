@@ -108,7 +108,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         //Saldo bis zum Vormonat setzen
         $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher();
         $this->view->saldo = $this->mitarbeiter->getSaldo(
-                $this->zuBearbeitendesDatum, true);
+                $this->zuBearbeitendesDatum, true)->getString();
 
         //prüfe ob bereits abgeschlossen
         $this->bearbeitbar = true;
@@ -139,12 +139,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($valid) {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.YYYY');
-                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat);
+                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->getString();
                     // markiere den Monat in der Session als geprüft
                     $ns = new Zend_Session_Namespace();
                     $ns->geprueft[$monat->toString('MM-YYYY')] = true;
                     // lade die Form neu, um den richtigen Button anzuzeigen
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
+                }
+            } elseif (isset($postDaten['abschliessen'])) {
+                //lege den Monat in der DB ab
+                $valid = $abschlussForm->isValid($postDaten);
+                if ($valid) {
+                    $daten = $abschlussForm->getValues();
+                    $monat = new Zend_Date($daten['monat'], 'MM.YYYY');
+                    $saldo = $this->mitarbeiter->getSaldo($monat);
+                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->getString();
+                    $this->mitarbeiter->saveArbeitsmonat($monat, $saldo);
                 }
             }
         }
@@ -289,6 +299,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // füge den 'Prüfen'- oder den 'Abschließen'-Button hinzu, je nachdem ob
         // der Monat bereits geprüft ist
         $ns = new Zend_Session_Namespace();
+        //TODO prüfen ob Index und Array existieren!!
         if ($ns->geprueft[$this->zuBearbeitendesDatum->toString('MM-YYYY')]) {
             $form->addElement('SubmitButton', 'abschliessen', array(
                 'required' => false,

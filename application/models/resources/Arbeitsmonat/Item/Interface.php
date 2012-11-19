@@ -28,5 +28,9 @@ interface Azebo_Resource_Arbeitsmonat_Item_Interface {
 
     public function getSaldo();
     
+    public function setSaldo(Azebo_Model_Saldo $saldo);
+    
     public function getMonat();
+    
+    public function setMonat(Zend_Date $monat);
 }
