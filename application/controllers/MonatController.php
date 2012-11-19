@@ -106,7 +106,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
         //Saldo bis zum Vormonat setzen
-        $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher();
+        $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher()->getString();
         $this->view->saldo = $this->mitarbeiter->getSaldo(
                 $this->zuBearbeitendesDatum, true)->getString();
 
