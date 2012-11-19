@@ -50,7 +50,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     /**
      * @var boolean
      */
-    public $editierbar;
+    public $bearbeitbar;
 
     public function init() {
         parent::init();
@@ -107,18 +107,18 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         //Saldo bis zum Vormonat setzen
         $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher();
-        $this->view->saldo = 'Saldo wird berechnet nachdem der Monat geprüft wurde';
+        $this->view->saldo = $this->mitarbeiter->getSaldo($this->zuBearbeitendesDatum, true);
         
         //TODO prüfe ob bereits abgeschlossen
-        $this->editierbar = true;
+        $this->bearbeitbar = true;
         $arbeitmonate = $this->mitarbeiter->getArbeitsmonate();
         foreach ($arbeitmonate as $arbeitsmonat) {
             if($this->zuBearbeitendesDatum->compareMonth($arbeitsmonat->getMonat()) == 0) {
-                $this->editierbar = false;
+                $this->bearbeitbar = false;
                 break;
             }
         }
-        $this->view->editierbar = $this->editierbar;
+        $this->view->bearbeitbar = $this->bearbeitbar;
     }
 
     public function getSeitenName() {

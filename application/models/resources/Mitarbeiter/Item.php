@@ -142,19 +142,27 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         foreach ($monate as $monat) {
             $monatsSaldo = $monat->getSaldo();
             $saldo->add($monatsSaldo);
-       }
-       //TODO Mehr als 10 Defizitstunden
-       return $saldo->getString();
+        }
+        //TODO Mehr als 10 Defizitstunden
+        return $saldo->getString();
     }
 
-    public function getSaldo(Zend_Date $monat) {
+    public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
         $saldo = new Azebo_Model_Saldo(0, 0, true);
 
         foreach ($arbeitstage as $arbeitstag) {
-            $tagesSaldo = $arbeitstag->getSaldo();
-            $saldo->add($tagesSaldo);
-
+            if ($vorlaeufig) {
+                if (!($arbeitstag->getBeginn() === null &&
+                        $arbeitstag->getEnde() === null) ||
+                        $arbeitstag->befreiung != 'keine') {
+                    $tagesSaldo = $arbeitstag->getSaldo();
+                    $saldo->add($tagesSaldo);
+                }
+            } else {
+                $tagesSaldo = $arbeitstag->getSaldo();
+                $saldo->add($tagesSaldo);
+            }
         }
 
         return $saldo->getString();
