@@ -27,8 +27,24 @@
  */
 class UebersichtController extends AzeboLib_Controller_Abstract {
     
+    /**
+     * @var Zend_Date 
+     */
+    public $jahr;
+
     public function init() {
         parent::init();
+        
+        // hole den Parameter und setze das Datum
+        $jahr = $this->_getParam('jahr');
+        $this->jahr = new Zend_Date($jahr, 'yyyy');
+        
+        // Aktiviere Dojo
+        $this->view->dojo()->enable()
+                ->setDjConfigOption('parseOnLoad', true)
+                ->requireModule('dojox.grid.DataGrid')
+                ->requireModule('dojo.data.ItemFileReadStore')
+                ->requireModule('dojo._base.connect');
     }
     
     public function getSeitenName() {
@@ -36,6 +52,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
     }
     
     public function indexAction() {
+        $this->erweitereSeitenName(' ' . $this->jahr->toString('yyyy'));
         $this->view->jahr = $this->_getParam('jahr'); 
     }
 }

@@ -60,7 +60,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Hohle die Parameter
         $this->tag = $this->_getParam('tag', $heute->get(Zend_Date::DAY));
         $this->monat = $this->_getParam('monat', $heute->get(Zend_Date::MONTH));
-        $this->jahr = $this->_getParam('jahr', $heute->get(Zend_Date::DAY));
+        $this->jahr = $this->_getParam('jahr', $heute->get(Zend_Date::YEAR));
 
         $this->view->tag = $this->tag;
         $this->view->monat = $this->monat;
@@ -93,15 +93,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ->requireModule('dojo._base.connect');
 
         // Lade den Mitarbeiter und die Arbeitstage
-        $authService = new Azebo_Service_Authentifizierung();
-        $this->mitarbeiter = $authService->getIdentity();
+        $this->mitarbeiter = $ns->mitarbeiter;
         $this->arbeitstage = $this->mitarbeiter
                 ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
-
-        // Speichere den Mitarbeiter in der Session
-        //TODO Stellvertreter implementieren!
-        $ns->mitarbeiter = $this->mitarbeiter;
-
+        
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 

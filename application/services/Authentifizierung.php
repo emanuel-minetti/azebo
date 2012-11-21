@@ -114,7 +114,10 @@ class Azebo_Service_Authentifizierung {
 
         //sicherstellen, dass ein Azebo_Mitarbeiter_Resource_Item in der
         //Session gespeichert wird. Darauf wird häufig zugegriffen.
+        //TODO Stellvertreter implementieren!
         $auth->getStorage()->write($mitarbeiter);
+        $ns = new Zend_Session_Namespace();
+        $ns->mitarbeiter = $mitarbeiter;
 
         return 'Erfolg';
     }
