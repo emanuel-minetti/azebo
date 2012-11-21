@@ -31,6 +31,11 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
      * @var Zend_Date 
      */
     public $jahr;
+    
+    /**
+     * @var Azebo_Resource_Mitarbeiter_Item_Interface 
+     */
+    public $mitarbeiter;
 
     public function init() {
         parent::init();
@@ -38,6 +43,10 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         // hole den Parameter und setze das Datum
         $jahr = $this->_getParam('jahr');
         $this->jahr = new Zend_Date($jahr, 'yyyy');
+        
+        // Lade den Mitarbeiter
+        $ns = new Zend_Session_Namespace();
+        $this->mitarbeiter = $ns->mitarbeiter;
         
         // Aktiviere Dojo
         $this->view->dojo()->enable()
@@ -53,7 +62,18 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
     
     public function indexAction() {
         $this->erweitereSeitenName(' ' . $this->jahr->toString('yyyy'));
-        $this->view->jahr = $this->_getParam('jahr'); 
+        
+        // Initialisiere die Daten der Tabelle
+        $jahresDaten = new Zend_Dojo_Data();
+        $jahresDaten->setIdentifier('monat');
+        
+        $jahresDaten->addItem(array(
+            'monat' => 'Januar',
+            'abgeschlossen' => 'Nein',
+            'saldo' => '+ 1:50',
+            'urlaub' => '0',
+        ));
+        $this->view->jahresDaten = $jahresDaten;
     }
 }
 
