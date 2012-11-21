@@ -71,6 +71,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         $jahresDaten = new Zend_Dojo_Data();
         $jahresDaten->setIdentifier('monat');
         
+        // befülle die Tabelle
         foreach ($this->arbeitsmonate as $arbeitsmonat) {
             $monat = $arbeitsmonat->getMonat();
             $saldo = $arbeitsmonat->getSaldo();

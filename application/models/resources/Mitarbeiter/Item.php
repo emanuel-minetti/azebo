@@ -122,10 +122,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $this->getRow()->beamter == 'ja' ? true : false;
     }
 
-    //TODO Kommentieren!
     /**
      *
-     * @return \Azebo_Model_Saldo 
+     * @return Azebo_Model_Saldo 
      */
     public function getSaldouebertrag() {
         $stunden = $this->getRow()->saldouebertragstunden;
