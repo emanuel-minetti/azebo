@@ -32,8 +32,6 @@ class LoginController extends AzeboLib_Controller_Abstract {
 
     public function init() {
         parent::init();
-        $this->_log->info('LoginController ' . __METHOD__);
-
         $this->_model = new Azebo_Model_Mitarbeiter();
         $this->_authService = new Azebo_Service_Authentifizierung();
 
@@ -45,11 +43,10 @@ class LoginController extends AzeboLib_Controller_Abstract {
     }
 
     public function loginAction() {
-        $this->_log->info('LoginController ' . __METHOD__);
-
         $request = $this->getRequest();
         $form = $this->_forms['login'];
 
+        //TODO Logging überarbeiten!
         if ($request->isPost()) {
             if (!$form->isValid($request->getPost())) {
                 $this->_log->info("Anmeldung fehlgeschlagen: Validation gescheitert! {$form->getValues()}");
@@ -74,7 +71,7 @@ class LoginController extends AzeboLib_Controller_Abstract {
                 return $this->render('login');
                 
             } else if ($ergebnis === 'Erfolg') {
-                $this->_log->info("Anmeldung erfolgreich: {$form->getValues()}");
+                $this->_log->debug("Anmeldung erfolgreich: {$form->getValues()}");
             }
 
             return $this->_helper->redirector->gotoSimple('index', 'index', 'default');
