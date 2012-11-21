@@ -26,41 +26,42 @@
  * @author Emanuel Minetti
  */
 class Azebo_Model_Saldo {
+
     private $_stunden;
     private $_minuten;
     private $_positiv;
-    
-     function __construct($stunden, $minuten, $positiv) {
+
+    function __construct($stunden, $minuten, $positiv) {
         $this->_stunden = $stunden;
         $this->_minuten = $minuten;
         $this->_positiv = $positiv;
     }
-    
+
     public function add(Azebo_Model_Saldo $saldo) {
         $stunden = $saldo->getStunden();
         $minuten = $saldo->getMinuten();
         $positiv = $saldo->getPositiv();
-        if($this->_positiv) {
-            if($positiv) {
+        if ($this->_positiv) {
+            if ($positiv) {
                 $this->_minuten += $minuten;
-                if($this->_minuten >= 60) {
+                if ($this->_minuten >= 60) {
                     $this->_minuten -= 60;
                     $this->_stunden++;
                 }
                 $this->_stunden += $stunden;
-                if($this->_stunden >= 100) {
+                if ($this->_stunden >= 100) {
                     $this->_stunden = 100;
                     $this->_minuten = 0;
                 }
             } else {
                 // zu addierendes Saldo negativ
-                if($this->_minuten >= $minuten) {
+                if ($this->_minuten >= $minuten) {
                     $this->_minuten -= $minuten;
                 } else {
                     $this->_minuten = 60 - ($minuten - $this->_minuten);
                     $this->_stunden--;
                 }
-                if($this->_stunden >= $stunden) {
+                if ($this->_stunden >= $stunden) {
                     $this->_stunden -= $stunden;
                 } else {
                     $this->_stunden = $stunden - $this->_stunden;
@@ -70,23 +71,23 @@ class Azebo_Model_Saldo {
             }
         } else {
             // $this negativ
-            if(!$positiv) {
+            if (!$positiv) {
                 // zu addierendes Saldo negativ
                 $this->_minuten += $minuten;
-                if($this->_minuten >= 60) {
+                if ($this->_minuten >= 60) {
                     $this->_minuten -= 60;
                     $this->_stunden++;
                 }
                 $this->_stunden += $stunden;
             } else {
                 // zu addierendes Saldo positiv
-                if($this->_minuten >= $minuten) {
+                if ($this->_minuten >= $minuten) {
                     $this->_minuten -= $minuten;
                 } else {
                     $this->_minuten = 60 - ($minuten - $this->_minuten);
                     $this->_stunden--;
                 }
-                if($this->_stunden >= $stunden) {
+                if ($this->_stunden >= $stunden) {
                     $this->_stunden -= $stunden;
                 } else {
                     $this->_stunden = $stunden - $this->_stunden;
@@ -97,7 +98,7 @@ class Azebo_Model_Saldo {
         }
         return $this;
     }
-    
+
     public function getStunden() {
         return $this->_stunden;
     }
@@ -109,16 +110,20 @@ class Azebo_Model_Saldo {
     public function getPositiv() {
         return $this->_positiv;
     }
-    
+
     public function getString() {
-        $saldoString = $this->_positiv == true ? '+ ' : '- ';
-        $saldoString .= $this->_stunden . ':';
-        if ($this->_minuten <= 9) {
-            $saldoString .= '0' . $this->_minuten;
+        if ($this->_stunden === null) {
+            return '+ 0:00';
         } else {
-            $saldoString .= $this->_minuten;
+            $saldoString = $this->_positiv == true ? '+ ' : '- ';
+            $saldoString .= $this->_stunden . ':';
+            if ($this->_minuten <= 9) {
+                $saldoString .= '0' . $this->_minuten;
+            } else {
+                $saldoString .= $this->_minuten;
+            }
+            return $saldoString;
         }
-        return $saldoString;
     }
 
 }

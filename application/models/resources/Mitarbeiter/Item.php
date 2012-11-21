@@ -104,7 +104,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
         $arbeitstagTabelle->saveArbeitstag($tag, $this->id, $daten);
     }
-    
+
     public function saveArbeitsmonat(Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0) {
         $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
         $arbeitsmonatTabelle->saveArbeitsmonat($this->id, $monat, $saldo, $urlaub);
@@ -150,7 +150,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $saldo;
     }
-    
+
     public function getUrlaubBisher() {
         $urlaub = $this->_row->urlaub;
         $monate = $this->getArbeitsmonate();
@@ -180,17 +180,22 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
         return $saldo;
     }
-    
+
     public function getUrlaub(Zend_Date $monat) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
         $urlaub = 0;
 
         foreach ($arbeitstage as $arbeitstag) {
-            if($arbeitstag->befreiung == 'urlaub') {
+            if ($arbeitstag->befreiung == 'urlaub') {
                 $urlaub++;
             }
         }
         return $urlaub;
+    }
+
+    public function getArbeitsmonateNachJahr(Zend_Date $jahr) {
+        $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
+        return $monatsTabelle->getArbeitsmonateNachJahrUndMitarbeiterId($jahr, $this->id);
     }
 
 }

@@ -36,6 +36,8 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Resource_Mitarbeiter_Item_Interface 
      */
     public $mitarbeiter;
+    
+    public $arbeitsmonate;
 
     public function init() {
         parent::init();
@@ -44,9 +46,11 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         $jahr = $this->_getParam('jahr');
         $this->jahr = new Zend_Date($jahr, 'yyyy');
         
-        // Lade den Mitarbeiter
+        // Lade den Mitarbeiter und die Monate
         $ns = new Zend_Session_Namespace();
         $this->mitarbeiter = $ns->mitarbeiter;
+        $this->arbeitsmonate = $this->mitarbeiter->
+                getArbeitsmonateNachJahr($this->jahr);
         
         // Aktiviere Dojo
         $this->view->dojo()->enable()
@@ -67,12 +71,19 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         $jahresDaten = new Zend_Dojo_Data();
         $jahresDaten->setIdentifier('monat');
         
-        $jahresDaten->addItem(array(
-            'monat' => 'Januar',
-            'abgeschlossen' => 'Nein',
-            'saldo' => '+ 1:50',
-            'urlaub' => '0',
-        ));
+        foreach ($this->arbeitsmonate as $arbeitsmonat) {
+            $monat = $arbeitsmonat->getMonat();
+            $saldo = $arbeitsmonat->getSaldo();
+            $abgeschlossen = $saldo->getStunden() === null ? 'Nein' : 'Ja';
+            $urlaub = $arbeitsmonat->urlaub;
+            $jahresDaten->addItem(array(
+                'monat' => $monat->toString('MMMM'),
+                'abgeschlossen' => $abgeschlossen,
+                'saldo' => $saldo->getString(),
+                'urlaub' => $urlaub,
+            ));
+        }
+        
         $this->view->jahresDaten = $jahresDaten;
     }
 }

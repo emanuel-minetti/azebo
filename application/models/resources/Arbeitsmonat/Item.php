@@ -35,7 +35,7 @@ class Azebo_Resource_Arbeitsmonat_Item extends AzeboLib_Model_Resource_Db_Table_
     }
     
     /**
-     * @return \Azebo_Model_Saldo 
+     * @return Azebo_Model_Saldo 
      */
     public function getSaldo() {
         $stunden = $this->getRow()->saldostunden;

@@ -48,6 +48,42 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         return $dbMonate;
     }
 
+    public function getArbeitsmonateNachJahrUndMitarbeiterId(Zend_Date $jahr, $mitarbeiterId) {   
+        $dzService = new Azebo_Service_DatumUndZeitUmwandler();
+        
+        $erster = new Zend_Date($jahr);
+        $erster->setMonth(1);
+        $letzter = new Zend_Date($jahr);
+        $letzter->setMonth(12);
+
+        $select = $this->select();
+        $select->where('mitarbeiter_id = ?', $mitarbeiterId)
+                ->where('monat >= ?', $dzService->datumPhpZuSql($erster))
+                ->where('monat <= ?', $dzService->datumPhpZuSql($letzter))
+                ->order('monat ASC');
+        $dbMonate = $this->fetchAll($select);
+        $arbeitsmonate = array();
+        $monat = new Zend_Date($erster);
+        
+        while($monat->compareYear($jahr) == 0) {
+            if($dbMonate->current() !== null &&
+                    $dbMonate->current()->getMonat()->equals(
+                            $monat, Zend_Date::MONTH)) {
+                array_push($arbeitsmonate, $dbMonate->current());
+                $dbMonate->next();
+            } else {
+                $arbeitsmonat = $this->createRow();
+                $arbeitsmonat->setMonat($monat);
+                $arbeitsmonat->mitarbeiter_id = $mitarbeiterId;
+                array_push($arbeitsmonate, $arbeitsmonat);
+            }
+            
+            $monat->addMonth(1);
+        }
+
+        return $arbeitsmonate;
+    }
+
     public function saveArbeitsmonat($mitarbeiterId, Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0) {
         $arbeitsmonat = $this->createRow();
         $arbeitsmonat->mitarbeiter_id = $mitarbeiterId;
