@@ -50,15 +50,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     }
 
     protected function _initSetFrontController() {
-        $this->_logger->info('Bootstrap ' . __METHOD__);
-
         $this->bootstrap('frontController');
         $this->frontController = Zend_Controller_Front::getInstance();
     }
 
     protected function _initResourceAutoloader() {
-        $this->_logger->info('Bootstrap ' . __METHOD__);
-
         $this->_resourceLoader = new Zend_Loader_Autoloader_Resource(array(
                     'namespace' => 'Azebo',
                     'basePath' => APPLICATION_PATH,
@@ -89,26 +85,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     }
 
     protected function _initLoadAclIni() {
-        $this->_logger->info('Bootstrap ' . __METHOD__);
-
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/acl.ini');
         Zend_Registry::set('acl', $config);
     }
 
     protected function _initAclFrontControllerPlugins() {
-        $this->_logger->info('Bootstrap ' . __METHOD__);
-
         $this->bootstrap('frontController');
         $this->bootstrap('loadAclIni');
-
 
         $plugin = new Azebo_Plugin_Acl(new AzeboLib_Acl_Acl());
         $this->frontController->registerPlugin($plugin);
     }
 
     protected function _initLocale() {
-        $this->_logger->info('Bootstrap ' . __METHOD__);
-
         $locale = new Zend_Locale('de_DE');
         Zend_Registry::set('Zend_Locale', $locale);
 
@@ -122,8 +111,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     }
 
     protected function _initViewSettings() {
-        $this->_logger->info('Bootstrap ' . __METHOD__);
-
         $this->bootstrap('view');
         $this->bootstrap('frontController');
 
@@ -163,8 +150,6 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     }
 
     protected function _initDbProfiler() {
-        $this->_logger->info('Bootstrap ' . __METHOD__);
-
         if ('production' !== $this->getEnvironment()) {
             $this->bootstrap('db');
             $profiler = new Zend_Db_Profiler_Firebug('All DB Queries');

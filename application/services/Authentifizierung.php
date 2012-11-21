@@ -58,8 +58,6 @@ class Azebo_Service_Authentifizierung {
      * @return string Entweder 'FehlerLDAP' oder 'FehlerDB' oder 'Erfolg'.
      */
     public function authentifiziere(array $daten) {
-        $this->_log->info(__METHOD__);
-
         $adapter = $this->_getAuthAdapter($daten);
         $auth = $this->_getAuth();
         $ergebnis = $auth->authenticate($adapter);
@@ -141,7 +139,7 @@ class Azebo_Service_Authentifizierung {
     public function getIdentity() {
         $auth = $this->_getAuth();
         if ($auth->hasIdentity()) {
-            $this->_log->info('Identität: ' . $auth->getIdentity()->getName());
+            $this->_log->debug('Identität: ' . $auth->getIdentity()->getName());
             return $auth->getIdentity();
         }
         return null;
