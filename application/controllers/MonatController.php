@@ -106,9 +106,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
         //Saldo bis zum Vormonat setzen
-        $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher()->getString();
+        $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher()->
+                getString();
         $this->view->saldo = $this->mitarbeiter->getSaldo(
                         $this->zuBearbeitendesDatum, true)->getString();
+        $this->view->urlaubBisher = $this->mitarbeiter->getUrlaubBisher();
+        $this->view->urlaub = $this->mitarbeiter->getUrlaub(
+                $this->zuBearbeitendesDatum);
 
         //prüfe ob bereits abgeschlossen
         $this->bearbeitbar = true;
@@ -154,8 +158,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.YYYY');
                     $saldo = $this->mitarbeiter->getSaldo($monat);
-                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->getString();
-                    $this->mitarbeiter->saveArbeitsmonat($monat, $saldo);
+                    $urlaub = $this->mitarbeiter->getUrlaub($monat);
+                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->
+                            getString();
+                    $this->mitarbeiter->saveArbeitsmonat($monat, $saldo, $urlaub);
                 }
             }
         }

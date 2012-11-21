@@ -150,6 +150,15 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $saldo;
     }
+    
+    public function getUrlaubBisher() {
+        $urlaub = $this->_row->urlaub;
+        $monate = $this->getArbeitsmonate();
+        foreach ($monate as $monat) {
+            $urlaub -= $monat->urlaub;
+        }
+        return $urlaub;
+    }
 
     public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
@@ -170,6 +179,18 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
 
         return $saldo;
+    }
+    
+    public function getUrlaub(Zend_Date $monat) {
+        $arbeitstage = $this->getArbeitstageNachMonat($monat);
+        $urlaub = 0;
+
+        foreach ($arbeitstage as $arbeitstag) {
+            if($arbeitstag->befreiung == 'urlaub') {
+                $urlaub++;
+            }
+        }
+        return $urlaub;
     }
 
 }
