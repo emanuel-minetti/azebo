@@ -21,18 +21,34 @@
 
 class BueroleitungController extends AzeboLib_Controller_Abstract {
 
+    /**
+     * @var Azebo_Resource_Mitarbeiter_Item_interface 
+     */
+    public $mitarbeiter;
+    
     public function init() {
         parent::init();
+        
+        $ns = new Zend_Session_Namespace();
+        $this->mitarbeiter = $ns->mitarbeiter;
+        
     }
     public function getSeitenName() {
         return 'Büroleitung';
     }
 
     public function indexAction() {
+        $redirector = $this->_helper->getHelper('Redirector');
+        $redirector->gotoSimple('mitarbeiter', 'bueroleitung');  
         
     }
 
     public function mitarbeiterAction() {
+        $model = new Azebo_Model_Mitarbeiter();
+        $hsMitarbeiter = $model->getMitarbeiterNachHochschule($this->mitarbeiter->getHochschule());
+        foreach ($hsMitarbeiter as $mitarbeiter) {
+            $this->_log->debug('Mitarbeiter: ' . $mitarbeiter->getName());
+        }
         
     }
     

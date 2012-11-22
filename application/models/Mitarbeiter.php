@@ -47,6 +47,42 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
                         ->getArbeitstageNachMonatUndMitarbeiterId(
                                 $monat, $mitarbeiter->id);
     }
-    
-}
 
+    public function getMitarbeiterNachHochschule($hochschule) {
+        switch ($hochschule) {
+            case 'hfm':
+                $gruppe = 'HFM-Mitglied';
+                break;
+            case 'hfs':
+                $gruppe = 'HFS-Mitglied';
+                break;
+            case 'khb':
+                $gruppe = 'KHB-Mitglied';
+                break;
+        }
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+        $options = $config->ldap->physalis->toArray();
+        $ldap = new Zend_Ldap($options);
+        $ldap->bind();
+        $entry = $ldap->search('(&(objectClass=posixGroup)(cn=' . $gruppe . '))', 'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de', Zend_Ldap::SEARCH_SCOPE_SUB);
+        foreach ($entry as $group) {
+            $membersArray[] = $group['memberuid'];
+        }
+        $mitglieder = $membersArray[0];
+
+        //$log = Zend_Registry::get('log');
+
+        foreach ($mitglieder as $mitglied) {
+            $hsMitarbeiter[] = $this->getMitarbeiterNachBenutzername($mitglied);
+        }
+
+        foreach ($hsMitarbeiter as $mitarbeiter) {
+            if ($mitarbeiter !== null) {
+                $erg[] = $mitarbeiter;
+                //$log->debug('Mitglied der ' . $hochschule . ': ' . $mitarbeiter->getName());
+            }
+        }
+        return $erg;
+    }
+
+}

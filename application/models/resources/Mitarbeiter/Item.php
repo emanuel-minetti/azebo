@@ -27,12 +27,23 @@
  */
 class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Mitarbeiter_Item_Interface {
 
-    private $_vorname = '';
-    private $_nachname = '';
+    private $_vorname = null;
+    private $_nachname = null;
     private $_rolle = null;
     private $_hochschule = null;
 
     public function getName() {
+       
+        if ($this->_vorname === null || $this->_nachname === null) {
+
+            $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+            $options = $config->ldap->physalis->toArray();
+            $ldap = new Zend_Ldap($options);
+            $ldap->bind();
+            $benutzer = $ldap->getEntry('uid=' . $this->_row->benutzername . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
+            $this->_vorname = $benutzer['givenname'][0];
+            $this->_nachname = $benutzer['sn'][0];
+        }
         return $this->_vorname . ' ' . $this->_nachname;
     }
 
