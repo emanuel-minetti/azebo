@@ -14,7 +14,7 @@
             new dojo.data.ItemFileReadStore({ data:mitarbeiterDaten });
         
         var layout =[[
-                {'name':'Mitarbeiter','field':'mitarbeiter','width':'147px'},
+                {'name':'Mitarbeiter','field':'mitarbeitername','width':'147px'},
                 {'name':'Abgeschlossen Bis','field':'abgeschlossen','width':'120px'},
                 {'name':'Abgelegt Bis','field':'abgelegt','width':'120px'},
             ]];
@@ -27,6 +27,18 @@
         
         grid.placeAt('gridDiv');
         grid.startup();
+        
+        dojo.connect(grid, "onRowClick", null, function(e){
+            var url = "<?=$this->url(array(
+                'mitarbeiter' => '',
+            ), 'mitarbeiterdetail', true); ?>";
+            var mitarbeiter = grid._getItemAttr(e.rowIndex, 'mitarbeiter');
+            url += mitarbeiter;
+            console.debug(url);
+            location.href = url;
+        });
     });
+    
+     
 
 </script>

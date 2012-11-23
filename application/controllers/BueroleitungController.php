@@ -65,7 +65,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         // füge die Mitarbeiter der Tabelle hinzu
         foreach ($hsMitarbeiter as $mitarbeiter) {
             $mitarbeiterDaten->addItem(array(
-                'mitarbeiter' => $mitarbeiter->getName(),
+                'mitarbeiter' => $mitarbeiter->benutzername,
+                'mitarbeitername' => $mitarbeiter->getName(),
                 'abgeschlossen' => $mitarbeiter->getAbgeschlossenBis(),
                 'abgelegt' => $mitarbeiter->getAbgelegtBis(),
             ));
