@@ -74,6 +74,14 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         $this->view->mitarbeiterDaten = $mitarbeiterDaten;
     }
+    
+    public function detailAction() {
+        $benutzername = $this->_getParam('benutzername');
+        $model = new Azebo_Model_Mitarbeiter();
+        $zuBearbeitenderMitarbeiter = $model->
+                getMitarbeiterNachBenutzername($benutzername);
+        $this->view->mitarbeiter = $zuBearbeitenderMitarbeiter->getName();
+    }
 
     public function monateAction() {
         
