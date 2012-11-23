@@ -33,7 +33,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     private $_hochschule = null;
 
     public function getName() {
-       
+
         if ($this->_vorname === null || $this->_nachname === null) {
 
             $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
@@ -206,6 +206,41 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function getArbeitsmonateNachJahr(Zend_Date $jahr) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
         return $monatsTabelle->getArbeitsmonateNachJahrUndMitarbeiterId($jahr, $this->id);
+    }
+
+    public function getAbgelegtBis() {
+        $heute = new Zend_Date();
+        $arbeitsmonate = $this->getArbeitsmonateNachJahr($heute);
+        $letzter = null;
+        for ($index = count($arbeitsmonate) - 1; $index >= 0; $index--) {
+            if ($arbeitsmonate[$index]->getSaldo()->getStunden() !== null &&
+                    $arbeitsmonate[$index]->abgelegt == 'ja') {
+                $letzter = $arbeitsmonate[$index];
+                break;
+            }
+        }
+        if ($letzter !== null) {
+            return $letzter->getMonat()->toString('MMMM YYYY');
+        } else {
+            return null;
+        }
+    }
+
+    public function getAbgeschlossenBis() {
+        $heute = new Zend_Date();
+        $arbeitsmonate = $this->getArbeitsmonateNachJahr($heute);
+        $letzter = null;
+        for ($index = count($arbeitsmonate) - 1; $index >= 0; $index--) {
+            if ($arbeitsmonate[$index]->getSaldo()->getStunden() !== null) {
+                $letzter = $arbeitsmonate[$index];
+                break;
+            }
+        }
+        if ($letzter !== null) {
+            return $letzter->getMonat()->toString('MMMM YYYY');
+        } else {
+            return null;
+        }
     }
 
 }

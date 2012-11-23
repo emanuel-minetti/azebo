@@ -69,13 +69,13 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
             if($dbMonate->current() !== null &&
                     $dbMonate->current()->getMonat()->equals(
                             $monat, Zend_Date::MONTH)) {
-                array_push($arbeitsmonate, $dbMonate->current());
+                $arbeitsmonate[] = $dbMonate->current();
                 $dbMonate->next();
             } else {
                 $arbeitsmonat = $this->createRow();
                 $arbeitsmonat->setMonat($monat);
                 $arbeitsmonat->mitarbeiter_id = $mitarbeiterId;
-                array_push($arbeitsmonate, $arbeitsmonat);
+                $arbeitsmonate[] = $arbeitsmonat;
             }
             
             $monat->addMonth(1);
