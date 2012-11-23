@@ -31,8 +31,39 @@ class Azebo_Form_Mitarbeiter_Mitarbeiterdetail extends AzeboLib_Form_Abstract {
         $this->addElementPrefixPath(
                 'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
         
+        $this->addElement('CheckBox', 'beamter', array(
+            'label' => 'Beamter',
+            'required' => false,
+            'checkedValue' => 'ja',
+            'uncheckedValue' => 'nein',
+            'filters' => array('StringTrim'),
+        ));
         
+        $this->addElement('Text', 'saldo', array(
+            'label' => 'Saldo Übertrag',
+            'required' => false,
+            'filters' => array('StringTrim'),
+            'validators' => array('Saldo',),
+        ));
         
+        $this->addElement('Text', 'urlaub', array(
+            'label' => 'Urlaub Übertrag',
+            'required' => false,
+            'filters' => array('StringTrim'),
+            'validators' => array('Digits',),
+        ));
+        
+         $this->addElement('SubmitButton', 'absenden', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Absenden',
+        ));
+         
+         $this->addElement('SubmitButton', 'zuruecksetzen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Zurücksetzen',
+        ));      
     }
 }
 

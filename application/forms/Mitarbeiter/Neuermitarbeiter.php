@@ -29,7 +29,23 @@ class Azebo_Form_Mitarbeiter_Neuermitarbeiter extends AzeboLib_Form_Abstract {
     
     const UNGUELTIGE_OPTION = 'Bitte wählen Sie eine der Optionen aus!';
     
-    public function init() {  
+    public function init() {
+        $auswahlElement = new Zend_Dojo_Form_Element_FilteringSelect('auswahl', array(
+                    'label' => 'Neuer Mitarbeiter: ',
+                    //'multiOptions' => $mitgliederOptions,
+                    'invalidMessage' => Azebo_Form_Mitarbeiter_Neuermitarbeiter::UNGUELTIGE_OPTION,
+                    'filters' => array('StringTrim', 'Alpha'),
+                    'tabindex' => 1,
+                    'autofocus' => true,
+                ));
+        $this->addElement($auswahlElement);
+        $this->addElement('SubmitButton', 'hinzufügen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Hinzufügen',
+            'decorators' => array('DijitElement'),
+            'tabindex' => 2,
+        ));
     }
 }
 

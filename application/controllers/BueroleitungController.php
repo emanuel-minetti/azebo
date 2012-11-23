@@ -150,22 +150,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         foreach ($mitglieder as $mitglied) {
             $mitgliederOptions[$mitglied] = $mitglied;
         }
-        $auswahlElement = new Zend_Dojo_Form_Element_FilteringSelect('auswahl', array(
-                    'label' => 'Neuer Mitarbeiter: ',
-                    'multiOptions' => $mitgliederOptions,
-                    'invalidMessage' => Azebo_Form_Mitarbeiter_Neuermitarbeiter::UNGUELTIGE_OPTION,
-                    'filters' => array('StringTrim', 'Alpha'),
-                    'tabindex' => 1,
-                    'autofocus' => true,
-                ));
-        $form->addElement($auswahlElement);
-        $form->addElement('SubmitButton', 'hinzufügen', array(
-            'required' => false,
-            'ignore' => true,
-            'label' => 'Hinzufügen',
-            'decorators' => array('DijitElement'),
-            'tabindex' => 2,
-        ));
+        $auswahlElement = $form->getElement('auswahl');
+        $auswahlElement->setAttrib('options', $mitgliederOptions);
+        
 
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
@@ -192,44 +179,16 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $saldo = new Azebo_Model_Saldo(0, 0, true);
             $urlaub = 0;
         }
-
-        $form->addElement('CheckBox', 'beamter', array(
-            'label' => 'Beamter',
-            'required' => false,
-            'checkedValue' => 'ja',
-            'uncheckedValue' => 'nein',
-            'filters' => array('StringTrim'),
-            'checked' => $beamter,
-        ));
-
-        $form->addElement('Text', 'saldo', array(
-            'label' => 'Saldo Übertrag',
-            'required' => false,
-            'filters' => array('StringTrim'),
-            'validators' => array('Saldo',),
-            'value' => $saldo->getString(),
-        ));
-
-        $form->addElement('Text', 'urlaub', array(
-            'label' => 'Urlaub Übertrag',
-            'required' => false,
-            'filters' => array('StringTrim'),
-            'validators' => array('Digits',),
-            'value' => $urlaub,
-        ));
-
-        $form->addElement('SubmitButton', 'absenden', array(
-            'required' => false,
-            'ignore' => true,
-            'label' => 'Absenden',
-        ));
-
-        $form->addElement('SubmitButton', 'zuruecksetzen', array(
-            'required' => false,
-            'ignore' => true,
-            'label' => 'Zurücksetzen',
-        ));
         
+        $elemente = $form->getElements();
+        $elemente['beamter']->setAttrib('checked', $beamter);
+        $elemente['saldo']->setValue($saldo->getString());
+        $elemente['urlaub']->setValue($urlaub);
+               
+        $form->addElement('hidden', 'benutzername', array(
+            'value' => $benutzername,
+        ));
+   
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
             'benutzername' => $benutzername,
