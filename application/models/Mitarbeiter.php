@@ -122,5 +122,19 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $nachname = $benutzer['sn'][0];
         return $vorname . ' ' . $nachname;
     }
+    
+    public function saveMitarbeiter(Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter, $daten) {
+        $mitarbeiter->urlaub = $daten['urlaub'];
+        $mitarbeiter->beamter = $daten['beamter'];
+        $saldoString = $daten['saldo'];
+        $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';
+        preg_match("/$preg/", $saldoString, $parts);
+        $positiv = $parts[1] == '+' ? true : false;
+        $stunden = $parts[2];
+        $minuten = $parts[3];
+        $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        $mitarbeiter->setSaldoUebertrag($saldo);
+        $mitarbeiter->save();
+    }
 
 }

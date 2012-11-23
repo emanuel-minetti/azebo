@@ -94,4 +94,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getAbgelegtBis();
     
+    public function setSaldoUebertrag(Azebo_Model_Saldo $saldo);
+    
 }

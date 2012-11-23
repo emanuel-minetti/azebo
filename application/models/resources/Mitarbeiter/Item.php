@@ -191,7 +191,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $saldo;
     }
 
-    public function getUrlaub(Zend_Date $monat) {
+    public function getUrlaubNachMonat(Zend_Date $monat) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
         $urlaub = 0;
 
@@ -241,6 +241,13 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         } else {
             return null;
         }
+    }
+
+    public function setSaldoUebertrag(Azebo_Model_Saldo $saldo) {
+        $this->_row->saldouebertragstunden = $saldo->getStunden();
+        $this->_row->saldouebertragminuten = $saldo->getMinuten();
+        $this->_row->saldouebertragpositiv = $saldo->getPositiv() ? 'ja' : 'nein';
+        
     }
 
 }

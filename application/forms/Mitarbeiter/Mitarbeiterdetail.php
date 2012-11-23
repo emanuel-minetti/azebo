@@ -21,15 +21,18 @@
  */
 
 /**
- * Description of Mitarbeiter
+ * Description of Mitarbeiterdetail
  *
  * @author Emanuel Minetti
  */
-class Azebo_Form_Mitarbeiter_Neuermitarbeiter extends AzeboLib_Form_Abstract {
+class Azebo_Form_Mitarbeiter_Mitarbeiterdetail extends AzeboLib_Form_Abstract {
     
-    const UNGUELTIGE_OPTION = 'Bitte wählen Sie eine der Optionen aus!';
-    
-    public function init() {  
+    public function init() {
+        $this->addElementPrefixPath(
+                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
+        
+        
+        
     }
 }
 

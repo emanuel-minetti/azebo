@@ -27,12 +27,20 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
      */
     public $mitarbeiter;
 
+    /**
+     * @var Azebo_Model_Mitarbeiter 
+     */
+    public $model;
+
     public function init() {
         parent::init();
 
         // Lade den Mitarbeiter
         $ns = new Zend_Session_Namespace();
         $this->mitarbeiter = $ns->mitarbeiter;
+
+        // lade das Modell
+        $this->model = new Azebo_Model_Mitarbeiter();
 
         // Aktiviere Dojo
         $this->view->dojo()->enable()
@@ -59,8 +67,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $mitarbeiterDaten->setIdentifier('mitarbeiter');
 
         // hole die Mitarbeiter der Hochschule
-        $model = new Azebo_Model_Mitarbeiter();
-        $hsMitarbeiter = $model->getMitarbeiterNachHochschule($this->mitarbeiter->getHochschule());
+
+        $hsMitarbeiter = $this->model->getMitarbeiterNachHochschule($this->mitarbeiter->getHochschule());
 
         // füge die Mitarbeiter der Tabelle hinzu
         foreach ($hsMitarbeiter as $mitarbeiter) {
@@ -77,19 +85,34 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
     public function detailAction() {
         $this->erweitereSeitenName(' Bearbeite Mitarbeiter');
-
         $benutzername = $this->_getParam('benutzername');
-        $model = new Azebo_Model_Mitarbeiter();
-
-        $zuBearbeitenderMitarbeiter = $model->
+        $zuBearbeitenderMitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
         if ($zuBearbeitenderMitarbeiter !== null) {
             $name = $zuBearbeitenderMitarbeiter->getName();
+            $neu = false;
         } else {
-            $name = $model->getNameNachBenutzername($benutzername);
+            $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
+            $zuBearbeitenderMitarbeiter = $mitarbeiterTabelle->createRow();
+            $name = $this->model->getNameNachBenutzername($benutzername);
+            $neu = true;
         }
-        
-        $this->view->mitarbeiter = $name;
+        $this->view->name = $name;
+        $formDetail = $this->_getMitarbeiterDetailForm($benutzername, $neu);
+
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $postDaten = $request->getPost();
+            if(isset($postDaten['absenden'])) {
+                $valid = $formDetail->isValid($postDaten);
+                if($valid) {
+                    $daten = $formDetail->getValues();
+                    $this->model->saveMitarbeiter($zuBearbeitenderMitarbeiter, $daten);
+                }
+            }
+        }
+
+        $this->view->form = $formDetail;
     }
 
     public function neuauswahlAction() {
@@ -99,8 +122,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     public function neuAction() {
         $this->erweitereSeitenName(' Neuer Mitarbeiter');
         $hochschule = $this->_getParam('hochschule');
-        $model = new Azebo_Model_Mitarbeiter();
-        $mitglieder = $model->getBenutzernamenNachHochschule($hochschule);
+        $mitglieder = $this->model->getBenutzernamenNachHochschule($hochschule);
         $form = $this->_getNeuerMitarbeiterForm($mitglieder);
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -122,11 +144,12 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
+        $form = new Azebo_Form_Mitarbeiter_Neuermitarbeiter();
+
         $mitgliederOptions = array();
         foreach ($mitglieder as $mitglied) {
             $mitgliederOptions[$mitglied] = $mitglied;
         }
-        $form = new Azebo_Form_Mitarbeiter_Neuermitarbeiter();
         $auswahlElement = new Zend_Dojo_Form_Element_FilteringSelect('auswahl', array(
                     'label' => 'Neuer Mitarbeiter: ',
                     'multiOptions' => $mitgliederOptions,
@@ -143,6 +166,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             'decorators' => array('DijitElement'),
             'tabindex' => 2,
         ));
+
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
             'controller' => 'bueroleitung',
@@ -150,6 +174,69 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $form->setAction($url);
         $form->setMethod('post');
         $form->setName('neuermitarbeiterForm');
+
+        return $form;
+    }
+
+    private function _getMitarbeiterDetailForm($benutzername, $neu) {
+        $form = new Azebo_Form_Mitarbeiter_Mitarbeiterdetail();
+        if (!$neu) {
+            $mitarbeiter = $this->model->getMitarbeiterNachBenutzername($benutzername);
+            $beamter = $mitarbeiter->getBeamter() == 'ja' ? true : false;
+            $saldo = $mitarbeiter->getSaldouebertrag();
+            $urlaub = $mitarbeiter->urlaub;
+        } else {
+            $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
+            $mitarbeiter = $mitarbeiterTabelle->createRow();
+            $beamter = false;
+            $saldo = new Azebo_Model_Saldo(0, 0, true);
+            $urlaub = 0;
+        }
+
+        $form->addElement('CheckBox', 'beamter', array(
+            'label' => 'Beamter',
+            'required' => false,
+            'checkedValue' => 'ja',
+            'uncheckedValue' => 'nein',
+            'filters' => array('StringTrim'),
+            'checked' => $beamter,
+        ));
+
+        $form->addElement('Text', 'saldo', array(
+            'label' => 'Saldo Übertrag',
+            'required' => false,
+            'filters' => array('StringTrim'),
+            'validators' => array('Saldo',),
+            'value' => $saldo->getString(),
+        ));
+
+        $form->addElement('Text', 'urlaub', array(
+            'label' => 'Urlaub Übertrag',
+            'required' => false,
+            'filters' => array('StringTrim'),
+            'validators' => array('Digits',),
+            'value' => $urlaub,
+        ));
+
+        $form->addElement('SubmitButton', 'absenden', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Absenden',
+        ));
+
+        $form->addElement('SubmitButton', 'zuruecksetzen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Zurücksetzen',
+        ));
+        
+        $urlHelper = $this->_helper->getHelper('url');
+        $url = $urlHelper->url(array(
+            'benutzername' => $benutzername,
+                ), 'mitarbeiterdetail', true);
+        $form->setAction($url);
+        $form->setMethod('post');
+        $form->setName('detailForm');
 
         return $form;
     }
