@@ -1,4 +1,32 @@
 <br /><br />
 <div id="view-content">
-	<p>View-Script für Controller <b>Bueroleitung</b> und Script/Action Name <b>mitarbeiter</b></p>
+    
+    <h3><?= $this->seitenName ?></h3>
+    <div id="gridDiv" style="width: 393px; height: 500px"></div>
+	
 </div>
+
+<script type="text/javascript">
+    dojo.ready(function() {
+        var mitarbeiterDaten = <?= $this->mitarbeiterDaten->toJson() ?>;
+        
+        var dataStore =
+            new dojo.data.ItemFileReadStore({ data:mitarbeiterDaten });
+        
+        var layout =[[
+                {'name':'Mitarbeiter','field':'mitarbeiter','width':'147px'},
+                {'name':'Abgeschlossen Bis','field':'abgeschlossen','width':'120px'},
+                {'name':'Abgelegt Bis','field':'abgelegt','width':'120px'},
+            ]];
+        
+        var grid = new dojox.grid.DataGrid({
+            store:dataStore,
+            structure:layout,
+            selectionMode:"none"
+        });
+        
+        grid.placeAt('gridDiv');
+        grid.startup();
+    });
+
+</script>

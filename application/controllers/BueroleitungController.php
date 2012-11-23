@@ -1,4 +1,5 @@
 <?php
+
 /*
  * 
  *     This file is part of azebo.
@@ -25,37 +26,57 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Resource_Mitarbeiter_Item_interface 
      */
     public $mitarbeiter;
-    
+
     public function init() {
         parent::init();
-        
+
+        // Lade den Mitarbeiter
         $ns = new Zend_Session_Namespace();
         $this->mitarbeiter = $ns->mitarbeiter;
-        
+
+        // Aktiviere Dojo
+        $this->view->dojo()->enable()
+                ->setDjConfigOption('parseOnLoad', true)
+                ->requireModule('dojox.grid.DataGrid')
+                ->requireModule('dojo.data.ItemFileReadStore')
+                ->requireModule('dojo._base.connect');
     }
+
     public function getSeitenName() {
         return 'Büroleitung';
     }
 
     public function indexAction() {
         $redirector = $this->_helper->getHelper('Redirector');
-        $redirector->gotoSimple('mitarbeiter', 'bueroleitung');  
-        
+        $redirector->gotoSimple('mitarbeiter', 'bueroleitung');
     }
 
     public function mitarbeiterAction() {
+        $this->erweitereSeitenName(' Übersicht Mitarbeiter');
+
+        // intialisiere die Tabelle
+        $mitarbeiterDaten = new Zend_Dojo_Data();
+        $mitarbeiterDaten->setIdentifier('mitarbeiter');
+
+        // hole die Mitarbeiter der Hochschule
         $model = new Azebo_Model_Mitarbeiter();
         $hsMitarbeiter = $model->getMitarbeiterNachHochschule($this->mitarbeiter->getHochschule());
+
+        // füge die Mitarbeiter der Tabelle hinzu
         foreach ($hsMitarbeiter as $mitarbeiter) {
-            $this->_log->debug('Mitarbeiter: ' . $mitarbeiter->getName());
+            $mitarbeiterDaten->addItem(array(
+                'mitarbeiter' => $mitarbeiter->getName(),
+                'abgeschlossen' => 'März 2012',
+                'abgelegt' => 'Februar 2012',
+            ));
         }
-        
+
+        $this->view->mitarbeiterDaten = $mitarbeiterDaten;
     }
-    
+
     public function monateAction() {
         
     }
-
 
 }
 
