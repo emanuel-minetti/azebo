@@ -74,17 +74,84 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         $this->view->mitarbeiterDaten = $mitarbeiterDaten;
     }
-    
+
     public function detailAction() {
+        $this->erweitereSeitenName(' Bearbeite Mitarbeiter');
+
         $benutzername = $this->_getParam('benutzername');
         $model = new Azebo_Model_Mitarbeiter();
+
         $zuBearbeitenderMitarbeiter = $model->
                 getMitarbeiterNachBenutzername($benutzername);
-        $this->view->mitarbeiter = $zuBearbeitenderMitarbeiter->getName();
+        if ($zuBearbeitenderMitarbeiter !== null) {
+            $name = $zuBearbeitenderMitarbeiter->getName();
+        } else {
+            $name = $model->getNameNachBenutzername($benutzername);
+        }
+        
+        $this->view->mitarbeiter = $name;
+    }
+
+    public function neuauswahlAction() {
+        $this->erweitereSeitenName(' Neuer Mitarbeiter');
+    }
+
+    public function neuAction() {
+        $this->erweitereSeitenName(' Neuer Mitarbeiter');
+        $hochschule = $this->_getParam('hochschule');
+        $model = new Azebo_Model_Mitarbeiter();
+        $mitglieder = $model->getBenutzernamenNachHochschule($hochschule);
+        $form = $this->_getNeuerMitarbeiterForm($mitglieder);
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $postDaten = $request->getPost();
+            $valid = $form->isValid($postDaten);
+            if ($valid) {
+                $daten = $form->getValues();
+                $redirector = $this->getHelper('Redirector');
+                $redirector->gotoRoute(array(
+                    'benutzername' => $daten['auswahl'],
+                        ), 'mitarbeiterdetail');
+            }
+        }
+        $this->view->form = $form;
     }
 
     public function monateAction() {
         
+    }
+
+    private function _getNeuerMitarbeiterForm($mitglieder) {
+        $mitgliederOptions = array();
+        foreach ($mitglieder as $mitglied) {
+            $mitgliederOptions[$mitglied] = $mitglied;
+        }
+        $form = new Azebo_Form_Mitarbeiter_Neuermitarbeiter();
+        $auswahlElement = new Zend_Dojo_Form_Element_FilteringSelect('auswahl', array(
+                    'label' => 'Neuer Mitarbeiter: ',
+                    'multiOptions' => $mitgliederOptions,
+                    'invalidMessage' => Azebo_Form_Mitarbeiter_Neuermitarbeiter::UNGUELTIGE_OPTION,
+                    'filters' => array('StringTrim', 'Alpha'),
+                    'tabindex' => 1,
+                    'autofocus' => true,
+                ));
+        $form->addElement($auswahlElement);
+        $form->addElement('SubmitButton', 'hinzufügen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Hinzufügen',
+            'decorators' => array('DijitElement'),
+            'tabindex' => 2,
+        ));
+        $urlHelper = $this->_helper->getHelper('url');
+        $url = $urlHelper->url(array(
+            'controller' => 'bueroleitung',
+            'action' => 'neu'));
+        $form->setAction($url);
+        $form->setMethod('post');
+        $form->setName('neuermitarbeiterForm');
+
+        return $form;
     }
 
 }

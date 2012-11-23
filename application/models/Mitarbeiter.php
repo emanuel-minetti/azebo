@@ -84,5 +84,43 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         }
         return $erg;
     }
+    
+    public function getBenutzernamenNachHochschule($hochschule) {
+        switch ($hochschule) {
+            case 'hfm':
+                $gruppe = 'HFM-Mitglied';
+                break;
+            case 'hfs':
+                $gruppe = 'HFS-Mitglied';
+                break;
+            case 'khb':
+                $gruppe = 'KHB-Mitglied';
+                break;
+        }
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+        $options = $config->ldap->physalis->toArray();
+        $ldap = new Zend_Ldap($options);
+        $ldap->bind();
+        $entry = $ldap->search('(&(objectClass=posixGroup)(cn=' . $gruppe . '))', 'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de', Zend_Ldap::SEARCH_SCOPE_SUB);
+        foreach ($entry as $group) {
+            $membersArray[] = $group['memberuid'];
+        }
+        $mitglieder = $membersArray[0];
+        
+        return $mitglieder;
+    }
+    
+    public function getNameNachBenutzername($benutzername) {
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+        $options = $config->ldap->physalis->toArray();
+        $ldap = new Zend_Ldap($options);
+        $ldap->bind();
+        $benutzer = $ldap->getEntry('uid=' . $benutzername . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
+//        $log = Zend_Registry::get('log');
+//        $log->debug('Benutzer: ' . print_r($benutzer, true));
+        $vorname = $benutzer['givenname'][0];
+        $nachname = $benutzer['sn'][0];
+        return $vorname . ' ' . $nachname;
+    }
 
 }

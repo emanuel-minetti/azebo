@@ -93,8 +93,8 @@ class Azebo_Service_Authentifizierung {
         $benutzer = $ldap->getEntry('uid=' . $daten['benutzername'] . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
         $vorname = $benutzer['givenname'][0];
         $nachname = $benutzer['sn'][0];
-        $this->_log->debug('Vorname: ' . $vorname);
-        $this->_log->debug('Nachname: ' . $nachname);
+//        $this->_log->debug('Vorname: ' . $vorname);
+//        $this->_log->debug('Nachname: ' . $nachname);
 
         //Hole den Mitarbeiter aus dem Modell
         $mitarbeiter = $this->_mitarbeiterModell

@@ -1,0 +1,15 @@
+<br /><br />
+<div id="view-content">
+
+    <h3><?= $this->seitenName ?></h3>
+    Bitte wählen Sie die Hochschule, bei der der neue Mitarbeiter beschäftigt ist:
+    <p><a style="width: 250px; text-align: center" href="
+        <?= $this->url(array('controller' => 'bueroleitung', 'action' => 'neu', 'hochschule' => 'hfm')) ?>
+          ">HfM</a></p>
+    <p><a style="width: 250px; text-align: center" href="
+          <?= $this->url(array('controller' => 'bueroleitung', 'action' => 'neu', 'hochschule' => 'hfs')) ?>
+          ">HfS</a></p>
+    <p><a style="width: 250px; text-align: center" href="
+        <?= $this->url(array('controller' => 'bueroleitung', 'action' => 'neu', 'hochschule' => 'khb')) ?>
+           ">KHB</a></p>
+</div>

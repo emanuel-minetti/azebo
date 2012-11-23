@@ -127,7 +127,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function indexAction() {
-
         $request = $this->getRequest();
         $abschlussForm = $this->_getMitarbeiterAbschlussForm();
         if ($request->isPost()) {
