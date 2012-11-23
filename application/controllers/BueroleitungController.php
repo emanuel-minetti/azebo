@@ -47,7 +47,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $model = new Azebo_Model_Mitarbeiter();
         $hsMitarbeiter = $model->getMitarbeiterNachHochschule($this->mitarbeiter->getHochschule());
         foreach ($hsMitarbeiter as $mitarbeiter) {
-            $this->_log->debug('Mitarbeiter: ' . $mitarbeiter->getName() );
+            $this->_log->debug('Mitarbeiter: ' . $mitarbeiter->getName());
         }
         
     }
