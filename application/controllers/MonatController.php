@@ -304,37 +304,15 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $geprueft = $ns->geprueft;
         $index = $this->zuBearbeitendesDatum->toString('MM-YYYY');
         //$elemente = $form->getElements();
-        if ($geprueft !== null && isset($geprueft[$index]) && $geprueft[$index]) {
-            $form->removeElement('ausdrucken');
-            $form->removeElement('pruefen');
-//            $form->addElement('SubmitButton', 'abschliessen', array(
-//                'required' => false,
-//                'ignore' => true,
-//                'label' => 'Monat abschließen',
-//                'decorators' => array('DijitElement', 'Errors',),
-//                'tabindex' => 1,
-//            ));
-        } elseif (!$this->bearbeitbar) {
+         if (!$this->bearbeitbar) {
             $form->removeElement('pruefen');
             $form->removeElement('abschliessen');
-//            $form->addElement('SubmitButton', 'ausdrucken', array(
-//                'required' => false,
-//                'ignore' => true,
-//                'label' => 'Bogen ausdrucken',
-//                'decorators' => array('DijitElement', 'Errors',),
-//                'tabindex' => 1,
-//            ));
+        } elseif ($geprueft !== null && isset($geprueft[$index]) && $geprueft[$index]) {
+            $form->removeElement('ausdrucken');
+            $form->removeElement('pruefen');
         } else {
             $form->removeElement('ausdrucken');
             $form->removeElement('abschliessen');
-//            $form->addElement('SubmitButton', 'pruefen', array(
-//                'required' => false,
-//                'ignore' => true,
-//                'label' => 'Monat prüfen',
-//                'validators' => array('Monat',),
-//                'decorators' => array('DijitElement', 'Errors',),
-//                'tabindex' => 1,
-//            ));
         }
 
         $monatElement = $form->getElement('monat');
