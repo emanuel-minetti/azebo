@@ -90,7 +90,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ->setDjConfigOption('parseOnLoad', true)
                 ->requireModule('dojox.grid.DataGrid')
                 ->requireModule('dojo.data.ItemFileReadStore')
-                ->requireModule('dojo._base.connect');
+                ->requireModule('dojo._base.connect')
+                ->requireModule('dijit.Tooltip');
 
         // Lade den Mitarbeiter und die Arbeitstage
         $this->mitarbeiter = $ns->mitarbeiter;

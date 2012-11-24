@@ -51,17 +51,27 @@
         grid.placeAt('gridDiv');
         grid.startup();
                
-        <? if($this->bearbeitbar): ?>       
-        dojo.connect(grid, "onRowClick", null, function(e){
-            var url = "<?=$this->url(array(
-                'monat' => $this->monat,
-                'jahr' => $this->jahr,
-                    ), 'monat', true); ?>";
-            var tag = e.rowIndex + 1;
-            url += "/" + tag + "#form";
-            console.debug(url);
-            location.href = url;
-        }); 
-        <? endif ?>
-    });
+<? if ($this->bearbeitbar): ?>       
+                    dojo.connect(grid, "onRowClick", null, function(e){
+                        var url = "<?=
+    $this->url(array(
+        'monat' => $this->monat,
+        'jahr' => $this->jahr,
+            ), 'monat', true);
+    ?>";
+                                    var tag = e.rowIndex + 1;
+                                    url += "/" + tag + "#form";
+                                    console.debug(url);
+                                    location.href = url;
+                                }); 
+<? endif ?>
+        
+                var tip = new dijit.Tooltip({
+                    label: '<p>Der Monatsabschluss kann nicht mehr rückgängig gemacht werden!</p>',
+                    showDelay: 50,
+                    connectId: ["abschliessen"]
+                });
+            });
+    
+    
 </script>
