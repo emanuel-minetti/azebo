@@ -32,7 +32,31 @@ class Azebo_Form_Mitarbeiter_Abschluss extends AzeboLib_Form_Abstract {
         $this->addElementPrefixPath(
                 'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
         $this->addElement('Hidden', 'monat', array());
+
+        $this->addElement('SubmitButton', 'abschliessen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Monat abschließen',
+            'decorators' => array('DijitElement', 'Errors',),
+            'tabindex' => 1,
+        ));
+
+        $this->addElement('SubmitButton', 'ausdrucken', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Bogen ausdrucken',
+            'decorators' => array('DijitElement', 'Errors',),
+            'tabindex' => 1,
+        ));
+
+        $this->addElement('SubmitButton', 'pruefen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Monat prüfen',
+            'validators' => array('Monat',),
+            'decorators' => array('DijitElement', 'Errors',),
+            'tabindex' => 1,
+        ));
     }
 
 }
-

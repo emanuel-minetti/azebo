@@ -67,8 +67,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $mitarbeiterDaten->setIdentifier('mitarbeiter');
 
         // hole die Mitarbeiter der Hochschule
-
-        $hsMitarbeiter = $this->model->getMitarbeiterNachHochschule($this->mitarbeiter->getHochschule());
+        $hsMitarbeiter = $this->model->getMitarbeiterNachHochschule(
+                $this->mitarbeiter->getHochschule());
 
         // füge die Mitarbeiter der Tabelle hinzu
         foreach ($hsMitarbeiter as $mitarbeiter) {
@@ -103,9 +103,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postDaten = $request->getPost();
-            if(isset($postDaten['absenden'])) {
+            if (isset($postDaten['absenden'])) {
                 $valid = $formDetail->isValid($postDaten);
-                if($valid) {
+                if ($valid) {
                     $daten = $formDetail->getValues();
                     $this->model->saveMitarbeiter($zuBearbeitenderMitarbeiter, $daten);
                 }
@@ -146,13 +146,13 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     private function _getNeuerMitarbeiterForm($mitglieder) {
         $form = new Azebo_Form_Mitarbeiter_Neuermitarbeiter();
 
+        // befülle die Auswahl
         $mitgliederOptions = array();
         foreach ($mitglieder as $mitglied) {
             $mitgliederOptions[$mitglied] = $mitglied;
         }
         $auswahlElement = $form->getElement('auswahl');
         $auswahlElement->setAttrib('options', $mitgliederOptions);
-        
 
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
@@ -179,16 +179,16 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $saldo = new Azebo_Model_Saldo(0, 0, true);
             $urlaub = 0;
         }
-        
+
         $elemente = $form->getElements();
         $elemente['beamter']->setAttrib('checked', $beamter);
         $elemente['saldo']->setValue($saldo->getString());
         $elemente['urlaub']->setValue($urlaub);
-               
+
         $form->addElement('hidden', 'benutzername', array(
             'value' => $benutzername,
         ));
-   
+
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
             'benutzername' => $benutzername,
@@ -201,4 +201,3 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
 }
-

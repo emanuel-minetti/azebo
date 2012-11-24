@@ -52,8 +52,7 @@ class LoginController extends AzeboLib_Controller_Abstract {
                 $this->_log->info("Anmeldung fehlgeschlagen: Validation gescheitert! {$form->getValues()}");
                 $form->setDescription(
                         'Anmeldung fehlgeschlagen! Bitte beachten Sie die Fehlermedungen:');
-                return $this->render('login');
-                
+                return $this->render('login');             
             }
             
             $ergebnis = $this->_authService->authentifiziere($form->getValues());

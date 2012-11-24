@@ -23,7 +23,7 @@
 class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
     /**
-     * @var Zend_controller_Front 
+     * @var Zend_Controller_Front 
      */
     public $frontController;
     protected $_logger;

@@ -37,6 +37,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         //$log = Zend_Registry::get('log');
 
         $authService = new Azebo_Service_Authentifizierung();
+        //TODO Stellvertreter!
         $mitarbeiter = $authService->getIdentity();
         $datum = new Zend_Date();
         $datum->setYear($this->getView()->jahr)
