@@ -257,3 +257,7 @@ div#Fusszeile {
 .tundra .dojoxGridRowOdd {
     background-color: #d8d0ae !important;      
 }
+
+.tundra .dijitDateTextBox {
+    width: 8em !important;
+}

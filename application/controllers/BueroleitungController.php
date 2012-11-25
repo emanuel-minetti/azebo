@@ -117,7 +117,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 }
             }
         }
-        
+
         // zeige die Arbeitszeitentabelle, falls der Mitarbeiter
         // nicht neu angelegt wurde
         if (!$neu) {
@@ -186,11 +186,13 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function arbeitsregelAction() {
-        $id = $this->_getParam('id');
+        $this->erweitereSeitenName(' Bearbeite Arbeitszeit');
         $benutzername = $this->_getParam('mitarbeiter');
+        $id = $this->_getParam('id');
+        $form = $this->_getArbeitsregelForm($benutzername, $id);
 
-
-        $this->view->id = $id;
+        $this->view->form = $form;
+        //TODO Zeige übrige Regeln in einer/zwei Tabellen an!
     }
 
     public function monateAction() {
@@ -251,6 +253,23 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $form->setAction($url);
         $form->setMethod('post');
         $form->setName('detailForm');
+
+        return $form;
+    }
+
+    private function _getArbeitsregelForm($benutzername, $id) {
+        $form = new Azebo_Form_Mitarbeiter_Arbeitsregel();
+        
+        //TODO bevölkere die Form!
+
+        $urlHelper = $this->_helper->getHelper('url');
+        $url = $urlHelper->url(array(
+            'benutzername' => $benutzername,
+            'id' => $id,
+                ), 'arbeitsregel', true);
+        $form->setAction($url);
+        $form->setMethod('post');
+        $form->setName('regelForm');
 
         return $form;
     }

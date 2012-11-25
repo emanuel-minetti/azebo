@@ -7,12 +7,16 @@
         <div id="gridDiv" style="width: 648px; height: 150px"></div>
         <p>
             <a style="width: 250px; text-align: center" href="
-               <?= $this->url(array('mitarbeiter' => $this->mitarbeiter), 'arbeitsregelneu') ?>
+               <?=
+               $this->url(array(
+                   'mitarbeiter' => $this->mitarbeiter,
+                   'id' => 0,), 'arbeitsregel')
+               ?>
                ">Neue Arbeitszeit hinzufügen</a>
         </p>
     <? endif ?>
     <h4>Stammdaten</h4>
-    <?= $this->form ?>
+<?= $this->form ?>
 
 
 </div>
@@ -21,10 +25,10 @@
     <script type="text/javascript">
         dojo.ready(function() {
             var zeitDaten = <?= $this->zeitDaten->toJson() ?>;
-                
+                    
             var dataStore =
                 new dojo.data.ItemFileReadStore({ data:zeitDaten });
-                
+                    
             var layout =[[
                     {'name':'Gültig Von','field':'von','width':'75px'},
                     {'name':'Gültig Bis','field':'bis','width':'75px'},
@@ -35,16 +39,16 @@
                     {'name':'Rahmen- Ende','field':'rahmenende','width':'70px'},
                     {'name':'Soll- Arbeitszeit','field':'soll','width':'75px'},
                 ]];
-                
+                    
             var grid = new dojox.grid.DataGrid({
                 store:dataStore,
                 structure:layout,
                 selectionMode:"none"
             });
-                
+                    
             grid.placeAt('gridDiv');
             grid.startup();
-                
+                    
             dojo.connect(grid, "onRowClick", null, function(e){
                 var url = "<?=
     $this->url(array(
@@ -57,9 +61,10 @@
                 console.debug(url);
                 location.href = url;
             });
-                
+                    
         });
     </script>
     <?
+
 
  endif ?>
