@@ -36,5 +36,18 @@
         
         grid.placeAt('gridDiv');
         grid.startup();
+        
+        dojo.connect(grid, "onRowClick", null, function(e){
+            var url = "<?=
+        $this->url(array(
+            'id' => '',
+                ), 'arbeitsregel', true);
+        ?>";
+                        var id = grid._getItemAttr(e.rowIndex, 'id');
+                        url += id;
+                        console.debug(url);
+                        location.href = url;
+                    });
+        
         });
 </script>

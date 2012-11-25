@@ -172,6 +172,11 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         }
         $this->view->form = $form;
     }
+    
+    public function arbeitsregelAction() {
+        $id = $this->_getParam('id');
+        $this->view->id = $id;
+    }
 
     public function monateAction() {
         
