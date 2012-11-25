@@ -99,6 +99,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $neu = true;
         }
         $this->erweitereSeitenName(' Bearbeite ' . $name);
+        $formDetail = $this->_getMitarbeiterDetailForm($benutzername, $neu);
+        $this->view->form = $formDetail;
+        $this->view->neu = $neu;
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -109,49 +112,53 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     $daten = $formDetail->getValues();
                     $this->model->saveMitarbeiter(
                             $zuBearbeitenderMitarbeiter, $daten);
+                    $neu = false;
+                    $this->view->neu = false;
                 }
             }
         }
+        
+        // zeige die Arbeitszeitentabelle, falls der Mitarbeiter
+        // nicht neu angelegt wurde
+        if (!$neu) {
+            // intialisiere die Tabelle
+            $zeitDaten = new Zend_Dojo_Data();
+            $zeitDaten->setIdentifier('id');
 
-        $formDetail = $this->_getMitarbeiterDetailForm($benutzername, $neu);
-        $this->view->form = $formDetail;
-
-        // intialisiere die Tabelle
-        $zeitDaten = new Zend_Dojo_Data();
-        $zeitDaten->setIdentifier('id');
-
-        $arbeitsregeln = $zuBearbeitenderMitarbeiter->getArbeitsregeln();
-        foreach ($arbeitsregeln as $arbeitsregel) {
-            $von = $arbeitsregel->getVon()->toString('dd.MM.YYYY');
-            $bis = $arbeitsregel->getBis();
-            $bis = $bis === null ? 'immer' : $bis->toString('dd.MM.YYYY');
-            $wochentag = $arbeitsregel->getWochentag();
-            $rahmenAnfang = $arbeitsregel->getRahmenAnfang();
-            $rahmenAnfang = $rahmenAnfang === null ? 'normal' :
-                    $rahmenAnfang->toString('HH:mm');
-            $kernAnfang = $arbeitsregel->getKernAnfang();
-            $kernAnfang = $kernAnfang === null ? 'normal' :
-                    $kernAnfang->toString('HH:mm');
-            $kernEnde = $arbeitsregel->getKernEnde();
-            $kernEnde = $kernEnde === null ? 'normal' :
-                    $kernEnde->toString('HH:mm');
-            $rahmenEnde = $arbeitsregel->getRahmenEnde();
-            $rahmenEnde = $rahmenEnde === null ? 'normal' :
-                    $rahmenEnde->toString('HH:mm');
-            $soll = $arbeitsregel->getSoll()->toString('HH:mm');
-            $zeitDaten->addItem(array(
-                'id' => $arbeitsregel->id,
-                'von' => $von,
-                'bis' => $bis,
-                'wochentag' => $wochentag,
-                'rahmenanfang' => $rahmenAnfang,
-                'kernanfang' => $kernAnfang,
-                'kernende' => $kernEnde,
-                'rahmenende' => $rahmenEnde,
-                'soll' => $soll,
-            ));
+            $arbeitsregeln = $zuBearbeitenderMitarbeiter->getArbeitsregeln();
+            foreach ($arbeitsregeln as $arbeitsregel) {
+                $von = $arbeitsregel->getVon()->toString('dd.MM.YYYY');
+                $bis = $arbeitsregel->getBis();
+                $bis = $bis === null ? 'immer' : $bis->toString('dd.MM.YYYY');
+                $wochentag = $arbeitsregel->getWochentag();
+                $rahmenAnfang = $arbeitsregel->getRahmenAnfang();
+                $rahmenAnfang = $rahmenAnfang === null ? 'normal' :
+                        $rahmenAnfang->toString('HH:mm');
+                $kernAnfang = $arbeitsregel->getKernAnfang();
+                $kernAnfang = $kernAnfang === null ? 'normal' :
+                        $kernAnfang->toString('HH:mm');
+                $kernEnde = $arbeitsregel->getKernEnde();
+                $kernEnde = $kernEnde === null ? 'normal' :
+                        $kernEnde->toString('HH:mm');
+                $rahmenEnde = $arbeitsregel->getRahmenEnde();
+                $rahmenEnde = $rahmenEnde === null ? 'normal' :
+                        $rahmenEnde->toString('HH:mm');
+                $soll = $arbeitsregel->getSoll()->toString('HH:mm');
+                $zeitDaten->addItem(array(
+                    'id' => $arbeitsregel->id,
+                    'von' => $von,
+                    'bis' => $bis,
+                    'wochentag' => $wochentag,
+                    'rahmenanfang' => $rahmenAnfang,
+                    'kernanfang' => $kernAnfang,
+                    'kernende' => $kernEnde,
+                    'rahmenende' => $rahmenEnde,
+                    'soll' => $soll,
+                ));
+            }
+            $this->view->zeitDaten = $zeitDaten;
+            $this->view->mitarbeiter = $benutzername;
         }
-        $this->view->zeitDaten = $zeitDaten;
     }
 
     public function neuauswahlAction() {
@@ -180,6 +187,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
     public function arbeitsregelAction() {
         $id = $this->_getParam('id');
+        $benutzername = $this->_getParam('mitarbeiter');
+
+
         $this->view->id = $id;
     }
 

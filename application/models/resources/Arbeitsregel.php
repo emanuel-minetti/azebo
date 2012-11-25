@@ -71,7 +71,8 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
 
     public function getArbeitsregelnNachMitarbeiterId($mitarbeiterId) {
         $select = $this->select();
-        $select->where('mitarbeiter_id = ?', $mitarbeiterId);
+        $select->where('mitarbeiter_id = ?', $mitarbeiterId)
+                ->order('id ASC');
         $regeln = $this->fetchAll($select);
         return $regeln;
     }
