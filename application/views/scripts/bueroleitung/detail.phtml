@@ -2,9 +2,39 @@
 <div id="view-content">
     
     <h3><?= $this->seitenName ?></h3>
+     <h4>Arbeitszeiten</h4>
+    <div id="gridDiv" style="width: 648px; height: 150px"></div>
     <h4>Stammdaten</h4>
-    <p>Name: <?= $this->name ?></p>
     <?= $this->form ?>
-    <h4>Arbeitszeiten</h4>
+   
     
 </div>
+
+<script type="text/javascript">
+    dojo.ready(function() {
+        var zeitDaten = <?= $this->zeitDaten->toJson() ?>;
+        
+        var dataStore =
+            new dojo.data.ItemFileReadStore({ data:zeitDaten });
+        
+        var layout =[[
+                {'name':'Gültig Von','field':'von','width':'75px'},
+                {'name':'Gültig Bis','field':'bis','width':'75px'},
+                {'name':'Wochentag','field':'wochentag','width':'78px'},
+                {'name':'Rahmen- Anfang','field':'rahmenanfang','width':'70px'},
+                {'name':'Kern- Anfang','field':'kernanfang','width':'70px'},
+                {'name':'Kern- Ende','field':'kernende','width':'70px'},
+                {'name':'Rahmen- Ende','field':'rahmenende','width':'70px'},
+                {'name':'Soll- Arbeitszeit','field':'soll','width':'75px'},
+            ]];
+        
+        var grid = new dojox.grid.DataGrid({
+            store:dataStore,
+            structure:layout,
+            selectionMode:"none"
+        });
+        
+        grid.placeAt('gridDiv');
+        grid.startup();
+        });
+</script>

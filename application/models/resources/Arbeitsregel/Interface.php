@@ -26,9 +26,10 @@
  */
 interface Azebo_Resource_Arbeitsregel_Interface
 extends AzeboLib_Model_Resource_Db_Interface {
-    
-public function getArbeitsregelnNachMonatUndMitarbeiterId(
-        Zend_Date $monat, $mitarbeiterId);
 
+    public function getArbeitsregelnNachMonatUndMitarbeiterId(
+    Zend_Date $monat, $mitarbeiterId);
+
+    public function getArbeitsregelnNachMitarbeiterId($mitarbeiterId);
 }
 

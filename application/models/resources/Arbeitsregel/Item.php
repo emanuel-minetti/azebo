@@ -71,5 +71,8 @@ class Azebo_Resource_Arbeitsregel_Item extends AzeboLib_Model_Resource_Db_Table_
         return $this->_dzService->zeitSqlZuPhp($this->_row->rahmenende);
     }
 
-}
+    public function getWochentag() {
+        return ucfirst($this->_row->wochentag);
+    }
 
+}
