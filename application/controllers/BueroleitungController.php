@@ -121,42 +121,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         // zeige die Arbeitszeitentabelle, falls der Mitarbeiter
         // nicht neu angelegt wurde
         if (!$neu) {
-            // intialisiere die Tabelle
-            $zeitDaten = new Zend_Dojo_Data();
-            $zeitDaten->setIdentifier('id');
-
             $arbeitsregeln = $zuBearbeitenderMitarbeiter->getArbeitsregeln();
-            foreach ($arbeitsregeln as $arbeitsregel) {
-                $von = $arbeitsregel->getVon()->toString('dd.MM.YYYY');
-                $bis = $arbeitsregel->getBis();
-                $bis = $bis === null ? 'immer' : $bis->toString('dd.MM.YYYY');
-                $wochentag = $arbeitsregel->getWochentag();
-                $rahmenAnfang = $arbeitsregel->getRahmenAnfang();
-                $rahmenAnfang = $rahmenAnfang === null ? 'normal' :
-                        $rahmenAnfang->toString('HH:mm');
-                $kernAnfang = $arbeitsregel->getKernAnfang();
-                $kernAnfang = $kernAnfang === null ? 'normal' :
-                        $kernAnfang->toString('HH:mm');
-                $kernEnde = $arbeitsregel->getKernEnde();
-                $kernEnde = $kernEnde === null ? 'normal' :
-                        $kernEnde->toString('HH:mm');
-                $rahmenEnde = $arbeitsregel->getRahmenEnde();
-                $rahmenEnde = $rahmenEnde === null ? 'normal' :
-                        $rahmenEnde->toString('HH:mm');
-                $soll = $arbeitsregel->getSoll()->toString('HH:mm');
-                $zeitDaten->addItem(array(
-                    'id' => $arbeitsregel->id,
-                    'von' => $von,
-                    'bis' => $bis,
-                    'wochentag' => $wochentag,
-                    'rahmenanfang' => $rahmenAnfang,
-                    'kernanfang' => $kernAnfang,
-                    'kernende' => $kernEnde,
-                    'rahmenende' => $rahmenEnde,
-                    'soll' => $soll,
-                ));
-            }
-            $this->view->zeitDaten = $zeitDaten;
+            $this->view->zeitDaten = $this->_befuelleDieZeitenTabelle($arbeitsregeln);
+            $this->view->zeilen = count($arbeitsregeln);
             $this->view->mitarbeiter = $benutzername;
         }
     }
@@ -191,8 +158,36 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $id = $this->_getParam('id');
         $form = $this->_getArbeitsregelForm($benutzername, $id);
 
+        $zuBearbeitenderMitarbeiter = $this->model->
+                getMitarbeiterNachBenutzername($benutzername);
+        $arbeitsregeln = $zuBearbeitenderMitarbeiter->getArbeitsregeln();
+        $arbeitsregelnOben = array();
+        $arbeitsregelnUnten = array();
+        if ($id != 0) {
+            foreach ($arbeitsregeln as $arbeitsregel) {
+                if ($arbeitsregel->id < $id) {
+                    $arbeitsregelnOben[] = $arbeitsregel;
+                } elseif ($arbeitsregel->id > $id) {
+                    $arbeitsregelnUnten[] = $arbeitsregel;
+                }
+            }
+        } else {
+            $arbeitsregelnOben = $arbeitsregeln;
+        }
+        if (count($arbeitsregelnOben) != 0) {
+            $this->view->zeitDatenOben =
+                    $this->_befuelleDieZeitenTabelle($arbeitsregelnOben);
+            $this->view->zeilenOben = count($arbeitsregelnOben);
+        }
+        if (count($arbeitsregelnUnten) != 0) {
+            $this->view->zeitDatenUnten =
+                    $this->_befuelleDieZeitenTabelle($arbeitsregelnUnten);
+            $this->view->zeilenUnten = count($arbeitsregelnUnten);
+        }
+
         $this->view->form = $form;
-        //TODO Zeige übrige Regeln in einer/zwei Tabellen an!
+        $this->view->mitarbeiter = $benutzername;
+        //TODO berechne und übergebe die Höhen der Tabellen
     }
 
     public function monateAction() {
@@ -259,7 +254,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
     private function _getArbeitsregelForm($benutzername, $id) {
         $form = new Azebo_Form_Mitarbeiter_Arbeitsregel();
-        
+
         //TODO bevölkere die Form!
 
         $urlHelper = $this->_helper->getHelper('url');
@@ -272,6 +267,46 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $form->setName('regelForm');
 
         return $form;
+    }
+
+    private function _befuelleDieZeitenTabelle($arbeitsregeln) {
+        // initialisiere die Tabellendaten
+        $zeitDaten = new Zend_Dojo_Data();
+        $zeitDaten->setIdentifier('id');
+
+        // befülle die Tabellendaten
+        foreach ($arbeitsregeln as $arbeitsregel) {
+            $von = $arbeitsregel->getVon()->toString('dd.MM.YYYY');
+            $bis = $arbeitsregel->getBis();
+            $bis = $bis === null ? 'auf Weiteres' : $bis->toString('dd.MM.YYYY');
+            $wochentag = $arbeitsregel->getWochentag();
+            $rahmenAnfang = $arbeitsregel->getRahmenAnfang();
+            $rahmenAnfang = $rahmenAnfang === null ? 'normal' :
+                    $rahmenAnfang->toString('HH:mm');
+            $kernAnfang = $arbeitsregel->getKernAnfang();
+            $kernAnfang = $kernAnfang === null ? 'normal' :
+                    $kernAnfang->toString('HH:mm');
+            $kernEnde = $arbeitsregel->getKernEnde();
+            $kernEnde = $kernEnde === null ? 'normal' :
+                    $kernEnde->toString('HH:mm');
+            $rahmenEnde = $arbeitsregel->getRahmenEnde();
+            $rahmenEnde = $rahmenEnde === null ? 'normal' :
+                    $rahmenEnde->toString('HH:mm');
+            $soll = $arbeitsregel->getSoll()->toString('HH:mm');
+            $zeitDaten->addItem(array(
+                'id' => $arbeitsregel->id,
+                'von' => $von,
+                'bis' => $bis,
+                'wochentag' => $wochentag,
+                'rahmenanfang' => $rahmenAnfang,
+                'kernanfang' => $kernAnfang,
+                'kernende' => $kernEnde,
+                'rahmenende' => $rahmenEnde,
+                'soll' => $soll,
+            ));
+        }
+
+        return $zeitDaten;
     }
 
 }

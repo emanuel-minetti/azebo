@@ -4,7 +4,7 @@
     <h3><?= $this->seitenName ?></h3>
     <? if (!$this->neu): ?>
         <h4>Arbeitszeiten</h4>
-        <div id="gridDiv" style="width: 648px; height: 150px"></div>
+        <div id="gridDiv" style="width: 653px; height: <?= $this->zeilen * 25 + 37 ?>px"></div>
         <p>
             <a style="width: 250px; text-align: center" href="
                <?=
@@ -31,7 +31,7 @@
                     
             var layout =[[
                     {'name':'Gültig Von','field':'von','width':'75px'},
-                    {'name':'Gültig Bis','field':'bis','width':'75px'},
+                    {'name':'Gültig Bis','field':'bis','width':'80px'},
                     {'name':'Wochentag','field':'wochentag','width':'78px'},
                     {'name':'Rahmen- Anfang','field':'rahmenanfang','width':'70px'},
                     {'name':'Kern- Anfang','field':'kernanfang','width':'70px'},
@@ -64,7 +64,4 @@
                     
         });
     </script>
-    <?
-
-
- endif ?>
+    <?endif ?>
