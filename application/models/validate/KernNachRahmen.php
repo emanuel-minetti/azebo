@@ -21,33 +21,33 @@
  */
 
 /**
- * Description of BisNachVon
+ * Description of KernNachRahmen
  *
  * @author Emanuel Minetti
  */
-class Azebo_Validate_BisNachVon extends Zend_Validate_Abstract {
-
-    const VON_NACH_BIS = 'VonNachBis';
+class Azebo_Validate_KernNachRahmen extends Zend_Validate_Abstract {
+    
+    const KERN_NACH_RAHMEN = 'KernNachRahmen';
 
     protected $_messageTemplates = array(
-        self::VON_NACH_BIS => 'Das eingegebene "Bis" liegt nicht nach dem "Von"!',
+        self::KERN_NACH_RAHMEN => 'Der eingegebene Kernarbeitszeit-Anfang liegt
+            vor dem eingegebenen Rahmenarbeitszeit-Anfang!',
     );
-
+    
     public function isValid($value, $context = null) {
 
         $this->_setValue($value);
-
-        if (is_array($context) && isset($context['von']) && $context['von'] != '') {
-            $bis = $value;
-            $filter = new Azebo_Filter_DatumAlsDate();
-            $von = $filter->filter($context['von']);
-            if($von->compareDate($bis) != -1) {
-                $this->_error(self::VON_NACH_BIS);
+        if(is_array($context) && isset($context['rahmenAnfang']) && $context['rahmenAnfang'] != '') {
+            $kernAnfang = $value;
+            $filter = new Azebo_Filter_ZeitAlsDate();
+            $rahmenAnfang = $filter->filter($context['rahmenAnfang']);
+            if($kernAnfang->compareTime($rahmenAnfang) == -1) {
+                $this->_error(self::KERN_NACH_RAHMEN);
                 return false;
             }
         }
         return true;
     }
-
+    
 }
 

@@ -21,33 +21,31 @@
  */
 
 /**
- * Description of BisNachVon
+ * Description of RahmenEndeNachAnfang
  *
  * @author Emanuel Minetti
  */
-class Azebo_Validate_BisNachVon extends Zend_Validate_Abstract {
-
-    const VON_NACH_BIS = 'VonNachBis';
+class Azebo_Validate_RahmenEndeNachAnfang extends Zend_Validate_Abstract {
+   
+     const BEGINN_NACH_ENDE = 'BeginnNachEnde';
 
     protected $_messageTemplates = array(
-        self::VON_NACH_BIS => 'Das eingegebene "Bis" liegt nicht nach dem "Von"!',
+        self::BEGINN_NACH_ENDE => 'Der eingegebene Anfang der Rahmenarbeitszeit liegt vor nach dem Ende!',
     );
-
+    
     public function isValid($value, $context = null) {
 
         $this->_setValue($value);
-
-        if (is_array($context) && isset($context['von']) && $context['von'] != '') {
-            $bis = $value;
-            $filter = new Azebo_Filter_DatumAlsDate();
-            $von = $filter->filter($context['von']);
-            if($von->compareDate($bis) != -1) {
-                $this->_error(self::VON_NACH_BIS);
+        if(is_array($context) && isset($context['rahmenAnfang']) && $context['rahmenAnfang'] != '') {
+            $ende = $value;
+            $filter = new Azebo_Filter_ZeitAlsDate();
+            $anfang = $filter->filter($context['rahmenAnfang']);
+            if($anfang->compareTime($ende) != -1) {
+                $this->_error(self::BEGINN_NACH_ENDE);
                 return false;
             }
         }
         return true;
     }
-
 }
 

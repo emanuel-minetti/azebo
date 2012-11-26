@@ -89,6 +89,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'clickableIncrement' => 'T00:10:00',
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
             'filters' => array('StringTrim', 'ZeitAlsDate'),
+            'validators' => array('KernNachRahmen'),
         ));
         
         $this->addElement('TimeTextBox', 'kernEnde', array(
@@ -100,6 +101,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'clickableIncrement' => 'T00:10:00',
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
             'filters' => array('StringTrim', 'ZeitAlsDate'),
+            'validators' => array('KernEndeNachAnfang', 'RahmenNachKern'),
         ));
         
         $this->addElement('TimeTextBox', 'rahmenEnde', array(
@@ -111,6 +113,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'clickableIncrement' => 'T00:10:00',
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
             'filters' => array('StringTrim', 'ZeitAlsDate'),
+            'validators' => array('RahmenEndeNachAnfang'),
         ));
         
         $this->addElement('TimeTextBox', 'soll', array(
