@@ -31,5 +31,7 @@ extends AzeboLib_Model_Resource_Db_Interface {
     Zend_Date $monat, $mitarbeiterId);
 
     public function getArbeitsregelnNachMitarbeiterId($mitarbeiterId);
+    
+    public function getArbeitsregelNachId($id);
 }
 

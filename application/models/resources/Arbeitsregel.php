@@ -77,4 +77,8 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
         return $regeln;
     }
 
+    public function getArbeitsregelNachId($id) {
+        return $this->find($id)->current();
+    }
+
 }

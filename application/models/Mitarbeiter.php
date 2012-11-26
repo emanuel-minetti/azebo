@@ -137,5 +137,10 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $mitarbeiter->setSaldoUebertrag($saldo);
         $mitarbeiter->save();
     }
+    
+    public function getArbeitsregelNachId($id) {
+        $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
+        return $arbeitsregelTabelle->getArbeitsregelNachId($id);
+    }
 
 }

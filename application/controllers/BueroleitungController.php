@@ -79,6 +79,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 'abgelegt' => $mitarbeiter->getAbgelegtBis(),
             ));
         }
+        //TODO die Tabelle in der Höhe anpassen!
 
         $this->view->mitarbeiterDaten = $mitarbeiterDaten;
     }
@@ -187,7 +188,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         $this->view->form = $form;
         $this->view->mitarbeiter = $benutzername;
-        //TODO berechne und übergebe die Höhen der Tabellen
     }
 
     public function monateAction() {
@@ -255,7 +255,36 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     private function _getArbeitsregelForm($benutzername, $id) {
         $form = new Azebo_Form_Mitarbeiter_Arbeitsregel();
 
-        //TODO bevölkere die Form!
+        //bevölkere die Form, falls die Regel nicht neu ist
+        if ($id != 0) {
+            $arbeitsregel = $this->model->getArbeitsregelNachId($id);
+            $elemente = $form->getElements();
+            $von = $arbeitsregel->getVon()->toString('dd.MM.yyyy');
+            $bis = $arbeitsregel->getBis() === null ? '' :
+                    $arbeitsregel->getBis()->toString('dd.MM.yyyy');
+            $wochentag = strtolower($arbeitsregel->getWochentag());
+            $rahmenAnfang = $arbeitsregel->getRahmenAnfang() === null ? '' :
+                    $arbeitsregel->getRahmenAnfang()->toString('HHmm');
+            $kernAnfang = $arbeitsregel->getKernAnfang() === null ? '' :
+                    $arbeitsregel->getKernAnfang()->toString('HHmm');
+            $kernEnde = $arbeitsregel->getKernEnde() === null ? '' :
+                    $arbeitsregel->getKernEnde()->toString('HHmm');
+            $rahmenEnde = $arbeitsregel->getRahmenEnde() === null ? '' :
+                    $arbeitsregel->getRahmenEnde()->toString('HHmm');
+            $soll = $arbeitsregel->getSoll()->toString('HHmm');
+            $elemente['von']->setDijitParam('displayedValue', $von);
+            $elemente['bis']->setDijitParam('displayedValue', $bis);
+            $elemente['wochentag']->setValue($wochentag);
+            $elemente['rahmenAnfang']->setDijitParam(
+                    'displayedValue', $rahmenAnfang);
+            $elemente['kernAnfang']->setDijitParam(
+                    'displayedValue', $kernAnfang);
+            $elemente['kernEnde']->setDijitParam(
+                    'displayedValue', $kernEnde);
+            $elemente['rahmenEnde']->setDijitParam(
+                    'displayedValue', $rahmenEnde);
+            $elemente['soll']->setDijitParam('displayedValue', $soll);
+        }
 
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
