@@ -37,8 +37,8 @@ class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
 
         $this->_setValue($value);
 
-        $log = Zend_Registry::get('log');
-        $log->debug(__METHOD__);
+//        $log = Zend_Registry::get('log');
+//        $log->debug(__METHOD__);
 
         if (is_array($context)) {
             if (isset($context['beginn'])) {

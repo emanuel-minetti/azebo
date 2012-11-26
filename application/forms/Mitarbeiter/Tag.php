@@ -58,7 +58,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'visibleIncrement' => 'T00:10:00',
                     'clickableIncrement' => 'T00:10:00',
                     'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
-                    'filters' => array('StringTrim', 'AlsDatum',),
+                    'filters' => array('StringTrim', 'ZeitAlsDate',),
                     'validators' => array(
                         'Beginn',),
                     'tabindex' => 1,
@@ -73,7 +73,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'visibleIncrement' => 'T00:10:00',
                     'clickableIncrement' => 'T00:10:00',
                     'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
-                    'filters' => array('StringTrim', 'AlsDatum'),
+                    'filters' => array('StringTrim', 'ZeitAlsDate'),
                     'validators' => array(
                         'EndeNachBeginn',
                         'Feiertag',

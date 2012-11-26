@@ -21,25 +21,23 @@
  */
 
 /**
- * Macht aus dem von Dojo übergebenen Wert entweder NULL oder ein Zend_Date.
+ * Description of DatumAlsDate
  *
  * @author Emanuel Minetti
  */
-class Azebo_Filter_AlsDatum implements Zend_Filter_Interface {
-
+class Azebo_Filter_DatumAlsDate implements Zend_Filter_Interface {
+    
     public function filter($wert) {
-        //Das 'T' entfernen, das Dojo vor die Uhrzeit setzt
-        $wert = $wert == '' ? null : substr($wert, 1);
+        $wert = $wert == '' ? null: $wert;
         
         //return NULL oder Zend_Date
         if ($wert === null) {
-            $datum = null;
+            $date = null;
         } else {
-            $datum = new Zend_Date();
-            $datum->setTime($wert, 'HH:mm:ss');
+            $date = new Zend_Date();
+            $date->setDate($wert, 'yyyy-MM-dd');
         }
-        return $datum;
+        return $date;
     }
-
 }
 

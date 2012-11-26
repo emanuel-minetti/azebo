@@ -158,6 +158,12 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $benutzername = $this->_getParam('mitarbeiter');
         $id = $this->_getParam('id');
         $form = $this->_getArbeitsregelForm($benutzername, $id);
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $postDaten = $request->getPost();
+            $valid = $form->isValid($postDaten);
+        }
 
         $zuBearbeitenderMitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
