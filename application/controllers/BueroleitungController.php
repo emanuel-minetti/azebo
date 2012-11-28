@@ -158,12 +158,12 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $benutzername = $this->_getParam('mitarbeiter');
         $id = $this->_getParam('id');
         $form = $this->_getArbeitsregelForm($benutzername, $id);
-        
+
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postDaten = $request->getPost();
             $valid = $form->isValid($postDaten);
-            //TODO bevölkere das Formular
+            //TODO bevölkere das Formular und speichere gültige Regel
         }
 
         $zuBearbeitenderMitarbeiter = $this->model->
@@ -189,7 +189,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         }
         if (count($arbeitsregelnUnten) != 0) {
             $this->view->zeitDatenUnten =
-                    $this->_befuelleDieZeitenTabelle($arbeitsregelnUnten);
+                    $this->_befuelleDieZeitenTabelle(
+                    $arbeitsregelnUnten, count($arbeitsregelnOben) + 1);
             $this->view->zeilenUnten = count($arbeitsregelnUnten);
         }
 
@@ -262,14 +263,20 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     private function _getArbeitsregelForm($benutzername, $id) {
         $form = new Azebo_Form_Mitarbeiter_Arbeitsregel();
 
-        //bevölkere die Form, falls die Regel nicht neu ist
+        //bevölkere die Form mit den nötigen Feldern
+        $arbeitsregel = $this->model->getArbeitsregelNachId($id);
+        $elemente = $form->getElements();
+        $elemente['benutzername']->setValue($benutzername);
+        $elemente['id']->setValue($id);
+
+
+        //bevölkere den Rest der Form, falls die Regel nicht neu ist
         if ($id != 0) {
-            $arbeitsregel = $this->model->getArbeitsregelNachId($id);
-            $elemente = $form->getElements();
             $von = $arbeitsregel->getVon()->toString('dd.MM.yyyy');
             $bis = $arbeitsregel->getBis() === null ? '' :
                     $arbeitsregel->getBis()->toString('dd.MM.yyyy');
             $wochentag = strtolower($arbeitsregel->getWochentag());
+            $kw = $arbeitsregel->kalenderwoche;
             $rahmenAnfang = $arbeitsregel->getRahmenAnfang() === null ? '' :
                     $arbeitsregel->getRahmenAnfang()->toString('HHmm');
             $kernAnfang = $arbeitsregel->getKernAnfang() === null ? '' :
@@ -282,6 +289,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $elemente['von']->setDijitParam('displayedValue', $von);
             $elemente['bis']->setDijitParam('displayedValue', $bis);
             $elemente['wochentag']->setValue($wochentag);
+            $elemente['kw']->setValue($kw);
             $elemente['rahmenAnfang']->setDijitParam(
                     'displayedValue', $rahmenAnfang);
             $elemente['kernAnfang']->setDijitParam(
@@ -305,17 +313,20 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         return $form;
     }
 
-    private function _befuelleDieZeitenTabelle($arbeitsregeln) {
+    private function _befuelleDieZeitenTabelle($arbeitsregeln, $offset = 0) {
         // initialisiere die Tabellendaten
         $zeitDaten = new Zend_Dojo_Data();
         $zeitDaten->setIdentifier('id');
+        $lfdNr = $offset;
 
         // befülle die Tabellendaten
         foreach ($arbeitsregeln as $arbeitsregel) {
+            $lfdNr++;
             $von = $arbeitsregel->getVon()->toString('dd.MM.YYYY');
             $bis = $arbeitsregel->getBis();
             $bis = $bis === null ? 'auf Weiteres' : $bis->toString('dd.MM.YYYY');
             $wochentag = $arbeitsregel->getWochentag();
+            $kw = $arbeitsregel->kalenderwoche;
             $rahmenAnfang = $arbeitsregel->getRahmenAnfang();
             $rahmenAnfang = $rahmenAnfang === null ? 'normal' :
                     $rahmenAnfang->toString('HH:mm');
@@ -331,9 +342,11 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $soll = $arbeitsregel->getSoll()->toString('HH:mm');
             $zeitDaten->addItem(array(
                 'id' => $arbeitsregel->id,
+                'lfdNr' => $lfdNr,
                 'von' => $von,
                 'bis' => $bis,
                 'wochentag' => $wochentag,
+                'kw' => $kw,
                 'rahmenanfang' => $rahmenAnfang,
                 'kernanfang' => $kernAnfang,
                 'kernende' => $kernEnde,

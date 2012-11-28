@@ -33,5 +33,5 @@ extends AzeboLib_Model_Resource_Db_Interface {
     public function getArbeitsregelnNachMitarbeiterId($mitarbeiterId);
     
     public function getArbeitsregelNachId($id);
+    
 }
-

@@ -39,8 +39,8 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
     );
 
     public function getArbeitsregelnNachMonatUndMitarbeiterId(
-            Zend_Date $monat, $mitarbeiterId) {
-        
+    Zend_Date $monat, $mitarbeiterId) {
+
         // Ersten und Letzten des Monats finden
         $erster = new Zend_Date($monat);
         $letzter = new Zend_Date($monat);
@@ -57,10 +57,10 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
         foreach ($dbRegeln as $dbRegel) {
             if ($dbRegel->von->compare($erster) != 1) {
                 if ($dbRegel->bis === null) {
-                    array_push($regeln, $dbRegel);
+                    $regeln[] = $dbRegel;
                 } else {
                     if ($dbRegel->bis->compare($letzter) != -1) {
-                        array_push($regeln, $dbRegel);
+                        $regeln[] = $dbRegel;
                     }
                 }
             }
@@ -80,5 +80,5 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
     public function getArbeitsregelNachId($id) {
         return $this->find($id)->current();
     }
-
+    
 }

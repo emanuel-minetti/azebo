@@ -26,7 +26,7 @@
  * @author Emanuel Minetti
  */
 class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
-    
+
     const UNGUELTIGE_UHRZEIT = 'Bitte geben Sie die Uhrzeit als vierstellige Zahl ein!';
     const UNGUELTIGES_DATUM = 'Bitte geben Sie das Datum im Format dd.mm.jjjj an!';
 
@@ -36,12 +36,13 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
         $this->addElementPrefixPath(
                 'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
 
-        //TODO Validatoren hinzufügen!
+        //TODO Validator für Eindeutigkeit hinzufügen!
         $this->addElement('DateTextBox', 'von', array(
             'label' => 'Gültig Von: ',
             'datePattern' => 'dd.MM.yyyy',
             'invalidMessage' => self::UNGUELTIGES_DATUM,
             'filters' => array('StringTrim', 'DatumAlsDate'),
+            //TODO Auf Null und Leerstring testen!
         ));
 
         $this->addElement('DateTextBox', 'bis', array(
@@ -67,6 +68,24 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'invalidMessage' => 'Ungültiger Wert!',
             'filters' => array('StringTrim', 'Alpha'),
             'value' => 'alle',
+            'required' => true,
+            'missingMessage' => 'Bitte wählen Sie einen Wert aus!',
+        ));
+
+        $kalenderwochen = array(
+            'Alle' => 'alle',
+            'Gerade' => 'gerade',
+            'Ungerade' => 'ungerade',
+        );
+
+        $this->addElement('FilteringSelect', 'kw', array(
+            'label' => 'Kalenderwoche: ',
+            'multiOptions' => $kalenderwochen,
+            'invalidMessage' => 'Ungültiger Wert!',
+            'filters' => array('StringTrim', 'Alpha'),
+            'value' => 'alle',
+            'required' => true,
+            'missingMessage' => 'Bitte wählen Sie einen Wert aus!',
         ));
 
         $this->addElement('TimeTextBox', 'rahmenAnfang', array(
@@ -79,7 +98,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
             'filters' => array('StringTrim', 'ZeitAlsDate'),
         ));
-        
+
         $this->addElement('TimeTextBox', 'kernAnfang', array(
             'label' => 'Kern-Anfang: (Für Standartzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
@@ -91,7 +110,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'filters' => array('StringTrim', 'ZeitAlsDate'),
             'validators' => array('KernNachRahmen'),
         ));
-        
+
         $this->addElement('TimeTextBox', 'kernEnde', array(
             'label' => 'Kern-Ende: (Für Standartzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
@@ -103,7 +122,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'filters' => array('StringTrim', 'ZeitAlsDate'),
             'validators' => array('KernEndeNachAnfang', 'RahmenNachKern'),
         ));
-        
+
         $this->addElement('TimeTextBox', 'rahmenEnde', array(
             'label' => 'Rahmen-Ende: (Für Standartzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
@@ -115,7 +134,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'filters' => array('StringTrim', 'ZeitAlsDate'),
             'validators' => array('RahmenEndeNachAnfang'),
         ));
-        
+
         $this->addElement('TimeTextBox', 'soll', array(
             'label' => 'Soll-Arbeitszeit',
             'timePattern' => 'HHmm',
@@ -126,27 +145,33 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
             'filters' => array('StringTrim', 'ZeitAlsDate'),
         ));
-        
+
         $this->addElement('SubmitButton', 'absenden', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Absenden',
-            //'tabindex' => 3,
+            'validators' => array('RegelEindeutig'),
+            //TODO Auf vergangenheit testen
+                //'tabindex' => 3,
         ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Zurücksetzen',
-            //'tabindex' => 6,
+                //'tabindex' => 6,
         ));
-        
+
         $this->addElement('SubmitButton', 'loeschen', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Löschen',
-            //'tabindex' => 6,
+                //'tabindex' => 6,
         ));
+        
+        $this->addElement('Hidden', 'benutzername', array());
+        
+        $this->addElement('Hidden', 'id', array());
     }
 
 }

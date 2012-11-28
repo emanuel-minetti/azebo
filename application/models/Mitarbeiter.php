@@ -142,5 +142,11 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
         return $arbeitsregelTabelle->getArbeitsregelNachId($id);
     }
+    
+    public function getArbeitsregelnNachBenutzername($benutzername) {
+        $mitarbeiter = $this->getMitarbeiterNachBenutzername($benutzername);
+        $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
+        return $arbeitsregelTabelle->getArbeitsregelnNachMitarbeiterId($mitarbeiter->id);
+    }
 
 }

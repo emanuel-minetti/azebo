@@ -1,17 +1,19 @@
 <br /><br />
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
-    <div id="gridDivOben" style="width: 653px; height: <?= $this->zeilenOben * 25 + 37 ?>px"></div>
+    <div id="gridDivOben" style="width: 799px; height: <?= $this->zeilenOben * 25 + 37 ?>px"></div>
     <?= $this->form ?>
-    <div id="gridDivUnten" style="width: 653px; height: <?= $this->zeilenUnten * 25 + 37 ?>px"></div>
+    <div id="gridDivUnten" style="width: 799px; height: <?= $this->zeilenUnten * 25 + 37 ?>px"></div>
 </div>
 
 <script type="text/javascript">
     dojo.ready(function() {
         var layout =[[
+                {'name':'Lfd.-Nr.','field':'lfdNr','width':'50px'},
                 {'name':'Gültig Von','field':'von','width':'75px'},
                 {'name':'Gültig Bis','field':'bis','width':'80px'},
                 {'name':'Wochentag','field':'wochentag','width':'78px'},
+                {'name':'Kalender- woche','field':'kw','width':'80px'},
                 {'name':'Rahmen- Anfang','field':'rahmenanfang','width':'70px'},
                 {'name':'Kern- Anfang','field':'kernanfang','width':'70px'},
                 {'name':'Kern- Ende','field':'kernende','width':'70px'},
