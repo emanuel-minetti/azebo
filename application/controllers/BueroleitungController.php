@@ -190,10 +190,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
                 $redirector = $this->_helper->getHelper('Redirector');
                 $redirector->gotoRoute(array(
-                    'benutzername' => $daten['benutzername'],
+                    'benutzername' => $postDaten['benutzername'],
                         ), 'mitarbeiterdetail');
             }
-            //TODO bearbeite Löschen!
         }
 
         $zuBearbeitenderMitarbeiter = $this->model->
@@ -229,6 +228,38 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function monateAction() {
+        $this->erweitereSeitenName(' Monatsauswahl');
+        
+        $heute = new Zend_Date();
+        $heute->setMonth(1);
+        //$this->_log->debug($heute->toString('MMMM yyyy'));
+        $monate = array();
+        for ($index = 0; $index < 12; $index++) {
+            $monat = new Zend_Date($heute);
+            $monate[] = $monat;
+            $heute->add(1, Zend_Date::MONTH);
+        }
+        $heute->add(-2, Zend_Date::YEAR);
+        for ($index = 0; $index < 12; $index++) {
+            $monat = new Zend_Date($heute);
+            $monate[] = $monat;
+            $heute->addMonth(1);
+        }
+        
+        $monatsDaten = new Zend_Dojo_Data();
+        $monatsDaten->setIdentifier('id');
+        foreach ($monate as $monat) {
+            $this->_log->debug($monat->toString('MMMM yyyy'));
+            $monatsDaten->addItem(array(
+                'id' => $monat->toString('MMyyyy'),
+                'monat' => $monat->toString('MMMM yyyy'),
+            ));
+        }
+        $this->view->monatsDaten = $monatsDaten;
+    }
+    
+    public function monatsdetailAction() {
+        $this->erweitereSeitenName(' Monatsdetail');
         
     }
 

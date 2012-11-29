@@ -92,6 +92,10 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         $arbeitsmonat->urlaub = $urlaub;
         $arbeitsmonat->save();
     }
+    
+    public function getArbeitsmonateNachMonat($monat) {
+        
+    }
 
 }
 

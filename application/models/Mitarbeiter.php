@@ -72,10 +72,12 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
 
         //$log = Zend_Registry::get('log');
 
+        $hsMitarbeiter = array();
         foreach ($mitglieder as $mitglied) {
             $hsMitarbeiter[] = $this->getMitarbeiterNachBenutzername($mitglied);
         }
 
+        $erg = array();
         foreach ($hsMitarbeiter as $mitarbeiter) {
             if ($mitarbeiter !== null) {
                 $erg[] = $mitarbeiter;
@@ -170,6 +172,11 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     public function deleteArbeitsregel($id) {
         $arbeitsregel = $this->getArbeitsregelNachId($id);
         $arbeitsregel->delete();
+    }
+    
+    public function getAbgeschlossenNachMonat($monat) {
+        $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
+        
     }
 
 }
