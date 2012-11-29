@@ -42,7 +42,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'datePattern' => 'dd.MM.yyyy',
             'invalidMessage' => self::UNGUELTIGES_DATUM,
             'filters' => array('StringTrim', 'DatumAlsDate', 'Vergangen', ),
-            //TODO Auf Null und Leerstring testen!
+            //TODO Auf Null und Leerstring testen! 
         ));
 
         $this->addElement('DateTextBox', 'bis', array(
