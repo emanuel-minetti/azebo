@@ -37,9 +37,10 @@ class Azebo_Validate_KernEndeNachAnfang extends Zend_Validate_Abstract {
 
         $this->_setValue($value);
         if(is_array($context) && isset($context['kernAnfang']) && $context['kernAnfang'] != '') {
-            $ende = $value;
+            
             $filter = new Azebo_Filter_ZeitAlsDate();
             $anfang = $filter->filter($context['kernAnfang']);
+            $ende = $filter->filter($value);
             if($anfang->compareTime($ende) != -1) {
                 $this->_error(self::BEGINN_NACH_ENDE);
                 return false;

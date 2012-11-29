@@ -229,7 +229,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 // nicht valide, also tue nichts und rendere die Seite mit
                 // Fehlermeldungen neu.
             }
-            // 'zrücksetzen' wurde gedrückt, also tue nichts sondern, rendere
+            // 'zurücksetzen' wurde gedrückt, also tue nichts sondern, rendere
             // einfach die Seite neu
         }
 

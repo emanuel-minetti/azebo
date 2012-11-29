@@ -102,9 +102,10 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
             $arbeitsregeln = $arbeitsregelTabelle->
                     getArbeitsregelnNachMonatUndMitarbeiterId(
                     $this->getTag(), $this->mitarbeiter_id);
+            
             //Iteriere über die Regeln
             foreach ($arbeitsregeln as $arbeitsregel) {
-                if ($arbeitsregel->wochentag == 'alle') {
+                if ($arbeitsregel->wochentag == 'Alle') {
                     //Regel gilt für 'alle' Wochentage
                     if ($arbeitsregel->kalenderwoche == 'alle') {
                         $this->_regel = $arbeitsregel;
@@ -120,7 +121,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                 } else {
                     //Regel gilt für einen Wochentag
                     if ($arbeitsregel->wochentag ==
-                            strtolower($this->getTag()->get(Zend_Date::WEEKDAY))) {
+                            $this->getTag()->get(Zend_Date::WEEKDAY)) {
                         if ($arbeitsregel->kalenderwoche == 'alle') {
                             $this->_regel = $arbeitsregel;
                             break;
@@ -134,13 +135,13 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                         }
                     }
                 }
-            }
+            } 
             //Falls dieser Tag ein 'Feiertag' ist, gib NULL zurück
             $feiertag = $this->getFeiertag();
             if ($feiertag['feiertag']) {
                 $this->_regel = null;
             }
-        }
+        }       
         return $this->_regel;
     }
 

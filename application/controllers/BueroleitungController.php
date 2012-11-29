@@ -162,8 +162,38 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postDaten = $request->getPost();
-            $valid = $form->isValid($postDaten);
-            //TODO bevölkere das Formular und speichere gültige Regel
+            if (isset($postDaten['absenden'])) {
+                $valid = $form->isValid($postDaten);
+                $daten = $form->getValues();
+                $datumFilter = new Azebo_Filter_DatumAlsDate();
+                $zeitFilter = new Azebo_Filter_ZeitAlsDate();
+                if ($valid) {
+//                    $von = $daten['von'];
+//                    $von = $datumFilter->filter($von);
+                    $daten['von'] = $datumFilter->filter($daten['von']);
+                    $daten['bis'] = $datumFilter->filter($daten['bis']);
+                    $daten['rahmenAnfang'] = $zeitFilter->filter($daten['rahmenAnfang']);
+                    $daten['kernAnfang'] = $zeitFilter->filter($daten['kernAnfang']);
+                    $daten['kernEnde'] = $zeitFilter->filter($daten['kernEnde']);
+                    $daten['rahmenEnde'] = $zeitFilter->filter($daten['rahmenEnde']);
+                    $daten['soll'] = $zeitFilter->filter($daten['soll']);
+
+                    $this->model->saveArbeitsregel($daten);
+
+                    $redirector = $this->_helper->getHelper('Redirector');
+                    $redirector->gotoRoute(array(
+                        'benutzername' => $daten['benutzername'],
+                            ), 'mitarbeiterdetail');
+                }
+            } elseif (isset($postDaten['loeschen'])) {
+                $this->model->deleteArbeitsregel($postDaten['id']);
+
+                $redirector = $this->_helper->getHelper('Redirector');
+                $redirector->gotoRoute(array(
+                    'benutzername' => $daten['benutzername'],
+                        ), 'mitarbeiterdetail');
+            }
+            //TODO bearbeite Löschen!
         }
 
         $zuBearbeitenderMitarbeiter = $this->model->
@@ -299,6 +329,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $elemente['rahmenEnde']->setDijitParam(
                     'displayedValue', $rahmenEnde);
             $elemente['soll']->setDijitParam('displayedValue', $soll);
+        } else {
+            $form->removeElement('loeschen');
         }
 
         $urlHelper = $this->_helper->getHelper('url');

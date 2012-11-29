@@ -38,9 +38,9 @@ class Azebo_Validate_BisNachVon extends Zend_Validate_Abstract {
         $this->_setValue($value);
 
         if (is_array($context) && isset($context['von']) && $context['von'] != '') {
-            $bis = $value;
             $filter = new Azebo_Filter_DatumAlsDate();
             $von = $filter->filter($context['von']);
+            $bis = $filter->filter($value);
             if($von->compareDate($bis) != -1) {
                 $this->_error(self::VON_NACH_BIS);
                 return false;

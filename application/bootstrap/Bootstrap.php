@@ -81,6 +81,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                 'path' => 'plugins',
                 'namespace' => 'Plugin',
             ),
+            'filter' => array(
+                'path' => 'models/filter',
+                'namespace' => 'Filter',
+            ),
         ));
     }
 

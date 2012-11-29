@@ -148,5 +148,28 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
         return $arbeitsregelTabelle->getArbeitsregelnNachMitarbeiterId($mitarbeiter->id);
     }
+    
+    public function saveArbeitsregel($daten) {
+        $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
+        if($daten['id'] == 0) {
+            $arbeitsregel = $arbeitsregelTabelle->createRow();
+        } else {
+            $arbeitsregel = $arbeitsregelTabelle->getArbeitsregelNachId($daten['id']);
+        }
+        $mitarbeiter = $this->getMitarbeiterNachBenutzername($daten['benutzername']);
+        $arbeitsregel->mitarbeiter_id = $mitarbeiter->id;
+        $arbeitsregel->setVon($daten['von']);
+        $arbeitsregel->setBis($daten['bis']);
+        $arbeitsregel->setSoll($daten['soll']);
+        $arbeitsregel->wochentag = $daten['wochentag'];
+        $arbeitsregel->kalenderwoche = $daten['kw'];
+        
+        $arbeitsregel->save();
+    }
+    
+    public function deleteArbeitsregel($id) {
+        $arbeitsregel = $this->getArbeitsregelNachId($id);
+        $arbeitsregel->delete();
+    }
 
 }

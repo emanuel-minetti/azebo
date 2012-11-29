@@ -38,9 +38,10 @@ class Azebo_Validate_KernNachRahmen extends Zend_Validate_Abstract {
 
         $this->_setValue($value);
         if(is_array($context) && isset($context['rahmenAnfang']) && $context['rahmenAnfang'] != '') {
-            $kernAnfang = $value;
+            
             $filter = new Azebo_Filter_ZeitAlsDate();
             $rahmenAnfang = $filter->filter($context['rahmenAnfang']);
+            $kernAnfang = $filter->filter($value);
             if($kernAnfang->compareTime($rahmenAnfang) == -1) {
                 $this->_error(self::KERN_NACH_RAHMEN);
                 return false;

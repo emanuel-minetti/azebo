@@ -51,16 +51,19 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
         $select = $this->select();
         $select->where('mitarbeiter_id = ?', $mitarbeiterId);
         $dbRegeln = $this->fetchAll($select);
+        $log = Zend_Registry::get('log');
+        
 
         // die Regeln, die diesen Monat gelten finden
         $regeln = array();
         foreach ($dbRegeln as $dbRegel) {
+            //$log->debug('DB-Regeln: ' . print_r($dbRegel->bis, true));
             if ($dbRegel->von->compare($erster) != 1) {
                 if ($dbRegel->bis === null) {
-                    $regeln[] = $dbRegel;
+                    array_push($regeln, $dbRegel);
                 } else {
                     if ($dbRegel->bis->compare($letzter) != -1) {
-                        $regeln[] = $dbRegel;
+                        array_push($regeln, $dbRegel);
                     }
                 }
             }
@@ -80,5 +83,5 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
     public function getArbeitsregelNachId($id) {
         return $this->find($id)->current();
     }
-    
+
 }

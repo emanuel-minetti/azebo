@@ -54,6 +54,10 @@ class Azebo_Resource_Arbeitsregel_Item extends AzeboLib_Model_Resource_Db_Table_
     public function getSoll() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->soll);
     }
+    
+    public function setSoll($soll) {
+        $this->_row->soll = $this->_dzService->zeitPhpZuSql($soll);
+    }
 
     public function getKernAnfang() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->kernanfang);
