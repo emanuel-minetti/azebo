@@ -136,12 +136,14 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                     }
                 }
             } 
+            
             //Falls dieser Tag ein 'Feiertag' ist, gib NULL zurück
             $feiertag = $this->getFeiertag();
             if ($feiertag['feiertag']) {
                 $this->_regel = null;
             }
-        }       
+        }  
+        
         return $this->_regel;
     }
 
