@@ -176,7 +176,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     
     public function getAbgeschlossenNachMonat($monat) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
-        
+        //TODO fertig machen!
     }
 
 }

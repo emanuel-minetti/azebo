@@ -94,7 +94,7 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
     }
     
     public function getArbeitsmonateNachMonat($monat) {
-        
+        //TODO Implementieren!
     }
 
 }
