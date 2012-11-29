@@ -182,6 +182,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function editAction() {
+        //TODO Vormittag/Nachmittag einführen!
         $request = $this->getRequest();
 
         // falls der Monat nicht bearbeitbar ist, gibt es keinen Link hierher.
