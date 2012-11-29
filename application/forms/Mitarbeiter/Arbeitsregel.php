@@ -41,7 +41,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'label' => 'Gültig Von: ',
             'datePattern' => 'dd.MM.yyyy',
             'invalidMessage' => self::UNGUELTIGES_DATUM,
-            'filters' => array('StringTrim', 'DatumAlsDate'),
+            'filters' => array('StringTrim', 'DatumAlsDate', 'Vergangen', ),
             //TODO Auf Null und Leerstring testen!
         ));
 
@@ -73,9 +73,9 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
         ));
 
         $kalenderwochen = array(
-            'Alle' => 'alle',
-            'Gerade' => 'gerade',
-            'Ungerade' => 'ungerade',
+            'alle' => 'Alle',
+            'gerade' => 'Gerade',
+            'ungerade' => 'Ungerade',
         );
 
         $this->addElement('FilteringSelect', 'kw', array(
@@ -150,8 +150,15 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Absenden',
-            'validators' => array('RegelEindeutig'),
+            'decorators' => array(
+                'DijitElement',
+                'Errors',
+                array('HtmlTag', array('tag' => 'dd')),
+                //array('HtmlTag', array('tag' => 'dt')),
+                ),
+            'validators' => array('RegelEindeutig',),
             //TODO Auf vergangenheit testen
+            //TODO Decoratoren anpassen!
                 //'tabindex' => 3,
         ));
 

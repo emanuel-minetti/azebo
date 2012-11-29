@@ -29,12 +29,8 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
 
     const NICHT_EINDEUTIG = 'nichtEindeutig';
 
-    protected $_messageVariables = array(
-        'regelNr' => 0,
-    );
     protected $_messageTemplates = array(
-        self::NICHT_EINDEUTIG => 'Die eingegebene Arbeitszeitregel kollidiert
-            mit der Arbeitszeitregel Nummer %regelNr%',
+        self::NICHT_EINDEUTIG => '',
     );
 
     public function isValid($value, $context = null) {
@@ -50,7 +46,10 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
             $benutzername = $context['benutzername'];
             $model = new Azebo_Model_Mitarbeiter();
             $arbeitsregeln = $model->getArbeitsregelnNachBenutzername($benutzername);
+            $lfdNr = 0;
+            $kollisionen = array();
             foreach ($arbeitsregeln as $arbeitsregel) {
+                $lfdNr++;
                 if ($id != $arbeitsregel->id) {
                     $ueberschneidung = false;
                     if ($bis === null && $arbeitsregel->getBis() === null) {
@@ -83,23 +82,70 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
                             $ueberschneidung = true;
                         }
                     }
-                    //TODO mit Logging testen!
-                    $log = Zend_Registry::get('log');
-                    $log->debug('Zu Testen Von: ' . $von);
-                    $log->debug('Zu Testen Bis: ' . $bis);
-                    $log->debug('Aktuell Von: ' . $arbeitsregel->getVon());
-                    $log->debug('Aktuell Bis: ' . $arbeitsregel->getBis());
-                    $log->debug('Überschneidung: ' . $ueberschneidung);
+
+
 
                     if (!$ueberschneidung) {
-                        //break;
+                        continue;
                     } else {
-                        //von und bis überschneiden sich, also prüfe Wochentag und
-                        //Kalenderwoche
-                        //TODO Hier bin ich!
-                    }
+                        //von und bis überschneiden sich, also prüfe Wochentag 
+                        //und Kalenderwoche
+
+                        $log = Zend_Registry::get('log');
+                        $log->debug('Zu Testen Von: ' . $von);
+                        $log->debug('Zu Testen Bis: ' . $bis);
+                        $log->debug('Aktuell Von: ' . $arbeitsregel->getVon());
+                        $log->debug('Aktuell Bis: ' . $arbeitsregel->getBis());
+                        $log->debug('Überschneidung: ' . $ueberschneidung);
+                        $log->debug('Zu testen Kw: ' . $kw);
+                        $log->debug('Aktuell Kw: ' . $arbeitsregel->kalenderwoche);
+                        $log->debug('Zu Testen Wochentag: ' . $wochentag);
+                        $log->debug('Aktuell Wochentag: ' . strtolower($arbeitsregel->wochentag));
+
+
+                        if ($wochentag == 'alle' ||
+                                strtolower($arbeitsregel->wochentag == 'alle')) {
+                            if ($kw == 'alle' ||
+                                    $arbeitsregel->kalenderwoche == 'alle' ||
+                                    $kw == $arbeitsregel->kalenderwoche) {
+                                $kollisionen[] = $lfdNr;
+                            }
+                        } else {
+                            // beide Wochentage != 'alle'
+                            if ($wochentag ==
+                                    strtolower($arbeitsregel->wochentag)) {
+                                $log->debug('Hier bin ich!');
+                                if ($kw == 'alle' ||
+                                        $arbeitsregel->kalenderwoche == 'alle' ||
+                                        $kw == $arbeitsregel->kalenderwoche) {
+                                     $log->debug('Hier bin ich auch!');
+                                    $kollisionen[] = $lfdNr;
+                                }
+                            }
+                        }
+                    } //else (ueberschneidung == true)
                 } // if id != arbeitsregel->id
-            } // foreach          
+            } // foreach
+            if (count($kollisionen) == 0) {
+                return true;
+            }
+
+            if (count($kollisionen) == 1) {
+                $log->debug('Hier bin ich auch immer noch!');
+                $message = 'Die eingegebene Arbeitszeitregel kollidiert mit der Regel Nummer ' . $kollisionen[0];
+            } else {
+                $message = 'Die eingegebene Arbeitszeitregel kollidiert mit den Regeln Nummer ';
+                for ($index = 0; $index < count($kollisionen) - 2; $index++) {
+                    $message .= $kollisionen[$index] . ', ';
+                }
+                $message .= $kollisionen[count($kollisionen) - 2] . ' und ' .
+                        $kollisionen[count($kollisionen) - 1] . '.';
+            }
+
+            $log->debug('Message: ' . $message);
+            $this->setMessage($message, self::NICHT_EINDEUTIG);
+            $this->_error(self::NICHT_EINDEUTIG);
+            return false;
         }
         return true;
     }

@@ -68,10 +68,10 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
                             oder eine Dienstbefreiung ein.';
             } else {
                 $message = 'Es fehlt ein Eintrag für die Tage ';
-                for ($index = 0; $index < count($fehltage) -1 ; $index++) {
+                for ($index = 0; $index < count($fehltage) -2 ; $index++) {
                     $message .= $fehltage[$index]->toString('dd.MM., ');
                 }
-                $message .= 'und ' .
+                $message .= $fehltage[count($fehltage) -2]->toString('dd.MM') . ' und ' .
                         $fehltage[count($fehltage) -1]->toString('dd.MM') .
                         '! Bitte tragen Sie für diese Tage Ihre Arbeitszeit
                             oder eine Dienstbefreiung ein.';
