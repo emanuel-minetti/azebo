@@ -35,13 +35,16 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
                 'Azebo_Filter', APPLICATION_PATH . '/models/filter/', 'filter');
         $this->addElementPrefixPath(
                 'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
-
-        //TODO Validator für Eindeutigkeit hinzufügen!
+        
         $this->addElement('DateTextBox', 'von', array(
             'label' => 'Gültig Von: ',
             'datePattern' => 'dd.MM.yyyy',
             'invalidMessage' => self::UNGUELTIGES_DATUM,
-            'filters' => array('StringTrim', 'DatumAlsDate', 'Vergangen', ),
+            'required' => true,
+            'missingMessage' => 'Bitte geben Sie einen Wert ein!',
+            //'filters' => array('StringTrim', 'DatumAlsDate', ),
+            //'validators' => array('Vergangen', ),
+            'autofocus' =>true,
             //TODO Auf Null und Leerstring testen! 
         ));
 
@@ -138,12 +141,13 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
         $this->addElement('TimeTextBox', 'soll', array(
             'label' => 'Soll-Arbeitszeit',
             'timePattern' => 'HHmm',
-            'required' => false,
+            'required' => true,
+            'missingMessage' => 'Bitte geben Sie einen Wert ein!',
             'visibleRange' => 'T02:00:00',
             'visibleIncrement' => 'T00:10:00',
             'clickableIncrement' => 'T00:10:00',
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
-            'filters' => array('StringTrim', 'ZeitAlsDate'),
+            'autofocus' =>true,
         ));
 
         $this->addElement('SubmitButton', 'absenden', array(
@@ -156,24 +160,20 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
                 array('HtmlTag', array('tag' => 'dd')),
                 //array('HtmlTag', array('tag' => 'dt')),
                 ),
-            'validators' => array('RegelEindeutig',),
-            //TODO Auf vergangenheit testen
+            'validators' => array('RegelEindeutig', 'Vergangen'),
             //TODO Decoratoren anpassen!
-                //'tabindex' => 3,
         ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Zurücksetzen',
-                //'tabindex' => 6,
         ));
 
         $this->addElement('SubmitButton', 'loeschen', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Löschen',
-                //'tabindex' => 6,
         ));
         
         $this->addElement('Hidden', 'benutzername', array());

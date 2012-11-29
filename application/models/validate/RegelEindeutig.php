@@ -37,6 +37,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
         $this->_setValue($value);
 
         if (is_array($context)) {
+            
             $id = $context['id'];
             $filter = new Azebo_Filter_DatumAlsDate();
             $von = $filter->filter($context['von']);
@@ -48,6 +49,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
             $arbeitsregeln = $model->getArbeitsregelnNachBenutzername($benutzername);
             $lfdNr = 0;
             $kollisionen = array();
+            
             foreach ($arbeitsregeln as $arbeitsregel) {
                 $lfdNr++;
                 if ($id != $arbeitsregel->id) {
@@ -83,26 +85,11 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
                         }
                     }
 
-
-
                     if (!$ueberschneidung) {
                         continue;
                     } else {
                         //von und bis überschneiden sich, also prüfe Wochentag 
                         //und Kalenderwoche
-
-                        $log = Zend_Registry::get('log');
-                        $log->debug('Zu Testen Von: ' . $von);
-                        $log->debug('Zu Testen Bis: ' . $bis);
-                        $log->debug('Aktuell Von: ' . $arbeitsregel->getVon());
-                        $log->debug('Aktuell Bis: ' . $arbeitsregel->getBis());
-                        $log->debug('Überschneidung: ' . $ueberschneidung);
-                        $log->debug('Zu testen Kw: ' . $kw);
-                        $log->debug('Aktuell Kw: ' . $arbeitsregel->kalenderwoche);
-                        $log->debug('Zu Testen Wochentag: ' . $wochentag);
-                        $log->debug('Aktuell Wochentag: ' . strtolower($arbeitsregel->wochentag));
-
-
                         if ($wochentag == 'alle' ||
                                 strtolower($arbeitsregel->wochentag == 'alle')) {
                             if ($kw == 'alle' ||
@@ -131,7 +118,6 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
             }
 
             if (count($kollisionen) == 1) {
-                $log->debug('Hier bin ich auch immer noch!');
                 $message = 'Die eingegebene Arbeitszeitregel kollidiert mit der Regel Nummer ' . $kollisionen[0];
             } else {
                 $message = 'Die eingegebene Arbeitszeitregel kollidiert mit den Regeln Nummer ';
@@ -141,8 +127,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
                 $message .= $kollisionen[count($kollisionen) - 2] . ' und ' .
                         $kollisionen[count($kollisionen) - 1] . '.';
             }
-
-            $log->debug('Message: ' . $message);
+            
             $this->setMessage($message, self::NICHT_EINDEUTIG);
             $this->_error(self::NICHT_EINDEUTIG);
             return false;
@@ -151,4 +136,3 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
     }
 
 }
-
