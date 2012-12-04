@@ -201,6 +201,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
 
         $form = $this->_getMitarbeiterTagForm();
+        $form->setNachmittag($this->mitarbeiter->
+                getArbeitstagNachTag($this->zuBearbeitendesDatum)->
+                getNachmittag());
 
         if ($request->isPost()) {
             // ist Post-Request, also prüfen ob 'absenden' gedrückt wurde
@@ -229,6 +232,15 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 }
                 // nicht valide, also tue nichts und rendere die Seite mit
                 // Fehlermeldungen neu.
+            } elseif (isset ($postDaten['nachmittag'])) {
+                // Nachmittag wurde gedrückt, also
+                // schalte das DB-Feld um und passe die Form an
+                $this->mitarbeiter->
+                        getArbeitstagNachTag($this->zuBearbeitendesDatum)->
+                        toggleNachmittag();
+                $form->setNachmittag($this->mitarbeiter->
+                        getArbeitstagNachTag($this->zuBearbeitendesDatum)->
+                        getNachmittag());
             }
             // 'zurücksetzen' wurde gedrückt, also tue nichts sondern, rendere
             // einfach die Seite neu

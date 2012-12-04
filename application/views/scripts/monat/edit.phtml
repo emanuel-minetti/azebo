@@ -5,8 +5,8 @@
         <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag - 1) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
         <a name="form"></a>
         <h4>Daten für den <?= $this->tag; ?>.<?= $this->monat; ?>. bearbeiten</h4>
-            <?= $this->tagForm; ?>
-        
+        <?= $this->tagForm; ?>
+
         <div id="gridUntenDiv" style="width: 881px; height: <?= ($this->tageImMonat - $this->tag) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
     </div>
     <p>Saldo bis zum Vormonat: <?= $this->saldoBisher; ?></p>
@@ -27,18 +27,18 @@
             ]];
         
 <? if ($this->monatsDatenOben !== null): ?>
-            
+                
             var monatsDatenOben = <?= $this->monatsDatenOben->toJson() ?>;
-     
+         
             var dataStoreOben =
                 new dojo.data.ItemFileReadStore({ data:monatsDatenOben });
-            
+                
             var gridOben = new dojox.grid.DataGrid({
                 store:dataStoreOben,
                 structure:layout,
                 selectionMode:"none"
             });
-             
+                 
             dojo.connect(gridOben, "onStyleRow", function(row){
                 var item = gridOben.getItem(row.index);
                 if(item) {
@@ -50,10 +50,10 @@
                 gridOben.focus.styleRow(row);
                 gridOben.edit.styleRow(row);
             });
-            
+                
             gridOben.placeAt('gridObenDiv');
             gridOben.startup();
-                
+                    
             dojo.connect(gridOben, "onRowClick", null, function(e){
                 var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
                 url += "/" + (e.rowIndex + 1) + "#form";
@@ -61,18 +61,18 @@
             });        
 <? endif; ?>
 <? if ($this->monatsDatenUnten !== null): ?>
-            
+                
             var monatsDatenUnten = <?= $this->monatsDatenUnten->toJson() ?>;
-     
+         
             var dataStoreUnten =
                 new dojo.data.ItemFileReadStore({ data:monatsDatenUnten });
-            
+                
             var gridUnten = new dojox.grid.DataGrid({
                 store:dataStoreUnten,
                 structure:layout,
                 selectionMode:"none"
             });
-             
+                 
             dojo.connect(gridUnten, "onStyleRow", function(row){
                 var item = gridUnten.getItem(row.index);
                 if(item) {
@@ -84,16 +84,22 @@
                 gridUnten.focus.styleRow(row);
                 gridUnten.edit.styleRow(row);
             });
-            
+                
             gridUnten.placeAt('gridUntenDiv');
             gridUnten.startup();
-                
+                    
             dojo.connect(gridUnten, "onRowClick", null, function(e){
                 var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
                 url += "/" + (e.rowIndex + 1 + <?= $this->tag ?>) + "#form";
                 location.href = url;
             });        
 <? endif; ?>
+        var tip = new dijit.Tooltip({
+            label: '<p>Falls gewünscht, fügen Sie bitte zunächst den Nachmittag\
+    hinzu, und tragen Sie dann Ihre Daten für diesen Arbeitstag ein.</p>',
+            showDelay: 50,
+            connectId: ["nachmittag"]
+        });
     });
  
 </script>

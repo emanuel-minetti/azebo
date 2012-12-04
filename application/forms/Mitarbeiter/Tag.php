@@ -30,8 +30,8 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
     const UNGUELTIGE_UHRZEIT = 'Bitte geben Sie die Uhrzeit als vierstellige Zahl ein!';
     const UNGUELTIGE_OPTION = 'Bitte wählen Sie eine der Optionen aus!';
 
-    private $beginnElement;
-    private $endeElement;
+    private $beginnNachmittagElement;
+    private $endeNachmittagElement;
 
     public function init() {
         //$log = Zend_Registry::get('log');
@@ -50,7 +50,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         $this->addElementPrefixPath(
                 'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
 
-        $this->beginnElement = new Zend_Dojo_Form_Element_TimeTextBox('beginn', array(
+        $beginnElement = new Zend_Dojo_Form_Element_TimeTextBox('beginn', array(
                     'label' => 'Beginn',
                     'timePattern' => 'HHmm',
                     'required' => false,
@@ -65,7 +65,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'autofocus' => true,
                 ));
         
-        $this->endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
+        $endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(
                     'label' => 'Ende',
                     'timePattern' => 'HHmm',
                     'required' => false,
@@ -82,6 +82,40 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                         'IstArbeitstag',
                         ),
                     'tabindex' => 2,
+                ));
+        
+        $this->beginnNachmittagElement = new Zend_Dojo_Form_Element_TimeTextBox(
+                'beginnnachmittag', array(
+                    'label' => 'Beginn Nachmittag',
+                    'timePattern' => 'HHmm',
+                    'required' => false,
+                    'visibleRange' => 'T02:00:00',
+                    'visibleIncrement' => 'T00:10:00',
+                    'clickableIncrement' => 'T00:10:00',
+                    'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
+                    'filters' => array('StringTrim', 'ZeitAlsDate',),
+                    'validators' => array(
+                        'Beginn',),
+                ));
+        
+        $this->endeNachmittagElement = new Zend_Dojo_Form_Element_TimeTextBox(
+                'endenachmittag', array(
+                    'label' => 'Ende Nachmittag',
+                    'timePattern' => 'HHmm',
+                    'required' => false,
+                    'visibleRange' => 'T02:00:00',
+                    'visibleIncrement' => 'T00:10:00',
+                    'clickableIncrement' => 'T00:10:00',
+                    'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
+                    'filters' => array('StringTrim', 'ZeitAlsDate'),
+                    'validators' => array(
+                        'EndeNachBeginn',
+                        'Feiertag',
+                        'Ende',
+                        'ZehnStunden',
+                        'IstArbeitstag',
+                        ),
+                    //'tabindex' => 2,
                 ));
 
         $befreiungService = new Azebo_Service_Befreiung();
@@ -137,8 +171,10 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             $tagElement->setValue($arbeitstag->getTag()->toString('dd.MM.YYYY'));
         }
 
-        $this->addElement($this->beginnElement);
-        $this->addElement($this->endeElement);
+        // falls hier was geändert wird, muss es auch in setNachmittag()
+        // geändert werden!
+        $this->addElement($beginnElement);
+        $this->addElement($endeElement);
         $this->addElement($befreiungElement);
         $this->addElement($bemerkungElement);
         $this->addElement($pauseElement);
@@ -157,16 +193,56 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             'label' => 'Zurücksetzen',
             'tabindex' => 6,
         ));
+        
+        $this->addElement('SubmitButton', 'nachmittag', array(
+            'required' => false,
+            'ignore' => true,
+            'tabindex' => 7,
+        ));
     }
 
     public function setBeginn($beginn) {
         $displayedValue = $beginn === null ? '' : $beginn->toString('HHmm');
-        $this->beginnElement->setDijitParam('displayedValue', $displayedValue);
+        $this->getElement('beginn')->setDijitParam('displayedValue', $displayedValue);
     }
 
     public function setEnde($ende) {
         $displayedValue = $ende === null ? '' : $ende->toString('HHmm');
-        $this->endeElement->setDijitParam('displayedValue', $displayedValue);
+        $this->getElement('ende')->setDijitParam('displayedValue', $displayedValue);
+    }
+    
+    public function setNachmittag($nachmittag) {
+        if($nachmittag) {
+            // füge die Elemente hinzu
+            $this->addElement($this->beginnNachmittagElement);
+            $this->addElement($this->endeNachmittagElement);
+            $elemente = $this->getElements();
+            
+            // setze die Label neu
+            $elemente['nachmittag']->setLabel('Nachmittag entfernen');
+            $elemente['beginn']->setLabel('Beginn Vormittag');
+            $elemente['ende']->setLabel('Ende Vormittag');
+            
+            // bringe die Elemente in die richtige Reihenfolge
+            $elemente['beginnnachmittag']->setOrder(3);
+            $elemente['endenachmittag']->setOrder(4);
+            $elemente['befreiung']->setOrder(5);
+            $elemente['bemerkung']->setOrder(6);
+            $elemente['pause']->setOrder(7);
+            $elemente['tag']->setOrder(8);
+            $elemente['absenden']->setOrder(9);
+            $elemente['zuruecksetzen']->setOrder(10);
+            $elemente['nachmittag']->setOrder(11);
+        } else {
+            // setze die Label neu
+            $this->getElement('nachmittag')->setLabel('Nachmittag hinzufügen');
+            $this->getElement('beginn')->setLabel('Beginn');
+            $this->getElement('ende')->setLabel('Ende');
+            
+            // entferne ggf. die unnötigen Elemente
+            $this->removeElement('beginnnachmittag');
+            $this->removeElement('endenachmittag');
+        }
     }
 
 }

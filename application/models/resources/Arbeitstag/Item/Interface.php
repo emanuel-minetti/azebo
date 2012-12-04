@@ -67,5 +67,10 @@ interface Azebo_Resource_Arbeitstag_Item_Interface {
     public function getIst();
     
     public function getSaldo();
+    
+    public function getNachmittag();
+    
+    public function toggleNachmittag();
+    
 }
 

@@ -188,5 +188,14 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
         return $this->_saldo;
     }
+    
+     public function getNachmittag() {
+        return $this->_row->nachmittag == 'ja' ? true : false;
+    }
 
+    public function toggleNachmittag() {
+        $this->_row->nachmittag = $this->_row->nachmittag == 'ja' ? 'nein' : 'ja';
+        $this->save();
+    }
+    
 }
