@@ -79,6 +79,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'ungerade' => 'Ungerade',
         );
 
+        //TODO Mehrfachauswahl zulassen und bearbeiten!
         $this->addElement('FilteringSelect', 'kw', array(
             'label' => 'Kalenderwoche: ',
             'multiOptions' => $kalenderwochen,
@@ -90,7 +91,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
         ));
 
         $this->addElement('TimeTextBox', 'rahmenAnfang', array(
-            'label' => 'Rahmen-Anfang: (Für Standartzeit bitte leer lassen)',
+            'label' => 'Rahmen-Anfang: (Für Standardzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
             'required' => false,
             'visibleRange' => 'T02:00:00',
@@ -101,7 +102,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
         ));
 
         $this->addElement('TimeTextBox', 'kernAnfang', array(
-            'label' => 'Kern-Anfang: (Für Standartzeit bitte leer lassen)',
+            'label' => 'Kern-Anfang: (Für Standardzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
             'required' => false,
             'visibleRange' => 'T02:00:00',
@@ -113,7 +114,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
         ));
 
         $this->addElement('TimeTextBox', 'kernEnde', array(
-            'label' => 'Kern-Ende: (Für Standartzeit bitte leer lassen)',
+            'label' => 'Kern-Ende: (Für Standardzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
             'required' => false,
             'visibleRange' => 'T02:00:00',
@@ -125,7 +126,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
         ));
 
         $this->addElement('TimeTextBox', 'rahmenEnde', array(
-            'label' => 'Rahmen-Ende: (Für Standartzeit bitte leer lassen)',
+            'label' => 'Rahmen-Ende: (Für Standardzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
             'required' => false,
             'visibleRange' => 'T02:00:00',
