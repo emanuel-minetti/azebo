@@ -47,7 +47,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     public function getBeginn() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->beginn);
     }
-    
+
     public function getBeginnNachmittag() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->nachmittagbeginn);
     }
@@ -55,7 +55,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     public function getEnde() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->ende);
     }
-    
+
     public function getEndeNachmittag() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->nachmittagende);
     }
@@ -63,7 +63,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     public function setBeginn($beginn) {
         $this->_row->beginn = $this->_dzService->zeitPhpZuSql($beginn);
     }
-    
+
     public function setBeginnNachmittag($beginn) {
         $this->_row->nachmittagbeginn = $this->_dzService->zeitPhpZuSql($beginn);
     }
@@ -71,7 +71,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     public function setEnde($ende) {
         $this->_row->ende = $this->_dzService->zeitPhpZuSql($ende);
     }
-    
+
     public function setEndeNachmittag($ende) {
         $this->_row->nachmittagende = $this->_dzService->zeitPhpZuSql($ende);
     }
@@ -118,7 +118,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
             $arbeitsregeln = $arbeitsregelTabelle->
                     getArbeitsregelnNachMonatUndMitarbeiterId(
                     $this->getTag(), $this->mitarbeiter_id);
-            
+
             //Iteriere über die Regeln
             foreach ($arbeitsregeln as $arbeitsregel) {
                 if ($arbeitsregel->wochentag == 'Alle') {
@@ -151,24 +151,32 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                         }
                     }
                 }
-            } 
-            
+            }
+
             //Falls dieser Tag ein 'Feiertag' ist, gib NULL zurück
             $feiertag = $this->getFeiertag();
             if ($feiertag['feiertag']) {
                 $this->_regel = null;
             }
-        }  
-        
+        }
+
         return $this->_regel;
     }
 
     public function getAnwesend() {
-        //TODO Nachmittag berücksichtigen!
         if ($this->_anwesend === null) {
             if ($this->getBeginn() !== null && $this->getEnde() !== null) {
                 $this->_anwesend = $this->_zeitrechnerService->anwesend(
                         $this->getBeginn(), $this->getEnde());
+            }
+            if ($this->getBeginnNachmittag() &&
+                    $this->getBeginnNachmittag() !== null &&
+                    $this->getEndeNachmittag() !== null) {
+                $anwesendNachmittag = $this->_zeitrechnerService->anwesend(
+                        $this->getBeginnNachmittag(), $this->getEndeNachmittag());
+                $this->_anwesend = $this->_anwesend === null ?
+                        $anwesendNachmittag :
+                        $this->_anwesend->addTime($anwesendNachmittag);
             }
         }
 
@@ -176,7 +184,6 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function getIst() {
-        //TODO Nachmittag berücksichtigen!
         if ($this->_ist === null) {
             if ($this->getAnwesend() !== null) {
                 $ohnePause = $this->pause == '-' ? false : true;
@@ -189,7 +196,6 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function getSaldo() {
-        //TODO Nachmittag berücksichtigen!
         if ($this->_saldo === null) {
             if ($this->getIst() !== null) {
                 $this->_saldo = $this->_zeitrechnerService->saldo(
@@ -207,8 +213,8 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
         return $this->_saldo;
     }
-    
-     public function getNachmittag() {
+
+    public function getNachmittag() {
         return $this->_row->nachmittag == 'ja' ? true : false;
     }
 
@@ -216,5 +222,5 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         $this->_row->nachmittag = $this->_row->nachmittag == 'ja' ? 'nein' : 'ja';
         $this->save();
     }
-    
+
 }
