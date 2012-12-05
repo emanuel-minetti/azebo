@@ -129,13 +129,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         }
     }
 
-    public function neuauswahlAction() {
-        $this->erweitereSeitenName(' Neuer Mitarbeiter');
-    }
-
     public function neuAction() {
         $this->erweitereSeitenName(' Neuer Mitarbeiter');
-        $hochschule = $this->_getParam('hochschule');
+        $hochschule = $this->mitarbeiter->getHochschule();
         $mitglieder = $this->model->getBenutzernamenNachHochschule($hochschule);
         $form = $this->_getNeuerMitarbeiterForm($mitglieder);
         $request = $this->getRequest();
