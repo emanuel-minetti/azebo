@@ -59,7 +59,7 @@
         'jahr' => $this->jahr,
             ), 'monat', true);
     ?>";
-                                    var tag = e.rowIndex + 1;
+                                    var tag = grid._getItemAttr(e.rowIndex, 'tag');
                                     url += "/" + tag + "#form";
                                     console.debug(url);
                                     location.href = url;

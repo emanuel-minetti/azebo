@@ -410,6 +410,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
                 $tabellenDaten->addItem(array(
                     'datum' => $datum,
+                    'tag' => $tag->toString('dd'),
                     'feiertag' => $feiertag['feiertag'],
                     'beginn' => $beginn,
                     'ende' => $ende,
@@ -463,6 +464,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     }
                     $tabellenDaten->addItem(array(
                         'datum' => $datum,
+                        'tag' => $tag->toString('dd'),
                         'feiertag' => $feiertag['feiertag'],
                         'beginn' => $beginn,
                         'ende' => $ende,

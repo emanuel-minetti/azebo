@@ -56,7 +56,7 @@
                     
             dojo.connect(gridOben, "onRowClick", null, function(e){
                 var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
-                url += "/" + (e.rowIndex + 1) + "#form";
+                url += "/" + gridOben._getItemAttr(e.rowIndex, 'tag') + "#form";
                 location.href = url;
             });        
 <? endif; ?>
@@ -90,7 +90,7 @@
                     
             dojo.connect(gridUnten, "onRowClick", null, function(e){
                 var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
-                url += "/" + (e.rowIndex + 1 + <?= $this->tag ?>) + "#form";
+                url += "/" + gridUnten._getItemAttr(e.rowIndex, 'tag') + "#form";
                 location.href = url;
             });        
 <? endif; ?>
