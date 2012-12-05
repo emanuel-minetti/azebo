@@ -126,6 +126,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'multiOptions' => $befreiungOptionen,
                     'invalidMessage' => self::UNGUELTIGE_OPTION,
                     'filters' => array('StringTrim', 'Alpha'),
+                    'validators' => array('BefreiungNachmittag'),
                     'tabindex' => 8,
                 ));
 
@@ -234,18 +235,12 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         $nachmittag = $this->_mitarbeiter->getArbeitstagNachTag($this->_datum)->
                 getNachmittag();
         if ($nachmittag) {
-            //$elemente = $this->getElements();
-
-            // füge die Elemente hinzu, falls sie nicht schon da waren
-            //if (!isset($elemente['beginnnachmittag'])) {
+            // füge die Elemente hinzu
             $this->addElement($this->_beginnNachmittagElement);
-            //}
-            //if (!isset($elemente['endenachmittag'])) {
             $this->addElement($this->_endeNachmittagElement);
-            //}
-
-            $elemente = $this->getElements();
+            
             // passe die Elemente an
+            $elemente = $this->getElements();
             $elemente['nachmittagButton']->setLabel('Nachmittag entfernen');
             $elemente['nachmittag']->setValue(true);
             $elemente['beginn']->setLabel('Beginn Vormittag');

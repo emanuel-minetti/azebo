@@ -2,14 +2,14 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <div id="view-content">
-        <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag - 1) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
+        <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
         <a name="form"></a>
         <h4>Daten für den <?= $this->tag; ?>.<?= $this->monat; ?>. bearbeiten</h4>
         <?= $this->tagForm; ?>
 
-        <div id="gridUntenDiv" style="width: 881px; height: <?= ($this->tageImMonat - $this->tag) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
+        <div id="gridUntenDiv" style="width: 881px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
     </div>
-    <p>Saldo bis zum Vormonat: <?= $this->saldoBisher; ?></p>
+    <p>Saldo der abgeschlossenen Monate: <?= $this->saldoBisher; ?></p>
 </div>
 <script type="text/javascript">
     dojo.ready(function() {

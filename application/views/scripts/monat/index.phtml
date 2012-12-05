@@ -1,8 +1,8 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
 
-    <div id="gridDiv" style="width: 881px; height: <?= $this->tageImMonat * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
-    <p>Saldo bisher: <?= $this->saldoBisher; ?></p>
+    <div id="gridDiv" style="width: 881px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+    <p>Saldo der abgeschlossen Monate: <?= $this->saldoBisher; ?></p>
     <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
     <p>Resturlaub bisher: <?= $this->urlaubBisher; ?></p>
     <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
