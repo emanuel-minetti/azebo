@@ -72,5 +72,13 @@ interface Azebo_Resource_Arbeitstag_Item_Interface {
     
     public function toggleNachmittag();
     
+    public function getBeginnNachmittag();
+    
+    public function setBeginnNachmittag($beginn);
+    
+    public function getEndeNachmittag();
+    
+    public function setEndeNachmittag($beginn);
+    
 }
 

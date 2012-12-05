@@ -36,30 +36,50 @@ class Azebo_Validate_ZehnStunden extends Zend_Validate_Abstract {
 
     public function isValid($value, $context = null) {
         $this->_setValue($value);
+        $filter = new Azebo_Filter_ZeitAlsDate();
 
         if (is_array($context)) {
-            if (isset($context['beginn'])) {
-                $ende = new Zend_Date($value);
-                // In context liegen die Daten ungefiltert vor, also filtere
-                // selber
-                $contextBeginn = $context['beginn'];
-                if ($contextBeginn == '') {
-                    // Kein Beginn eingetragen, also gültig.
-                    return true;
-                } else {
-                    // Beginn und Ende eingetragen, also teste
-                    $beginnWert = substr($contextBeginn, 1);
-                    $beginn = new Zend_Date($beginnWert, Zend_Date::TIMES);
-                    $zeitService = new Azebo_Service_Zeitrechner();
-                    $anwesend = $zeitService->anwesend($beginn, $ende);
-                    $bemerkung = $context['bemerkung'];
-                    $bemerkung = trim($bemerkung);
-                    if ($anwesend !== null) {
-                        if ($anwesend->compareTime('10:00:00', 'HH:mm:ss') == 1 &&
-                                $bemerkung == '') {
-                            $this->_error(self::MEHR_ALS_ZEHN_STUNDEN);
-                            return false;
-                        }
+            if (isset($context['beginn']) && $context['beginn'] != '' &&
+                    isset($context['ende']) && $context['ende'] != '') {
+                $ende = $filter->filter($context['ende']);
+                $beginn = $filter->filter($context['beginn']);
+                $zeitService = new Azebo_Service_Zeitrechner();
+                $anwesend = $zeitService->anwesend($beginn, $ende);
+                if (isset($context['nachmittag']) &&
+                        isset($context['beginnnachmittag']) &&
+                        isset($context['endenachmittag']) &&
+                        $context['beginnnachmittag'] != '' &&
+                        $context['endenachmittag'] != '') {
+                    $beginnNachmittag = $filter->
+                            filter($context['beginnnachmittag']);
+                    $endeNachmittag = $filter->
+                            filter($context['endenachmittag']);
+                    $anwesendNachmittag = $zeitService->
+                            anwesend($beginnNachmittag, $endeNachmittag);
+                }
+                $bemerkung = $context['bemerkung'];
+                $bemerkung = trim($bemerkung);
+                if ($anwesend !== null) {
+                    if ($anwesend->compareTime('10:00:00', 'HH:mm:ss') == 1 &&
+                            $bemerkung == '') {
+                        $this->_error(self::MEHR_ALS_ZEHN_STUNDEN);
+                        return false;
+                    }
+                }
+                if ($anwesendNachmittag !== null) {
+                    if ($anwesendNachmittag->
+                            compareTime('10:00:00', 'HH:mm:ss') == 1 &&
+                            $bemerkung == '') {
+                        $this->_error(self::MEHR_ALS_ZEHN_STUNDEN);
+                        return false;
+                    }
+                }
+                if ($anwesend !== null && $anwesendNachmittag !== null) {
+                    $anwesend = $anwesend->addTime($anwesendNachmittag);
+                    if ($anwesend->compareTime('10:00:00', 'HH:mm:ss') == 1 &&
+                            $bemerkung == '') {
+                        $this->_error(self::MEHR_ALS_ZEHN_STUNDEN);
+                        return false;
                     }
                 }
             }

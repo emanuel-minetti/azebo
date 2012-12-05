@@ -43,7 +43,6 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         $select = $this->select();
         $select->where('mitarbeiter_id = ?', $mitarbeiterId);
         $dbMonate = $this->fetchAll($select);
-        //TODO Nochmal anschauen!
 
         return $dbMonate;
     }

@@ -97,7 +97,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->mitarbeiter = $ns->mitarbeiter;
         $this->arbeitstage = $this->mitarbeiter
                 ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
-        
+
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
@@ -138,7 +138,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($valid) {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.YYYY');
-                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->getString();
+                    $this->view->saldo =
+                            $this->mitarbeiter->getSaldo($monat)->getString();
                     // markiere den Monat in der Session als geprüft
                     $ns = new Zend_Session_Namespace();
                     $ns->geprueft[$monat->toString('MM-YYYY')] = true;
@@ -156,7 +157,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $urlaub = $this->mitarbeiter->getUrlaubNachMonat($monat);
                     $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->
                             getString();
-                    $this->mitarbeiter->saveArbeitsmonat($monat, $saldo, $urlaub);
+                    $this->mitarbeiter->saveArbeitsmonat(
+                            $monat, $saldo, $urlaub);
                 }
             }
         }
@@ -182,7 +184,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function editAction() {
-        //TODO Vormittag/Nachmittag einführen!
         $request = $this->getRequest();
 
         // falls der Monat nicht bearbeitbar ist, gibt es keinen Link hierher.
@@ -201,20 +202,26 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
 
         $form = $this->_getMitarbeiterTagForm();
-        $form->setNachmittag($this->mitarbeiter->
-                getArbeitstagNachTag($this->zuBearbeitendesDatum)->
-                getNachmittag());
+        $form->setNachmittag();
 
         if ($request->isPost()) {
-            // ist Post-Request, also prüfen ob 'absenden' gedrückt wurde
             $postDaten = $request->getPost();
+            
+            // bevölkere das Beginn- und Ende-Element
+            $filter = new Azebo_Filter_ZeitAlsDate();
+            $form->setBeginn($filter->filter($postDaten['beginn']));
+            $form->setEnde($filter->filter($postDaten['ende']));
+            if (!isset($postDaten['nachmittagButton']) &&
+                    $postDaten['nachmittag']) {
+                $form->setBeginn($filter->filter($postDaten['beginnnachmittag']), true);
+                $form->setEnde($filter->filter($postDaten['endenachmittag']), true);
+            }
+
             if (isset($postDaten['absenden'])) {
                 // 'absenden' wurde gedrückt, also Daten filtern und validieren!
                 $valid = $form->isValid($postDaten);
                 $daten = $form->getValues();
-                // bevölkere das Beginn- und Ende-Element
-                $form->setBeginn($daten['beginn']);
-                $form->setEnde($daten['ende']);
+
                 if ($valid) {
                     // ist valide also, speichen, in der Session als ungeprüft
                     // markieren und redirect
@@ -232,15 +239,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 }
                 // nicht valide, also tue nichts und rendere die Seite mit
                 // Fehlermeldungen neu.
-            } elseif (isset ($postDaten['nachmittag'])) {
+            } elseif (isset($postDaten['nachmittagButton'])) {
                 // Nachmittag wurde gedrückt, also
                 // schalte das DB-Feld um und passe die Form an
                 $this->mitarbeiter->
                         getArbeitstagNachTag($this->zuBearbeitendesDatum)->
                         toggleNachmittag();
-                $form->setNachmittag($this->mitarbeiter->
-                        getArbeitstagNachTag($this->zuBearbeitendesDatum)->
-                        getNachmittag());
+                $form->setNachmittag();
             }
             // 'zurücksetzen' wurde gedrückt, also tue nichts sondern, rendere
             // einfach die Seite neu
@@ -317,10 +322,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $geprueft = $ns->geprueft;
         $index = $this->zuBearbeitendesDatum->toString('MM-YYYY');
         //$elemente = $form->getElements();
-         if (!$this->bearbeitbar) {
+        if (!$this->bearbeitbar) {
             $form->removeElement('pruefen');
             $form->removeElement('abschliessen');
-        } elseif ($geprueft !== null && isset($geprueft[$index]) && $geprueft[$index]) {
+        } elseif ($geprueft !== null && isset($geprueft[$index]) &&
+                $geprueft[$index]) {
             $form->removeElement('ausdrucken');
             $form->removeElement('pruefen');
         } else {
@@ -345,8 +351,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // Iteriere über die Tage
         foreach ($this->arbeitstage as $arbeitstag) {
-            if ($arbeitstag->tag->compare($erster, Zend_Date::DATE_MEDIUM) != -1 &&
-                    $arbeitstag->tag->compare($letzter, Zend_Date::DATE_MEDIUM) != 1) {
+            if ($arbeitstag->tag->compare($erster, Zend_Date::DATE_MEDIUM)
+                    != -1 &&
+                    $arbeitstag->tag->compare($letzter, Zend_Date::DATE_MEDIUM)
+                    != 1) {
 
                 $tag = $arbeitstag->tag;
                 $feiertag = $arbeitstag->feiertag;

@@ -117,6 +117,8 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
         $arbeitstag->befreiung = $daten['befreiung'];
         $arbeitstag->bemerkung = $daten['bemerkung'];
         $arbeitstag->pause = $daten['pause'];
+        $arbeitstag->setBeginnNachmittag($daten['beginnnachmittag']);
+        $arbeitstag->setEndeNachmittag($daten['endenachmittag']);
 
         $arbeitstag->save();
         

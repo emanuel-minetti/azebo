@@ -25,12 +25,13 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
+class Azebo_Validate_NachNachVormittag extends Zend_Validate_Abstract {
 
     const BEGINN_NACH_ENDE = 'BeginnNachEnde';
 
     protected $_messageTemplates = array(
-        self::BEGINN_NACH_ENDE => 'Das eingegebene Ende liegt vor dem Beginn!',
+        self::BEGINN_NACH_ENDE => 'Der eingegebene Beginn des Nachmittags liegt
+            vor dem Ende des Vormittags!',
     );
 
     public function isValid($value, $context = null) {
@@ -40,11 +41,11 @@ class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
         $zeitService = new Azebo_Service_Zeitrechner();
 
         if (is_array($context)) {
-            if (isset($context['beginn']) && isset($context['ende']) &&
-                    $context['beginn'] != '' && $context['ende'] != '') {
+            if (isset($context['ende']) && isset($context['beginnnachmittag']) &&
+                    $context['ende'] != '' && $context['beginnnachmittag'] != '') {
                 $ende = $filter->filter($context['ende']);
-                $beginn = $filter->filter($context['beginn']);
-                if ($zeitService->anwesend($beginn, $ende) === null) {
+                $beginnNachmittag = $filter->filter($context['beginnnachmittag']);
+                if ($zeitService->anwesend($ende, $beginnNachmittag) === null) {
                     $this->_error(self::BEGINN_NACH_ENDE);
                     return false;
                 }

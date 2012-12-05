@@ -25,7 +25,7 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
+class Azebo_Validate_EndeNachBeginnNachmittag extends Zend_Validate_Abstract {
 
     const BEGINN_NACH_ENDE = 'BeginnNachEnde';
 
@@ -40,11 +40,15 @@ class Azebo_Validate_EndeNachBeginn extends Zend_Validate_Abstract {
         $zeitService = new Azebo_Service_Zeitrechner();
 
         if (is_array($context)) {
-            if (isset($context['beginn']) && isset($context['ende']) &&
-                    $context['beginn'] != '' && $context['ende'] != '') {
-                $ende = $filter->filter($context['ende']);
-                $beginn = $filter->filter($context['beginn']);
-                if ($zeitService->anwesend($beginn, $ende) === null) {
+            if (isset($context['nachmittag']) &&
+                    isset($context['beginnnachmittag']) &&
+                    isset($context['endenachmittag']) &&
+                    $context['beginnnachmittag'] != '' &&
+                    $context['beginnnachmittag'] != '') {
+                $nachmittagEnde = $filter->filter($context['endenachmittag']);
+                $nachmittagBeginn = $filter->filter($context['beginnnachmittag']);
+                if ($zeitService->anwesend($nachmittagBeginn, $nachmittagEnde)
+                        === null) {
                     $this->_error(self::BEGINN_NACH_ENDE);
                     return false;
                 }

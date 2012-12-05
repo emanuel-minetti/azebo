@@ -34,9 +34,6 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
     );
 
     public function isValid($value, $context = null) {
-        $log = Zend_Registry::get('log');
-        $log->debug(__METHOD__);
-
         $isValid = true;
 
         // hole die Daten
@@ -51,9 +48,23 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
         $fehltage = array();
         foreach ($arbeitstage as $arbeitstag) {
             if ($arbeitstag->getRegel() !== null &&
-                    ($arbeitstag->befreiung == 'keine' || $arbeitstag->befreiung === null)) {
-                if ($arbeitstag->getBeginn() === null || $arbeitstag->getEnde() === null) {
+                    ($arbeitstag->befreiung == 'keine' ||
+                    $arbeitstag->befreiung === null)) {
+                // falls eine Regel vorliegt und keine Befreiung angegeben...
+                if ($arbeitstag->getBeginn() === null ||
+                        $arbeitstag->getEnde() === null) {
+                    // ... dann müssen Beginn und Ende gesetzt sein
                       $fehltage[] = $arbeitstag->getTag();
+                }
+            }
+            if($arbeitstag->getNachmittag()) {
+                // falls einNachmittag hinzugefügt wurde...
+                if($arbeitstag->getBeginn() === null ||
+                        $arbeitstag->getEnde() === null ||
+                        $arbeitstag->getBeginnNachmittag() === null ||
+                        $arbeitstag->getEndeNachmittag() === null) {
+                    // ... dann müssen beide Beginn und beide Ende gesetzt sein
+                    $fehltage[] = $arbeitstag->getTag();
                 }
             }
         }

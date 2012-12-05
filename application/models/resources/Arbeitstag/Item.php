@@ -47,17 +47,33 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     public function getBeginn() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->beginn);
     }
+    
+    public function getBeginnNachmittag() {
+        return $this->_dzService->zeitSqlZuPhp($this->_row->nachmittagbeginn);
+    }
 
     public function getEnde() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->ende);
+    }
+    
+    public function getEndeNachmittag() {
+        return $this->_dzService->zeitSqlZuPhp($this->_row->nachmittagende);
     }
 
     public function setBeginn($beginn) {
         $this->_row->beginn = $this->_dzService->zeitPhpZuSql($beginn);
     }
+    
+    public function setBeginnNachmittag($beginn) {
+        $this->_row->nachmittagbeginn = $this->_dzService->zeitPhpZuSql($beginn);
+    }
 
     public function setEnde($ende) {
         $this->_row->ende = $this->_dzService->zeitPhpZuSql($ende);
+    }
+    
+    public function setEndeNachmittag($ende) {
+        $this->_row->nachmittagende = $this->_dzService->zeitPhpZuSql($ende);
     }
 
     public function getTag() {
@@ -148,6 +164,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function getAnwesend() {
+        //TODO Nachmittag berücksichtigen!
         if ($this->_anwesend === null) {
             if ($this->getBeginn() !== null && $this->getEnde() !== null) {
                 $this->_anwesend = $this->_zeitrechnerService->anwesend(
@@ -159,6 +176,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function getIst() {
+        //TODO Nachmittag berücksichtigen!
         if ($this->_ist === null) {
             if ($this->getAnwesend() !== null) {
                 $ohnePause = $this->pause == '-' ? false : true;
@@ -171,6 +189,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     }
 
     public function getSaldo() {
+        //TODO Nachmittag berücksichtigen!
         if ($this->_saldo === null) {
             if ($this->getIst() !== null) {
                 $this->_saldo = $this->_zeitrechnerService->saldo(
