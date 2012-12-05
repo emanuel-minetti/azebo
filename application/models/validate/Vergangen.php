@@ -40,7 +40,8 @@ class Azebo_Validate_Vergangen extends Zend_Validate_Abstract {
             $filter = new Azebo_Filter_DatumAlsDate();
             $von = $filter->filter($context['von']);
             $jetzt = new Zend_Date();
-            if($jetzt->compareDate($von) == 1) {
+            if(($jetzt->compareMonth($von) == 1 && $jetzt->compareYear($von) == 0) ||
+                    $jetzt->compareYear($von) == 1) {
                 $this->_error(self::VERGANGEN);
                 return false;
             }
