@@ -66,9 +66,13 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
     public function getArbeitstageNachMonatUndMitarbeiterId(Zend_Date $monat,
             $mitarbeiterId) {
         $erster = new Zend_Date($monat);
+        //$log = Zend_Registry::get('log');
+        
         $erster->setDay(1);
+        //$log->debug('Erster: ' . $erster->toString());
         $letzter = new Zend_Date($monat);
         $letzter->setDay($monat->get(Zend_Date::MONTH_DAYS));
+        //$log->debug('Letzter: ' . $letzter->toString());
 
         $select = $this->select();
         $select->where('mitarbeiter_id = ?', $mitarbeiterId)
@@ -96,6 +100,7 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
             $tag->addDay(1);
         }
 
+        //$log->debug('Arbeitstage: ' . print_r($arbeitstage, true));
         return $arbeitstage;
     }
 

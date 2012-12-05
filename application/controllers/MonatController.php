@@ -97,7 +97,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->mitarbeiter = $ns->mitarbeiter;
         $this->arbeitstage = $this->mitarbeiter
                 ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
-
+        
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
@@ -373,7 +373,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $soll = null;
                 $saldo = null;
 
-                $datum = $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.YYYY');
+                $datum = $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.yyyy');
                 if ($nachmittag) {
                     $datum .= ' Vormittag';
                     $anzahlHoheTage++;
