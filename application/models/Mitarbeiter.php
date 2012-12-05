@@ -87,6 +87,31 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         return $erg;
     }
     
+    public function getHochschuleNachBenutzernamen($benutzername) {
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+        $options = $config->ldap->physalis->toArray();
+        $gruppen = array();
+        $attributes = array('cn');
+        $ldap = new Zend_Ldap($options);
+        $users = $ldap->search('(&(objectClass=posixGroup)(memberUid=' . $benutzername . '))', 'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de', Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
+        foreach ($users as $user) {
+            $gruppen[] = $user['cn'][0];
+        }
+        $hochschule = '';
+        foreach ($gruppen as $gruppe) {
+            if ($gruppe == 'HFS-Mitglied') {
+                $hochschule = 'hfs';
+            } else if ($gruppe == 'HFM-Mitglied') {
+                $hochschule = 'hfm';
+            } else if ($gruppe == 'KHB-Mitglied') {
+                $hochschule = 'khb';
+            }
+        }
+        
+        return $hochschule;
+    }
+
+
     public function getBenutzernamenNachHochschule($hochschule) {
         switch ($hochschule) {
             case 'hfm':
@@ -174,9 +199,29 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $arbeitsregel->delete();
     }
     
-    public function getAbgeschlossenNachMonat($monat) {
+    public function getAbgeschlossenAbgelegtNachMonatUndHochschule($monat, $hochschule) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
-        //TODO fertig machen!
+        $arbeitsmonate = $monatsTabelle->getArbeitsmonateNachMonat($monat);
+        $erg = array();
+        foreach ($arbeitsmonate as $arbeitsmonat) {
+            $mitarbeiterId = $arbeitsmonat->mitarbeiter_id;
+            $mitarbeiter = $this->getMitarbeiterNachId($mitarbeiterId);
+            if($hochschule == $this->getHochschuleNachBenutzernamen($mitarbeiter->benutzername)) {
+                $erg[] = $arbeitsmonat;
+            }
+        }
+        
+        $abgeschlossen = count($erg);
+        $abgelegt = 0;
+        foreach ($erg as $monat) {
+            if($monat->abgelegt == 'ja') {
+                $abgelegt++;
+            }
+        }
+        return array(
+            'abgeschlossen' => $abgeschlossen,
+            'abgelegt' => $abgelegt,
+        );
     }
 
 }

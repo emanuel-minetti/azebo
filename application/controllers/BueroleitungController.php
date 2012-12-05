@@ -164,8 +164,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 $datumFilter = new Azebo_Filter_DatumAlsDate();
                 $zeitFilter = new Azebo_Filter_ZeitAlsDate();
                 if ($valid) {
-//                    $von = $daten['von'];
-//                    $von = $datumFilter->filter($von);
                     $daten['von'] = $datumFilter->filter($daten['von']);
                     $daten['bis'] = $datumFilter->filter($daten['bis']);
                     $daten['rahmenAnfang'] = $zeitFilter->filter($daten['rahmenAnfang']);
@@ -225,7 +223,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
     public function monateAction() {
         $this->erweitereSeitenName(' Monatsauswahl');
-        
+
         $heute = new Zend_Date();
         $heute->setMonth(1);
         //$this->_log->debug($heute->toString('MMMM yyyy'));
@@ -241,22 +239,30 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $monate[] = $monat;
             $heute->addMonth(1);
         }
-        
+
+        $mitarbeiterModell = $this->model;
+        $hochschule = $this->mitarbeiter->getHochschule();
         $monatsDaten = new Zend_Dojo_Data();
         $monatsDaten->setIdentifier('id');
         foreach ($monate as $monat) {
-            $this->_log->debug($monat->toString('MMMM yyyy'));
+            //$this->_log->debug($monat->toString('MMMM yyyy'));
+            $abgeschlossenUndAbgelegt =
+                    $mitarbeiterModell->
+                    getAbgeschlossenAbgelegtNachMonatUndHochschule(
+                    $monat, $hochschule);
+            
             $monatsDaten->addItem(array(
                 'id' => $monat->toString('MMyyyy'),
                 'monat' => $monat->toString('MMMM yyyy'),
+                'abgeschlossen' => $abgeschlossenUndAbgelegt['abgeschlossen'],
+                'abgelegt' => $abgeschlossenUndAbgelegt['abgelegt'],
             ));
         }
         $this->view->monatsDaten = $monatsDaten;
     }
-    
+
     public function monatsdetailAction() {
         $this->erweitereSeitenName(' Monatsdetail');
-        
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {

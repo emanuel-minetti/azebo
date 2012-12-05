@@ -47,9 +47,9 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         return $dbMonate;
     }
 
-    public function getArbeitsmonateNachJahrUndMitarbeiterId(Zend_Date $jahr, $mitarbeiterId) {   
+    public function getArbeitsmonateNachJahrUndMitarbeiterId(Zend_Date $jahr, $mitarbeiterId) {
         $dzService = new Azebo_Service_DatumUndZeitUmwandler();
-        
+
         $erster = new Zend_Date($jahr);
         $erster->setMonth(1);
         $letzter = new Zend_Date($jahr);
@@ -63,9 +63,9 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         $dbMonate = $this->fetchAll($select);
         $arbeitsmonate = array();
         $monat = new Zend_Date($erster);
-        
-        while($monat->compareYear($jahr) == 0) {
-            if($dbMonate->current() !== null &&
+
+        while ($monat->compareYear($jahr) == 0) {
+            if ($dbMonate->current() !== null &&
                     $dbMonate->current()->getMonat()->equals(
                             $monat, Zend_Date::MONTH)) {
                 $arbeitsmonate[] = $dbMonate->current();
@@ -76,7 +76,7 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
                 $arbeitsmonat->mitarbeiter_id = $mitarbeiterId;
                 $arbeitsmonate[] = $arbeitsmonat;
             }
-            
+
             $monat->addMonth(1);
         }
 
@@ -91,9 +91,15 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         $arbeitsmonat->urlaub = $urlaub;
         $arbeitsmonat->save();
     }
-    
-    public function getArbeitsmonateNachMonat($monat) {
-        //TODO Implementieren!
+
+    public function getArbeitsmonateNachMonat(Zend_Date $monat) {
+        $select = $this->select();
+        $erster = new Zend_Date($monat);
+        $erster->setDay(1);
+        $select->where('monat = ?', $erster->toString('yyyy-MM-dd'));
+        $dbMonate = $this->fetchAll($select);
+        
+        return $dbMonate;
     }
 
 }

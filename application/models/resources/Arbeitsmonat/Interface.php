@@ -32,7 +32,7 @@ interface Azebo_Resource_Arbeitsmonat_Interface {
     
     public function saveArbeitsmonat($mitarbeiterId, Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0);
     
-    public function getArbeitsmonateNachMonat($monat);
+    public function getArbeitsmonateNachMonat(Zend_Date $monat);
     
 }
 
