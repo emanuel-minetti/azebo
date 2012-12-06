@@ -45,5 +45,13 @@ interface Azebo_Resource_Arbeitsregel_Item_Interface {
     public function getKernEnde();
     
     public function getWochentag();
+    
+    public function setRahmenAnfang($anfang);
+    
+    public function setKernAnfang($anfang);
+    
+    public function setRahmenEnde($ende);
+    
+    public function setKernEnde($ende);
 }
 

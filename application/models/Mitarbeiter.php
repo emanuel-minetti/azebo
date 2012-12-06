@@ -190,6 +190,10 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $arbeitsregel->setSoll($daten['soll']);
         $arbeitsregel->wochentag = $daten['wochentag'];
         $arbeitsregel->kalenderwoche = $daten['kw'];
+        $arbeitsregel->setRahmenAnfang($daten['rahmenAnfang']);
+        $arbeitsregel->setKernAnfang($daten['kernAnfang']);
+        $arbeitsregel->setKernEnde($daten['kernEnde']);
+        $arbeitsregel->setRahmenEnde($daten['rahmenEnde']);
         
         $arbeitsregel->save();
     }

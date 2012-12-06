@@ -35,6 +35,8 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
 
     public function isValid($value, $context = null) {
         $this->_setValue($value);
+        
+        $log = Zend_Registry::get('log');
 
         if (is_array($context)) {
             

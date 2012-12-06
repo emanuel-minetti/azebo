@@ -79,4 +79,20 @@ class Azebo_Resource_Arbeitsregel_Item extends AzeboLib_Model_Resource_Db_Table_
         return ucfirst($this->_row->wochentag);
     }
 
+    public function setKernAnfang($anfang) {
+        $this->_row->kernanfang = $this->_dzService->zeitPhpZuSql($anfang);
+    }
+
+    public function setKernEnde($ende) {
+        $this->_row->kernende = $this->_dzService->zeitPhpZuSql($ende);
+    }
+
+    public function setRahmenAnfang($anfang) {
+        $this->_row->rahmenanfang = $this->_dzService->zeitPhpZuSql($anfang);
+    }
+
+    public function setRahmenEnde($ende) {
+        $this->_row->rahmenende = $this->_dzService->zeitPhpZuSql($ende);
+    }
+
 }
