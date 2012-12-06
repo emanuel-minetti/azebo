@@ -150,7 +150,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function arbeitsregelAction() {
-        //TODO !!!!!!!!!!Kern- und Rahmenarbeitszeit in die DB schreiben!!!!!!!!
         //TODO !!!!!!!!!!Kollisionen der Regeln fixen!!!!!!!!
         //TODO !!!!!!Das Überspielen auf den 46-er ausprobieren!!!!!!!!!
         $this->erweitereSeitenName(' Bearbeite Arbeitszeit');
