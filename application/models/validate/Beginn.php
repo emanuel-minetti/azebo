@@ -52,8 +52,7 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
             //hole die Daten
             $mitarbeiter = $ns->mitarbeiter;
             $hochschule = $mitarbeiter->getHochschule();
-            $zeitenConfig = new Zend_Config_Ini(
-                            APPLICATION_PATH . '/configs/zeiten.ini', $hochschule);
+            $zeitenConfig = $ns->zeiten;
             $kernBeginnAlle = $zeitenConfig->kern->beginn;
             if ($hochschule == 'hfm') {
                 //Sommerzeitregelung der HfM

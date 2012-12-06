@@ -76,19 +76,25 @@ class Azebo_Service_Zeitrechner {
      * @return Zend_Date 
      */
     public function ist(Zend_Date $anwesend, $ohnePause = false) {
+        
+        $ns = new Zend_Session_Namespace();
+        $pause = $ns->zeiten->pause;
+        
+//        $log = Zend_Registry::get('log');
+//        $log->debug('Lang Ab1 : ' . $zeiten->pause->lang->ab);
+//        $log->debug('Lang Ab2 : ' . $pause->lang->ab);
+        
         $ist = new Zend_Date($anwesend);
         if (!$ohnePause) {
-            $neunStunden = new Zend_Date(
-                            '09:00:00', Zend_Date::TIMES);
             if ($anwesend->compare(
-                            $neunStunden, Zend_Date::TIMES) == -1) {
-                //weniger als 9 Stunden anwesend
-                if ($anwesend->compareTime('00:30:00') == 1) {
-                    //mehr als eine halbe Stunde anwesend, also ziehe Pause ab
-                    $ist->sub('00:30:00', Zend_Date::TIMES);
+                            $pause->lang->ab, Zend_Date::TIMES) == -1) {
+                //weniger als lang anwesend
+                if ($anwesend->compareTime($pause->kurz->dauer) == 1) {
+                    //mehr als eine kurze Pause anwesend, also ziehe Pause ab
+                    $ist->sub($pause->kurz->dauer, Zend_Date::TIMES);
                 }
             } else {
-                $ist->sub('00:45:00', Zend_Date::TIMES);
+                $ist->sub($pause->lang->dauer, Zend_Date::TIMES);
             }
         }
         return $ist;

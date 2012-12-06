@@ -367,14 +367,10 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             // neue Regel, also entferne den löschen-Button und belege das
             // Soll vor
             $form->removeElement('loeschen');
-
-            $zuBearbeitenderMitarbeiter = $this->model->
-                    getMitarbeiterNachBenutzername($benutzername);
-            $hs = $zuBearbeitenderMitarbeiter->getHochschule();
-            $config = new Zend_Config_Ini(
-                            APPLICATION_PATH . '/configs/zeiten.ini', $hs);
+            
+            $zeiten = $ns->zeiten;
             $beamter = $zuBearbeitenderMitarbeiter->getBeamter();
-            $soll = $beamter ? $config->soll->beamter : $config->soll->normal;
+            $soll = $beamter ? $zeiten->soll->beamter : $zeiten->soll->normal;
             $soll = new Zend_Date($soll, 'HH:mm:ss');
             $form->getElement('soll')->
                     setDijitParam('displayedValue', $soll->toString('HHmm'));

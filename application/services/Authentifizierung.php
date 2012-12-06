@@ -116,7 +116,12 @@ class Azebo_Service_Authentifizierung {
         $auth->getStorage()->write($mitarbeiter);
         $ns = new Zend_Session_Namespace();
         $ns->mitarbeiter = $mitarbeiter;
-
+        
+        // die configs/zeiten.ini einlesen und in die Session geben
+        $hs = $mitarbeiter->getHochschule();
+        $ns->zeiten = new Zend_Config_Ini(
+                APPLICATION_PATH . '/configs/zeiten.ini', $hs);
+        
         return 'Erfolg';
     }
 

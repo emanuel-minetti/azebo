@@ -50,8 +50,7 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
         if ($feiertag['feiertag'] == false) {
             //kein Feiertag, also prüfen
             //hole die Daten
-            $zeitenConfig = new Zend_Config_Ini(
-                            APPLICATION_PATH . '/configs/zeiten.ini', 'alle');
+            $zeitenConfig = $ns->zeiten;
             $rahmenEndeAlle = $zeitenConfig->rahmen->ende->normal;
             $kernEndeNormalAlle = $zeitenConfig->kern->ende->normal;
             $kernEndeFreitagAlle = $zeitenConfig->kern->ende->freitag;
