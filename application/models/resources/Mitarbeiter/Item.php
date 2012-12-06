@@ -108,6 +108,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getHochschule() {
+        if($this->_hochschule === null) {
+            $model = new Azebo_Model_Mitarbeiter();
+            $this->_hochschule = $model->
+                    getHochschuleNachBenutzernamen($this->benutzername);
+        }
         return $this->_hochschule;
     }
 

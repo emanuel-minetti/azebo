@@ -136,7 +136,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             //'filters' => array('StringTrim', 'ZeitAlsDate'),
             'validators' => array('RahmenEndeNachAnfang'),
         ));
-
+        
         $this->addElement('TimeTextBox', 'soll', array(
             'label' => 'Soll-Arbeitszeit',
             'timePattern' => 'HHmm',

@@ -150,9 +150,11 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function arbeitsregelAction() {
-        //TODO !!!!!!Das Überspielen auf den 46-er ausprobieren!!!!!!!!!
+
         $this->erweitereSeitenName(' Bearbeite Arbeitszeit');
         $benutzername = $this->_getParam('mitarbeiter');
+        $zuBearbeitenderMitarbeiter = $this->model->
+                getMitarbeiterNachBenutzername($benutzername);
         $id = $this->_getParam('id');
         $form = $this->_getArbeitsregelForm($benutzername, $id);
 
@@ -190,8 +192,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             }
         }
 
-        $zuBearbeitenderMitarbeiter = $this->model->
-                getMitarbeiterNachBenutzername($benutzername);
         $arbeitsregeln = $zuBearbeitenderMitarbeiter->getArbeitsregeln();
         $arbeitsregelnOben = array();
         $arbeitsregelnUnten = array();
@@ -251,7 +251,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     $mitarbeiterModell->
                     getAbgeschlossenAbgelegtNachMonatUndHochschule(
                     $monat, $hochschule);
-            
+
             $monatsDaten->addItem(array(
                 'id' => $monat->toString('MMyyyy'),
                 'monat' => $monat->toString('MMMM yyyy'),
@@ -364,7 +364,20 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     'displayedValue', $rahmenEnde);
             $elemente['soll']->setDijitParam('displayedValue', $soll);
         } else {
+            // neue Regel, also entferne den löschen-Button und belege das
+            // Soll vor
             $form->removeElement('loeschen');
+
+            $zuBearbeitenderMitarbeiter = $this->model->
+                    getMitarbeiterNachBenutzername($benutzername);
+            $hs = $zuBearbeitenderMitarbeiter->getHochschule();
+            $config = new Zend_Config_Ini(
+                            APPLICATION_PATH . '/configs/zeiten.ini', $hs);
+            $beamter = $zuBearbeitenderMitarbeiter->getBeamter();
+            $soll = $beamter ? $config->soll->beamter : $config->soll->normal;
+            $soll = new Zend_Date($soll, 'HH:mm:ss');
+            $form->getElement('soll')->
+                    setDijitParam('displayedValue', $soll->toString('HHmm'));
         }
 
         $urlHelper = $this->_helper->getHelper('url');
