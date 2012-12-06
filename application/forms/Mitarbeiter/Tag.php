@@ -138,7 +138,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'tabindex' => 9,
                 ));
 
-        //TODO nicht für HfM
+        
         $pauseElement = new Zend_Dojo_Form_Element_CheckBox('pause', array(
                     'label' => 'Ohne Pause',
                     'required' => false,
@@ -147,6 +147,11 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'filters' => array('StringTrim'),
                     'validators' => array('Pause',),
                 ));
+        
+        // für HfM ausblenden
+        if($this->_mitarbeiter->getHochschule() == 'hfm') {
+            $pauseElement->clearDecorators();
+        }
 
         //TODO Dekoratoren für die Hidden-Elemente
         $tagElement = new Zend_Form_Element_Hidden('tag');

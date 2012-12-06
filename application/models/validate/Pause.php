@@ -67,12 +67,16 @@ class Azebo_Validate_Pause extends Zend_Validate_Abstract {
             $zeitService = new Azebo_Service_Zeitrechner();
             $anwesend = $zeitService->anwesend($beginn, $ende);
             
+            // hole die Zeiten
+            $ns = new Zend_Session_Namespace();
+            $pause = $ns->zeiten->pause;
+            
             //prüfe
-            if($anwesend->compareTime('00:30:00') != 1) {
+            if($anwesend->compareTime($pause->kurz->dauer) != 1) {
                 $this->_error(self::ZU_KURZ);
                 return false;
             }
-            if($anwesend->compareTime('06:00:00') != -1) {
+            if($anwesend->compareTime($pause->kurz->ab) != -1) {
                 $this->_error(self::ZU_LANG);
                 return false;
             }

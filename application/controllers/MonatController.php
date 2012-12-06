@@ -31,6 +31,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Service_Zeitrechner
      */
     public $zeitrechner;
+    
+    /**
+     * @var Zend_Session_Namespace
+     */
+    public $ns;
 
     /**
      * @var Zend_Date 
@@ -84,7 +89,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $feiertagsservice = new Azebo_Service_Feiertag($this->jahr);
         $ns = new Zend_Session_Namespace();
         $ns->feiertagsservice = $feiertagsservice;
-
+        $this->ns = $ns;
+        
         // Aktiviere Dojo
         $this->view->dojo()->enable()
                 ->setDjConfigOption('parseOnLoad', true)
@@ -224,7 +230,23 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $daten = $form->getValues();
 
                 if ($valid) {
-                    // ist valide also, speichen, in der Session als ungeprüft
+                    // für HfM die Pause setzen
+                    if($this->mitarbeiter->getHochschule() == 'hfm') {
+                        //TODO Nachmittag
+                        $anwesend = $this->zeitrechner->
+                                anwesend($daten['beginn'], $daten['ende']);
+                        $pause = $this->ns->zeiten->pause;
+                        if($anwesend->compareTime($pause->kurz->ab) != 1) {
+                            $daten['pause'] = 'x';
+                        } else {
+                            $daten['pause'] = '-';
+                        }
+                        $this->_log->debug('Anwesend: ' . $anwesend);
+                       
+                    }
+                     $this->_log->debug('Pause: ' . $daten['pause']);
+                    
+                    // speichen, in der Session als ungeprüft
                     // markieren und redirect
                     $this->mitarbeiter->saveArbeitstag(
                             $this->zuBearbeitendesDatum, $daten);
