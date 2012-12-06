@@ -138,7 +138,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'tabindex' => 9,
                 ));
 
-        
+
         $pauseElement = new Zend_Dojo_Form_Element_CheckBox('pause', array(
                     'label' => 'Ohne Pause',
                     'required' => false,
@@ -147,15 +147,25 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'filters' => array('StringTrim'),
                     'validators' => array('Pause',),
                 ));
-        
+
         // für HfM ausblenden
-        if($this->_mitarbeiter->getHochschule() == 'hfm') {
+        if ($this->_mitarbeiter->getHochschule() == 'hfm') {
             $pauseElement->clearDecorators();
         }
 
         //TODO Dekoratoren für die Hidden-Elemente
-        $tagElement = new Zend_Form_Element_Hidden('tag');
-        $nachmittagElement = new Zend_Form_Element_Hidden('nachmittag');
+        $tagElement = new Zend_Form_Element_Hidden('tag', array(
+                    'decorators' => array(
+                        'ViewHelper',
+                        array('HtmlTag', array('tag' => 'dd')),
+                    ),
+                ));
+        $nachmittagElement = new Zend_Form_Element_Hidden('nachmittag', array(
+                    'decorators' => array(
+                        'ViewHelper',
+                        array('HtmlTag', array('tag' => 'dd')),
+                    ),
+                ));
 
         // füge die Elemente der Form hinzu
         // falls hier was geändert wird, muss es auch in setNachmittag()
@@ -243,7 +253,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             // füge die Elemente hinzu
             $this->addElement($this->_beginnNachmittagElement);
             $this->addElement($this->_endeNachmittagElement);
-            
+
             // passe die Elemente an
             $elemente = $this->getElements();
             $elemente['nachmittagButton']->setLabel('Nachmittag entfernen');
