@@ -36,7 +36,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
     public function isValid($value, $context = null) {
         $this->_setValue($value);
         
-        $log = Zend_Registry::get('log');
+        //$log = Zend_Registry::get('log');
 
         if (is_array($context)) {
             
@@ -78,7 +78,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
                             }
                         } elseif ($von->compareDate($arbeitsregel->getVon()) == 1) {
                             //aktuelle Regel beginnt vor der zu prüfenden Regel
-                            if ($bis->compareDate($arbeitsregel->getVon()) == 1) {
+                            if ($von->compareDate($arbeitsregel->getBis()) != 1) {
                                 $ueberschneidung = true;
                             }
                         } else {
@@ -103,11 +103,9 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
                             // beide Wochentage != 'alle'
                             if ($wochentag ==
                                     strtolower($arbeitsregel->wochentag)) {
-                                $log->debug('Hier bin ich!');
                                 if ($kw == 'alle' ||
                                         $arbeitsregel->kalenderwoche == 'alle' ||
                                         $kw == $arbeitsregel->kalenderwoche) {
-                                     $log->debug('Hier bin ich auch!');
                                     $kollisionen[] = $lfdNr;
                                 }
                             }
