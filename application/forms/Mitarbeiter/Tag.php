@@ -152,8 +152,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
         if ($this->_mitarbeiter->getHochschule() == 'hfm') {
             $pauseElement->clearDecorators();
         }
-
-        //TODO Dekoratoren für die Hidden-Elemente
+        
         $tagElement = new Zend_Form_Element_Hidden('tag', array(
                     'decorators' => array(
                         'ViewHelper',
