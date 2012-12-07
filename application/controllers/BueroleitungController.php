@@ -31,7 +31,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Model_Mitarbeiter 
      */
     public $model;
-    
+
     /**
      * @var Zend_Session_Namespace
      */
@@ -276,7 +276,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $monat = new Zend_Date($para, 'MMyyyy');
         $this->erweitereSeitenName(' Monatsdetail ' . $monat->toString('MMMM yyyy'));
         $this->view->monat = $monat->toString('MMyyyy');
-        
+
         // intialisiere die Tabelle
         $mitarbeiterDaten = new Zend_Dojo_Data();
         $mitarbeiterDaten->setIdentifier('mitarbeiter');
@@ -289,7 +289,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         // füge die Mitarbeiter der Tabelle hinzu
         foreach ($hsMitarbeiter as $mitarbeiter) {
             $arbeitsmonat = $mitarbeiter->getArbeitsmonat($monat);
-            if($arbeitsmonat === null) {
+            if ($arbeitsmonat === null) {
                 $abgeschlossen = 'Nein';
                 $abgelegt = 'Nein';
             } else {
@@ -308,10 +308,20 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->mitarbeiterDaten = $mitarbeiterDaten;
         $this->view->zeilen = $zeilen;
     }
-    
+
     public function monatseditAction() {
-         $this->erweitereSeitenName(' Monat Bearbeiten ');
-         //TODO implementieren!
+        $monatPara = $this->_getParam('monat');
+        $benutzername = $this->_getParam('benutzername');
+        $zuBearbeitenderMitarbeiter = $this->model->
+                getMitarbeiterNachBenutzername($benutzername);
+        
+        // extrahiere Monat und Jahr aus dem Parameter
+        // Funktioniert nur bis zum Jahr 2099!!!!
+        $strarray = explode('20', $monatPara);
+        $monat = new Zend_Date($strarray[0] . ' ' . $strarray[1], 'M yy');
+        
+        $this->erweitereSeitenName(' ' . $monat->toString('MMMM yyyy') .
+                ' ' .$zuBearbeitenderMitarbeiter->getName());
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
@@ -415,7 +425,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             // neue Regel, also entferne den löschen-Button und belege das
             // Soll vor
             $form->removeElement('loeschen');
-            
+
             $zeiten = $this->ns->zeiten;
             $zuBearbeitenderMitarbeiter = $this->model->
                     getMitarbeiterNachBenutzername($benutzername);
