@@ -41,6 +41,7 @@ class Azebo_Model_Saldo {
         $stunden = $saldo->getStunden();
         $minuten = $saldo->getMinuten();
         $positiv = $saldo->getPositiv();
+
         if ($this->_positiv) {
             if ($positiv) {
                 $this->_minuten += $minuten;
@@ -59,7 +60,9 @@ class Azebo_Model_Saldo {
                     $this->_minuten -= $minuten;
                 } else {
                     $this->_minuten = 60 - ($minuten - $this->_minuten);
-                    $this->_stunden--;
+                    if ($this->_stunden != 0) {
+                        $this->_stunden--;
+                    }
                 }
                 if ($this->_stunden >= $stunden) {
                     $this->_stunden -= $stunden;

@@ -178,7 +178,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
         $saldo = new Azebo_Model_Saldo(0, 0, true);
-
+        
         foreach ($arbeitstage as $arbeitstag) {
             if ($vorlaeufig) {
                 if (!($arbeitstag->getBeginn() === null &&
@@ -192,7 +192,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 $saldo->add($tagesSaldo);
             }
         }
-
+        
         return $saldo;
     }
 
