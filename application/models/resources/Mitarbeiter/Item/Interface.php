@@ -98,4 +98,10 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getArbeitsregeln();
     
+    /**
+     * @param Zend_Date $monat
+     * @return Azebo_Resource__Arbeitsmonat_Item_Interface
+     */
+    public function getArbeitsmonat(Zend_Date $monat);
+    
 }

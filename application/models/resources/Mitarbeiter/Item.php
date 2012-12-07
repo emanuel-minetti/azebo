@@ -259,5 +259,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $regelTabelle = new Azebo_Resource_Arbeitsregel();
         return $regelTabelle->getArbeitsregelnNachMitarbeiterId($this->id);
     }
+
+    public function getArbeitsmonat(Zend_Date $monat) {
+        $monatTabelle = new Azebo_Resource_Arbeitsmonat();
+        return $monatTabelle->getArbeitsmonatNachMitabeiterIdUndMonat($this->id, $monat);
+    }
     
 }

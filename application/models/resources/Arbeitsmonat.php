@@ -102,5 +102,15 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         return $dbMonate;
     }
 
+    public function getArbeitsmonatNachMitabeiterIdUndMonat($mitarbeiterId, Zend_Date $monat) {
+        $select = $this->select();
+        $erster = new Zend_Date($monat);
+        $erster->setDay(1);
+        $select->where('monat = ?', $erster->toString('yyyy-MM-dd'))
+                ->where('mitarbeiter_id = ?', $mitarbeiterId);
+        $arbeitsmonat = $this->fetchRow($select);
+        return $arbeitsmonat;
+    }
+
 }
 

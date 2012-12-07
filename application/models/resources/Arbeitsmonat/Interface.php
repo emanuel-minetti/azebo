@@ -34,5 +34,6 @@ interface Azebo_Resource_Arbeitsmonat_Interface {
     
     public function getArbeitsmonateNachMonat(Zend_Date $monat);
     
+    public function getArbeitsmonatNachMitabeiterIdUndMonat($mitarbeiterId, Zend_Date $monat);
 }
 

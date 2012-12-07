@@ -271,8 +271,47 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function monatsdetailAction() {
-        $this->erweitereSeitenName(' Monatsdetail');
-        //TODO endlich implementieren!
+        $para = $this->_getParam('monat');
+        $para = substr($para, 1);
+        $monat = new Zend_Date($para, 'MMyyyy');
+        $this->erweitereSeitenName(' Monatsdetail ' . $monat->toString('MMMM yyyy'));
+        $this->view->monat = $monat->toString('MMyyyy');
+        
+        // intialisiere die Tabelle
+        $mitarbeiterDaten = new Zend_Dojo_Data();
+        $mitarbeiterDaten->setIdentifier('mitarbeiter');
+        $zeilen = 0;
+
+        // hole die Mitarbeiter der Hochschule
+        $hsMitarbeiter = $this->model->getMitarbeiterNachHochschule(
+                $this->mitarbeiter->getHochschule());
+
+        // füge die Mitarbeiter der Tabelle hinzu
+        foreach ($hsMitarbeiter as $mitarbeiter) {
+            $arbeitsmonat = $mitarbeiter->getArbeitsmonat($monat);
+            if($arbeitsmonat === null) {
+                $abgeschlossen = 'Nein';
+                $abgelegt = 'Nein';
+            } else {
+                $abgeschlossen = 'Ja';
+                $abgelegt = $arbeitsmonat->abgelegt == 'ja' ? 'Ja' : 'Nein';
+            }
+            $mitarbeiterDaten->addItem(array(
+                'mitarbeiter' => $mitarbeiter->benutzername,
+                'mitarbeitername' => $mitarbeiter->getName(),
+                'abgeschlossen' => $abgeschlossen,
+                'abgelegt' => $abgelegt,
+            ));
+            $zeilen++;
+        }
+
+        $this->view->mitarbeiterDaten = $mitarbeiterDaten;
+        $this->view->zeilen = $zeilen;
+    }
+    
+    public function monatseditAction() {
+         $this->erweitereSeitenName(' Monat Bearbeiten ');
+         //TODO implementieren!
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
