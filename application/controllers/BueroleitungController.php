@@ -314,14 +314,39 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $benutzername = $this->_getParam('benutzername');
         $zuBearbeitenderMitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
-        
+
         // extrahiere Monat und Jahr aus dem Parameter
         // Funktioniert nur bis zum Jahr 2099!!!!
         $strarray = explode('20', $monatPara);
         $monat = new Zend_Date($strarray[0] . ' ' . $strarray[1], 'M yy');
-        
+
         $this->erweitereSeitenName(' ' . $monat->toString('MMMM yyyy') .
-                ' ' .$zuBearbeitenderMitarbeiter->getName());
+                ' ' . $zuBearbeitenderMitarbeiter->getName());
+
+        $urlhelper = $this->_helper->getHelper('Url');
+        $this->view->urlAblegen = $urlhelper->simple('monatsaktion', 'bueroleitung', null, array(
+            'benutzername' => $benutzername,
+            'monat' => $monat->toString('MMyyyy'),
+            'aktion' => 'ablegen',
+                ));
+        $this->view->urlZurueck = $urlhelper->simple('monatsaktion', 'bueroleitung', null, array(
+            'benutzername' => $benutzername,
+            'monat' => $monat->toString('MMyyyy'),
+            'aktion' => 'zurueck',
+                ));
+        $this->view->urlAnzeigen = $urlhelper->simple('monatsaktion', 'bueroleitung', null, array(
+            'benutzername' => $benutzername,
+            'monat' => $monat->toString('MMyyyy'),
+            'aktion' => 'anzeigen',
+                ));
+    }
+
+    public function monatsaktionAction() {
+        $redirector = $this->_helper->getHelper('Redirector');
+        $redirector->goto(array(
+            'controller' => 'bueroleitung',
+            'action' => 'monate',
+        ));
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
