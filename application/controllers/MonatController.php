@@ -31,7 +31,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Service_Zeitrechner
      */
     public $zeitrechner;
-    
+
     /**
      * @var Zend_Session_Namespace
      */
@@ -90,7 +90,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $ns = new Zend_Session_Namespace();
         $ns->feiertagsservice = $feiertagsservice;
         $this->ns = $ns;
-        
+
         // Aktiviere Dojo
         $this->view->dojo()->enable()
                 ->setDjConfigOption('parseOnLoad', true)
@@ -103,7 +103,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->mitarbeiter = $ns->mitarbeiter;
         $this->arbeitstage = $this->mitarbeiter
                 ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
-        
+
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
@@ -231,21 +231,23 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
                 if ($valid) {
                     // für HfM die Pause setzen
-                    if($this->mitarbeiter->getHochschule() == 'hfm') {
+                    if ($this->mitarbeiter->getHochschule() == 'hfm') {
                         //TODO Nachmittag
-                        $anwesend = $this->zeitrechner->
-                                anwesend($daten['beginn'], $daten['ende']);
-                        $pause = $this->ns->zeiten->pause;
-                        if($anwesend->compareTime($pause->kurz->ab) != 1) {
-                            $daten['pause'] = 'x';
-                        } else {
-                            $daten['pause'] = '-';
+                        if ($daten['beginn'] !== null && $daten['beginn'] != '' &&
+                                $daten['ende'] !== null && $daten['ende'] != '') {
+                            $anwesend = $this->zeitrechner->
+                                    anwesend($daten['beginn'], $daten['ende']);
+                            $pause = $this->ns->zeiten->pause;
+                            if ($anwesend->compareTime($pause->kurz->ab) != 1) {
+                                $daten['pause'] = 'x';
+                            } else {
+                                $daten['pause'] = '-';
+                            }
+                            $this->_log->debug('Anwesend: ' . $anwesend);
                         }
-                        $this->_log->debug('Anwesend: ' . $anwesend);
-                       
                     }
-                     $this->_log->debug('Pause: ' . $daten['pause']);
-                    
+                    $this->_log->debug('Pause: ' . $daten['pause']);
+
                     // speichen, in der Session als ungeprüft
                     // markieren und redirect
                     $this->mitarbeiter->saveArbeitstag(
@@ -458,7 +460,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $datum = $feiertag['name'] . ' ' .
                             $tag->toString('EE, dd.MM.YYYY') . ' Nachmittag';
                     $anzahlHoheTage++;
-                    
+
                     $beginn = null;
                     $ende = null;
                     $befreiung = null;

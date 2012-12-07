@@ -31,12 +31,18 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Model_Mitarbeiter 
      */
     public $model;
+    
+    /**
+     * @var Zend_Session_Namespace
+     */
+    public $ns;
 
     public function init() {
         parent::init();
 
         // Lade den Mitarbeiter
         $ns = new Zend_Session_Namespace();
+        $this->ns = $ns;
         $this->mitarbeiter = $ns->mitarbeiter;
 
         // lade das Modell
@@ -264,6 +270,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
     public function monatsdetailAction() {
         $this->erweitereSeitenName(' Monatsdetail');
+        //TODO endlich implementieren!
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
@@ -368,7 +375,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             // Soll vor
             $form->removeElement('loeschen');
             
-            $zeiten = $ns->zeiten;
+            $zeiten = $this->ns->zeiten;
+            $zuBearbeitenderMitarbeiter = $this->model->
+                    getMitarbeiterNachBenutzername($benutzername);
             $beamter = $zuBearbeitenderMitarbeiter->getBeamter();
             $soll = $beamter ? $zeiten->soll->beamter : $zeiten->soll->normal;
             $soll = new Zend_Date($soll, 'HH:mm:ss');
