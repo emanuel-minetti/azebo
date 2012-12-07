@@ -71,6 +71,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         // intialisiere die Tabelle
         $mitarbeiterDaten = new Zend_Dojo_Data();
         $mitarbeiterDaten->setIdentifier('mitarbeiter');
+        $zeilen = 0;
 
         // hole die Mitarbeiter der Hochschule
         $hsMitarbeiter = $this->model->getMitarbeiterNachHochschule(
@@ -84,10 +85,11 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 'abgeschlossen' => $mitarbeiter->getAbgeschlossenBis(),
                 'abgelegt' => $mitarbeiter->getAbgelegtBis(),
             ));
+            $zeilen++;
         }
-        //TODO die Tabelle in der Höhe anpassen!
 
         $this->view->mitarbeiterDaten = $mitarbeiterDaten;
+        $this->view->zeilen = $zeilen;
     }
 
     public function detailAction() {
