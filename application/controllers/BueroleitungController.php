@@ -484,9 +484,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         // befülle die Tabellendaten
         foreach ($arbeitsregeln as $arbeitsregel) {
             $lfdNr++;
-            $von = $arbeitsregel->getVon()->toString('dd.MM.YYYY');
+            $von = $arbeitsregel->getVon()->toString('dd.MM.yyyy');
             $bis = $arbeitsregel->getBis();
-            $bis = $bis === null ? 'auf Weiteres' : $bis->toString('dd.MM.YYYY');
+            $bis = $bis === null ? 'auf Weiteres' : $bis->toString('dd.MM.yyyy');
             $wochentag = $arbeitsregel->getWochentag();
             $kw = $arbeitsregel->kalenderwoche;
             $rahmenAnfang = $arbeitsregel->getRahmenAnfang();

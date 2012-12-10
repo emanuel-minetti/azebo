@@ -37,7 +37,7 @@ class Azebo_Validate_BefreiungArbeitsfrei extends Zend_Validate_Abstract {
 
     public function isValid($value, $context = null) {
         if (is_array($context)) {
-            $tag = new Zend_Date($context['tag'], 'dd.MM.YYYY');
+            $tag = new Zend_Date($context['tag'], 'dd.MM.yyyy');
             $ns = new Zend_Session_Namespace();
             $feiertagsservice = $ns->feiertagsservice;
             $feiertag = $feiertagsservice->feiertag($tag);
@@ -45,7 +45,6 @@ class Azebo_Validate_BefreiungArbeitsfrei extends Zend_Validate_Abstract {
             $arbeitstag = $mitarbeiter->getArbeitstagNachTag($tag);
             if ($feiertag['feiertag'] == true || $arbeitstag->getRegel() === null) {
                 // ist feiertag
-                //TODO arbeitsfrei
                 if (isset($context['befreiung']) && $context['befreiung'] != '' &&
                         $context['befreiung'] != 'keine') {
                     // hat Dienstbefreiung

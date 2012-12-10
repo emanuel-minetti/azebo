@@ -211,7 +211,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     $pauseElement->setChecked(false);
                 }
             }
-            $tagElement->setValue($arbeitstag->getTag()->toString('dd.MM.YYYY'));
+            $tagElement->setValue($arbeitstag->getTag()->toString('dd.MM.yyyy'));
             $nachmittagElement->setValue($nachmittag);
         }
 

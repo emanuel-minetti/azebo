@@ -143,12 +143,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $valid = $abschlussForm->isValid($postDaten);
                 if ($valid) {
                     $daten = $abschlussForm->getValues();
-                    $monat = new Zend_Date($daten['monat'], 'MM.YYYY');
+                    $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
                     $this->view->saldo =
                             $this->mitarbeiter->getSaldo($monat)->getString();
                     // markiere den Monat in der Session als geprüft
                     $ns = new Zend_Session_Namespace();
-                    $ns->geprueft[$monat->toString('MM-YYYY')] = true;
+                    $ns->geprueft[$monat->toString('MM-yyyy')] = true;
                     //TODO Mehr als 10 Defizitstunden
                     // lade die Form neu, um den richtigen Button anzuzeigen
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
@@ -158,7 +158,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $valid = $abschlussForm->isValid($postDaten);
                 if ($valid) {
                     $daten = $abschlussForm->getValues();
-                    $monat = new Zend_Date($daten['monat'], 'MM.YYYY');
+                    $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
                     $saldo = $this->mitarbeiter->getSaldo($monat);
                     $urlaub = $this->mitarbeiter->getUrlaubNachMonat($monat);
                     $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->
@@ -254,7 +254,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                             $this->zuBearbeitendesDatum, $daten);
                     $ns = new Zend_Session_Namespace();
                     $ns->geprueft[
-                            $this->zuBearbeitendesDatum->toString('MM-YYYY')] =
+                            $this->zuBearbeitendesDatum->toString('MM-yyyy')] =
                             false;
                     $redirector = $this->_helper->getHelper('Redirector');
                     $redirector->gotoRoute(array(
@@ -349,7 +349,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // je nachdem ob der Monat bereits geprüft bzw. abgeschlossen ist.
         $ns = new Zend_Session_Namespace();
         $geprueft = $ns->geprueft;
-        $index = $this->zuBearbeitendesDatum->toString('MM-YYYY');
+        $index = $this->zuBearbeitendesDatum->toString('MM-yyyy');
         //$elemente = $form->getElements();
         if (!$this->bearbeitbar) {
             $form->removeElement('pruefen');
@@ -364,7 +364,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
 
         $monatElement = $form->getElement('monat');
-        $monatElement->setValue($this->zuBearbeitendesDatum->toString('MM.YYYY'));
+        $monatElement->setValue($this->zuBearbeitendesDatum->toString('MM.yyyy'));
         return $form;
     }
 
@@ -458,7 +458,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($nachmittag) {
                     // füge die Zeile für den Nachmittag hinzu
                     $datum = $feiertag['name'] . ' ' .
-                            $tag->toString('EE, dd.MM.YYYY') . ' Nachmittag';
+                            $tag->toString('EE, dd.MM.yyyy') . ' Nachmittag';
                     $anzahlHoheTage++;
 
                     $beginn = null;

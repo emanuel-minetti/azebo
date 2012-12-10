@@ -225,7 +225,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             }
         }
         if ($letzter !== null) {
-            return $letzter->getMonat()->toString('MMMM YYYY');
+            return $letzter->getMonat()->toString('MMMM yyyy');
         } else {
             return null;
         }
@@ -242,7 +242,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             }
         }
         if ($letzter !== null) {
-            return $letzter->getMonat()->toString('MMMM YYYY');
+            return $letzter->getMonat()->toString('MMMM yyyy');
         } else {
             return null;
         }

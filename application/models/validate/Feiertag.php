@@ -37,7 +37,7 @@ class Azebo_Validate_Feiertag extends Zend_Validate_Abstract {
 
     public function isValid($value, $context = null) {
         //hole und filtere die Daten
-        $tag = new Zend_Date($context['tag'], 'dd.MM.YYYY');
+        $tag = new Zend_Date($context['tag'], 'dd.MM.yyyy');
         $beginn = $context['beginn'];
         $beginn = substr($beginn, 1);
         if ($beginn != '') {

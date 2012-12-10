@@ -42,7 +42,7 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
 
     public function isValid($value, $context = null) {
         //hole den Tag und prüfe auf Feiertag
-        $tag = new Zend_Date($context['tag'], 'dd.MM.YYYY');
+        $tag = new Zend_Date($context['tag'], 'dd.MM.yyyy');
         $ns = new Zend_Session_Namespace();
         $feiertagsservice = $ns->feiertagsservice;
         $feiertag = $feiertagsservice->feiertag($tag);
@@ -56,11 +56,11 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
             $kernBeginnAlle = $zeitenConfig->kern->beginn;
             if ($hochschule == 'hfm') {
                 //Sommerzeitregelung der HfM
-                $jahr = 'jahr' . $tag->toString('YYYY');
+                $jahr = 'jahr' . $tag->toString('yyyy');
                 $rahmenSommerVon = $zeitenConfig->rahmen->sommer->von->$jahr;
-                $rahmenSommerVon = new Zend_Date($rahmenSommerVon, 'dd.MM.YYYY');
+                $rahmenSommerVon = new Zend_Date($rahmenSommerVon, 'dd.MM.yyyy');
                 $rahmenSommerBis = $zeitenConfig->rahmen->sommer->bis->$jahr;
-                $rahmenSommerBis = new Zend_Date($rahmenSommerBis, 'dd.MM.YYYY');
+                $rahmenSommerBis = new Zend_Date($rahmenSommerBis, 'dd.MM.yyyy');
                 if ($tag->compare($rahmenSommerVon) == 1 &&
                         $tag->compare($rahmenSommerBis) == -1) {
                     $rahmenBeginnAlle = $zeitenConfig->rahmen->beginn->sommer->$jahr;

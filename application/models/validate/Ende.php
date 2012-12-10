@@ -42,7 +42,7 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
 
     public function isValid($value, $context = null) {
         //hole den Tag und prüfe auf Feiertag
-        $tag = new Zend_Date($context['tag'], 'dd.MM.YYYY');
+        $tag = new Zend_Date($context['tag'], 'dd.MM.yyyy');
         $ns = new Zend_Session_Namespace();
         $feiertagsservice = $ns->feiertagsservice;
         $feiertag = $feiertagsservice->feiertag($tag);

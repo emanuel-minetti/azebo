@@ -37,7 +37,7 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
         $isValid = true;
 
         // hole die Daten
-        $monat = new Zend_Date($context['monat'], 'MM.YYYY');
+        $monat = new Zend_Date($context['monat'], 'MM.yyyy');
         $ns = new Zend_Session_Namespace();
         $mitarbeiter = $ns->mitarbeiter;
         $model = new Azebo_Model_Mitarbeiter();

@@ -30,7 +30,7 @@ class IndexController extends AzeboLib_Controller_Abstract {
 
     public function indexAction() {
         $now = new Zend_Date();
-        $jahr = $now->toString('YYYY');
+        $jahr = $now->toString('yyyy');
         $monat = $now->toString('MM');
         $redirector = $this->_helper->getHelper('Redirector');
         $redirector->gotoRoute(array(

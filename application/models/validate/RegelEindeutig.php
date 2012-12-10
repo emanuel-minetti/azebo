@@ -36,7 +36,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
     public function isValid($value, $context = null) {
         $this->_setValue($value);
         
-        //$log = Zend_Registry::get('log');
+        $log = Zend_Registry::get('log');
 
         if (is_array($context)) {
             
@@ -53,6 +53,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
             $kollisionen = array();
             
             foreach ($arbeitsregeln as $arbeitsregel) {
+                $log->debug('Kw: ' . $arbeitsregel->kalenderwoche);
                 $lfdNr++;
                 if ($id != $arbeitsregel->id) {
                     $ueberschneidung = false;
@@ -97,6 +98,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
                             if ($kw == 'alle' ||
                                     $arbeitsregel->kalenderwoche == 'alle' ||
                                     $kw == $arbeitsregel->kalenderwoche) {
+                                //TODO einzelne Tage
                                 $kollisionen[] = $lfdNr;
                             }
                         } else {
