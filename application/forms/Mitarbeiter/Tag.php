@@ -126,7 +126,10 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'multiOptions' => $befreiungOptionen,
                     'invalidMessage' => self::UNGUELTIGE_OPTION,
                     'filters' => array('StringTrim', 'Alpha'),
-                    'validators' => array('BefreiungNachmittag'),
+                    'validators' => array(
+                        'BefreiungArbeitsfrei',
+                        'BefreiungNachmittag',
+                        ),
                     'tabindex' => 8,
                 ));
 

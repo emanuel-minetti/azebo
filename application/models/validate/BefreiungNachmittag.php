@@ -21,7 +21,8 @@
  */
 
 /**
- * Prüft ob das Ende eines Arbeitstages nach dem Beginn liegt.
+ * Prüft ob ein Nachmittag angelegt wurde und trotzdem eine Dienstbefreiung
+ * eingetragen wurde.
  *
  * @author Emanuel Minetti
  */
