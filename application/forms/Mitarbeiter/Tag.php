@@ -138,6 +138,8 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'required' => false,
                     'style' => 'width: 300px;',
                     'filters' => array('StringTrim'),
+                    'validators' => array(
+                        array('StringLength', false, array(0, 255),)),
                     'tabindex' => 9,
                 ));
 
