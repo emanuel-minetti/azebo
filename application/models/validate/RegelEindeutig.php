@@ -35,11 +35,11 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
 
     public function isValid($value, $context = null) {
         $this->_setValue($value);
-        
-        $log = Zend_Registry::get('log');
+
+        //$log = Zend_Registry::get('log');
 
         if (is_array($context)) {
-            
+
             $id = $context['id'];
             $filter = new Azebo_Filter_DatumAlsDate();
             $von = $filter->filter($context['von']);
@@ -51,9 +51,8 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
             $arbeitsregeln = $model->getArbeitsregelnNachBenutzername($benutzername);
             $lfdNr = 0;
             $kollisionen = array();
-            
+
             foreach ($arbeitsregeln as $arbeitsregel) {
-                $log->debug('Kw: ' . $arbeitsregel->kalenderwoche);
                 $lfdNr++;
                 if ($id != $arbeitsregel->id) {
                     $ueberschneidung = false;
@@ -94,11 +93,10 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
                         //von und bis überschneiden sich, also prüfe Wochentag 
                         //und Kalenderwoche
                         if ($wochentag == 'alle' ||
-                                strtolower($arbeitsregel->wochentag == 'alle')) {
+                                strtolower($arbeitsregel->wochentag) == 'alle') {
                             if ($kw == 'alle' ||
                                     $arbeitsregel->kalenderwoche == 'alle' ||
                                     $kw == $arbeitsregel->kalenderwoche) {
-                                //TODO einzelne Tage
                                 $kollisionen[] = $lfdNr;
                             }
                         } else {
@@ -129,7 +127,7 @@ class Azebo_Validate_RegelEindeutig extends Zend_Validate_Abstract {
                 $message .= $kollisionen[count($kollisionen) - 2] . ' und ' .
                         $kollisionen[count($kollisionen) - 1] . '.';
             }
-            
+
             $this->setMessage($message, self::NICHT_EINDEUTIG);
             $this->_error(self::NICHT_EINDEUTIG);
             return false;
