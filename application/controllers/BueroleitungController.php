@@ -342,6 +342,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function monatsaktionAction() {
+        //TODO Hier gehts weiter!
+        
         $redirector = $this->_helper->getHelper('Redirector');
         $redirector->goto(array(
             'controller' => 'bueroleitung',
