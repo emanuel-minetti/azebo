@@ -311,30 +311,41 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
     public function monatseditAction() {
         $monatPara = $this->_getParam('monat');
+        $monat = new Zend_Date($monatPara, 'MM_yyyy');
         $benutzername = $this->_getParam('benutzername');
         $zuBearbeitenderMitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
-        
-        $monat = new Zend_Date($monatPara, 'MM_yyyy');
+              
         $this->erweitereSeitenName(' ' . $monat->toString('MMMM yyyy') .
                 ' ' . $zuBearbeitenderMitarbeiter->getName());
+        
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $postDaten = $request->getPost();
+            if(isset($postDaten['zurueck'])) {
+                $zuBearbeitenderMitarbeiter->deleteArbeitsmonat($monat);
+            } elseif(isset ($postDaten['ablegen'])) {
+                $zuBearbeitenderMitarbeiter->arbeitsmonatAblegen($monat);
+            }
+        }
 
         $form = new Azebo_Form_Mitarbeiter_Monatsedit();
+        if($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat) === null) {
+            $form->removeElement('ablegen');
+            $form->removeElement('zurueck');
+        } else {
+            if($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat)->abgelegt
+                    == 'ja') {
+                $form->removeElement('ablegen');
+                $form->removeElement('zurueck');
+            }
+        }
         $url = $this->view->url(array(
             'benutzername' => $benutzername,
             'monat' => $monat->toString('MM_yyyy'),
                 ), 'monatsedit');
         $form->setAction($url);
-        //TODO Nur die Optionen anzeigen, die auch möglich sind
         $this->view->form = $form;
-    }
-
-    public function monatsaktionAction() {
-        $redirector = $this->_helper->getHelper('Redirector');
-        $redirector->goto(array(
-            'controller' => 'bueroleitung',
-            'action' => 'monate',
-        ));
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {

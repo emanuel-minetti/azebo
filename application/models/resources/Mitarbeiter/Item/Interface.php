@@ -104,4 +104,8 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
      */
     public function getArbeitsmonat(Zend_Date $monat);
     
+    public function deleteArbeitsmonat(Zend_Date $monat);
+    
+    public function arbeitsmonatAblegen(Zend_Date $monat);
+    
 }

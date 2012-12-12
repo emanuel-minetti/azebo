@@ -26,6 +26,7 @@
  * @author Emanuel Minetti
  */
 class Azebo_Form_Mitarbeiter_Mitarbeiterdetail extends AzeboLib_Form_Abstract {
+    //TODO HfM: Überstunden 2007 
     
     public function init() {
         $this->addElementPrefixPath(

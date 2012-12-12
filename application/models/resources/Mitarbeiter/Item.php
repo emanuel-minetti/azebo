@@ -262,7 +262,23 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function getArbeitsmonat(Zend_Date $monat) {
         $monatTabelle = new Azebo_Resource_Arbeitsmonat();
-        return $monatTabelle->getArbeitsmonatNachMitabeiterIdUndMonat($this->id, $monat);
+        return $monatTabelle->
+                getArbeitsmonatNachMitabeiterIdUndMonat($this->id, $monat);
+    }
+
+    public function deleteArbeitsmonat(Zend_Date $monat) {
+        $monatTabelle = new Azebo_Resource_Arbeitsmonat();
+        $arbeitsmonat = $monatTabelle->
+                getArbeitsmonatNachMitabeiterIdUndMonat($this->id, $monat);
+        $arbeitsmonat->delete();
+    }
+
+    public function arbeitsmonatAblegen(Zend_Date $monat) {
+        $monatTabelle = new Azebo_Resource_Arbeitsmonat();
+        $arbeitsmonat = $monatTabelle->
+                getArbeitsmonatNachMitabeiterIdUndMonat($this->id, $monat);
+        $arbeitsmonat->abgelegt = 'ja';
+        $arbeitsmonat->save();
     }
     
 }
