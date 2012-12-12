@@ -275,7 +275,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $para = substr($para, 1);
         $monat = new Zend_Date($para, 'MMyyyy');
         $this->erweitereSeitenName(' Monatsdetail ' . $monat->toString('MMMM yyyy'));
-        $this->view->monat = $monat->toString('MMyyyy');
+        $this->view->monat = $monat->toString('MM_yyyy');
 
         // intialisiere die Tabelle
         $mitarbeiterDaten = new Zend_Dojo_Data();
@@ -314,36 +314,22 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $benutzername = $this->_getParam('benutzername');
         $zuBearbeitenderMitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
-
-        // extrahiere Monat und Jahr aus dem Parameter
-        // Funktioniert nur bis zum Jahr 2099!!!!
-        $strarray = explode('20', $monatPara);
-        $monat = new Zend_Date($strarray[0] . ' ' . $strarray[1], 'M yy');
-
+        
+        $monat = new Zend_Date($monatPara, 'MM_yyyy');
         $this->erweitereSeitenName(' ' . $monat->toString('MMMM yyyy') .
                 ' ' . $zuBearbeitenderMitarbeiter->getName());
 
-        $urlhelper = $this->_helper->getHelper('Url');
-        $this->view->urlAblegen = $urlhelper->simple('monatsaktion', 'bueroleitung', null, array(
+        $form = new Azebo_Form_Mitarbeiter_Monatsedit();
+        $url = $this->view->url(array(
             'benutzername' => $benutzername,
-            'monat' => $monat->toString('MMyyyy'),
-            'aktion' => 'ablegen',
-                ));
-        $this->view->urlZurueck = $urlhelper->simple('monatsaktion', 'bueroleitung', null, array(
-            'benutzername' => $benutzername,
-            'monat' => $monat->toString('MMyyyy'),
-            'aktion' => 'zurueck',
-                ));
-        $this->view->urlAnzeigen = $urlhelper->simple('monatsaktion', 'bueroleitung', null, array(
-            'benutzername' => $benutzername,
-            'monat' => $monat->toString('MMyyyy'),
-            'aktion' => 'anzeigen',
-                ));
+            'monat' => $monat->toString('MM_yyyy'),
+                ), 'monatsedit');
+        $form->setAction($url);
+        //TODO Nur die Optionen anzeigen, die auch möglich sind
+        $this->view->form = $form;
     }
 
     public function monatsaktionAction() {
-        //TODO Hier gehts weiter!
-        
         $redirector = $this->_helper->getHelper('Redirector');
         $redirector->goto(array(
             'controller' => 'bueroleitung',

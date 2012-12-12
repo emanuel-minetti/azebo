@@ -21,42 +21,33 @@
  */
 
 /**
- * Dieses Formular dient als Platzhalter für die zwei Buttons für 'Monat Prüfen'
- * und 'Monat Abschließen'.
+ * Description of Monatsedit
  *
  * @author Emanuel Minetti
  */
-class Azebo_Form_Mitarbeiter_Abschluss extends AzeboLib_Form_Abstract {
-
+class Azebo_Form_Mitarbeiter_Monatsedit extends AzeboLib_Form_Abstract {
+    
     public function init() {
-        $this->addElementPrefixPath(
-                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
-        $this->addElement('Hidden', 'monat', array());
-
-        $this->addElement('SubmitButton', 'abschliessen', array(
+        $this->addElement('SubmitButton', 'ablegen', array(
             'required' => false,
             'ignore' => true,
-            'label' => 'Monat abschließen',
-            'decorators' => array('DijitElement', 'Errors',),
-            //'tabindex' => 1,
+            'label' => 'Monat Ablegen',
         ));
-
-        $this->addElement('SubmitButton', 'ausdrucken', array(
+        
+        $this->addElement('SubmitButton', 'zurueck', array(
             'required' => false,
             'ignore' => true,
-            'label' => 'Bogen ausdrucken',
-            'decorators' => array('DijitElement', 'Errors',),
-            //'tabindex' => 1,
+            'label' => 'Abschluss Zurücknehmen',
         ));
-
-        $this->addElement('SubmitButton', 'pruefen', array(
+        
+        $this->addElement('SubmitButton', 'anzeigen', array(
             'required' => false,
             'ignore' => true,
-            'label' => 'Monat prüfen',
-            'validators' => array('Monat',),
-            'decorators' => array('DijitElement', 'Errors',),
-            //'tabindex' => 1,
+            'label' => 'Monat Anzeigen',
         ));
+        
+        $this->setMethod('post');
+        $this->setName('monatseditForm');
     }
-
 }
+
