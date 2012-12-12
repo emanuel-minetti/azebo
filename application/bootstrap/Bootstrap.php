@@ -159,7 +159,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $this->_view->addHelperPath('AzeboLib/View/Helper/', 'AzeboLib_View_Helper');
 
         //Die Version festlegen
-        $this->_view->version = '0.5';
+        $this->_view->version = '0.6';
     }
 
     protected function _initDbProfiler() {
