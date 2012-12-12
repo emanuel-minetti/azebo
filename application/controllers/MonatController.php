@@ -48,11 +48,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     public $mitarbeiter;
 
     /**
-     * @var array 
-     */
-    public $arbeitstage;
-
-    /**
      * @var boolean
      */
     public $bearbeitbar;
@@ -99,10 +94,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ->requireModule('dojo._base.connect')
                 ->requireModule('dijit.Tooltip');
 
-        // Lade den Mitarbeiter und die Arbeitstage
+        // Lade den Mitarbeiter
         $this->mitarbeiter = $ns->mitarbeiter;
-        $this->arbeitstage = $this->mitarbeiter
-                ->getArbeitstageNachMonat($this->zuBearbeitendesDatum);
 
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
@@ -182,7 +175,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $letzter = new Zend_Date($this->zuBearbeitendesDatum);
         $erster->setDay(1);
         $letzter->setDay($this->tageImMonat);
-        $tabelle = $this->_befuelleDieTabelle($erster, $letzter);
+        $tabelle = $this->_helper->
+                MonatsTabelle($erster, $letzter, $this->mitarbeiter);
 
         // füge die Tabelle dem View hinzu
         $this->view->monatsDaten = $tabelle['tabellenDaten'];
@@ -294,7 +288,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         if ($this->tag != 1) {
             $erster->setDay(1);
             $letzter->setDay($this->tag - 1);
-            $tabelle = $this->_befuelleDieTabelle($erster, $letzter);
+            $tabelle = $this->_helper->
+                    MonatsTabelle($erster, $letzter, $this->mitarbeiter);
             $this->view->monatsDatenOben = $tabelle['tabellenDaten'];
             $this->view->hoheTageImMonatOben = $tabelle['hoheTage'];
             $this->view->extraZeilenOben = $tabelle['extraZeilen'];
@@ -308,7 +303,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         if ($this->tag != $this->tageImMonat) {
             $erster->setDay($this->tag + 1);
             $letzter->setDay($this->tageImMonat);
-            $tabelle = $this->_befuelleDieTabelle($erster, $letzter);
+            $tabelle = $this->_helper->
+                    MonatsTabelle($erster, $letzter, $this->mitarbeiter);
             $this->view->monatsDatenUnten = $tabelle['tabellenDaten'];
             $this->view->hoheTageImMonatUnten = $tabelle['hoheTage'];
             $this->view->extraZeilenUnten = $tabelle['extraZeilen'];
@@ -369,150 +365,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $monatElement = $form->getElement('monat');
         $monatElement->setValue($this->zuBearbeitendesDatum->toString('MM.yyyy'));
         return $form;
-    }
-
-    private function _befuelleDieTabelle(Zend_Date $erster, Zend_Date $letzter) {
-        // Hole die Befreiungsoptionen für diesen Mitarbeiter
-        $befreiungService = new Azebo_Service_Befreiung();
-        $befreiungOptionen = $befreiungService->getOptionen($this->mitarbeiter);
-
-        // Initialisiere die Daten
-        $tabellenDaten = new Zend_Dojo_Data();
-        $tabellenDaten->setIdentifier('datum');
-        $anzahlHoheTage = 0;
-        $extraZeilen = 0;
-
-        // Iteriere über die Tage
-        foreach ($this->arbeitstage as $arbeitstag) {
-            if ($arbeitstag->tag->compare($erster, Zend_Date::DATE_MEDIUM)
-                    != -1 &&
-                    $arbeitstag->tag->compare($letzter, Zend_Date::DATE_MEDIUM)
-                    != 1) {
-
-                $tag = $arbeitstag->tag;
-                $feiertag = $arbeitstag->feiertag;
-                $nachmittag = $arbeitstag->nachmittag;
-                $beginn = null;
-                $ende = null;
-                $befreiung = null;
-                $anwesend = null;
-                $ist = null;
-                $soll = null;
-                $saldo = null;
-
-                $datum = $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.yyyy');
-                if ($nachmittag) {
-                    $datum .= ' Vormittag';
-                    $anzahlHoheTage++;
-                }
-
-                if ($arbeitstag->beginn !== null) {
-                    $beginn = $arbeitstag->beginn->toString('HH:mm');
-                }
-                if ($arbeitstag->ende !== null) {
-                    $ende = $arbeitstag->ende->toString('HH:mm');
-                }
-                if ($arbeitstag->befreiung !== null) {
-                    $befreiung = $befreiungOptionen[$arbeitstag->befreiung];
-                }
-                if ($arbeitstag->getRegel() !== null && !$nachmittag) {
-                    $soll = $arbeitstag->regel->soll->toString('HH:mm');
-                }
-
-                $anwesend = $arbeitstag->getAnwesend();
-                $ist = $arbeitstag->getIst();
-                $saldoErg = $arbeitstag->getSaldo();
-                if ($anwesend !== null && !$nachmittag) {
-                    $anwesend = $anwesend->toString('HH:mm');
-                    $ist = $ist->toString('HH:mm');
-                    $saldo = $saldoErg->getString();
-                } else {
-                    $anwesend = null;
-                    $ist = null;
-                    $saldo = null;
-                    if ($arbeitstag->befreiung == 'fa') {
-                        $saldo = $saldoErg->getString();
-                    }
-                }
-
-                $tabellenDaten->addItem(array(
-                    'datum' => $datum,
-                    'tag' => $tag->toString('dd'),
-                    'feiertag' => $feiertag['feiertag'],
-                    'beginn' => $beginn,
-                    'ende' => $ende,
-                    'befreiung' => $befreiung,
-                    'bemerkung' => $arbeitstag->bemerkung,
-                    'pause' => $arbeitstag->pause,
-                    'anwesend' => $anwesend,
-                    'ist' => $ist,
-                    'soll' => $soll,
-                    'saldo' => $saldo,
-                ));
-
-                //Neujahr und Karfreitag passen in eine Zeile mit dem Wochentag,
-                //sind also keine 'hohen' Tage.
-                if ($feiertag['name'] != '') {
-                    if ($feiertag['name'] != 'Neujahr' &&
-                            $feiertag['name'] != 'Karfreitag') {
-                        $anzahlHoheTage++;
-                    }
-                }
-                if ($nachmittag) {
-                    // füge die Zeile für den Nachmittag hinzu
-                    $datum = $feiertag['name'] . ' ' .
-                            $tag->toString('EE, dd.MM.yyyy') . ' Nachmittag';
-                    $anzahlHoheTage++;
-
-                    $beginn = null;
-                    $ende = null;
-                    $befreiung = null;
-                    $anwesend = null;
-                    $ist = null;
-                    $soll = null;
-                    $saldo = null;
-
-                    if ($arbeitstag->getBeginnNachmittag() !== null) {
-                        $beginn = $arbeitstag->getBeginnNachmittag()->toString('HH:mm');
-                    }
-                    if ($arbeitstag->getEndeNachmittag() !== null) {
-                        $ende = $arbeitstag->getEndeNachmittag()->toString('HH:mm');
-                    }
-                    if ($arbeitstag->getRegel() !== null) {
-                        $soll = $arbeitstag->regel->soll->toString('HH:mm');
-                    }
-                    $anwesend = $arbeitstag->getAnwesend();
-                    $ist = $arbeitstag->getIst();
-                    $saldoErg = $arbeitstag->getSaldo();
-                    if ($anwesend !== null) {
-                        $anwesend = $anwesend->toString('HH:mm');
-                        $ist = $ist->toString('HH:mm');
-                        $saldo = $saldoErg->getString();
-                    }
-                    $tabellenDaten->addItem(array(
-                        'datum' => $datum,
-                        'tag' => $tag->toString('dd'),
-                        'feiertag' => $feiertag['feiertag'],
-                        'beginn' => $beginn,
-                        'ende' => $ende,
-                        'befreiung' => $befreiung,
-                        'bemerkung' => null,
-                        'pause' => $arbeitstag->pause,
-                        'anwesend' => $anwesend,
-                        'ist' => $ist,
-                        'soll' => $soll,
-                        'saldo' => $saldo,
-                    ));
-                    $extraZeilen++;
-                }
-            }
-        }
-
-        return array(
-            'tabellenDaten' => $tabellenDaten,
-            'hoheTage' => $anzahlHoheTage,
-            'extraZeilen' => $extraZeilen,
-        );
     }
 
 }

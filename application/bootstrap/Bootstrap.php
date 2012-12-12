@@ -85,7 +85,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                 'path' => 'models/filter',
                 'namespace' => 'Filter',
             ),
+            'actionhelper' => array(
+                'path' => 'controllers/helpers',
+                'namespace' => 'Action_Helper',
+            ),
         ));
+    }
+    
+    protected function _initHelperBroker() {
+        Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH . '/controllers/helpers',
+                                             'Azebo_Action_Helper');
     }
 
     protected function _initLoadAclIni() {
