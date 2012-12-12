@@ -37,6 +37,9 @@ class Azebo_Validate_ZehnStunden extends Zend_Validate_Abstract {
     public function isValid($value, $context = null) {
         $this->_setValue($value);
         $filter = new Azebo_Filter_ZeitAlsDate();
+        $ns = new Zend_Session_Namespace();
+        $zeitenConfig = $ns->zeiten;
+        $maxZeit = new Zend_Date($zeitenConfig->maximal, Zend_Date::TIMES);
 
         if (is_array($context)) {
             if (isset($context['beginn']) && $context['beginn'] != '' &&
@@ -60,7 +63,7 @@ class Azebo_Validate_ZehnStunden extends Zend_Validate_Abstract {
                 $bemerkung = $context['bemerkung'];
                 $bemerkung = trim($bemerkung);
                 if ($anwesend !== null) {
-                    if ($anwesend->compareTime('10:00:00', 'HH:mm:ss') == 1 &&
+                    if ($anwesend->compareTime($maxZeit) == 1 &&
                             $bemerkung == '') {
                         $this->_error(self::MEHR_ALS_ZEHN_STUNDEN);
                         return false;
@@ -68,7 +71,7 @@ class Azebo_Validate_ZehnStunden extends Zend_Validate_Abstract {
                 }
                 if ($anwesendNachmittag !== null) {
                     if ($anwesendNachmittag->
-                            compareTime('10:00:00', 'HH:mm:ss') == 1 &&
+                            compareTime($maxZeit) == 1 &&
                             $bemerkung == '') {
                         $this->_error(self::MEHR_ALS_ZEHN_STUNDEN);
                         return false;
@@ -76,7 +79,7 @@ class Azebo_Validate_ZehnStunden extends Zend_Validate_Abstract {
                 }
                 if ($anwesend !== null && $anwesendNachmittag !== null) {
                     $anwesend = $anwesend->addTime($anwesendNachmittag);
-                    if ($anwesend->compareTime('10:00:00', 'HH:mm:ss') == 1 &&
+                    if ($anwesend->compareTime($maxZeit) == 1 &&
                             $bemerkung == '') {
                         $this->_error(self::MEHR_ALS_ZEHN_STUNDEN);
                         return false;
