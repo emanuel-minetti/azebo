@@ -315,26 +315,32 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $benutzername = $this->_getParam('benutzername');
         $zuBearbeitenderMitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
-              
-        $this->erweitereSeitenName(' ' . $monat->toString('MMMM yyyy') .
+
+        $this->erweitereSeitenName(' ' . $monat->toString('MMM yyyy') .
                 ' ' . $zuBearbeitenderMitarbeiter->getName());
-        
+
         $request = $this->getRequest();
-        if($request->isPost()) {
+        if ($request->isPost()) {
             $postDaten = $request->getPost();
-            if(isset($postDaten['zurueck'])) {
+            if (isset($postDaten['zurueck'])) {
                 $zuBearbeitenderMitarbeiter->deleteArbeitsmonat($monat);
-            } elseif(isset ($postDaten['ablegen'])) {
+            } elseif (isset($postDaten['ablegen'])) {
                 $zuBearbeitenderMitarbeiter->arbeitsmonatAblegen($monat);
+            } elseif ($postDaten['anzeigen']) {
+                $this->_helper->
+                        redirector('monatanzeigen', 'bueroleitung', null, array(
+                            'monat' => $monatPara,
+                            'mitarbeiter' => $benutzername,
+                        ));
             }
         }
 
         $form = new Azebo_Form_Mitarbeiter_Monatsedit();
-        if($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat) === null) {
+        if ($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat) === null) {
             $form->removeElement('ablegen');
             $form->removeElement('zurueck');
         } else {
-            if($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat)->abgelegt
+            if ($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat)->abgelegt
                     == 'ja') {
                 $form->removeElement('ablegen');
                 $form->removeElement('zurueck');
@@ -346,6 +352,31 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 ), 'monatsedit');
         $form->setAction($url);
         $this->view->form = $form;
+    }
+
+    public function monatanzeigenAction() {
+        $benutzername = $this->_getParam('mitarbeiter');
+        $mitarbeiter = $this->model->
+                getMitarbeiterNachBenutzername($benutzername);
+        $monatParam = $this->_getParam('monat');
+        $monat = new Zend_Date($monatParam, 'MM_yyyy');
+
+        $this->erweitereSeitenName(' Anzeigen ' . $mitarbeiter->getName() . ' ' . $monat->toString('MMM yyyy'));
+
+        // befülle die Reihen der Tabelle
+        $tageImMonat = $monat->get(Zend_Date::MONTH_DAYS);
+        $erster = new Zend_Date($monat);
+        $letzter = new Zend_Date($monat);
+        $erster->setDay(1);
+        $letzter->setDay($tageImMonat);
+        $tabelle = $this->_helper->
+                MonatsTabelle($erster, $letzter, $mitarbeiter);
+
+        // füge die Tabelle dem View hinzu
+        $this->view->tageImMonat = $tageImMonat;
+        $this->view->monatsDaten = $tabelle['tabellenDaten'];
+        $this->view->hoheTageImMonat = $tabelle['hoheTage'];
+        $this->view->extraZeilen = $tabelle['extraZeilen'];
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
