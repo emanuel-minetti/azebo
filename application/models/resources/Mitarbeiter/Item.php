@@ -287,5 +287,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitsmonat->abgelegt = 'ja';
         $arbeitsmonat->save();
     }
+
+    public function setSaldo2007(Azebo_Model_Saldo $saldo) {
+        $this->_row->saldo2007stunden = $saldo->getStunden();
+        $this->_row->saldo2007minuten = $saldo->getMinuten();
+        
+    }
     
 }

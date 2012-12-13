@@ -427,6 +427,10 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $elemente['beamter']->setAttrib('checked', $beamter);
         $elemente['saldo']->setValue($saldo->getString());
         $elemente['urlaub']->setValue($urlaub);
+        
+        if($this->mitarbeiter->getHochschule() != 'hfm' || $beamter) {
+            $form->removeElement('saldo2007');
+        }
 
         $form->addElement('hidden', 'benutzername', array(
             'value' => $benutzername,

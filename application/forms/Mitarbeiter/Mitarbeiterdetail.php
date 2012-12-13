@@ -47,6 +47,13 @@ class Azebo_Form_Mitarbeiter_Mitarbeiterdetail extends AzeboLib_Form_Abstract {
             'validators' => array('Saldo',),
         ));
         
+        $this->addElement('Text', 'saldo2007', array(
+            'label' => 'Saldo 2007',
+            'required' => false,
+            'filters' => array('StringTrim'),
+            'validators' => array('Saldo2007',),
+        ));
+        
         $this->addElement('Text', 'urlaub', array(
             'label' => 'Urlaub Übertrag',
             'required' => false,

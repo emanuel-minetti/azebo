@@ -163,12 +163,21 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $mitarbeiter->beamter = $daten['beamter'];
         $saldoString = $daten['saldo'];
         $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';
+        $parts = array();
         preg_match("/$preg/", $saldoString, $parts);
         $positiv = $parts[1] == '+' ? true : false;
         $stunden = $parts[2];
         $minuten = $parts[3];
         $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
         $mitarbeiter->setSaldoUebertrag($saldo);
+        if(isset($daten['saldo2007']) && $daten['saldo2007'] != '') {
+            $parts = array();
+            preg_match("/$preg/", $daten['saldo2007'], $parts);
+            $stunden = $parts[2];
+            $minuten = $parts[3];
+            $saldo2007 = new Azebo_Model_Saldo($stunden, $minuten, true);
+            $mitarbeiter->setSaldo2007($saldo2007);
+        }
         $mitarbeiter->save();
     }
     
