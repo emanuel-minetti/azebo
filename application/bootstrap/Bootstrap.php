@@ -93,8 +93,14 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     }
     
     protected function _initHelperBroker() {
-        Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH . '/controllers/helpers',
-                                             'Azebo_Action_Helper');
+        Zend_Controller_Action_HelperBroker::addPath(APPLICATION_PATH .
+                '/controllers/helpers' ,'Azebo_Action_Helper');
+    }
+    
+    protected function _initGruppen() {
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+        $gruppen = $config->ldap->gruppen;
+        Zend_Registry::set('gruppen', $gruppen);
     }
 
     protected function _initLoadAclIni() {
@@ -134,7 +140,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $this->_view->doctype('XHTML1_STRICT');
 
         // MIME-Type und Sprache setzen
-        $this->_view->headMeta()->appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
+        $this->_view->headMeta()->
+                appendHttpEquiv('Content-Type', 'text/html; charset=UTF-8');
         $this->_view->headMeta()->appendHttpEquiv('Content-Language', 'de_DE');
 
         //Titel für die ganze Site setzen
@@ -155,8 +162,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                 ), 'APPEND');
 
         //Dojo View Helper aktivieren
-        $this->_view->addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
-        $this->_view->addHelperPath('AzeboLib/View/Helper/', 'AzeboLib_View_Helper');
+        $this->_view->
+                addHelperPath('Zend/Dojo/View/Helper/', 'Zend_Dojo_View_Helper');
+        $this->_view->
+                addHelperPath('AzeboLib/View/Helper/', 'AzeboLib_View_Helper');
 
         //Die Version festlegen
         $this->_view->version = '0.6';

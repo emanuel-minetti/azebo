@@ -131,7 +131,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         // nicht neu angelegt wurde
         if (!$neu) {
             $arbeitsregeln = $zuBearbeitenderMitarbeiter->getArbeitsregeln();
-            $this->view->zeitDaten = $this->_befuelleDieZeitenTabelle($arbeitsregeln);
+            $this->view->zeitDaten =
+                    $this->_befuelleDieZeitenTabelle($arbeitsregeln);
             $this->view->zeilen = count($arbeitsregeln);
             $this->view->mitarbeiter = $benutzername;
         }
@@ -177,10 +178,14 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 if ($valid) {
                     $daten['von'] = $datumFilter->filter($daten['von']);
                     $daten['bis'] = $datumFilter->filter($daten['bis']);
-                    $daten['rahmenAnfang'] = $zeitFilter->filter($daten['rahmenAnfang']);
-                    $daten['kernAnfang'] = $zeitFilter->filter($daten['kernAnfang']);
-                    $daten['kernEnde'] = $zeitFilter->filter($daten['kernEnde']);
-                    $daten['rahmenEnde'] = $zeitFilter->filter($daten['rahmenEnde']);
+                    $daten['rahmenAnfang'] =
+                            $zeitFilter->filter($daten['rahmenAnfang']);
+                    $daten['kernAnfang'] =
+                            $zeitFilter->filter($daten['kernAnfang']);
+                    $daten['kernEnde'] =
+                            $zeitFilter->filter($daten['kernEnde']);
+                    $daten['rahmenEnde'] =
+                            $zeitFilter->filter($daten['rahmenEnde']);
                     $daten['soll'] = $zeitFilter->filter($daten['soll']);
 
                     $this->model->saveArbeitsregel($daten);
@@ -274,7 +279,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $para = $this->_getParam('monat');
         $para = substr($para, 1);
         $monat = new Zend_Date($para, 'MMyyyy');
-        $this->erweitereSeitenName(' Monatsdetail ' . $monat->toString('MMMM yyyy'));
+        $this->erweitereSeitenName(' Monatsdetail ' .
+                $monat->toString('MMMM yyyy'));
         $this->view->monat = $monat->toString('MM_yyyy');
 
         // intialisiere die Tabelle
@@ -339,13 +345,12 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         if ($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat) === null) {
             $form->removeElement('ablegen');
             $form->removeElement('zurueck');
-        } else {
-            if ($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat)->abgelegt
-                    == 'ja') {
-                $form->removeElement('ablegen');
-                $form->removeElement('zurueck');
-            }
+        } elseif ($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat)->abgelegt
+                == 'ja') {
+            $form->removeElement('ablegen');
+            $form->removeElement('zurueck');
         }
+
         $url = $this->view->url(array(
             'benutzername' => $benutzername,
             'monat' => $monat->toString('MM_yyyy'),
@@ -361,7 +366,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $monatParam = $this->_getParam('monat');
         $monat = new Zend_Date($monatParam, 'MM_yyyy');
 
-        $this->erweitereSeitenName(' Anzeigen ' . $mitarbeiter->getName() . ' ' . $monat->toString('MMM yyyy'));
+        $this->erweitereSeitenName(' Anzeigen ' . $mitarbeiter->getName() .
+                ' ' . $monat->toString('MMM yyyy'));
 
         // befülle die Reihen der Tabelle
         $tageImMonat = $monat->get(Zend_Date::MONTH_DAYS);

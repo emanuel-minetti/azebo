@@ -159,7 +159,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $this->mitarbeiter->saveArbeitsmonat(
                             $monat, $saldo, $urlaub);
                     $this->bearbeitbar = false;
+                    
+                    // aktualisiere den View
                     $this->view->bearbeitbar = false;
+                    $this->view->saldoBisher = $this->mitarbeiter->
+                                    getSaldoBisher()->getString();
+                    $this->view->urlaubBisher = $this->mitarbeiter->
+                            getUrlaubBisher();
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
             }

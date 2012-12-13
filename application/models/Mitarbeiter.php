@@ -49,15 +49,18 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     }
 
     public function getMitarbeiterNachHochschule($hochschule) {
+        
+        $gruppenNamen = Zend_Registry::get('gruppen');
+        
         switch ($hochschule) {
             case 'hfm':
-                $gruppe = 'HFM-Mitglied';
+                $gruppe = $gruppenNamen->mitglied->hfm;
                 break;
             case 'hfs':
-                $gruppe = 'HFS-Mitglied';
+                $gruppe = $gruppenNamen->mitglied->hfs;
                 break;
             case 'khb':
-                $gruppe = 'KHB-Mitglied';
+                $gruppe = $gruppenNamen->mitglied->khb;
                 break;
         }
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
@@ -90,6 +93,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     public function getHochschuleNachBenutzernamen($benutzername) {
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
         $options = $config->ldap->physalis->toArray();
+        $gruppenNamen = Zend_Registry::get('gruppen');
         $gruppen = array();
         $attributes = array('cn');
         $ldap = new Zend_Ldap($options);
@@ -99,11 +103,11 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         }
         $hochschule = '';
         foreach ($gruppen as $gruppe) {
-            if ($gruppe == 'HFS-Mitglied') {
+            if ($gruppe == $gruppenNamen->mitglied->hfs) {
                 $hochschule = 'hfs';
-            } else if ($gruppe == 'HFM-Mitglied') {
+            } else if ($gruppe == $gruppenNamen->mitglied->hfm) {
                 $hochschule = 'hfm';
-            } else if ($gruppe == 'KHB-Mitglied') {
+            } else if ($gruppe == $gruppenNamen->mitglied->khb) {
                 $hochschule = 'khb';
             }
         }
@@ -113,15 +117,18 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
 
 
     public function getBenutzernamenNachHochschule($hochschule) {
+        
+        $gruppenNamen = Zend_Registry::get('gruppen');
+        
         switch ($hochschule) {
             case 'hfm':
-                $gruppe = 'HFM-Mitglied';
+                $gruppe = $gruppenNamen->mitglied->hfm;
                 break;
             case 'hfs':
-                $gruppe = 'HFS-Mitglied';
+                $gruppe = $gruppenNamen->mitglied->hfs;
                 break;
             case 'khb':
-                $gruppe = 'KHB-Mitglied';
+                $gruppe = $gruppenNamen->mitglied->khb;
                 break;
         }
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');

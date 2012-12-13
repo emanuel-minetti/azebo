@@ -77,12 +77,16 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function setRolle(array $gruppen) {
+        
+        $gruppenNamen = Zend_Registry::get('gruppen');
+        
         foreach ($gruppen as $gruppe) {
-            if ($gruppe == 'HFS-Zeit' || $gruppe == 'HFM-Zeit' ||
-                    $gruppe == 'KHB-Zeit') {
+            if ($gruppe == $gruppenNamen->buero->hfs ||
+                    $gruppe == $gruppenNamen->buero->hfm ||
+                    $gruppe == $gruppenNamen->buero->khb) {
                 $this->_rolle = 'bueroleitung';
             }
-            if ($gruppe == 'SC-IT-Admin') {
+            if ($gruppe == $gruppenNamen->scit) {
                 $this->_rolle = 'scit';
             }
         }
@@ -96,12 +100,15 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function setHochschule(array $gruppen) {
+        
+        $gruppenNamen = Zend_Registry::get('gruppen');
+        
         foreach ($gruppen as $gruppe) {
-            if ($gruppe == 'HFS-Mitglied') {
+            if ($gruppe == $gruppenNamen->mitglied->hfs) {
                 $this->_hochschule = 'hfs';
-            } else if ($gruppe == 'HFM-Mitglied') {
+            } else if ($gruppe == $gruppenNamen->mitglied->hfm) {
                 $this->_hochschule = 'hfm';
-            } else if ($gruppe == 'KHB-Mitglied') {
+            } else if ($gruppe == $gruppenNamen->mitglied->khb) {
                 $this->_hochschule = 'khb';
             }
         }
