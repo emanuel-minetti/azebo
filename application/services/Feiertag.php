@@ -118,6 +118,15 @@ class Azebo_Service_Feiertag {
                 return $feiertag;
             }
         }
+        
+        //Heilig Abend
+        if ($datum->get(Zend_Date::MONTH) == 12) {
+            if ($datum->get(Zend_Date::DAY) == 24) {
+                $feiertag['name'] = 'Weihnachten';
+                $feiertag['feiertag'] = true;
+                return $feiertag;
+            }
+        }
 
         //1. Weihnachtsfeiertag
         if ($datum->get(Zend_Date::MONTH) == 12) {
@@ -132,6 +141,15 @@ class Azebo_Service_Feiertag {
         if ($datum->get(Zend_Date::MONTH) == 12) {
             if ($datum->get(Zend_Date::DAY) == 26) {
                 $feiertag['name'] = '2. Feiertag';
+                $feiertag['feiertag'] = true;
+                return $feiertag;
+            }
+        }
+        
+        //Silvester
+        if ($datum->get(Zend_Date::MONTH) == 12) {
+            if ($datum->get(Zend_Date::DAY) == 31) {
+                $feiertag['name'] = 'Silvester';
                 $feiertag['feiertag'] = true;
                 return $feiertag;
             }

@@ -28,12 +28,12 @@
 class Azebo_Resource_Arbeitsmonat_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Arbeitsmonat_Item_Interface {
 
     protected $_dzService;
-    
+
     public function __construct($config) {
         parent::__construct($config);
         $this->_dzService = new Azebo_Service_DatumUndZeitUmwandler();
     }
-    
+
     /**
      * @return Azebo_Model_Saldo 
      */
@@ -41,25 +41,42 @@ class Azebo_Resource_Arbeitsmonat_Item extends AzeboLib_Model_Resource_Db_Table_
         $stunden = $this->getRow()->saldostunden;
         $minuten = $this->getRow()->saldominuten;
         $positiv = $this->getRow()->saldopositiv == 'ja' ? true : false;
-        $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        if ($this->getRow()->saldo2007stunden === null) {
+            $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        } else {
+            $restStunden = $this->getRow()->saldo2007stunden;
+            $restMinuten = $this->getRow()->saldo2007minuten;
+            $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv, true, $restStunden, $restMinuten);
+        }
         return $saldo;
     }
-    
+
     public function setSaldo(Azebo_Model_Saldo $saldo) {
         $this->getRow()->saldostunden = $saldo->getStunden();
         $this->getRow()->saldominuten = $saldo->getMinuten();
         $this->getRow()->saldopositiv = $saldo->getPositiv() ? 'ja' : 'nein';
+        if($saldo->getRest()) {
+            $restStunden = $saldo->getRestStunden();
+            $restMinuten = $saldo->getRestMinuten();
+            if($restStunden == 0 && $restMinuten == 0) {
+                $restStunden = null;
+                $restMinuten = null;
+            }
+            $this->getRow()->saldo2007stunden = $restStunden;
+            $this->getRow()->saldo2007minuten = $restMinuten;
+        }
     }
-    
+
     /**
      * @return Zend_Date 
      */
     public function getMonat() {
         return $this->_dzService->datumSqlZuPhp($this->_row->monat);
     }
-    
+
     public function setMonat(Zend_Date $monat) {
         $this->_row->monat = $this->_dzService->datumPhpZuSql($monat);
     }
+
 }
 

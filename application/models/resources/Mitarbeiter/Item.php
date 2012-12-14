@@ -77,9 +77,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function setRolle(array $gruppen) {
-        
+
         $gruppenNamen = Zend_Registry::get('gruppen');
-        
+
         foreach ($gruppen as $gruppe) {
             if ($gruppe == $gruppenNamen->buero->hfs ||
                     $gruppe == $gruppenNamen->buero->hfm ||
@@ -100,9 +100,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function setHochschule(array $gruppen) {
-        
+
         $gruppenNamen = Zend_Registry::get('gruppen');
-        
+
         foreach ($gruppen as $gruppe) {
             if ($gruppe == $gruppenNamen->mitglied->hfs) {
                 $this->_hochschule = 'hfs';
@@ -115,7 +115,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getHochschule() {
-        if($this->_hochschule === null) {
+        if ($this->_hochschule === null) {
             $model = new Azebo_Model_Mitarbeiter();
             $this->_hochschule = $model->
                     getHochschuleNachBenutzernamen($this->benutzername);
@@ -154,7 +154,13 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $minuten = $this->getRow()->saldouebertragminuten;
         $positiv = $this->getRow()->saldouebertragpositiv == 'ja' ?
                 true : false;
-        $uebertrag = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        if ($this->getRow()->saldo2007stunden === null) {
+            $uebertrag = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        } else {
+            $restStunden = $this->getRow()->saldo2007stunden;
+            $restMinuten = $this->getRow()->saldo2007minuten;
+            $uebertrag = new Azebo_Model_Saldo($stunden, $minuten, $positiv, true, $restStunden, $restMinuten);
+        }
         return $uebertrag;
     }
 
@@ -185,7 +191,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
         $saldo = new Azebo_Model_Saldo(0, 0, true);
-        
+
         foreach ($arbeitstage as $arbeitstag) {
             if ($vorlaeufig) {
                 if (!($arbeitstag->getBeginn() === null &&
@@ -199,7 +205,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 $saldo->add($tagesSaldo);
             }
         }
-        
+
         return $saldo;
     }
 
@@ -259,7 +265,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $this->_row->saldouebertragstunden = $saldo->getStunden();
         $this->_row->saldouebertragminuten = $saldo->getMinuten();
         $this->_row->saldouebertragpositiv = $saldo->getPositiv() ? 'ja' : 'nein';
-        
     }
 
     public function getArbeitsregeln() {
@@ -270,7 +275,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function getArbeitsmonat(Zend_Date $monat) {
         $monatTabelle = new Azebo_Resource_Arbeitsmonat();
         return $monatTabelle->
-                getArbeitsmonatNachMitabeiterIdUndMonat($this->id, $monat);
+                        getArbeitsmonatNachMitabeiterIdUndMonat($this->id, $monat);
     }
 
     public function deleteArbeitsmonat(Zend_Date $monat) {
@@ -291,7 +296,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function setSaldo2007(Azebo_Model_Saldo $saldo) {
         $this->_row->saldo2007stunden = $saldo->getStunden();
         $this->_row->saldo2007minuten = $saldo->getMinuten();
-        
     }
-    
+
 }

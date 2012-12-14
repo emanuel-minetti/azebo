@@ -154,8 +154,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
                     $saldo = $this->mitarbeiter->getSaldo($monat);
                     $urlaub = $this->mitarbeiter->getUrlaubNachMonat($monat);
-                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->
-                            getString();
+                    $this->view->saldo = $saldo->getString();
                     $this->mitarbeiter->saveArbeitsmonat(
                             $monat, $saldo, $urlaub);
                     $this->bearbeitbar = false;

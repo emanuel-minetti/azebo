@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 04, 2012 at 03:30 PM
+-- Generation Time: Dec 13, 2012 at 06:09 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.3.3-7+squeeze14
 
@@ -34,9 +34,11 @@ CREATE TABLE IF NOT EXISTS `arbeitsmonat` (
   `saldopositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
   `urlaub` int(11) NOT NULL,
   `abgelegt` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
+  `saldo2007stunden` int(11) DEFAULT NULL,
+  `saldo2007minuten` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `mitarbeiter_id` (`mitarbeiter_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=13 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
 
 -- --------------------------------------------------------
 
@@ -58,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsregel` (
   `bis` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `mitarbeiter_id` (`mitarbeiter_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=43 ;
 
 -- --------------------------------------------------------
 
@@ -77,10 +79,10 @@ CREATE TABLE IF NOT EXISTS `arbeitstag` (
   `pause` enum('-','x') COLLATE utf8_unicode_ci NOT NULL DEFAULT '-',
   `nachmittag` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   `nachmittagbeginn` time DEFAULT NULL,
-  `nachmittagende` int(11) DEFAULT NULL,
+  `nachmittagende` time DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mitarbeiter-tag` (`mitarbeiter_id`,`tag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=113 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=137 ;
 
 -- --------------------------------------------------------
 
@@ -101,4 +103,4 @@ CREATE TABLE IF NOT EXISTS `mitarbeiter` (
   `vertreter` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `benutzername` (`benutzername`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=17 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;

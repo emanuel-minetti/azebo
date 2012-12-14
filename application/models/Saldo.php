@@ -30,14 +30,21 @@ class Azebo_Model_Saldo {
     private $_stunden;
     private $_minuten;
     private $_positiv;
+    private $_rest2007;
+    private $_restStunden;
+    private $_restMinuten;
 
-    function __construct($stunden, $minuten, $positiv) {
+    function __construct($stunden, $minuten, $positiv, $rest = false, $restStunden = 0, $restMinuten = 0) {
         $this->_stunden = $stunden;
         $this->_minuten = $minuten;
         $this->_positiv = $positiv;
+        $this->_rest2007 = $rest;
+        $this->_restStunden = $restStunden;
+        $this->_restMinuten = $restMinuten;
     }
 
     public function add(Azebo_Model_Saldo $saldo) {
+        //TODO saldo 2007 implementieren!
         $stunden = $saldo->getStunden();
         $minuten = $saldo->getMinuten();
         $positiv = $saldo->getPositiv();
@@ -112,6 +119,18 @@ class Azebo_Model_Saldo {
 
     public function getPositiv() {
         return $this->_positiv;
+    }
+    
+    public function getRest() {
+        return $this->_rest2007;
+    }
+    
+    public function getRestStunden() {
+        return $this->_restStunden;
+    }
+    
+    public function getRestMinuten() {
+        return $this->_restMinuten;
     }
 
     public function getString() {

@@ -112,7 +112,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 //sind also keine 'hohen' Tage.
                 if ($feiertag['name'] != '') {
                     if ($feiertag['name'] != 'Neujahr' &&
-                            $feiertag['name'] != 'Karfreitag') {
+                            $feiertag['name'] != 'Karfreitag' && $feiertag['name'] != 'Weihnachten') {
                         $anzahlHoheTage++;
                     }
                 }
