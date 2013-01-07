@@ -5,13 +5,17 @@
         <? if ($this->hochschule != 'hfm'): ?>
             <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
         <? else: ?>
-            <div id="gridDiv" style="width: 830px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+            <div id="gridObenDiv" style="width: 830px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
         <? endif; ?>
         <a name="form"></a>
         <h4>Daten für den <?= $this->tag; ?>.<?= $this->monat; ?>. bearbeiten</h4>
         <?= $this->tagForm; ?>
 
+        <? if ($this->hochschule != 'hfm'): ?>
         <div id="gridUntenDiv" style="width: 881px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
+        <? else: ?>
+        <div id="gridUntenDiv" style="width: 830px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
+        <? endif; ?>
     </div>
     <p>Saldo der abgeschlossenen Monate: <?= $this->saldoBisher; ?></p>
 </div>
