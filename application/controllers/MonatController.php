@@ -120,7 +120,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             }
         }
         $this->view->bearbeitbar = $this->bearbeitbar;
-        
+
         //übergebe dem View die Hochschule
         $this->view->hochschule = $this->mitarbeiter->getHochschule();
     }
@@ -161,7 +161,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $this->mitarbeiter->saveArbeitsmonat(
                             $monat, $saldo, $urlaub);
                     $this->bearbeitbar = false;
-                    
+
                     // aktualisiere den View
                     $this->view->bearbeitbar = false;
                     $this->view->saldoBisher = $this->mitarbeiter->
@@ -219,63 +219,65 @@ class MonatController extends AzeboLib_Controller_Abstract {
         if ($request->isPost()) {
             $postDaten = $request->getPost();
 
-            // bevölkere das Beginn- und Ende-Element
-            $filter = new Azebo_Filter_ZeitAlsDate();
-            $form->setBeginn($filter->filter($postDaten['beginn']));
-            $form->setEnde($filter->filter($postDaten['ende']));
-            if (!isset($postDaten['nachmittagButton']) &&
-                    $postDaten['nachmittag']) {
-                $form->setBeginn($filter->filter($postDaten['beginnnachmittag']), true);
-                $form->setEnde($filter->filter($postDaten['endenachmittag']), true);
-            }
-
-            if (isset($postDaten['absenden'])) {
-                // 'absenden' wurde gedrückt, also Daten filtern und validieren!
-                $valid = $form->isValid($postDaten);
-                $daten = $form->getValues();
-
-                if ($valid) {
-                    // für HfM die Pause setzen
-                    if ($this->mitarbeiter->getHochschule() == 'hfm') {
-                        //TODO Nachmittag
-                        if ($daten['beginn'] !== null && $daten['beginn'] != '' &&
-                                $daten['ende'] !== null && $daten['ende'] != '') {
-                            $anwesend = $this->zeitrechner->
-                                    anwesend($daten['beginn'], $daten['ende']);
-                            $pause = $this->ns->zeiten->pause;
-                            if ($anwesend->compareTime($pause->kurz->ab) != 1) {
-                                $daten['pause'] = 'x';
-                            } else {
-                                $daten['pause'] = '-';
-                            }
-                            $this->_log->debug('Anwesend: ' . $anwesend);
-                        }
-                    }
-                    $this->_log->debug('Pause: ' . $daten['pause']);
-
-                    // speichen, in der Session als ungeprüft
-                    // markieren und redirect
-                    $this->mitarbeiter->saveArbeitstag(
-                            $this->zuBearbeitendesDatum, $daten);
-                    $ns = new Zend_Session_Namespace();
-                    $ns->geprueft[
-                            $this->zuBearbeitendesDatum->toString('MM-yyyy')] =
-                            false;
-                    $redirector = $this->_helper->getHelper('Redirector');
-                    $redirector->gotoRoute(array(
-                        'jahr' => $this->jahr,
-                        'monat' => $this->monat,
-                            ), 'monat');
+            if (!isset($postDaten['zuruecksetzen'])) {
+                // bevölkere das Beginn- und Ende-Element
+                $filter = new Azebo_Filter_ZeitAlsDate();
+                $form->setBeginn($filter->filter($postDaten['beginn']));
+                $form->setEnde($filter->filter($postDaten['ende']));
+                if (!isset($postDaten['nachmittagButton']) &&
+                        $postDaten['nachmittag']) {
+                    $form->setBeginn($filter->filter($postDaten['beginnnachmittag']), true);
+                    $form->setEnde($filter->filter($postDaten['endenachmittag']), true);
                 }
-                // nicht valide, also tue nichts und rendere die Seite mit
-                // Fehlermeldungen neu.
-            } elseif (isset($postDaten['nachmittagButton'])) {
-                // Nachmittag wurde gedrückt, also
-                // schalte das DB-Feld um und passe die Form an
-                $this->mitarbeiter->
-                        getArbeitstagNachTag($this->zuBearbeitendesDatum)->
-                        toggleNachmittag();
-                $form->setNachmittag();
+
+                if (isset($postDaten['absenden'])) {
+                    // 'absenden' wurde gedrückt, also Daten filtern und validieren!
+                    $valid = $form->isValid($postDaten);
+                    $daten = $form->getValues();
+
+                    if ($valid) {
+                        // für HfM die Pause setzen
+                        if ($this->mitarbeiter->getHochschule() == 'hfm') {
+                            //TODO Nachmittag
+                            if ($daten['beginn'] !== null && $daten['beginn'] != '' &&
+                                    $daten['ende'] !== null && $daten['ende'] != '') {
+                                $anwesend = $this->zeitrechner->
+                                        anwesend($daten['beginn'], $daten['ende']);
+                                $pause = $this->ns->zeiten->pause;
+                                if ($anwesend->compareTime($pause->kurz->ab) != 1) {
+                                    $daten['pause'] = 'x';
+                                } else {
+                                    $daten['pause'] = '-';
+                                }
+                                $this->_log->debug('Anwesend: ' . $anwesend);
+                            }
+                        }
+                        $this->_log->debug('Pause: ' . $daten['pause']);
+
+                        // speichen, in der Session als ungeprüft
+                        // markieren und redirect
+                        $this->mitarbeiter->saveArbeitstag(
+                                $this->zuBearbeitendesDatum, $daten);
+                        $ns = new Zend_Session_Namespace();
+                        $ns->geprueft[
+                                $this->zuBearbeitendesDatum->toString('MM-yyyy')] =
+                                false;
+                        $redirector = $this->_helper->getHelper('Redirector');
+                        $redirector->gotoRoute(array(
+                            'jahr' => $this->jahr,
+                            'monat' => $this->monat,
+                                ), 'monat');
+                    }
+                    // nicht valide, also tue nichts und rendere die Seite mit
+                    // Fehlermeldungen neu.
+                } elseif (isset($postDaten['nachmittagButton'])) {
+                    // Nachmittag wurde gedrückt, also
+                    // schalte das DB-Feld um und passe die Form an
+                    $this->mitarbeiter->
+                            getArbeitstagNachTag($this->zuBearbeitendesDatum)->
+                            toggleNachmittag();
+                    $form->setNachmittag();
+                }
             }
             // 'zurücksetzen' wurde gedrückt, also tue nichts sondern, rendere
             // einfach die Seite neu

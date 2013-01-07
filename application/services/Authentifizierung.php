@@ -60,6 +60,8 @@ class Azebo_Service_Authentifizierung {
     public function authentifiziere(array $daten) {
         $adapter = $this->_getAuthAdapter($daten);
         $auth = $this->_getAuth();
+        
+        //TODO Hier schlägt #ZF-9378 zu!
         $ergebnis = $auth->authenticate($adapter);
 
         //logge die Nachrichten des LDAP-Servers
