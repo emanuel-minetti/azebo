@@ -24,6 +24,11 @@ rahmen.sommer.bis.jahr2012 = "01.09.2012"
 rahmen.beginn.sommer.jahr2012 = "06:30:00"
 
 [hfs : alle]
+rahmen.beginn.normal = "07:00:00"
+rahmen.ende.normal = "20:00:00"
+kern.beginn = "10:00:00"
+kern.ende.normal = "15:00:00"
+kern.ende.freitag = "14:00:00"
 
 [khb : alle]
 rahmen.beginn.normal = "08:00:00"
