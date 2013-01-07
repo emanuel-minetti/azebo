@@ -120,6 +120,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
             }
         }
         $this->view->bearbeitbar = $this->bearbeitbar;
+        
+        //übergebe dem View die Hochschule
+        $this->view->hochschule = $this->mitarbeiter->getHochschule();
     }
 
     public function getSeitenName() {

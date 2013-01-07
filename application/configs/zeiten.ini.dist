@@ -16,6 +16,7 @@ pause.lang.dauer = "00:45:00"
 maximal = "10:45:00"
 
 [hfm : alle]
+kern.ende.freitag="13:00:00"
 rahmen.ende.normal = "20:00:00"
 
 rahmen.sommer.von.jahr2012 = "31.05.2012"
