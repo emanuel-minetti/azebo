@@ -57,6 +57,7 @@ class Azebo_Model_Saldo {
                     $this->_stunden++;
                 }
                 $this->_stunden += $stunden;
+                //TODO Kappungsgrenzen!
                 if ($this->_stunden >= 100) {
                     $this->_stunden = 100;
                     $this->_minuten = 0;
@@ -69,6 +70,11 @@ class Azebo_Model_Saldo {
                     $this->_minuten = 60 - ($minuten - $this->_minuten);
                     if ($this->_stunden != 0) {
                         $this->_stunden--;
+                    }
+                    //Überschlag
+                    else {
+                        $this->_minuten = 60 - $this->_minuten;
+                        $this->_positiv = false;
                     }
                 }
                 if ($this->_stunden >= $stunden) {
@@ -97,6 +103,11 @@ class Azebo_Model_Saldo {
                     $this->_minuten = 60 - ($minuten - $this->_minuten);
                     if ($this->_stunden != 0) {
                         $this->_stunden--;
+                    }
+                    //Überschlag
+                    else {
+                        $this->_minuten = 60 - $this->_minuten;
+                        $this->_positiv = true;
                     }
                 }
                 if ($this->_stunden >= $stunden) {
