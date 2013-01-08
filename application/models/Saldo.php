@@ -44,81 +44,57 @@ class Azebo_Model_Saldo {
     }
 
     public function add(Azebo_Model_Saldo $saldo) {
-        //TODO saldo 2007 implementieren!
+        //TODO Saldo2007 für HfM implementieren!
+        
         $stunden = $saldo->getStunden();
         $minuten = $saldo->getMinuten();
         $positiv = $saldo->getPositiv();
-
-        if ($this->_positiv) {
-            if ($positiv) {
-                $this->_minuten += $minuten;
-                if ($this->_minuten >= 60) {
-                    $this->_minuten -= 60;
-                    $this->_stunden++;
-                }
-                $this->_stunden += $stunden;
-                //TODO Kappungsgrenzen!
-                if ($this->_stunden >= 100) {
-                    $this->_stunden = 100;
-                    $this->_minuten = 0;
-                }
-            } else {
-                // zu addierendes Saldo negativ
-                if ($this->_minuten >= $minuten) {
-                    $this->_minuten -= $minuten;
-                } else {
-                    $this->_minuten = 60 - ($minuten - $this->_minuten);
-                    if ($this->_stunden != 0) {
-                        $this->_stunden--;
-                    }
-                    //Überschlag
-                    else {
-                        $this->_minuten = 60 - $this->_minuten;
-                        $this->_positiv = false;
-                    }
-                }
-                if ($this->_stunden >= $stunden) {
-                    $this->_stunden -= $stunden;
-                } else {
-                    $this->_stunden = $stunden - $this->_stunden;
-                    $this->_minuten = 60 - $this->_minuten;
-                    $this->_positiv = false;
-                }
+        
+        if(($this->_positiv && $positiv) || (!$this->_positiv && !$positiv)) {
+            // gleiches Vorzeichen
+            $this->_minuten += $minuten;
+            if($this->_minuten >= 60) {
+                $this->_minuten -= 60;
+                $this->_stunden++;
             }
+            $this->_stunden += $stunden;
         } else {
-            // $this negativ
-            if (!$positiv) {
-                // zu addierendes Saldo negativ
-                $this->_minuten += $minuten;
-                if ($this->_minuten >= 60) {
-                    $this->_minuten -= 60;
-                    $this->_stunden++;
-                }
-                $this->_stunden += $stunden;
+            // ungleiches Vorzeichen
+            
+            // finde größeren Wert
+            if($this->_stunden > $stunden) {
+                $dieserIstGroesser = true;
+            } elseif($this->_stunden < $stunden) {
+                $dieserIstGroesser = false;
             } else {
-                // zu addierendes Saldo positiv
-                if ($this->_minuten >= $minuten) {
+                $dieserIstGroesser = $this->_minuten >= $minuten;
+            }
+            
+            if($dieserIstGroesser) {
+                if($this->_minuten >= $minuten) {
                     $this->_minuten -= $minuten;
                 } else {
-                    $this->_minuten = 60 - ($minuten - $this->_minuten);
-                    if ($this->_stunden != 0) {
-                        $this->_stunden--;
-                    }
-                    //Überschlag
-                    else {
-                        $this->_minuten = 60 - $this->_minuten;
-                        $this->_positiv = true;
-                    }
+                    $this->_minuten = $this->_minuten - $minuten + 60;
+                    $this->_stunden--;
                 }
-                if ($this->_stunden >= $stunden) {
-                    $this->_stunden -= $stunden;
+                $this->_stunden -= $stunden;
+            } else {
+                // der andere ist größer
+                if($this->_minuten <= $minuten) {
+                    $this->_minuten = $minuten - $this->_minuten;
                 } else {
-                    $this->_stunden = $stunden - $this->_stunden;
-                    $this->_minuten = 60 - $this->_minuten;
-                    $this->_positiv = true;
+                    $this->_minuten = $minuten - $this->_minuten + 60;
+                    $this->_stunden++;
                 }
+                $this->_stunden = $stunden - $this->_stunden;
+                $this->_positiv = $positiv;
             }
         }
+        
+        if($this->_minuten == 0 && $this->_stunden == 0) {
+            $this->_positiv = true;
+        }
+
         return $this;
     }
 
@@ -162,4 +138,3 @@ class Azebo_Model_Saldo {
     }
 
 }
-
