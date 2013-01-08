@@ -1,8 +1,11 @@
 <br /><br />
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
-
-    <div id="gridDiv" style="width: 881px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>   
+    <? if ($this->hochschule != 'hfm'): ?>
+        <div id="gridDiv" style="width: 881px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+    <? else: ?>    
+        <div id="gridDiv" style="width: 830px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+    <? endif; ?>    
 </div>
 
 <script type="text/javascript">
@@ -18,7 +21,9 @@
                 {'name':'Ende','field':'ende','width':'55px'},
                 {'name':'Dienstbefreiung','field':'befreiung','width':'120px'},
                 {'name':'Bemerkung','field':'bemerkung','width':'220px'},
+                <? if ($this->hochschule != 'hfm'): ?>
                 {'name':'ohne Pause','field':'pause','width':'43px',styles:'text-align: center;'},
+                <? endif; ?>
                 {'name':'An- wesend','field':'anwesend','width':'55px'},
                 {'name':'Ist','field':'ist','width':'55px'},
                 {'name':'Soll','field':'soll','width':'55px'},

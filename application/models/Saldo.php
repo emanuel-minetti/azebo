@@ -45,6 +45,7 @@ class Azebo_Model_Saldo {
 
     public function add(Azebo_Model_Saldo $saldo) {
         //TODO Saldo2007 für HfM implementieren!
+        //TODO Kappungsgrenzen!
         
         $stunden = $saldo->getStunden();
         $minuten = $saldo->getMinuten();

@@ -360,6 +360,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function monatanzeigenAction() {
+        //TODO der Büroleitung auch Saldo und Urlaub anzeigen
+        
         $benutzername = $this->_getParam('mitarbeiter');
         $mitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
@@ -383,6 +385,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->monatsDaten = $tabelle['tabellenDaten'];
         $this->view->hoheTageImMonat = $tabelle['hoheTage'];
         $this->view->extraZeilen = $tabelle['extraZeilen'];
+        
+        // übergebe dem View die Hochschule
+        $this->view->hochschule = $mitarbeiter->getHochschule();
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {

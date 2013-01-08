@@ -188,6 +188,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $urlaub;
     }
 
+    //TODO getSaldo Kommentieren und Dokumentieren!
     public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
         $saldo = new Azebo_Model_Saldo(0, 0, true);
