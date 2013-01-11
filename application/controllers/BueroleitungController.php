@@ -159,13 +159,13 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function arbeitsregelAction() {
-
-        $this->erweitereSeitenName(' Bearbeite Arbeitszeit');
         $benutzername = $this->_getParam('mitarbeiter');
         $zuBearbeitenderMitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
         $id = $this->_getParam('id');
         $form = $this->_getArbeitsregelForm($benutzername, $id);
+        
+        $this->erweitereSeitenName(' Bearbeite Arbeitszeit ' . $zuBearbeitenderMitarbeiter->getName());
 
         $request = $this->getRequest();
         if ($request->isPost()) {
