@@ -43,7 +43,8 @@ class Azebo_Model_Saldo {
         $this->_restMinuten = $restMinuten;
     }
 
-    public function add(Azebo_Model_Saldo $saldo) {
+    //TODO Saldo::add() kommentieren!!
+    public function add(Azebo_Model_Saldo $saldo, $art) {
         //TODO Saldo2007 für HfM implementieren!
         //TODO Kappungsgrenzen!
         
@@ -95,6 +96,47 @@ class Azebo_Model_Saldo {
         if($this->_minuten == 0 && $this->_stunden == 0) {
             $this->_positiv = true;
         }
+        
+        //TODO Hier bin ich!!!!!!!!!!!!!!!!!!!!
+        if($art != 'tag' && !$this->_positiv && $this->_rest2007) {
+            if($this->_restStunden > $this->_stunden) {
+                $restIstGroesser = true;
+            } elseif($this->_restStunden < $this->_stunden) {
+                $restIstGroesser = false;
+            } else {
+                $restIstGroesser = $this->_restMinuten >= $this->_minuten;
+            }
+            
+            if($restIstGroesser) {
+                if($this->_restMinuten >= $this->_minuten) {
+                    $this->_restMinuten -= $this->_minuten;
+                } else {
+                    $this->_restMinuten = $this->_restMinuten - $this->_minuten + 60;
+                    $this->_restStunden--;
+                }
+                $this->_restStunden -= $this->_stunden;
+                $this->_minuten = 0;
+                $this->_stunden = 0;
+                $this->_positiv = true;
+                if($this->_restStunden == 0 && $this->_restMinuten == 0) {
+                    $this->_restStunden = null;
+                    $this->_restMinuten = null;
+                    $this->_rest2007 = false;
+                }
+            } else {
+                // restIstGroesser == false
+                if($this->_minuten >= $this->_restMinuten) {
+                    $this->_minuten -= $this->_restMinuten;
+                } else {
+                    $this->_minuten = $this->_minuten - $this->_restMinuten + 60;
+                    $this->_stunden--;
+                }
+                $this->_stunden -= $this->_restStunden;
+                $this->_restStunden = null;
+                $this->_restMinuten = null;
+                $this->_rest2007 = false;
+            }
+        }
 
         return $this;
     }
@@ -136,6 +178,20 @@ class Azebo_Model_Saldo {
             }
             return $saldoString;
         }
+    }
+    
+    public function getRestString() {
+        if($this->_restStunden === null || !$this->_rest2007) {
+            return '+ 0:00';
+        } else {
+            $saldoString = $this->_restStunden . 'h:';
+            if($this->_restMinuten <= 9) {
+                $saldoString .= '0' . $this->_restMinuten;
+            } else {
+                $saldoString .= $this->_restMinuten . 'min';
+            }
+        }
+        return $saldoString;
     }
 
 }

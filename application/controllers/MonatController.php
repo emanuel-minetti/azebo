@@ -105,6 +105,15 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 getString();
         $this->view->saldo = $this->mitarbeiter->getSaldo(
                         $this->zuBearbeitendesDatum, true)->getString();
+        if ($this->mitarbeiter->getHochschule() == 'hfm') {
+            if ($this->mitarbeiter->getSaldoBisher()->getRest()) {
+                $this->view->hatRest = true;
+                $this->view->saldoBisher2007 = $this->mitarbeiter->
+                                getSaldoBisher()->getRestString();
+                $this->view->saldo2007 = $this->mitarbeiter->getSaldo(
+                                $this->zuBearbeitendesDatum, true)->getRestString();
+            }
+        }
         $this->view->urlaubBisher = $this->mitarbeiter->getUrlaubBisher();
         $this->view->urlaub = $this->mitarbeiter->getUrlaubNachMonat(
                 $this->zuBearbeitendesDatum);

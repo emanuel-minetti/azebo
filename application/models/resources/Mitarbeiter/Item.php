@@ -174,7 +174,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $monate = $this->getArbeitsmonate();
         foreach ($monate as $monat) {
             $monatsSaldo = $monat->getSaldo();
-            $saldo->add($monatsSaldo);
+            $saldo->add($monatsSaldo, 'monat');
         }
         return $saldo;
     }
@@ -191,7 +191,12 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     //TODO getSaldo Kommentieren und Dokumentieren!
     public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
-        $saldo = new Azebo_Model_Saldo(0, 0, true);
+        $saldoBisher = $this->getSaldoBisher();
+        if ($saldoBisher->getRest()) {
+            $saldo = new Azebo_Model_Saldo(0, 0, true, true, $saldoBisher->getRestStunden(), $saldoBisher->getRestMinuten());
+        } else {
+            $saldo = new Azebo_Model_Saldo(0, 0, true);
+        }
 
         foreach ($arbeitstage as $arbeitstag) {
             if ($vorlaeufig) {
@@ -199,11 +204,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                         $arbeitstag->getEnde() === null) ||
                         $arbeitstag->befreiung != 'keine') {
                     $tagesSaldo = $arbeitstag->getSaldo();
-                    $saldo->add($tagesSaldo);
+                    $saldo->add($tagesSaldo, 'tag');
                 }
             } else {
                 $tagesSaldo = $arbeitstag->getSaldo();
-                $saldo->add($tagesSaldo);
+                $saldo->add($tagesSaldo, 'tag');
             }
         }
 

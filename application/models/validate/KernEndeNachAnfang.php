@@ -41,7 +41,7 @@ class Azebo_Validate_KernEndeNachAnfang extends Zend_Validate_Abstract {
             $filter = new Azebo_Filter_ZeitAlsDate();
             $anfang = $filter->filter($context['kernAnfang']);
             $ende = $filter->filter($value);
-            if($anfang->compareTime($ende) != -1) {
+            if($anfang->compareTime($ende) == 1) {
                 $this->_error(self::BEGINN_NACH_ENDE);
                 return false;
             }
