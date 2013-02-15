@@ -18,6 +18,7 @@
     <?= $this->monatForm; ?>
 </div>
 
+
 <script type="text/javascript">
     dojo.ready(function() {
         var monatsDaten = <?= $this->monatsDaten->toJson() ?>;
@@ -80,8 +81,12 @@
             label: '<p>Der Monatsabschluss kann nicht mehr rückgängig gemacht werden!</p>',
             showDelay: 50,
             connectId: ["abschliessen"]
-        });
+        });       
     });
     
+    function drucke() {
+       var url = "<?= $this->baseUrl('monat/druck'); ?>";
+       location.href = url;
+    };
     
 </script>

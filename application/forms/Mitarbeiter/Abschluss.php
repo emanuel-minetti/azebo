@@ -41,7 +41,7 @@ class Azebo_Form_Mitarbeiter_Abschluss extends AzeboLib_Form_Abstract {
             //'tabindex' => 1,
         ));
 
-        $this->addElement('SubmitButton', 'ausdrucken', array(
+        $this->addElement('Button', 'ausdrucken', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Bogen ausdrucken',

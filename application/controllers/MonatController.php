@@ -137,6 +137,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
     public function getSeitenName() {
         return 'Monatsübersicht';
     }
+    
+    public function druckAction() {
+        $this->_erzeugePDF();
+    }
 
     public function indexAction() {
         $request = $this->getRequest();
@@ -372,6 +376,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
         if (!$this->bearbeitbar) {
             $form->removeElement('pruefen');
             $form->removeElement('abschliessen');
+
+            $druckElement = $form->getElement('ausdrucken');
+            $url2 = $this->_helper->url('druck');
+            $druckElement->setAttrib('onclick', 'drucke();');
+            //TODO PDF-Test-Code anpassen
+            //$this->_erzeugePDF();
+            
         } elseif ($geprueft !== null && isset($geprueft[$index]) &&
                 $geprueft[$index]) {
             $form->removeElement('ausdrucken');
@@ -384,6 +395,25 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $monatElement = $form->getElement('monat');
         $monatElement->setValue($this->zuBearbeitendesDatum->toString('MM.yyyy'));
         return $form;
+    }
+
+    private function _erzeugePDF() {
+        $pdf = new AzeboLib_Pdf_AutoPrint();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 16);
+        $pdf->Cell(40, 10, 'Hallo Welt Du Da!');
+        $pdf->AutoPrint();
+
+        $this->_helper->viewRenderer->setNoRender();
+        $this->_helper->layout->disableLayout();
+
+        // We'll be outputting a PDF
+        header('Content-type: application/pdf');
+
+        // It will be called downloaded.pdf
+        header('Content-Disposition: attachment; filename="bogen.pdf"');
+
+        $pdf->Output();
     }
 
 }
