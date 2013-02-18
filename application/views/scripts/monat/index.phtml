@@ -85,7 +85,10 @@
     });
     
     function drucke() {
-       var url = "<?= $this->baseUrl('monat/druck'); ?>";
+       var url = "<?= $this->url(array(
+        'monat' => $this->monat,
+        'jahr' => $this->jahr,
+            ), 'druck', true); ?>";
        location.href = url;
     };
     

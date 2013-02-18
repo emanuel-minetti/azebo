@@ -30,6 +30,7 @@ class AzeboLib_Pdf_AutoPrint extends AzeboLib_Pdf_JavaScript {
     function AutoPrint($dialog = true) {
         //Open the print dialog or start printing immediately on the standard printer
         $param = ($dialog ? 'true' : 'false');
+        //TODO Den Reader nach dem Drucken automatisch schließen
         $script = "this.print($param);";
         $this->IncludeJS($script);
     }

@@ -122,6 +122,25 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $this->_hochschule;
     }
+    
+    public function getHochschulString() {
+        $hochschulString = $this->getHochschule();
+        switch ($hochschulString) {
+            case 'hfm':
+                $hochschulString = 'Hochschule für Musik \'Hanns Eisler\'';
+                break;
+            case 'hfs':
+                $hochschulString = 'Hochschule für Schauspielkunst \'Ernst Busch\'';
+                break;
+            case 'khb':
+                $hochschulString = 'weißensee kunsthochschule berlin';
+                break;
+
+            default:
+                break;
+        }
+        return $hochschulString;
+    }
 
     public function saveArbeitstag(Zend_Date $tag, array $daten) {
         $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();

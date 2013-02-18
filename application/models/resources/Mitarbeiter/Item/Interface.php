@@ -110,4 +110,8 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function arbeitsmonatAblegen(Zend_Date $monat);
     
+    public function getUrlaubBisher();
+    
+    public function getUrlaubNachMonat(Zend_Date $monat);
+    
 }

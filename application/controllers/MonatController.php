@@ -137,7 +137,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     public function getSeitenName() {
         return 'Monatsübersicht';
     }
-    
+
     public function druckAction() {
         $this->_erzeugePDF();
     }
@@ -378,11 +378,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $form->removeElement('abschliessen');
 
             $druckElement = $form->getElement('ausdrucken');
-            $url2 = $this->_helper->url('druck');
+            //$url2 = $this->_helper->url('druck');
             $druckElement->setAttrib('onclick', 'drucke();');
             //TODO PDF-Test-Code anpassen
             //$this->_erzeugePDF();
-            
         } elseif ($geprueft !== null && isset($geprueft[$index]) &&
                 $geprueft[$index]) {
             $form->removeElement('ausdrucken');
@@ -398,19 +397,78 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     private function _erzeugePDF() {
-        $pdf = new AzeboLib_Pdf_AutoPrint();
+        $pdf = new Azebo_Service_BogenPDF();
+        $pdf->SetTitle('Arbeitszeitbogen');
         $pdf->AddPage();
-        $pdf->SetFont('Arial', 'B', 16);
-        $pdf->Cell(40, 10, 'Hallo Welt Du Da!');
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(95, 15, 'Arbeitszeiterfassung', 0, 0, 'L');
+        $pdf->Cell(95, 15, $this->mitarbeiter->getHochschulString(), 0, 0, 'R');
+        $pdf->Ln(10);
+        $pdf->Cell(95, 15, $this->zuBearbeitendesDatum->toString('MMMM YYYY'), 0, 0, 'L');
+        $pdf->Cell(95, 15, $this->mitarbeiter->getName(), 0, 0, 'R');
+        $pdf->Ln(20);
+        $pdf->SetFont('Arial', 'B', 10);
+        $pdf->SetFillColor(200);
+        $pdf->SetWidths(array(30, 14, 14, 30, 45, 14, 14, 14, 16));
+        $pdf->SetAligns(array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'));
+        $pdf->Row(array(
+            'Datum',
+            'Beginn',
+            'Ende',
+            'Befreiung',
+            'Bemerkung',
+            'Anwe-send',
+            'Ist',
+            'Soll',
+            'Saldo',
+        ), true);
+        
+        $pdf->SetFont('Times', '', 10);
+        $pdf->SetAligns(array('L', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'L'));
+        $erster = new Zend_Date($this->zuBearbeitendesDatum);
+        $letzter = new Zend_Date($this->zuBearbeitendesDatum);
+        $erster->setDay(1);
+        $letzter->setDay($this->tageImMonat);
+        $tabelle = $this->_helper->
+                MonatsTabelle($erster, $letzter, $this->mitarbeiter);
+        
+        foreach ($tabelle['tabellenDaten'] as $row) {
+            $fill = $row['feiertag'] == null ? false : true;
+            $pdf->Row(array(
+                $row['datum'],
+                $row['beginn'],
+                $row['ende'],
+                $row['befreiung'],
+                $row['bemerkung'],
+                $row['anwesend'],
+                $row['ist'],
+                $row['soll'],
+                $row['saldo']), $fill);
+            
+        }
+        
+        $pdf->Ln(10);
+        $pdf->MultiCell(0, 5, 'Saldo bisher: ' . $this->mitarbeiter->getSaldoBisher()->getString(), 0, 'L');
+        $pdf->MultiCell(0, 5, 'Saldo dieses Monats: ' . $this->mitarbeiter->getSaldo($this->zuBearbeitendesDatum, true)->getString(), 0, 'L');
+        $pdf->MultiCell(0, 5, 'Resturlaub bisher: ' . $this->mitarbeiter->getUrlaubBisher(), 0, 'L');
+        $pdf->MultiCell(0, 5, 'Urlaubstage in diesem Monat: ' . $this->mitarbeiter->getUrlaubNachMonat($this->zuBearbeitendesDatum), 0, 'L');
+        $pdf->Ln(10);
+        
+        $pdf->Cell(95, 5, "_____________________________", 0, 0, 'L');
+        $pdf->Cell(95, 5, "_____________________________", 0, 0, 'R');
+        $pdf->Ln();
+        $pdf->Cell(95, 5, "Unterschrift Beschäftigter", 0, 0, 'L');
+        $pdf->Cell(95, 5, "Unterschrift Fachvorgesetzter", 0, 0, 'R');
+        
+        
+        
+        
         $pdf->AutoPrint();
 
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();
 
-        // We'll be outputting a PDF
         header('Content-type: application/pdf');
-
-        // It will be called downloaded.pdf
         header('Content-Disposition: attachment; filename="bogen.pdf"');
 
         $pdf->Output();
