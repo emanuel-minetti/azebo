@@ -100,7 +100,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
-        //Saldo bis zum Vormonat setzen
+        //Salden setzen
         $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher()->
                 getString();
         $this->view->saldo = $this->mitarbeiter->getSaldo(
@@ -114,6 +114,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                 $this->zuBearbeitendesDatum, true)->getRestString();
             }
         }
+        
         $this->view->urlaubBisher = $this->mitarbeiter->getUrlaubBisher();
         $this->view->urlaub = $this->mitarbeiter->getUrlaubNachMonat(
                 $this->zuBearbeitendesDatum);
@@ -163,6 +164,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
             } elseif (isset($postDaten['abschliessen'])) {
+                //TODO BUG: Es darf nicht möglich sein mit 'resend' diese Aktion zweimal asuzufüren!!!!
                 //lege den Monat in der DB ab
                 $valid = $abschlussForm->isValid($postDaten);
                 if ($valid) {
@@ -372,13 +374,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $ns = new Zend_Session_Namespace();
         $geprueft = $ns->geprueft;
         $index = $this->zuBearbeitendesDatum->toString('MM-yyyy');
-        //$elemente = $form->getElements();
         if (!$this->bearbeitbar) {
             $form->removeElement('pruefen');
             $form->removeElement('abschliessen');
 
             $druckElement = $form->getElement('ausdrucken');
-            //$url2 = $this->_helper->url('druck');
             $druckElement->setAttrib('onclick', 'drucke();');
             //TODO PDF-Test-Code anpassen
             //$this->_erzeugePDF();
@@ -424,7 +424,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         ), true);
         
         $pdf->SetFont('Times', '', 10);
-        $pdf->SetAligns(array('L', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'L'));
+        $pdf->SetAligns(array('C', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'L'));
         $erster = new Zend_Date($this->zuBearbeitendesDatum);
         $letzter = new Zend_Date($this->zuBearbeitendesDatum);
         $erster->setDay(1);
@@ -457,8 +457,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $pdf->Cell(95, 5, "_____________________________", 0, 0, 'L');
         $pdf->Cell(95, 5, "_____________________________", 0, 0, 'R');
         $pdf->Ln();
-        $pdf->Cell(95, 5, "Unterschrift Beschäftigter", 0, 0, 'L');
-        $pdf->Cell(95, 5, "Unterschrift Fachvorgesetzter", 0, 0, 'R');
+        $pdf->Cell(95, 5, "    Unterschrift Beschäftigte/r", 0, 0, 'L');
+        $pdf->Cell(95, 5, "Unterschrift Fachvorgesetzte/r    ", 0, 0, 'R');
         
         
         

@@ -127,7 +127,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $hochschulString = $this->getHochschule();
         switch ($hochschulString) {
             case 'hfm':
-                $hochschulString = 'Hochschule für Musik \'Hanns Eisler\'';
+                $hochschulString = 'Hochschule für Musik "Hanns Eisler"';
                 break;
             case 'hfs':
                 $hochschulString = 'Hochschule für Schauspielkunst \'Ernst Busch\'';
