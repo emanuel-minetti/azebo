@@ -101,10 +101,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
         //Salden setzen
-        $this->view->saldoBisher = $this->mitarbeiter->getSaldoBisher()->
-                getString();
-        $this->view->saldo = $this->mitarbeiter->getSaldo(
-                        $this->zuBearbeitendesDatum, true)->getString();
+        $this->saldoBisher = $this->mitarbeiter->getSaldoBisher();
+        $this->view->saldoBisher = $this->saldoBisher->getString();
+        $this->saldo = $this->mitarbeiter->getSaldo(
+                        $this->zuBearbeitendesDatum, true);
+        $this->view->saldo = $this->saldo->getString();
         if ($this->mitarbeiter->getHochschule() == 'hfm') {
             if ($this->mitarbeiter->getSaldoBisher()->getRest()) {
                 $this->view->hatRest = true;
@@ -114,7 +115,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                 $this->zuBearbeitendesDatum, true)->getRestString();
             }
         }
-        
+        $saldoGesamt = new Azebo_Model_Saldo(0, 0, true);
+        $saldoGesamt->add($this->saldoBisher, 'monat');
+        $saldoGesamt->add($this->saldo, 'monat');
+        $this->view->saldoGesamt = $saldoGesamt->getString();
         $this->view->urlaubBisher = $this->mitarbeiter->getUrlaubBisher();
         $this->view->urlaub = $this->mitarbeiter->getUrlaubNachMonat(
                 $this->zuBearbeitendesDatum);
@@ -448,8 +452,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
         
         $pdf->Ln(10);
-        $pdf->MultiCell(0, 5, 'Saldo bisher: ' . $this->mitarbeiter->getSaldoBisher()->getString(), 0, 'L');
-        $pdf->MultiCell(0, 5, 'Saldo dieses Monats: ' . $this->mitarbeiter->getSaldo($this->zuBearbeitendesDatum, true)->getString(), 0, 'L');
+        $pdf->MultiCell(0, 5, 'Saldo Vormonat: ' . $this->saldoBisher->getString(), 0, 'L');
+        $pdf->MultiCell(0, 5, 'Saldo dieses Monats: ' . $this->saldo->getString(), 0, 'L');
+        $pdf->MultiCell(0, 5, 'Saldo gesamt: ' . $this->saldoGesamt->getString(), 0, 'L');
         $pdf->MultiCell(0, 5, 'Resturlaub bisher: ' . $this->mitarbeiter->getUrlaubBisher(), 0, 'L');
         $pdf->MultiCell(0, 5, 'Urlaubstage in diesem Monat: ' . $this->mitarbeiter->getUrlaubNachMonat($this->zuBearbeitendesDatum), 0, 'L');
         $pdf->Ln(10);

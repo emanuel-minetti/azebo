@@ -17,7 +17,9 @@
             <div id="gridUntenDiv" style="width: 830px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
         <? endif; ?>
     </div>
-    <p>Saldo der abgeschlossenen Monate: <?= $this->saldoBisher; ?></p>
+    <p>Saldo Vormonat: <?= $this->saldoBisher; ?></p>
+    <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
+    <p>Saldo gesamt: <?= $this->saldoGesamt; ?></p>
 </div>
 <script type="text/javascript">
     dojo.ready(function() {

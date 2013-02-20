@@ -6,12 +6,13 @@
     <? else: ?>
         <div id="gridDiv" style="width: 830px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
     <? endif; ?>
-    <p>Saldo der abgeschlossenen Monate: <?= $this->saldoBisher; ?>
+    <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
         <? if ($this->hatRest): ?>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
         <? endif; ?>
     </p>
     <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
+    <p>Saldo gesamt: <?= $this->saldoGesamt; ?></p>
     <p>Resturlaub bisher: <?= $this->urlaubBisher; ?></p>
     <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
     <a name="monatForm"></a>
