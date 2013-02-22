@@ -440,8 +440,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $pdf->Cell(95, 15, $this->mitarbeiter->getName(), 0, 0, 'R');
         $pdf->Ln(20);
         $pdf->SetFont('Arial', 'B', 10);
-        $pdf->SetFillColor(200);
-        $pdf->SetWidths(array(30, 14, 14, 30, 45, 14, 14, 14, 16));
+        $pdf->SetFillColor(220);
+        $pdf->SetWidths(array(30, 14, 14, 27, 48, 14, 14, 14, 15));
         $pdf->SetAligns(array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'));
         $pdf->Row(array(
             'Datum',
@@ -456,7 +456,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 ), true);
 
         $pdf->SetFont('Times', '', 10);
-        $pdf->SetAligns(array('C', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'L'));
+        $pdf->SetAligns(array('C', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'C'));
         $erster = new Zend_Date($this->zuBearbeitendesDatum);
         $letzter = new Zend_Date($this->zuBearbeitendesDatum);
         $erster->setDay(1);
@@ -494,11 +494,23 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $saldoGesamtString = $this->saldoGesamt->getString();
         }
 
-        $pdf->MultiCell(0, 5, 'Saldo Vormonat: ' . $saldoBisherString, 0, 'L');
-        $pdf->MultiCell(0, 5, 'Saldo dieses Monats: ' . $saldoString, 0, 'L');
-        $pdf->MultiCell(0, 5, 'Saldo gesamt: ' . $saldoGesamtString, 0, 'L');
-        $pdf->MultiCell(0, 5, 'Resturlaub bisher: ' . $this->mitarbeiter->getUrlaubBisher(), 0, 'L');
-        $pdf->MultiCell(0, 5, 'Urlaubstage in diesem Monat: ' . $this->mitarbeiter->getUrlaubNachMonat($this->zuBearbeitendesDatum), 0, 'L');
+        if ($this->mitarbeiter->getHochschule() == 'khb') {
+            $vormonatText = 'Vormonat Übertrag: ';
+            $monatText = 'Saldo laufender Monat: ';
+            $gesamtText = 'Übertrag in den nächsten Monat: ';
+        } else {
+            $vormonatText = 'Saldo Vormonat: ';
+            $monatText = 'Saldo dieses Monats: ';
+            $gesamtText = 'Saldo gesamt: ';
+        }
+
+        $pdf->MultiCell(0, 5, $vormonatText . $saldoBisherString, 0, 'L');
+        $pdf->MultiCell(0, 5, $monatText . $saldoString, 0, 'L');
+        $pdf->MultiCell(0, 5, $gesamtText . $saldoGesamtString, 0, 'L');
+        $pdf->MultiCell(0, 5, 'Resturlaub bisher: ' .
+                $this->mitarbeiter->getUrlaubBisher(), 0, 'L');
+        $pdf->MultiCell(0, 5, 'Urlaubstage in diesem Monat: ' .
+                $this->mitarbeiter->getUrlaubNachMonat($this->zuBearbeitendesDatum), 0, 'L');
         $pdf->Ln(8);
 
         $pdf->SetWidths(array(60, 60, 60));
