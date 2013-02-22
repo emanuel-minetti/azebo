@@ -42,10 +42,29 @@ class Azebo_Model_Saldo {
         $this->_restStunden = $restStunden;
         $this->_restMinuten = $restMinuten;
     }
+    
+    public static function copy(Azebo_Model_Saldo $saldo) {
+        $copy = new Azebo_Model_Saldo(0, 0, true);
+        $copy->_stunden = $saldo->getStunden();
+        $copy->_minuten = $saldo->getMinuten();
+        $copy->_positiv = $saldo->getPositiv();
+        $copy->_rest2007 = $saldo->getRest();
+        $copy->_restStunden = $saldo->getRestStunden();
+        $copy->_restMinuten = $saldo->getRestMinuten();
+        
+        return $copy;
+    }
 
-    //TODO Saldo::add() kommentieren!!
-    public function add(Azebo_Model_Saldo $saldo, $art) {
-        //TODO Saldo2007 für HfM implementieren!
+    /**
+     * Addiert $saldo zu $this. Falls $monat == true ist, Wird auch die
+     * 2007er-Regelung der HfM brücksichtigt. Gibt $this zurück für
+     * zusammengesetzte Anweisungen.
+     * 
+     * @param Azebo_Model_Saldo $saldo
+     * @param type $monat
+     * @return \Azebo_Model_Saldo 
+     */
+    public function add(Azebo_Model_Saldo $saldo, $monat = false) {
         //TODO Kappungsgrenzen!
         
         $stunden = $saldo->getStunden();
@@ -97,8 +116,8 @@ class Azebo_Model_Saldo {
             $this->_positiv = true;
         }
         
-        //TODO Hier bin ich!!!!!!!!!!!!!!!!!!!!
-        if($art != 'tag' && !$this->_positiv && $this->_rest2007) {
+        //2007-er Regelung für die HfM
+        if($monat && !$this->_positiv && $this->_rest2007) {
             if($this->_restStunden > $this->_stunden) {
                 $restIstGroesser = true;
             } elseif($this->_restStunden < $this->_stunden) {
@@ -184,11 +203,11 @@ class Azebo_Model_Saldo {
         if($this->_restStunden === null || !$this->_rest2007) {
             return '+ 0:00';
         } else {
-            $saldoString = $this->_restStunden . 'h:';
+            $saldoString = '+' . $this->_restStunden . ':';
             if($this->_restMinuten <= 9) {
                 $saldoString .= '0' . $this->_restMinuten;
             } else {
-                $saldoString .= $this->_restMinuten . 'min';
+                $saldoString .= $this->_restMinuten;
             }
         }
         return $saldoString;

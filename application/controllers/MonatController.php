@@ -101,24 +101,21 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
         //Salden setzen
-        $this->saldoBisher = $this->mitarbeiter->getSaldoBisher();
+        $this->saldoBisher = $this->mitarbeiter->getSaldoBisher(
+                $this->zuBearbeitendesDatum);
         $this->view->saldoBisher = $this->saldoBisher->getString();
         $this->saldo = $this->mitarbeiter->getSaldo(
-                        $this->zuBearbeitendesDatum, true);
+                $this->zuBearbeitendesDatum, true);
         $this->view->saldo = $this->saldo->getString();
-        if ($this->mitarbeiter->getHochschule() == 'hfm') {
-            if ($this->mitarbeiter->getSaldoBisher()->getRest()) {
-                $this->view->hatRest = true;
-                $this->view->saldoBisher2007 = $this->mitarbeiter->
-                                getSaldoBisher()->getRestString();
-                $this->view->saldo2007 = $this->mitarbeiter->getSaldo(
-                                $this->zuBearbeitendesDatum, true)->getRestString();
-            }
+        $this->saldoGesamt = Azebo_Model_Saldo::copy($this->saldoBisher);
+        $this->saldoGesamt->add($this->saldo, true);
+        $this->view->saldoGesamt = $this->saldoGesamt->getString();
+        if ($this->mitarbeiter->getHochschule() == 'hfm' &&
+                $this->saldoBisher->getRest()) {
+            $this->view->hatRest = true;
+            $this->view->saldoBisher2007 = $this->saldoBisher->getRestString();
+            $this->view->saldoGesamt2007 = $this->saldoGesamt->getRestString();
         }
-        $saldoGesamt = new Azebo_Model_Saldo(0, 0, true);
-        $saldoGesamt->add($this->saldoBisher, 'monat');
-        $saldoGesamt->add($this->saldo, 'monat');
-        $this->view->saldoGesamt = $saldoGesamt->getString();
         $this->view->urlaubBisher = $this->mitarbeiter->getUrlaubBisher();
         $this->view->urlaub = $this->mitarbeiter->getUrlaubNachMonat(
                 $this->zuBearbeitendesDatum);
@@ -168,10 +165,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
             } elseif (isset($postDaten['abschliessen'])) {
-                //TODO BUG: Es darf nicht möglich sein mit 'resend' diese Aktion zweimal asuzufüren!!!!
-                //lege den Monat in der DB ab
+                // lege den Monat in der DB ab, falls er noch nicht vorhanden
+                // ist (= möglich bei 'Resend')
                 $valid = $abschlussForm->isValid($postDaten);
-                if ($valid) {
+                if ($valid && $this->mitarbeiter->getArbeitsmonat($this->zuBearbeitendesDatum) === null) {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
                     $saldo = $this->mitarbeiter->getSaldo($monat);
@@ -183,8 +180,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
                     // aktualisiere den View
                     $this->view->bearbeitbar = false;
-                    $this->view->saldoBisher = $this->mitarbeiter->
-                                    getSaldoBisher()->getString();
                     $this->view->urlaubBisher = $this->mitarbeiter->
                             getUrlaubBisher();
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
@@ -384,8 +379,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
             $druckElement = $form->getElement('ausdrucken');
             $druckElement->setAttrib('onclick', 'drucke();');
-            //TODO PDF-Test-Code anpassen
-            //$this->_erzeugePDF();
         } elseif ($geprueft !== null && isset($geprueft[$index]) &&
                 $geprueft[$index]) {
             $form->removeElement('ausdrucken');
@@ -425,8 +418,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
             'Ist',
             'Soll',
             'Saldo',
-        ), true);
-        
+                ), true);
+
         $pdf->SetFont('Times', '', 10);
         $pdf->SetAligns(array('C', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'L'));
         $erster = new Zend_Date($this->zuBearbeitendesDatum);
@@ -435,7 +428,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $letzter->setDay($this->tageImMonat);
         $tabelle = $this->_helper->
                 MonatsTabelle($erster, $letzter, $this->mitarbeiter);
-        
+
         foreach ($tabelle['tabellenDaten'] as $row) {
             $fill = $row['feiertag'] == null ? false : true;
             $pdf->Row(array(
@@ -448,26 +441,39 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $row['ist'],
                 $row['soll'],
                 $row['saldo']), $fill);
-            
         }
-        
+
         $pdf->Ln(10);
-        $pdf->MultiCell(0, 5, 'Saldo Vormonat: ' . $this->saldoBisher->getString(), 0, 'L');
-        $pdf->MultiCell(0, 5, 'Saldo dieses Monats: ' . $this->saldo->getString(), 0, 'L');
-        $pdf->MultiCell(0, 5, 'Saldo gesamt: ' . $this->saldoGesamt->getString(), 0, 'L');
+
+        $saldoString = $this->saldo->getString();
+        if ($this->mitarbeiter->getHochschule() == 'hfm' &&
+                $this->saldoBisher->getRest()) {
+            $saldoBisherString = $this->saldoBisher->getString() .
+                    '     (Rest 2007: ' . $this->saldoBisher->getRestString() .
+                    ')';
+            $saldoGesamtString = $this->saldoGesamt->getString() .
+                    '     (Rest 2007: ' . $this->saldoGesamt->getRestString() .
+                    ')';
+        } else {
+            $saldoBisherString = $this->saldoBisher->getString();
+            $saldoGesamtString = $this->saldoGesamt->getString();
+        }
+        $pdf->MultiCell(0, 5, 'Saldo Vormonat: ' . $saldoBisherString, 0, 'L');
+        $pdf->MultiCell(0, 5, 'Saldo dieses Monats: ' . $saldoString, 0, 'L');
+        $pdf->MultiCell(0, 5, 'Saldo gesamt: ' . $saldoGesamtString, 0, 'L');
         $pdf->MultiCell(0, 5, 'Resturlaub bisher: ' . $this->mitarbeiter->getUrlaubBisher(), 0, 'L');
         $pdf->MultiCell(0, 5, 'Urlaubstage in diesem Monat: ' . $this->mitarbeiter->getUrlaubNachMonat($this->zuBearbeitendesDatum), 0, 'L');
         $pdf->Ln(10);
-        
+
         $pdf->Cell(95, 5, "_____________________________", 0, 0, 'L');
         $pdf->Cell(95, 5, "_____________________________", 0, 0, 'R');
         $pdf->Ln();
         $pdf->Cell(95, 5, "    Unterschrift Beschäftigte/r", 0, 0, 'L');
         $pdf->Cell(95, 5, "Unterschrift Fachvorgesetzte/r    ", 0, 0, 'R');
-        
-        
-        
-        
+
+
+
+
         $pdf->AutoPrint();
 
         $this->_helper->viewRenderer->setNoRender();

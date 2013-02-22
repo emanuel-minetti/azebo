@@ -122,7 +122,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $this->_hochschule;
     }
-    
+
     public function getHochschulString() {
         $hochschulString = $this->getHochschule();
         switch ($hochschulString) {
@@ -188,12 +188,14 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $monatsTabelle->getArbeitsmonateNachMitarbeiterId($this->id);
     }
 
-    public function getSaldoBisher() {
+    public function getSaldoBisher(Zend_Date $bis) {
         $saldo = $this->getSaldouebertrag();
         $monate = $this->getArbeitsmonate();
         foreach ($monate as $monat) {
-            $monatsSaldo = $monat->getSaldo();
-            $saldo->add($monatsSaldo, 'monat');
+            if($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
+                $monatsSaldo = $monat->getSaldo();
+                $saldo->add($monatsSaldo, true);
+            }
         }
         return $saldo;
     }
@@ -210,7 +212,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     //TODO getSaldo Kommentieren und Dokumentieren!
     public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
-        $saldoBisher = $this->getSaldoBisher();
+        $saldoBisher = $this->getSaldoBisher($monat);
         if ($saldoBisher->getRest()) {
             $saldo = new Azebo_Model_Saldo(0, 0, true, true, $saldoBisher->getRestStunden(), $saldoBisher->getRestMinuten());
         } else {
@@ -223,11 +225,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                         $arbeitstag->getEnde() === null) ||
                         $arbeitstag->befreiung != 'keine') {
                     $tagesSaldo = $arbeitstag->getSaldo();
-                    $saldo->add($tagesSaldo, 'tag');
+                    $saldo->add($tagesSaldo);
                 }
             } else {
                 $tagesSaldo = $arbeitstag->getSaldo();
-                $saldo->add($tagesSaldo, 'tag');
+                $saldo->add($tagesSaldo);
             }
         }
 
