@@ -388,6 +388,23 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         
         // übergebe dem View die Hochschule
         $this->view->hochschule = $mitarbeiter->getHochschule();
+        
+        // setze die Salden
+        $saldoBisher = $mitarbeiter->getSaldoBisher($monat);
+        $this->view->saldoBisher = $saldoBisher->getString();
+        $saldo = $mitarbeiter->getSaldo($monat, true);
+        $this->view->saldo = $saldo->getString();
+        $saldoGesamt = Azebo_Model_Saldo::copy($saldoBisher);
+        $saldoGesamt->add($saldo, true);
+        $this->view->saldoGesamt = $saldoGesamt->getString();
+        if ($mitarbeiter->getHochschule() == 'hfm' &&
+                $saldoBisher->getRest()) {
+            $this->view->hatRest = true;
+            $this->view->saldoBisher2007 = $saldoBisher->getRestString();
+            $this->view->saldoGesamt2007 = $saldoGesamt->getRestString();
+        }
+        $this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher();
+        $this->view->urlaub = $mitarbeiter->getUrlaubNachMonat($monat);
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
