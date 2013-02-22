@@ -37,7 +37,7 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
             'refColumns' => 'id',
         ),
     );
-    
+
     /**
      * @param Zend_Date $tag
      * @param $mitarbeiterId
@@ -48,7 +48,7 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
         $select->where('mitarbeiter_id = ?', $mitarbeiterId)
                 ->where('tag = ?', Azebo_Service_DatumUndZeitUmwandler::datumPhpZuSql($tag));
         $arbeitstag = $this->fetchRow($select);
-        if($arbeitstag === null) {
+        if ($arbeitstag === null) {
             $arbeitstag = $this->createRow();
             $arbeitstag->setTag($tag);
             $arbeitstag->mitarbeiter_id = $mitarbeiterId;
@@ -57,17 +57,16 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
     }
 
     /**
-     *Gibt ein Array von Azebo_Resource_Arbeitstag_Item_Interface zurück.
+     * Gibt ein Array von Azebo_Resource_Arbeitstag_Item_Interface zurück.
      * 
      * @param Zend_Date $monat
      * @param $mitarbeiterId
      * @return array 
      */
-    public function getArbeitstageNachMonatUndMitarbeiterId(Zend_Date $monat,
-            $mitarbeiterId) {
+    public function getArbeitstageNachMonatUndMitarbeiterId(Zend_Date $monat, $mitarbeiterId) {
         $erster = new Zend_Date($monat);
         //$log = Zend_Registry::get('log');
-        
+
         $erster->setDay(1);
         //$log->debug('Erster: ' . $erster->toString());
         $letzter = new Zend_Date($monat);
@@ -84,7 +83,7 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
 
         $tag = new Zend_Date($erster);
         while ($tag->compareMonth($monat) == 0) {
-            
+
             if ($dbTage->current() !== null &&
                     $dbTage->current()->getTag()->equals(
                             $tag, Zend_Date::DATE_MEDIUM)) {
@@ -96,7 +95,7 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
                 $arbeitstag->mitarbeiter_id = $mitarbeiterId;
                 array_push($arbeitstage, $arbeitstag);
             }
-            
+
             $tag->addDay(1);
         }
 
@@ -122,11 +121,14 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
         $arbeitstag->befreiung = $daten['befreiung'];
         $arbeitstag->bemerkung = $daten['bemerkung'];
         $arbeitstag->pause = $daten['pause'];
-        $arbeitstag->setBeginnNachmittag($daten['beginnnachmittag']);
-        $arbeitstag->setEndeNachmittag($daten['endenachmittag']);
+        if (isset($daten['beginnnachmittag'])) {
+            $arbeitstag->setBeginnNachmittag($daten['beginnnachmittag']);
+        }
+        if (isset($daten['endenachmittag'])) {
+            $arbeitstag->setEndeNachmittag($daten['endenachmittag']);
+        }
 
         $arbeitstag->save();
-        
     }
 
 }

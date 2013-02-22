@@ -26,7 +26,7 @@ defined('APPLICATION_PATH')
         or define('APPLICATION_PATH', realpath(dirname(__FILE__) . '/../application'));
 
 defined('APPLICATION_ENV')
-        or define(APPLICATION_ENV, 'development');
+        or define('APPLICATION_ENV', 'development');
 
 require_once 'Zend/Application.php';
 
