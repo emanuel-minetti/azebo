@@ -396,6 +396,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     private function _erzeugePDF() {
         $pdf = new Azebo_Service_BogenPDF();
         $pdf->SetTitle('Arbeitszeitbogen');
+        $pdf->AliasNbPages();
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 12);
         $pdf->Cell(95, 15, 'Arbeitszeiterfassung', 0, 0, 'L');
@@ -443,7 +444,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $row['saldo']), $fill);
         }
 
-        $pdf->Ln(10);
+        $pdf->Ln(6);
 
         $saldoString = $this->saldo->getString();
         if ($this->mitarbeiter->getHochschule() == 'hfm' &&
@@ -458,21 +459,18 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $saldoBisherString = $this->saldoBisher->getString();
             $saldoGesamtString = $this->saldoGesamt->getString();
         }
+        
         $pdf->MultiCell(0, 5, 'Saldo Vormonat: ' . $saldoBisherString, 0, 'L');
         $pdf->MultiCell(0, 5, 'Saldo dieses Monats: ' . $saldoString, 0, 'L');
         $pdf->MultiCell(0, 5, 'Saldo gesamt: ' . $saldoGesamtString, 0, 'L');
         $pdf->MultiCell(0, 5, 'Resturlaub bisher: ' . $this->mitarbeiter->getUrlaubBisher(), 0, 'L');
         $pdf->MultiCell(0, 5, 'Urlaubstage in diesem Monat: ' . $this->mitarbeiter->getUrlaubNachMonat($this->zuBearbeitendesDatum), 0, 'L');
-        $pdf->Ln(10);
-
-        $pdf->Cell(95, 5, "_____________________________", 0, 0, 'L');
-        $pdf->Cell(95, 5, "_____________________________", 0, 0, 'R');
-        $pdf->Ln();
-        $pdf->Cell(95, 5, "    Unterschrift Beschäftigte/r", 0, 0, 'L');
-        $pdf->Cell(95, 5, "Unterschrift Fachvorgesetzte/r    ", 0, 0, 'R');
-
-
-
+        $pdf->Ln(8);
+        
+        $pdf->SetWidths(array(60, 60, 60));
+        $pdf->SetAligns(array('L', 'C', 'R'));
+        $pdf->Row(array("_____________________________\nUnterschrift Beschäftigte/r",
+            '' , "_____________________________\n      Unterschrift Fachvorgesetzte/r"), false, false);
 
         $pdf->AutoPrint();
 

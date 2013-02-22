@@ -45,7 +45,7 @@ class Azebo_Service_BogenPDF extends AzeboLib_Pdf_AutoPrint {
         $this->aligns = $a;
     }
 
-    function Row($data, $fill) {
+    function Row($data, $fill, $border = true) {
         //Calculate the height of the row
         $nb = 0;
         for ($i = 0; $i < count($data); $i++)
@@ -62,7 +62,9 @@ class Azebo_Service_BogenPDF extends AzeboLib_Pdf_AutoPrint {
             $y = $this->GetY();
             //Draw the border
             $style = $fill ? 'DF' : '';
-            $this->Rect($x, $y, $w, $h, $style);
+            if ($border) {
+                $this->Rect($x, $y, $w, $h, $style);
+            }
             //Print the text
             $this->MultiCell($w, 5, $data[$i], 0, $a);
             //Put the position to the right of the cell
@@ -124,5 +126,10 @@ class Azebo_Service_BogenPDF extends AzeboLib_Pdf_AutoPrint {
         return $nl;
     }
 
-}
+    function Footer() {
+        $this->setY(-15);
+        $this->setFont('Times', '', 8);
+        $this->Cell(0, 10, 'Seite ' . $this->PageNo() . ' von {nb}', 0, 0, 'C');
+    }
 
+}
