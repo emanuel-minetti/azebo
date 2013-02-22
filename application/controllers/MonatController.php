@@ -46,6 +46,27 @@ class MonatController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Resource_Mitarbeiter_Item_Interface 
      */
     public $mitarbeiter;
+    
+    /**
+     * Das Saldo der vor diesem Monat liegenden und abgeschlossenen Monate.
+     * 
+     * @var Azebo_Model_Saldo 
+     */
+    public $saldoBisher;
+    
+    /**
+     * Das Saldo des zu bearbeitenden Monats.
+     * 
+     * @var Azebo_Model_Saldo 
+     */
+    public $saldo;
+    
+    /**
+     * Die Summe aus $saldoBisher und $saldo.
+     * 
+     * @var Azebo_Model_Saldo 
+     */
+    public $saldoGesamt;
 
     /**
      * @var boolean
@@ -100,7 +121,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
-        //Salden setzen
+        // Salden setzen
         $this->saldoBisher = $this->mitarbeiter->getSaldoBisher(
                 $this->zuBearbeitendesDatum);
         $this->view->saldoBisher = $this->saldoBisher->getString();
