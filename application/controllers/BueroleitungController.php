@@ -360,8 +360,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function monatanzeigenAction() {
-        //TODO der Büroleitung auch Saldo und Urlaub anzeigen
-        
         $benutzername = $this->_getParam('mitarbeiter');
         $mitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
