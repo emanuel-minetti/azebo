@@ -399,6 +399,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $pdf->AliasNbPages();
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 12);
+        
         $pdf->Cell(95, 15, 'Arbeitszeiterfassung', 0, 0, 'L');
         $pdf->Cell(95, 15, $this->mitarbeiter->getHochschulString(), 0, 0, 'R');
         $pdf->Ln(10);
