@@ -169,8 +169,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                 $this->_anwesend = $this->_zeitrechnerService->anwesend(
                         $this->getBeginn(), $this->getEnde());
             }
-            if ($this->getBeginnNachmittag() &&
-                    $this->getBeginnNachmittag() !== null &&
+            if ($this->getBeginnNachmittag() !== null &&
                     $this->getEndeNachmittag() !== null) {
                 $anwesendNachmittag = $this->_zeitrechnerService->anwesend(
                         $this->getBeginnNachmittag(), $this->getEndeNachmittag());

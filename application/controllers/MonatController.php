@@ -46,21 +46,21 @@ class MonatController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Resource_Mitarbeiter_Item_Interface 
      */
     public $mitarbeiter;
-    
+
     /**
      * Das Saldo der vor diesem Monat liegenden und abgeschlossenen Monate.
      * 
      * @var Azebo_Model_Saldo 
      */
     public $saldoBisher;
-    
+
     /**
      * Das Saldo des zu bearbeitenden Monats.
      * 
      * @var Azebo_Model_Saldo 
      */
     public $saldo;
-    
+
     /**
      * Die Summe aus $saldoBisher und $saldo.
      * 
@@ -261,8 +261,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $form->setEnde($filter->filter($postDaten['ende']));
                 if (!isset($postDaten['nachmittagButton']) &&
                         $postDaten['nachmittag']) {
-                    $form->setBeginn($filter->filter($postDaten['beginnnachmittag']), true);
-                    $form->setEnde($filter->filter($postDaten['endenachmittag']), true);
+                    $form->setBeginn($filter->
+                                    filter($postDaten['beginnnachmittag']), true);
+                    $form->setEnde($filter->
+                                    filter($postDaten['endenachmittag']), true);
                 }
 
                 if (isset($postDaten['absenden'])) {
@@ -274,20 +276,30 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         // für HfM die Pause setzen
                         if ($this->mitarbeiter->getHochschule() == 'hfm') {
                             //TODO Nachmittag
-                            if ($daten['beginn'] !== null && $daten['beginn'] != '' &&
-                                    $daten['ende'] !== null && $daten['ende'] != '') {
+                            if ($daten['beginn'] !== null &&
+                                    $daten['beginn'] != '' &&
+                                    $daten['ende'] !== null &&
+                                    $daten['ende'] != '') {
                                 $anwesend = $this->zeitrechner->
                                         anwesend($daten['beginn'], $daten['ende']);
+                                if ($daten['beginnnachmittag'] !== null &&
+                                        $daten['beginnnachmittag'] != '' &&
+                                        $daten['endenachmittag'] !== null &&
+                                        $daten['endenachmittag'] != '') {
+                                    $anwesendNachmittag =
+                                            $this->zeitrechner->
+                                            anwesend(
+                                            $daten['beginnnachmittag'], $daten['endenachmittag']);
+                                    $anwesend->addTime($anwesendNachmittag);
+                                }
                                 $pause = $this->ns->zeiten->pause;
                                 if ($anwesend->compareTime($pause->kurz->ab) != 1) {
                                     $daten['pause'] = 'x';
                                 } else {
                                     $daten['pause'] = '-';
                                 }
-                                $this->_log->debug('Anwesend: ' . $anwesend);
                             }
                         }
-                        $this->_log->debug('Pause: ' . $daten['pause']);
 
                         // speichen, in der Session als ungeprüft
                         // markieren und redirect
@@ -420,7 +432,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $pdf->AliasNbPages();
         $pdf->AddPage();
         $pdf->SetFont('Arial', 'B', 12);
-        
+
         $pdf->Cell(95, 15, 'Arbeitszeiterfassung', 0, 0, 'L');
         $pdf->Cell(95, 15, $this->mitarbeiter->getHochschulString(), 0, 0, 'R');
         $pdf->Ln(10);
@@ -481,18 +493,18 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $saldoBisherString = $this->saldoBisher->getString();
             $saldoGesamtString = $this->saldoGesamt->getString();
         }
-        
+
         $pdf->MultiCell(0, 5, 'Saldo Vormonat: ' . $saldoBisherString, 0, 'L');
         $pdf->MultiCell(0, 5, 'Saldo dieses Monats: ' . $saldoString, 0, 'L');
         $pdf->MultiCell(0, 5, 'Saldo gesamt: ' . $saldoGesamtString, 0, 'L');
         $pdf->MultiCell(0, 5, 'Resturlaub bisher: ' . $this->mitarbeiter->getUrlaubBisher(), 0, 'L');
         $pdf->MultiCell(0, 5, 'Urlaubstage in diesem Monat: ' . $this->mitarbeiter->getUrlaubNachMonat($this->zuBearbeitendesDatum), 0, 'L');
         $pdf->Ln(8);
-        
+
         $pdf->SetWidths(array(60, 60, 60));
         $pdf->SetAligns(array('L', 'C', 'R'));
         $pdf->Row(array("_____________________________\nUnterschrift Beschäftigte/r",
-            '' , "_____________________________\n      Unterschrift Fachvorgesetzte/r"), false, false);
+            '', "_____________________________\n      Unterschrift Fachvorgesetzte/r"), false, false);
 
         $pdf->AutoPrint();
 
