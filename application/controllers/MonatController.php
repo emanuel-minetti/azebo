@@ -137,11 +137,24 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $this->view->saldoBisher2007 = $this->saldoBisher->getRestString();
             $this->view->saldoGesamt2007 = $this->saldoGesamt->getRestString();
         }
-        $this->view->urlaubBisher = $this->mitarbeiter->getUrlaubBisher();
+
+        // Urlaubswerte setzen
+        $this->view->urlaubBisher = $this->mitarbeiter->getUrlaubBisher(
+                $this->zuBearbeitendesDatum);
         $this->view->urlaub = $this->mitarbeiter->getUrlaubNachMonat(
                 $this->zuBearbeitendesDatum);
+        $gesamt = $this->mitarbeiter->getUrlaubGesamt($this->zuBearbeitendesDatum);
+        $this->view->urlaubGesamt = $gesamt['rest'];
+        $urlaubVorjahrBisher = $this->mitarbeiter->getUrlaubVorjahrBisher(
+                $this->zuBearbeitendesDatum);
+        if ($urlaubVorjahrBisher != 0) {
+            $this->view->hatVorjahrRest = true;
+            $this->view->vorjahrRestBisher = $urlaubVorjahrBisher;
+            $this->view->vorjahrRestGesamt = $gesamt['vorjahr'];
+        }
 
-        //prüfe ob bereits abgeschlossen
+        // prüfe ob der Monat bereits abgeschlossen ist, d.h. in der DB
+        // vorhanden ist
         $this->bearbeitbar = true;
         $arbeitmonate = $this->mitarbeiter->getArbeitsmonate();
         foreach ($arbeitmonate as $arbeitsmonat) {
@@ -193,17 +206,18 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($valid && $this->mitarbeiter->getArbeitsmonat($this->zuBearbeitendesDatum) === null) {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
+                    //TODO Urlaub: Codepflege!
                     $saldo = $this->mitarbeiter->getSaldo($monat);
-                    $urlaub = $this->mitarbeiter->getUrlaubNachMonat($monat);
+                    //$urlaub = $this->mitarbeiter->getUrlaubNachMonat($monat);
                     $this->view->saldo = $saldo->getString();
-                    $this->mitarbeiter->saveArbeitsmonat(
-                            $monat, $saldo, $urlaub);
+                    $this->mitarbeiter->saveArbeitsmonat($monat);
                     $this->bearbeitbar = false;
 
                     // aktualisiere den View
                     $this->view->bearbeitbar = false;
-                    $this->view->urlaubBisher = $this->mitarbeiter->
-                            getUrlaubBisher();
+                    //TODO Urlaub: sieht komisch aus!
+                   //$this->view->urlaubBisher = $this->mitarbeiter->
+                   //         getUrlaubBisher();
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
             }

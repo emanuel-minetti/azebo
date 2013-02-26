@@ -65,7 +65,7 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
      */
     public function saveArbeitstag(Zend_Date $tag, array $daten);
     
-    public function saveArbeitsmonat(Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0);
+    public function saveArbeitsmonat(Zend_Date $monat);
     
     /**
      *@return boolean 
@@ -118,8 +118,12 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function setUrlaubVorjahr($urlaub);
 
-    public function getUrlaubBisher();
+    public function getUrlaubBisher(Zend_Date $bis);
+    
+    public function getUrlaubVorjahrBisher(Zend_Date $bis);
     
     public function getUrlaubNachMonat(Zend_Date $monat);
+    
+    public function getUrlaubGesamt(Zend_Date $monat);
     
 }

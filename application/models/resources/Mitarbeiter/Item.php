@@ -31,6 +31,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     private $_nachname = null;
     private $_rolle = null;
     private $_hochschule = null;
+    private $_zeiten = null;
 
     public function getName() {
 
@@ -147,9 +148,26 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitstagTabelle->saveArbeitstag($tag, $this->id, $daten);
     }
 
-    public function saveArbeitsmonat(Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0) {
+    //TODO Urlaub: Codepflege!
+    //public function saveArbeitsmonat(Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0) {
+    public function saveArbeitsmonat(Zend_Date $monat) {
+        $saldo = $this->getSaldo($monat);
+        $urlaubMonat = $this->getUrlaubNachMonat($monat);
+        $urlaubBisher = $this->getUrlaubBisher($monat);
+        $urlaubBisherVorjahr = $this->getUrlaubVorjahrBisher($monat);
+        if ($urlaubMonat <= $urlaubBisherVorjahr) {
+            // Urlaub dieses Monats kleiner-gleich dem Resturlaub vom Vorjahr
+            $urlaub = 0;
+            $urlaubVorjahr = $urlaubMonat;
+        } else {
+            // Urlaub dieses Monats größer dem Resturlaub vom Vorjahr
+            $urlaub = $urlaubMonat - $urlaubBisherVorjahr;
+            $urlaubVorjahr = $urlaubBisherVorjahr;
+        }
+
         $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
-        $arbeitsmonatTabelle->saveArbeitsmonat($this->id, $monat, $saldo, $urlaub);
+        $arbeitsmonatTabelle->saveArbeitsmonat(
+                $this->id, $monat, $saldo, $urlaub, $urlaubVorjahr);
     }
 
     public function setNachname($nachname) {
@@ -192,7 +210,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $saldo = $this->getSaldouebertrag();
         $monate = $this->getArbeitsmonate();
         foreach ($monate as $monat) {
-            if($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
+            if ($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
                 $monatsSaldo = $monat->getSaldo();
                 $saldo->add($monatsSaldo, true);
             }
@@ -200,12 +218,35 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $saldo;
     }
 
-    public function getUrlaubBisher() {
+    public function getUrlaubBisher(Zend_Date $bis) {
         //TODO Die Urlaubsberechnung muss angepasst werden!!
-        $urlaub = $this->getUrlaubVorjahr();
+        $urlaub = $this->getUrlaub();
         $monate = $this->getArbeitsmonate();
         foreach ($monate as $monat) {
-            $urlaub -= $monat->urlaub;
+            if ($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
+                $urlaub -= $monat->urlaub;
+            }
+        }
+        return $urlaub;
+    }
+
+    public function getUrlaubVorjahrBisher(Zend_Date $bis) {
+        //TODO Die Urlaubsberechnung muss angepasst werden!!
+        $zeiten = $this->_getZeiten();
+        $vorjahrRestBis = $zeiten->urlaub->resturlaubbis;
+        $vorjahrRestBis = new Zend_Date($vorjahrRestBis, 'dd.MM.');
+        if ($bis->compareMonth($vorjahrRestBis) != 1) {
+            // Vorjahresurlaub noch gültig
+            $urlaub = $this->getUrlaubVorjahr();
+            $monate = $this->getArbeitsmonate();
+            foreach ($monate as $monat) {
+                if ($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
+                    $urlaub -= $monat->urlaubvorjahr;
+                }
+            }
+        } else {
+            // Vorjahresurlaub nicht mehr gültig
+            $urlaub = 0;
         }
         return $urlaub;
     }
@@ -340,6 +381,37 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function setUrlaubVorjahr($urlaub) {
         $this->_row->urlaubvorjahr = $urlaub;
+    }
+
+    public function getUrlaubGesamt(Zend_Date $monat) {
+        $urlaub = $this->getUrlaubBisher($monat);
+        $urlaubVorjahr = $this->getUrlaubVorjahrBisher($monat);
+        $urlaubMonat = $this->getUrlaubNachMonat($monat);
+        $gesamt = array();
+        if ($urlaubMonat != 0) {
+            // diesen Monat wurde Urlaub genommen, also berechne Rest
+            if ($urlaubVorjahr >= $urlaubMonat) {
+                $urlaubVorjahr -= $urlaubMonat;
+            } else {
+                // diesen Monat wurde mehr Urlaub genommen, als Rest vom Vorjahr
+                // vorhanden ist.
+                $ueberschuss = $urlaubMonat - $urlaubVorjahr;
+                $urlaubVorjahr = 0;
+                //TODO Urlaub darf nicht negativ werden!
+                $urlaub -= $ueberschuss;
+            }
+        }
+        $gesamt['rest'] = $urlaub;
+        $gesamt['vorjahr'] = $urlaubVorjahr;
+        return $gesamt;
+    }
+
+    private function _getZeiten() {
+        if ($this->_zeiten === null) {
+            $ns = new Zend_Session_Namespace();
+            $this->_zeiten = $ns->zeiten;
+        }
+        return $this->_zeiten;
     }
 
 }

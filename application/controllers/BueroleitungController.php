@@ -442,7 +442,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $beamter = false;
             $saldo = new Azebo_Model_Saldo(0, 0, true);
             $urlaubVorjahr = 0;
-            $urlaub = $this->ns->zeiten->urlaub;
+            $urlaub = $this->ns->zeiten->urlaub->tage;
         }
 
         $elemente = $form->getElements();

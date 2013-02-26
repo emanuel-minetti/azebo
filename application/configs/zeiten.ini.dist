@@ -16,7 +16,8 @@ pause.lang.dauer = "00:45:00"
 
 maximal = "10:45:00"
 
-urlaub = 28
+urlaub.tage = 28
+urlaub.resturlaubbis = '30.9.'
 
 [hfm : alle]
 kern.ende.freitag="13:00:00"
@@ -25,6 +26,10 @@ rahmen.ende.normal = "20:00:00"
 rahmen.sommer.von.jahr2012 = "31.05.2012"
 rahmen.sommer.bis.jahr2012 = "01.09.2012"
 rahmen.beginn.sommer.jahr2012 = "06:30:00"
+
+rahmen.sommer.von.jahr2013 = "31.05.2013"
+rahmen.sommer.bis.jahr2013 = "01.09.2013"
+rahmen.beginn.sommer.jahr2013 = "06:30:00"
 
 [hfs : alle]
 rahmen.beginn.normal = "07:00:00"
