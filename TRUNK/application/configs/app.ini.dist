@@ -1,0 +1,41 @@
+[bootstrap]
+Autoloadernamespaces[] = "Zend_"
+Autoloadernamespaces[] = "AzeboLib_"
+
+appnamespace = "Application"
+
+phpSettings.display_errors = 0
+phpSettings.error_reporting = 8191
+phpSettings.date.timezone = "Europe/Berlin"
+
+bootstrap.path = APPLICATION_PATH"/bootstrap/Bootstrap.php"
+
+resources.frontController.throwerrors = false
+resources.frontController.params.displayExceptions = 0
+resources.frontController.controllerDirectory = APPLICATION_PATH"/controllers"
+
+resources.view = ""
+
+resources.layout.layoutPath = APPLICATION_PATH"/layouts/scripts"
+resources.layout.layout = "main"
+
+resources.db.adapter = "PDO_MYSQL"
+resources.db.isdefaulttableadapter = true
+resources.db.params.dbname = "azebo"
+resources.db.params.username = "azebo"
+resources.db.params.password = "Jza2LuNb44mx7mZ8"
+resources.db.params.hostname = "localhost"
+resources.db.params.charset = "UTF8"
+
+[production : bootstrap]
+
+[testing : bootstrap]
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
+
+[development : bootstrap]
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
+
+resources.frontController.params.displayExceptions = 1
+resources.frontController.throwerrors = true

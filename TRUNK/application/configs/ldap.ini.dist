@@ -1,0 +1,15 @@
+ldap.physalis.host = physalis
+ldap.physalis.accountDomainName = verwaltung.kh-berlin.de
+ldap.physalis.accountDomainNameShort = VERWALTUNG
+ldap.physalis.accountCanonicalForm = 4
+ldap.physalis.baseDn = "OU=Users,DC=verwaltung,DC=kh-berlin,DC=de"
+ldap.physalis.bindRequiresDn = true
+ldap.physalis.useSsl = true
+
+ldap.gruppen.mitglied.hfs = "azebohfs"
+ldap.gruppen.mitglied.hfm = "azebohfm"
+ldap.gruppen.mitglied.khb = "azebokhb"
+ldap.gruppen.buero.hfs = "HFS-Zeit"
+ldap.gruppen.buero.hfm = "HFM-Zeit"
+ldap.gruppen.buero.khb = "KHB-Zeit"
+ldap.gruppen.scit = "SC-IT-Admin"

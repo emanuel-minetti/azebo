@@ -1,0 +1,69 @@
+<br /><br />
+<div id="view-content">
+    <h3><?= $this->seitenName ?></h3>
+    <? if ($this->hochschule != 'hfm'): ?>
+        <div id="gridDiv" style="width: 881px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+    <? else: ?>    
+        <div id="gridDiv" style="width: 830px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+    <? endif; ?>
+    <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
+        <? if ($this->hatRest): ?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
+        <? endif; ?>
+    </p>
+    <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
+    <p>Saldo gesamt: <?= $this->saldoGesamt; ?>
+        <? if ($this->hatRest): ?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoGesamt2007; ?>)
+        <? endif; ?>
+    </p>
+    <p>Resturlaub bisher: <?= $this->urlaubBisher; ?></p>
+    <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
+</div>
+
+<script type="text/javascript">
+    dojo.ready(function() {
+        var monatsDaten = <?= $this->monatsDaten->toJson() ?>;
+ 
+        var dataStore =
+            new dojo.data.ItemFileReadStore({ data:monatsDaten });
+        
+        var layout =[[
+                {'name':'Datum','field':'datum','width':'87px'},
+                {'name':'Beginn','field':'beginn','width':'55px'},
+                {'name':'Ende','field':'ende','width':'55px'},
+                {'name':'Dienstbefreiung','field':'befreiung','width':'120px'},
+                {'name':'Bemerkung','field':'bemerkung','width':'220px'},
+<? if ($this->hochschule != 'hfm'): ?>
+                                    {'name':'ohne Pause','field':'pause','width':'43px',styles:'text-align: center;'},
+<? endif; ?>
+                                {'name':'An- wesend','field':'anwesend','width':'55px'},
+                                {'name':'Ist','field':'ist','width':'55px'},
+                                {'name':'Soll','field':'soll','width':'55px'},
+                                {'name':'+/-','field':'saldo','width':'55px'},
+                            ]];
+        
+                        var grid = new dojox.grid.DataGrid({
+                            store:dataStore,
+                            structure:layout,
+                            selectionMode:"none"
+                        });
+         
+                        dojo.connect(grid, "onStyleRow", function(row){
+                            var item = grid.getItem(row.index);
+                            if(item) {
+                                var istFeiertag = dataStore.getValue(item,"feiertag",null);
+                                if(!!istFeiertag) {
+                                    row.customStyles += "color: #fe3c1a;";
+                                }
+                            }
+                            grid.focus.styleRow(row);
+                            grid.edit.styleRow(row);
+                        });
+         
+                        grid.placeAt('gridDiv');
+                        grid.startup();
+                    });
+    
+    
+</script>
