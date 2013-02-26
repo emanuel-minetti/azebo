@@ -159,7 +159,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
                 array('HtmlTag', array('tag' => 'dd')),
                 //array('HtmlTag', array('tag' => 'dt')),
                 ),
-            'validators' => array('RegelEindeutig', 'Vergangen'),
+            'validators' => array('RegelEindeutig'),
             //TODO Decoratoren anpassen!
         ));
 

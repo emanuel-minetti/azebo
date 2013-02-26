@@ -21,7 +21,8 @@
  */
 
 /**
- * Description of Vergangen
+ * Prüft ob eine Arbeitszeitregelung den vergangenen Monat, oder vorher,
+ * betrifft.
  *
  * @author Emanuel Minetti
  */
