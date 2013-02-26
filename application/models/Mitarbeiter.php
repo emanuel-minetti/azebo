@@ -159,7 +159,8 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     
     public function saveMitarbeiter(Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter, $daten) {
         $mitarbeiter->benutzername = $daten['benutzername'];
-        $mitarbeiter->urlaub = $daten['urlaub'];
+        $mitarbeiter->setUrlaubVorjahr($daten['urlaubVorjahr']);
+        $mitarbeiter->setUrlaub($daten['urlaub']);
         $mitarbeiter->beamter = $daten['beamter'];
         $saldoString = $daten['saldo'];
         $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';

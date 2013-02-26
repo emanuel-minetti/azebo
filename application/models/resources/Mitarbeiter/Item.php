@@ -201,7 +201,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getUrlaubBisher() {
-        $urlaub = $this->_row->urlaub;
+        //TODO Die Urlaubsberechnung muss angepasst werden!!
+        $urlaub = $this->getUrlaubVorjahr();
         $monate = $this->getArbeitsmonate();
         foreach ($monate as $monat) {
             $urlaub -= $monat->urlaub;
@@ -323,6 +324,22 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function setSaldo2007(Azebo_Model_Saldo $saldo) {
         $this->_row->saldo2007stunden = $saldo->getStunden();
         $this->_row->saldo2007minuten = $saldo->getMinuten();
+    }
+
+    public function getUrlaub() {
+        return $this->_row->urlaub;
+    }
+
+    public function getUrlaubVorjahr() {
+        return $this->_row->urlaubvorjahr;
+    }
+
+    public function setUrlaub($urlaub) {
+        $this->_row->urlaub = $urlaub;
+    }
+
+    public function setUrlaubVorjahr($urlaub) {
+        $this->_row->urlaubvorjahr = $urlaub;
     }
 
 }

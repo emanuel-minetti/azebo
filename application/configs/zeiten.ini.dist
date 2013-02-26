@@ -1,6 +1,7 @@
 [alle]
 rahmen.beginn.normal = "07:00:00"
 rahmen.ende.normal = "19:00:00"
+
 kern.beginn = "09:30:00"
 kern.ende.normal = "14:30:00"
 kern.ende.freitag = "14:00:00"
@@ -14,6 +15,8 @@ pause.lang.ab = "09:30:00"
 pause.lang.dauer = "00:45:00"
 
 maximal = "10:45:00"
+
+urlaub = 28
 
 [hfm : alle]
 kern.ende.freitag="13:00:00"

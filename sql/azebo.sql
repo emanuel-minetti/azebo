@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 13, 2012 at 06:09 PM
--- Server version: 5.1.63
+-- Generation Time: Feb 26, 2013 at 05:49 AM
+-- Server version: 5.1.66
 -- PHP Version: 5.3.3-7+squeeze14
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -32,13 +32,14 @@ CREATE TABLE IF NOT EXISTS `arbeitsmonat` (
   `saldostunden` int(11) NOT NULL,
   `saldominuten` int(11) NOT NULL,
   `saldopositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
-  `urlaub` int(11) NOT NULL,
+  `urlaubvorjahr` int(11) NOT NULL,
+  `urlaub` int(11) NOT NULL DEFAULT '0',
   `abgelegt` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   `saldo2007stunden` int(11) DEFAULT NULL,
   `saldo2007minuten` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `mitarbeiter_id` (`mitarbeiter_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=27 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=48 ;
 
 -- --------------------------------------------------------
 
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsregel` (
   `bis` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `mitarbeiter_id` (`mitarbeiter_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=43 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=49 ;
 
 -- --------------------------------------------------------
 
@@ -82,7 +83,7 @@ CREATE TABLE IF NOT EXISTS `arbeitstag` (
   `nachmittagende` time DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mitarbeiter-tag` (`mitarbeiter_id`,`tag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=137 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=196 ;
 
 -- --------------------------------------------------------
 
@@ -97,10 +98,13 @@ CREATE TABLE IF NOT EXISTS `mitarbeiter` (
   `saldouebertragstunden` int(11) NOT NULL,
   `saldouebertragminuten` int(11) NOT NULL,
   `saldouebertragpositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
-  `urlaub` int(11) NOT NULL,
+  `urlaubvorjahr` int(11) NOT NULL,
+  `urlaub` int(11) NOT NULL DEFAULT '0',
   `saldo2007stunden` int(11) DEFAULT NULL,
   `saldo2007minuten` int(11) DEFAULT NULL,
   `vertreter` int(11) DEFAULT NULL,
+  `kappungtotal` int(11) DEFAULT NULL,
+  `kappungmonat` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `benutzername` (`benutzername`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;

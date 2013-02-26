@@ -53,8 +53,15 @@ class Azebo_Form_Mitarbeiter_Mitarbeiterdetail extends AzeboLib_Form_Abstract {
             'validators' => array('Saldo2007',),
         ));
         
+        $this->addElement('Text', 'urlaubVorjahr', array(
+            'label' => 'Resturlaub vom Vorjahr',
+            'required' => false,
+            'filters' => array('StringTrim'),
+            'validators' => array('Digits',),
+        ));
+        
         $this->addElement('Text', 'urlaub', array(
-            'label' => 'Urlaub Übertrag',
+            'label' => 'Resturlaub des laufenden Jahres',
             'required' => false,
             'filters' => array('StringTrim'),
             'validators' => array('Digits',),

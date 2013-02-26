@@ -434,18 +434,21 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     $this->model->getMitarbeiterNachBenutzername($benutzername);
             $beamter = $mitarbeiter->getBeamter() == 'ja' ? true : false;
             $saldo = $mitarbeiter->getSaldouebertrag();
-            $urlaub = $mitarbeiter->urlaub;
+            $urlaubVorjahr = $mitarbeiter->getUrlaubVorjahr();
+            $urlaub = $mitarbeiter->getUrlaub();
         } else {
             $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
             $mitarbeiter = $mitarbeiterTabelle->createRow();
             $beamter = false;
             $saldo = new Azebo_Model_Saldo(0, 0, true);
-            $urlaub = 0;
+            $urlaubVorjahr = 0;
+            $urlaub = $this->ns->zeiten->urlaub;
         }
 
         $elemente = $form->getElements();
         $elemente['beamter']->setAttrib('checked', $beamter);
         $elemente['saldo']->setValue($saldo->getString());
+        $elemente['urlaubVorjahr']->setValue($urlaubVorjahr);
         $elemente['urlaub']->setValue($urlaub);
         
         if($this->mitarbeiter->getHochschule() != 'hfm' || $beamter) {
