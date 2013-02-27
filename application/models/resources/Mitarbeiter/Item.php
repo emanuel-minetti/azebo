@@ -383,25 +383,40 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $this->_row->urlaubvorjahr = $urlaub;
     }
 
-    //TODO getUrlaubGesamt kommentieren
+    /**
+     * Berechnet den Resturlaub inklusive des als Parameter übergebenen Monats.
+     * Zurückgegeben wird ein Array mit den Schlüsseln 'rest' und 'vorjahr' für
+     * den Resturlaub des laufenden und des vorangegangenen Jahres.
+     * 
+     * Falls der im Monat $monat eingetragene Urlaub den gesamten Resturlaub
+     * überschreitet, wird für 'rest' ein negativer Wert zurückgegeben! Es ist 
+     * Aufgabe des entsprechenden Validators (also z.B. Azebo_Validate_Urlaub)
+     * dafür zu sorgen, dass ein solcher Monat nicht abgeschlossen werden kann!
+     * 
+     * @param Zend_Date $monat
+     * @return array
+     */
     public function getUrlaubGesamt(Zend_Date $monat) {
         $urlaub = $this->getUrlaubBisher($monat);
         $urlaubVorjahr = $this->getUrlaubVorjahrBisher($monat);
         $urlaubMonat = $this->getUrlaubNachMonat($monat);
         $gesamt = array();
         if ($urlaubMonat != 0) {
-            // diesen Monat wurde Urlaub genommen, also berechne Rest
+            // diesen Monat wurde Urlaub genommen, also berechne neue Restwerte
             if ($urlaubVorjahr >= $urlaubMonat) {
+                // der Resturlau des Vorjahres übersteigt den genommenen Urlaub,
+                // also ziehe ihn vom Vorjahresrest ab.
                 $urlaubVorjahr -= $urlaubMonat;
             } else {
                 // diesen Monat wurde mehr Urlaub genommen, als Rest vom Vorjahr
-                // vorhanden ist.
+                // vorhanden ist, also passe Resturlaub von diesem und vom
+                // Vorjahr an. Der diesjährige Rest kann auch negativ werden!
                 $ueberschuss = $urlaubMonat - $urlaubVorjahr;
                 $urlaubVorjahr = 0;
-                //TODO Urlaub darf nicht negativ werden!
                 $urlaub -= $ueberschuss;
             }
         }
+        // gib die (evtl. angepassten) Werte zurück
         $gesamt['rest'] = $urlaub;
         $gesamt['vorjahr'] = $urlaubVorjahr;
         return $gesamt;

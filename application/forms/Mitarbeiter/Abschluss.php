@@ -53,7 +53,7 @@ class Azebo_Form_Mitarbeiter_Abschluss extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Monat prüfen',
-            'validators' => array('Monat',),
+            'validators' => array('Monat', 'Urlaub'),
             'decorators' => array('DijitElement', 'Errors',),
             //'tabindex' => 1,
         ));

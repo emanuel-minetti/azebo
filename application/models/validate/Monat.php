@@ -21,7 +21,11 @@
  */
 
 /**
- * Description of Monat
+ * Prüft ob an jedem Tag des Monats, an dem der Mitarbeiter eine Sollarbeitszeit
+ * hat, ein Eintrag vorhanden ist. Also ob entweder eine Dienstbefreiung 
+ * angegeben ist oder Beginn und Ende für diesen Tag eingetragen wurden. Wurde
+ * außerdem ein Nachmittag hinzugefügt, so müssen auch bei diesem Beginn und
+ * Ende eingetragen sein.
  *
  * @author Emanuel Minetti
  */
