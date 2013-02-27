@@ -67,6 +67,41 @@ class MonatController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Model_Saldo 
      */
     public $saldoGesamt;
+    
+    /**
+     * Der Resturlaub bis zum Vormonat.
+     * 
+     * @var int
+     */
+    public $urlaubBisher;
+    
+    /**
+     * Der in diesem Monat genommene Urlaub
+     * 
+     * @var int
+     */
+    public $urlaubMonat;
+    
+    /**
+     * Der Resturlaub inklusive dieses Monats.
+     * 
+     * @var int
+     */
+    public $urlaubGesamt;
+    
+    /**
+     * Der Resturlaub aus dem Vorjahr bis zum Vormonat.
+     * 
+     * @var int
+     */
+    public $vorjahrRestBisher;
+    
+    /**
+     * Der Resturlaub aus dem Vorjahr inklusive dieses Monats.
+     * 
+     * @var int
+     */
+    public $vorjahrRestGesamt;
 
     /**
      * @var boolean
@@ -139,18 +174,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
 
         // Urlaubswerte setzen
-        $this->view->urlaubBisher = $this->mitarbeiter->getUrlaubBisher(
+        $this->urlaubBisher = $this->mitarbeiter->getUrlaubBisher(
                 $this->zuBearbeitendesDatum);
-        $this->view->urlaub = $this->mitarbeiter->getUrlaubNachMonat(
+        $this->view->urlaubBisher = $this->urlaubBisher;
+        $this->urlaubMonat  = $this->mitarbeiter->getUrlaubNachMonat(
                 $this->zuBearbeitendesDatum);
+        $this->view->urlaub = $this->urlaubMonat;
         $gesamt = $this->mitarbeiter->getUrlaubGesamt($this->zuBearbeitendesDatum);
-        $this->view->urlaubGesamt = $gesamt['rest'];
-        $urlaubVorjahrBisher = $this->mitarbeiter->getUrlaubVorjahrBisher(
+        $this->urlaubGesamt = $gesamt['rest'];
+        $this->view->urlaubGesamt = $this->urlaubGesamt;
+        $this->vorjahrRestBisher = $this->mitarbeiter->getUrlaubVorjahrBisher(
                 $this->zuBearbeitendesDatum);
-        if ($urlaubVorjahrBisher != 0) {
+        $this->vorjahrRestGesamt = $gesamt['vorjahr'];
+        if ($this->vorjahrRestBisher != 0) {
             $this->view->hatVorjahrRest = true;
-            $this->view->vorjahrRestBisher = $urlaubVorjahrBisher;
-            $this->view->vorjahrRestGesamt = $gesamt['vorjahr'];
+            $this->view->vorjahrRestBisher = $this->vorjahrRestBisher;
+            $this->view->vorjahrRestGesamt = $this->vorjahrRestGesamt;
         }
 
         // prüfe ob der Monat bereits abgeschlossen ist, d.h. in der DB
@@ -441,18 +480,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     private function _erzeugePDF() {
+        // Einrichten des Bogens
         $pdf = new Azebo_Service_BogenPDF();
         $pdf->SetTitle('Arbeitszeitbogen');
         $pdf->AliasNbPages();
         $pdf->AddPage();
+        
+        // Kopf des Bogens
         $pdf->SetFont('Arial', 'B', 12);
-
         $pdf->Cell(95, 15, 'Arbeitszeiterfassung', 0, 0, 'L');
         $pdf->Cell(95, 15, $this->mitarbeiter->getHochschulString(), 0, 0, 'R');
         $pdf->Ln(10);
         $pdf->Cell(95, 15, $this->zuBearbeitendesDatum->toString('MMMM YYYY'), 0, 0, 'L');
         $pdf->Cell(95, 15, $this->mitarbeiter->getName(), 0, 0, 'R');
         $pdf->Ln(20);
+        
+        // Kopf der Tabelle
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->SetFillColor(220);
         $pdf->SetWidths(array(30, 14, 14, 27, 48, 14, 14, 14, 15));
@@ -469,8 +512,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             'Saldo',
                 ), true);
 
-        $pdf->SetFont('Times', '', 10);
-        $pdf->SetAligns(array('C', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'C'));
+        // Hohlen der Tabellendaten
         $erster = new Zend_Date($this->zuBearbeitendesDatum);
         $letzter = new Zend_Date($this->zuBearbeitendesDatum);
         $erster->setDay(1);
@@ -478,6 +520,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $tabelle = $this->_helper->
                 MonatsTabelle($erster, $letzter, $this->mitarbeiter);
 
+        // Tabellenkörper
+        $pdf->SetFont('Times', '', 10);
+        $pdf->SetAligns(array('C', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'C'));
         foreach ($tabelle['tabellenDaten'] as $row) {
             $fill = $row['feiertag'] == null ? false : true;
             $pdf->Row(array(
@@ -491,9 +536,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $row['soll'],
                 $row['saldo']), $fill);
         }
-
         $pdf->Ln(6);
 
+        // Hohlen der Daten für den Fuß des Bogens
         $saldoString = $this->saldo->getString();
         if ($this->mitarbeiter->getHochschule() == 'hfm' &&
                 $this->saldoBisher->getRest()) {
@@ -507,24 +552,36 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $saldoBisherString = $this->saldoBisher->getString();
             $saldoGesamtString = $this->saldoGesamt->getString();
         }
-
-        if ($this->mitarbeiter->getHochschule() == 'khb') {
-            $vormonatText = 'Vormonat Übertrag: ';
-            $monatText = 'Saldo laufender Monat: ';
-            $gesamtText = 'Übertrag in den nächsten Monat: ';
-        } else {
-            $vormonatText = 'Saldo Vormonat: ';
-            $monatText = 'Saldo dieses Monats: ';
-            $gesamtText = 'Saldo gesamt: ';
+        
+        $urlaubBisherString = $this->urlaubBisher;
+        $urlaubMonatString = $this->urlaubMonat;
+        $urlaubGesamtString = $this->urlaubGesamt;
+        if($this->vorjahrRestBisher != 0) {
+            $urlaubBisherString .= '     (Rest Vortjahr: ' . $this->vorjahrRestBisher . ')';
+            $urlaubGesamtString .= '     (Rest Vortjahr: ' . $this->vorjahrRestGesamt . ')';
         }
 
-        $pdf->MultiCell(0, 5, $vormonatText . $saldoBisherString, 0, 'L');
-        $pdf->MultiCell(0, 5, $monatText . $saldoString, 0, 'L');
-        $pdf->MultiCell(0, 5, $gesamtText . $saldoGesamtString, 0, 'L');
-        $pdf->MultiCell(0, 5, 'Resturlaub bisher: ' .
-                $this->mitarbeiter->getUrlaubBisher(), 0, 'L');
-        $pdf->MultiCell(0, 5, 'Urlaubstage in diesem Monat: ' .
-                $this->mitarbeiter->getUrlaubNachMonat($this->zuBearbeitendesDatum), 0, 'L');
+        // Setzen von Textbausteinen
+        if ($this->mitarbeiter->getHochschule() == 'khb') {
+            $vormonatSaldoText = 'Vormonat Übertrag: ';
+            $monatSaldoText = 'Saldo laufender Monat: ';
+            $gesamtSaldoText = 'Übertrag in den nächsten Monat: ';
+        } else {
+            $vormonatSaldoText = 'Saldo Vormonat: ';
+            $monatSaldoText = 'Saldo dieses Monats: ';
+            $gesamtSaldoText = 'Saldo gesamt: ';
+        }
+        $urlaubBisherText = 'Resturlaub Vormonat: ';
+        $urlaubMonatText = 'Urlaub dieses Monats: ';
+        $urlaubGesamtText = 'Resturlaub Gesamt: ';
+
+        // Fuß des Bogens
+        $pdf->MultiCell(0, 5, $vormonatSaldoText . $saldoBisherString, 0, 'L');
+        $pdf->MultiCell(0, 5, $monatSaldoText . $saldoString, 0, 'L');
+        $pdf->MultiCell(0, 5, $gesamtSaldoText . $saldoGesamtString, 0, 'L');
+        $pdf->MultiCell(0, 5, $urlaubBisherText . $urlaubBisherString, 0, 'L');
+        $pdf->MultiCell(0, 5, $urlaubMonatText . $urlaubMonatString, 0, 'L');
+        $pdf->MultiCell(0, 5, $urlaubGesamtText . $urlaubGesamtString, 0, 'L');
         $pdf->Ln(8);
 
         $pdf->SetWidths(array(60, 60, 60));
@@ -532,14 +589,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $pdf->Row(array("_____________________________\nUnterschrift Beschäftigte/r",
             '', "_____________________________\n      Unterschrift Fachvorgesetzte/r"), false, false);
 
+        // Rendern und senden des Bogens
         $pdf->AutoPrint();
-
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();
-
         header('Content-type: application/pdf');
         header('Content-Disposition: attachment; filename="bogen.pdf"');
-
         $pdf->Output();
     }
 
