@@ -403,10 +403,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         }
         
         // setze die Urlaubswerte
-//        $this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher();
-//        $this->view->urlaub = $mitarbeiter->getUrlaubNachMonat($monat);
-        
-        // Urlaubswerte setzen
         $this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher($monat);
         $this->view->urlaub = $mitarbeiter->getUrlaubNachMonat($monat);
         $gesamt = $mitarbeiter->getUrlaubGesamt($monat);
