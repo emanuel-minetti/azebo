@@ -28,8 +28,17 @@
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoGesamt2007; ?>)
         <? endif; ?>
     </p>
-    <p>Resturlaub bisher: <?= $this->urlaubBisher; ?></p>
+    <p>Resturlaub Vormonat: <?= $this->urlaubBisher; ?>
+        <? if ($this->hatVorjahrRest): ?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
+        <? endif; ?>
+    </p>
     <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
+    <p>Resturlaub gesamt: <?= $this->urlaubGesamt; ?>
+        <? if ($this->hatVorjahrRest): ?>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
+        <? endif; ?>
+    </p>
 </div>
 <script type="text/javascript">
     dojo.ready(function() {

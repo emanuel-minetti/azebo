@@ -179,7 +179,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function indexAction() {
-        //TODO KHB: Die Monatstabelle anpassen!!
+        //TODO KHB: Die Monatstabelle anpassen!!?
         $request = $this->getRequest();
         $abschlussForm = $this->_getMitarbeiterAbschlussForm();
         if ($request->isPost()) {
@@ -290,7 +290,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     if ($valid) {
                         // für HfM die Pause setzen
                         if ($this->mitarbeiter->getHochschule() == 'hfm') {
-                            //TODO Nachmittag
                             if ($daten['beginn'] !== null &&
                                     $daten['beginn'] != '' &&
                                     $daten['ende'] !== null &&

@@ -148,12 +148,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitstagTabelle->saveArbeitstag($tag, $this->id, $daten);
     }
 
-    //TODO Urlaub: Codepflege!
-    //public function saveArbeitsmonat(Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub = 0) {
+    
     public function saveArbeitsmonat(Zend_Date $monat) {
         $saldo = $this->getSaldo($monat);
         $urlaubMonat = $this->getUrlaubNachMonat($monat);
-        $urlaubBisher = $this->getUrlaubBisher($monat);
         $urlaubBisherVorjahr = $this->getUrlaubVorjahrBisher($monat);
         if ($urlaubMonat <= $urlaubBisherVorjahr) {
             // Urlaub dieses Monats kleiner-gleich dem Resturlaub vom Vorjahr
@@ -206,6 +204,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $monatsTabelle->getArbeitsmonateNachMitarbeiterId($this->id);
     }
 
+    /**
+     *
+     * @return Azebo_Model_Saldo 
+     */
     public function getSaldoBisher(Zend_Date $bis) {
         $saldo = $this->getSaldouebertrag();
         $monate = $this->getArbeitsmonate();
@@ -219,7 +221,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getUrlaubBisher(Zend_Date $bis) {
-        //TODO Die Urlaubsberechnung muss angepasst werden!!
         $urlaub = $this->getUrlaub();
         $monate = $this->getArbeitsmonate();
         foreach ($monate as $monat) {
@@ -231,7 +232,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getUrlaubVorjahrBisher(Zend_Date $bis) {
-        //TODO Die Urlaubsberechnung muss angepasst werden!!
         $zeiten = $this->_getZeiten();
         $vorjahrRestBis = $zeiten->urlaub->resturlaubbis;
         $vorjahrRestBis = new Zend_Date($vorjahrRestBis, 'dd.MM.');
@@ -383,6 +383,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $this->_row->urlaubvorjahr = $urlaub;
     }
 
+    //TODO getUrlaubGesamt kommentieren
     public function getUrlaubGesamt(Zend_Date $monat) {
         $urlaub = $this->getUrlaubBisher($monat);
         $urlaubVorjahr = $this->getUrlaubVorjahrBisher($monat);

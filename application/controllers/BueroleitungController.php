@@ -401,8 +401,22 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $this->view->saldoBisher2007 = $saldoBisher->getRestString();
             $this->view->saldoGesamt2007 = $saldoGesamt->getRestString();
         }
-        $this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher();
+        
+        // setze die Urlaubswerte
+//        $this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher();
+//        $this->view->urlaub = $mitarbeiter->getUrlaubNachMonat($monat);
+        
+        // Urlaubswerte setzen
+        $this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher($monat);
         $this->view->urlaub = $mitarbeiter->getUrlaubNachMonat($monat);
+        $gesamt = $mitarbeiter->getUrlaubGesamt($monat);
+        $this->view->urlaubGesamt = $gesamt['rest'];
+        $urlaubVorjahrBisher = $mitarbeiter->getUrlaubVorjahrBisher($monat);
+        if ($urlaubVorjahrBisher != 0) {
+            $this->view->hatVorjahrRest = true;
+            $this->view->vorjahrRestBisher = $urlaubVorjahrBisher;
+            $this->view->vorjahrRestGesamt = $gesamt['vorjahr'];
+        }
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
