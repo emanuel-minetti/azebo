@@ -16,7 +16,7 @@ pause.lang.dauer = "00:45:00"
 
 maximal = "10:45:00"
 
-urlaub.tage = 28
+urlaub.tage = 26
 urlaub.resturlaubbis = '30.9.'
 
 [hfm : alle]
