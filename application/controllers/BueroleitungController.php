@@ -481,7 +481,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $form->removeElement('saldo2007');
         }
         
-        //TODO Kappung: HfM keine Monatskappung?!
+        if($hochschule == 'hfm') {
+            $form->removeElement('kappungmonat');
+        }
         
         $form->addElement('hidden', 'benutzername', array(
             'value' => $benutzername,

@@ -149,7 +149,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function saveArbeitsmonat(Zend_Date $monat) {
-        $saldo = $this->getSaldo($monat);
+        $saldo = $this->getSaldoGesamt($monat, true);
         $urlaubMonat = $this->getUrlaubNachMonat($monat);
         $urlaubBisherVorjahr = $this->getUrlaubVorjahrBisher($monat);
         if ($urlaubMonat <= $urlaubBisherVorjahr) {
@@ -275,6 +275,47 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
 
         return $saldo;
+    }
+
+    //TODO Kappung: Dokumentieren und kommentieren!
+    public function getSaldoGesamt(Zend_Date $monat, $differenz = false) {
+        $saldoBisher = $this->getSaldoBisher($monat);
+        $saldo = $this->getSaldo($monat);
+
+        // die Monats-Kappungs-Grenze anwenden
+        $kappungMonat = $this->getKappungMonat();
+        if ($kappungMonat !== null && $saldo->getPositiv() &&
+                $saldo->vergleiche($kappungMonat) == 1) {
+            $saldo = $kappungMonat;
+        }
+
+        $saldoGesamt = Azebo_Model_Saldo::copy($saldoBisher);
+        $log = Zend_Registry::get('log');
+        $log->debug('KappungMonat: ' . $kappungMonat->getString());
+        $log->debug('SaldoGesamt Zuerst: ' . $saldoGesamt->getString());
+        $saldoGesamt->add($saldo, true);
+
+        // die Gesamt-Kappungs-Grenze anwenden
+        $log->debug('SaldoGesamt Vorher: ' . $saldoGesamt->getString());
+        $kappungGesamt = $this->getKappungGesamt();
+        if ($kappungGesamt !== null && $saldoGesamt->getPositiv() &&
+                $saldoGesamt->vergleiche($kappungGesamt) == 1) {
+            // $saldoGesamt darf nicht einfach überschrieben werden,
+            // sonst geht u.U. der Rest 2007 bei der HfM verloren!
+            $saldoGesamt = new Azebo_Model_Saldo($kappungGesamt->getStunden(),
+                            $kappungGesamt->getMinuten(), true,
+                            $saldoGesamt->getRest(),
+                            $saldoGesamt->getRestStunden(),
+                            $saldoGesamt->getRestMinuten());
+        }
+
+        if ($differenz) {
+            $saldoBisher = new Azebo_Model_Saldo($saldoBisher->getStunden(),
+                            $saldoBisher->getMinuten(), false);
+            $saldoGesamt->add($saldoBisher);
+        }
+
+        return $saldoGesamt;
     }
 
     public function getUrlaubNachMonat(Zend_Date $monat) {

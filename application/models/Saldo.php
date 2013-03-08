@@ -54,7 +54,7 @@ class Azebo_Model_Saldo {
 
         return $copy;
     }
-
+    
     /**
      * Addiert $saldo zu $this. Falls $monat == true ist, Wird auch die
      * 2007er-Regelung der HfM brücksichtigt. Gibt $this zurück für
@@ -65,7 +65,6 @@ class Azebo_Model_Saldo {
      * @return \Azebo_Model_Saldo 
      */
     public function add(Azebo_Model_Saldo $saldo, $monat = false) {
-        //TODO Kappungsgrenzen!
 
         $stunden = $saldo->getStunden();
         $minuten = $saldo->getMinuten();
@@ -154,26 +153,29 @@ class Azebo_Model_Saldo {
                 $this->_restMinuten = null;
                 $this->_rest2007 = false;
             }
-        }
+        } //if ($monat && !$this->_positiv && $this->_rest2007)
 
         return $this;
     }
 
-    //TODO Dokumentieren!
-    public function vergleiche(Azebo_Model_Saldo $saldo, $mitVorzeichen = false) {
-        if ($mitVorzeichen) {
-            if ($this->_stunden == $saldo->getStunden() &&
-                    $this->_minuten == $saldo->getMinuten() &&
-                    $this->_positiv = $saldo->getPositiv()) {
-                return 0;
-            }
+    //TODO Kappung: dokumentieren!
+    public function vergleiche(Azebo_Model_Saldo $saldo) {
+
+        if ($this->_stunden < $saldo->getStunden()) {
+            return -1;
+        } elseif ($this->_stunden > $saldo->getStunden()) {
+            return 1;
         } else {
-            if ($this->_stunden == $saldo->getStunden() &&
-                    $this->_minuten == $saldo->getMinuten()) {
+            // also: $this->_stunden == $saldo->getStunden()
+            if ($this->_minuten < $saldo->getMinuten()) {
+                return -1;
+            } elseif ($this->_minuten > $saldo->getMinuten()) {
+                return 1;
+            } else {
+                // also: $this->_minuten == $saldo->getMinuten()
                 return 0;
             }
         }
-        return 1;
     }
 
     public function getStunden() {

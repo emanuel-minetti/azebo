@@ -90,6 +90,8 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getSaldo(Zend_Date $monat);
     
+    public function getSaldoGesamt(Zend_Date $monat, $differenz = false);
+    
     public function getAbgeschlossenBis();
     
     public function getAbgelegtBis();

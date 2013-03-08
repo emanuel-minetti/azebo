@@ -163,8 +163,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->saldo = $this->mitarbeiter->getSaldo(
                 $this->zuBearbeitendesDatum, true);
         $this->view->saldo = $this->saldo->getString();
-        $this->saldoGesamt = Azebo_Model_Saldo::copy($this->saldoBisher);
-        $this->saldoGesamt->add($this->saldo, true);
+        //TODO Kappung: Hier bin ich! saldoGesamt muss nach mitarbeiter_Item verschoben werden!
+        //$this->saldoGesamt = Azebo_Model_Saldo::copy($this->saldoBisher);
+        //$this->saldoGesamt->add($this->saldo, true);
+        $this->saldoGesamt = $this->mitarbeiter->getSaldoGesamt($this->zuBearbeitendesDatum);
         $this->view->saldoGesamt = $this->saldoGesamt->getString();
         if ($this->mitarbeiter->getHochschule() == 'hfm' &&
                 $this->saldoBisher->getRest()) {
