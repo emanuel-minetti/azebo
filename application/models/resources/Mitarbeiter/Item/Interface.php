@@ -128,9 +128,13 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getKappungMonat();
     
+    public function getKappungMonatStandard();
+    
     public function setKappungMonat($kappung);
     
     public function getKappungGesamt();
+    
+    public function getKappungGesamtStandard();
     
     public function setKappungGesamt($kappung);
     

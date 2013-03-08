@@ -485,4 +485,28 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
     }
 
+    public function getKappungGesamtStandard() {
+        $zeiten = $this->_getZeiten();
+        $stunden = $zeiten->kappung->gesamt->stunden;
+        $minuten = $zeiten->kappung->gesamt->minuten;
+        if ($stunden != -1) {
+            $kappung = new Azebo_Model_Saldo($stunden, $minuten, true);
+        } else {
+            $kappung = null;
+        }
+        return $kappung;
+    }
+
+    public function getKappungMonatStandard() {
+        $zeiten = $this->_getZeiten();
+        $stunden = $zeiten->kappung->monat->stunden;
+        $minuten = $zeiten->kappung->monat->minuten;
+        if ($stunden != -1) {
+            $kappung = new Azebo_Model_Saldo($stunden, $minuten, true);
+        } else {
+            $kappung = null;
+        }
+        return $kappung;
+    }
+
 }

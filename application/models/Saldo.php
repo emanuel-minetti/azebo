@@ -42,7 +42,7 @@ class Azebo_Model_Saldo {
         $this->_restStunden = $restStunden;
         $this->_restMinuten = $restMinuten;
     }
-    
+
     public static function copy(Azebo_Model_Saldo $saldo) {
         $copy = new Azebo_Model_Saldo(0, 0, true);
         $copy->_stunden = $saldo->getStunden();
@@ -51,7 +51,7 @@ class Azebo_Model_Saldo {
         $copy->_rest2007 = $saldo->getRest();
         $copy->_restStunden = $saldo->getRestStunden();
         $copy->_restMinuten = $saldo->getRestMinuten();
-        
+
         return $copy;
     }
 
@@ -66,33 +66,32 @@ class Azebo_Model_Saldo {
      */
     public function add(Azebo_Model_Saldo $saldo, $monat = false) {
         //TODO Kappungsgrenzen!
-        
+
         $stunden = $saldo->getStunden();
         $minuten = $saldo->getMinuten();
         $positiv = $saldo->getPositiv();
-        
-        if(($this->_positiv && $positiv) || (!$this->_positiv && !$positiv)) {
+
+        if (($this->_positiv && $positiv) || (!$this->_positiv && !$positiv)) {
             // gleiches Vorzeichen
             $this->_minuten += $minuten;
-            if($this->_minuten >= 60) {
+            if ($this->_minuten >= 60) {
                 $this->_minuten -= 60;
                 $this->_stunden++;
             }
             $this->_stunden += $stunden;
         } else {
             // ungleiches Vorzeichen
-            
             // finde größeren Wert
-            if($this->_stunden > $stunden) {
+            if ($this->_stunden > $stunden) {
                 $dieserIstGroesser = true;
-            } elseif($this->_stunden < $stunden) {
+            } elseif ($this->_stunden < $stunden) {
                 $dieserIstGroesser = false;
             } else {
                 $dieserIstGroesser = $this->_minuten >= $minuten;
             }
-            
-            if($dieserIstGroesser) {
-                if($this->_minuten >= $minuten) {
+
+            if ($dieserIstGroesser) {
+                if ($this->_minuten >= $minuten) {
                     $this->_minuten -= $minuten;
                 } else {
                     $this->_minuten = $this->_minuten - $minuten + 60;
@@ -101,7 +100,7 @@ class Azebo_Model_Saldo {
                 $this->_stunden -= $stunden;
             } else {
                 // der andere ist größer
-                if($this->_minuten <= $minuten) {
+                if ($this->_minuten <= $minuten) {
                     $this->_minuten = $minuten - $this->_minuten;
                 } else {
                     $this->_minuten = $minuten - $this->_minuten + 60;
@@ -111,23 +110,23 @@ class Azebo_Model_Saldo {
                 $this->_positiv = $positiv;
             }
         }
-        
-        if($this->_minuten == 0 && $this->_stunden == 0) {
+
+        if ($this->_minuten == 0 && $this->_stunden == 0) {
             $this->_positiv = true;
         }
-        
+
         //2007-er Regelung für die HfM
-        if($monat && !$this->_positiv && $this->_rest2007) {
-            if($this->_restStunden > $this->_stunden) {
+        if ($monat && !$this->_positiv && $this->_rest2007) {
+            if ($this->_restStunden > $this->_stunden) {
                 $restIstGroesser = true;
-            } elseif($this->_restStunden < $this->_stunden) {
+            } elseif ($this->_restStunden < $this->_stunden) {
                 $restIstGroesser = false;
             } else {
                 $restIstGroesser = $this->_restMinuten >= $this->_minuten;
             }
-            
-            if($restIstGroesser) {
-                if($this->_restMinuten >= $this->_minuten) {
+
+            if ($restIstGroesser) {
+                if ($this->_restMinuten >= $this->_minuten) {
                     $this->_restMinuten -= $this->_minuten;
                 } else {
                     $this->_restMinuten = $this->_restMinuten - $this->_minuten + 60;
@@ -137,14 +136,14 @@ class Azebo_Model_Saldo {
                 $this->_minuten = 0;
                 $this->_stunden = 0;
                 $this->_positiv = true;
-                if($this->_restStunden == 0 && $this->_restMinuten == 0) {
+                if ($this->_restStunden == 0 && $this->_restMinuten == 0) {
                     $this->_restStunden = null;
                     $this->_restMinuten = null;
                     $this->_rest2007 = false;
                 }
             } else {
                 // restIstGroesser == false
-                if($this->_minuten >= $this->_restMinuten) {
+                if ($this->_minuten >= $this->_restMinuten) {
                     $this->_minuten -= $this->_restMinuten;
                 } else {
                     $this->_minuten = $this->_minuten - $this->_restMinuten + 60;
@@ -158,6 +157,23 @@ class Azebo_Model_Saldo {
         }
 
         return $this;
+    }
+
+    //TODO Dokumentieren!
+    public function vergleiche(Azebo_Model_Saldo $saldo, $mitVorzeichen = false) {
+        if ($mitVorzeichen) {
+            if ($this->_stunden == $saldo->getStunden() &&
+                    $this->_minuten == $saldo->getMinuten() &&
+                    $this->_positiv = $saldo->getPositiv()) {
+                return 0;
+            }
+        } else {
+            if ($this->_stunden == $saldo->getStunden() &&
+                    $this->_minuten == $saldo->getMinuten()) {
+                return 0;
+            }
+        }
+        return 1;
     }
 
     public function getStunden() {
@@ -198,13 +214,13 @@ class Azebo_Model_Saldo {
             return $saldoString;
         }
     }
-    
+
     public function getRestString() {
-        if($this->_restStunden === null || !$this->_rest2007) {
+        if ($this->_restStunden === null || !$this->_rest2007) {
             return '+ 0:00';
         } else {
             $saldoString = '+' . $this->_restStunden . ':';
-            if($this->_restMinuten <= 9) {
+            if ($this->_restMinuten <= 9) {
                 $saldoString .= '0' . $this->_restMinuten;
             } else {
                 $saldoString .= $this->_restMinuten;
@@ -212,7 +228,7 @@ class Azebo_Model_Saldo {
         }
         return $saldoString;
     }
-    
+
     public function getStringOhneVorzeichen() {
         if ($this->_stunden === null) {
             return '0:00';

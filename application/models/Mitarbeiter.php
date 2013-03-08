@@ -181,7 +181,6 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
             $mitarbeiter->setSaldo2007($saldo2007);
         }
 
-        //TODO Kappung nur setzen falls sie nicht default ist!!!
         // KappungGesamt setzen
         $kappungGesamtString = $daten['kappunggesamt'];
         if ($kappungGesamtString !== null & $kappungGesamtString != '') {
@@ -191,10 +190,18 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
             $stunden = $parts[1];
             $minuten = $parts[2];
             $kappunggesamt = new Azebo_Model_Saldo($stunden, $minuten, true);
+        } else {
+            $kappunggesamt = null;
+        }
+        // nicht setzen, falls sie nicht Standard ist
+        $standardGesamt = $mitarbeiter->getKappungGesamtStandard();
+        if ($standardGesamt !== null && $kappunggesamt !== null &&
+                $kappunggesamt->vergleiche($standardGesamt) == 0) {
+            $kappunggesamt = null;
         }
         $mitarbeiter->setKappungGesamt($kappunggesamt);
 
-        // KappungMonat setzen
+        // KappungMonat setzen, falls sie nicht Standard ist
         $kappungMonatString = $daten['kappungmonat'];
         if ($kappungMonatString !== null & $kappungMonatString != '') {
             $preg = '^(\d{1,3}):(\d{1,2})$';
@@ -203,6 +210,14 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
             $stunden = $parts[1];
             $minuten = $parts[2];
             $kappungmonat = new Azebo_Model_Saldo($stunden, $minuten, true);
+        } else {
+            $kappungmonat = null;
+        }
+        // nicht setzen, falls sie nicht Standard ist
+        $standardMonat = $mitarbeiter->getKappungMonatStandard();
+        if ($standardMonat !== null && $kappungmonat !== null &&
+                $kappungmonat->vergleiche($standardMonat) == 0) {
+            $kappungmonat = null;
         }
         $mitarbeiter->setKappungMonat($kappungmonat);
 

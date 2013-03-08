@@ -480,11 +480,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         if ($hochschule != 'hfm' || $beamter) {
             $form->removeElement('saldo2007');
         }
-
-        if ($hochschule == 'hfm') {
-            //TODO Kappungsgrenzen: Hier bin ich!
-        }
-
+        
+        //TODO Kappung: HfM keine Monatskappung?!
+        
         $form->addElement('hidden', 'benutzername', array(
             'value' => $benutzername,
         ));
