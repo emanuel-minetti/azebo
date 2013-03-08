@@ -117,7 +117,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $postDaten = $request->getPost();
             if (isset($postDaten['absenden'])) {
                 $valid = $formDetail->isValid($postDaten);
+                $this->_log->debug('Valide: ' . "$valid");
                 if ($valid) {
+                    $this->_log->debug('Hallo2!');
                     $daten = $formDetail->getValues();
                     $this->model->saveMitarbeiter(
                             $zuBearbeitenderMitarbeiter, $daten);
@@ -164,7 +166,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 getMitarbeiterNachBenutzername($benutzername);
         $id = $this->_getParam('id');
         $form = $this->_getArbeitsregelForm($benutzername, $id);
-        
+
         $this->erweitereSeitenName(' Bearbeite Arbeitszeit ' . $zuBearbeitenderMitarbeiter->getName());
 
         $request = $this->getRequest();
@@ -383,10 +385,10 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->monatsDaten = $tabelle['tabellenDaten'];
         $this->view->hoheTageImMonat = $tabelle['hoheTage'];
         $this->view->extraZeilen = $tabelle['extraZeilen'];
-        
+
         // übergebe dem View die Hochschule
         $this->view->hochschule = $mitarbeiter->getHochschule();
-        
+
         // setze die Salden
         $saldoBisher = $mitarbeiter->getSaldoBisher($monat);
         $this->view->saldoBisher = $saldoBisher->getString();
@@ -401,7 +403,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $this->view->saldoBisher2007 = $saldoBisher->getRestString();
             $this->view->saldoGesamt2007 = $saldoGesamt->getRestString();
         }
-        
+
         // setze die Urlaubswerte
         $this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher($monat);
         $this->view->urlaub = $mitarbeiter->getUrlaubNachMonat($monat);
@@ -446,6 +448,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $saldo = $mitarbeiter->getSaldouebertrag();
             $urlaubVorjahr = $mitarbeiter->getUrlaubVorjahr();
             $urlaub = $mitarbeiter->getUrlaub();
+            $kappung = $mitarbeiter->getKappungGesamt();
+            $kappungmonat = $mitarbeiter->getKappungMonat();
         } else {
             $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
             $mitarbeiter = $mitarbeiterTabelle->createRow();
@@ -453,6 +457,15 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $saldo = new Azebo_Model_Saldo(0, 0, true);
             $urlaubVorjahr = 0;
             $urlaub = $this->ns->zeiten->urlaub->tage;
+            $kappung = $mitarbeiter->getKappungGesamt();
+            $kappungmonat = $mitarbeiter->getKappungMonat();
+        }
+
+        if ($kappung !== null) {
+            $kappung = $kappung->getStringOhneVorzeichen();
+        }
+        if ($kappungmonat !== null) {
+            $kappungmonat = $kappungmonat->getStringOhneVorzeichen();
         }
 
         $elemente = $form->getElements();
@@ -460,9 +473,16 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $elemente['saldo']->setValue($saldo->getString());
         $elemente['urlaubVorjahr']->setValue($urlaubVorjahr);
         $elemente['urlaub']->setValue($urlaub);
-        
-        if($this->mitarbeiter->getHochschule() != 'hfm' || $beamter) {
+        $elemente['kappunggesamt']->setValue($kappung);
+        $elemente['kappungmonat']->setValue($kappungmonat);
+
+        $hochschule = $this->mitarbeiter->getHochschule();
+        if ($hochschule != 'hfm' || $beamter) {
             $form->removeElement('saldo2007');
+        }
+
+        if ($hochschule == 'hfm') {
+            //TODO Kappungsgrenzen: Hier bin ich!
         }
 
         $form->addElement('hidden', 'benutzername', array(

@@ -31,6 +31,11 @@ rahmen.sommer.von.jahr2013 = "31.05.2013"
 rahmen.sommer.bis.jahr2013 = "01.09.2013"
 rahmen.beginn.sommer.jahr2013 = "06:30:00"
 
+kappung.gesamt.stunden = 100
+kappung.gesamt.minuten = 0
+kappung.monat.stunden = -1
+kappung.monat.minuten = 0
+
 [hfs : alle]
 rahmen.beginn.normal = "07:00:00"
 rahmen.ende.normal = "20:00:00"
@@ -38,9 +43,19 @@ kern.beginn = "10:00:00"
 kern.ende.normal = "15:00:00"
 kern.ende.freitag = "14:00:00"
 
+kappung.gesamt.stunden = 40
+kappung.gesamt.minuten = 0
+kappung.monat.stunden = 20
+kappung.monat.minuten = 0
+
 [khb : alle]
 rahmen.beginn.normal = "08:00:00"
 rahmen.ende.normal = "18:00:00"
 kern.beginn = "09:00:00"
 kern.ende.normal = "15:00:00"
 kern.ende.freitag = "14:00:00"
+
+kappung.gesamt.stunden = 30
+kappung.gesamt.minuten = 0
+kappung.monat.stunden = 10
+kappung.monat.minuten = 0

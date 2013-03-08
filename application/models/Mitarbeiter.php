@@ -49,9 +49,9 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     }
 
     public function getMitarbeiterNachHochschule($hochschule) {
-        
+
         $gruppenNamen = Zend_Registry::get('gruppen');
-        
+
         switch ($hochschule) {
             case 'hfm':
                 $gruppe = $gruppenNamen->mitglied->hfm;
@@ -89,7 +89,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         }
         return $erg;
     }
-    
+
     public function getHochschuleNachBenutzernamen($benutzername) {
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
         $options = $config->ldap->physalis->toArray();
@@ -111,15 +111,14 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
                 $hochschule = 'khb';
             }
         }
-        
+
         return $hochschule;
     }
 
-
     public function getBenutzernamenNachHochschule($hochschule) {
-        
+
         $gruppenNamen = Zend_Registry::get('gruppen');
-        
+
         switch ($hochschule) {
             case 'hfm':
                 $gruppe = $gruppenNamen->mitglied->hfm;
@@ -140,10 +139,10 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
             $membersArray[] = $group['memberuid'];
         }
         $mitglieder = $membersArray[0];
-        
+
         return $mitglieder;
     }
-    
+
     public function getNameNachBenutzername($benutzername) {
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
         $options = $config->ldap->physalis->toArray();
@@ -156,12 +155,14 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $nachname = $benutzer['sn'][0];
         return $vorname . ' ' . $nachname;
     }
-    
+
     public function saveMitarbeiter(Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter, $daten) {
         $mitarbeiter->benutzername = $daten['benutzername'];
         $mitarbeiter->setUrlaubVorjahr($daten['urlaubVorjahr']);
         $mitarbeiter->setUrlaub($daten['urlaub']);
         $mitarbeiter->beamter = $daten['beamter'];
+
+        // Saldo setzen
         $saldoString = $daten['saldo'];
         $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';
         $parts = array();
@@ -171,7 +172,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $minuten = $parts[3];
         $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
         $mitarbeiter->setSaldoUebertrag($saldo);
-        if(isset($daten['saldo2007']) && $daten['saldo2007'] != '') {
+        if (isset($daten['saldo2007']) && $daten['saldo2007'] != '') {
             $parts = array();
             preg_match("/$preg/", $daten['saldo2007'], $parts);
             $stunden = $parts[2];
@@ -179,23 +180,50 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
             $saldo2007 = new Azebo_Model_Saldo($stunden, $minuten, true);
             $mitarbeiter->setSaldo2007($saldo2007);
         }
+
+        //TODO Kappung nur setzen falls sie nicht default ist!!!
+        // KappungGesamt setzen
+        $kappungGesamtString = $daten['kappunggesamt'];
+        if ($kappungGesamtString !== null & $kappungGesamtString != '') {
+            $preg = '^(\d{1,3}):(\d{1,2})$';
+            $parts = array();
+            preg_match("/$preg/", $kappungGesamtString, $parts);
+            $stunden = $parts[1];
+            $minuten = $parts[2];
+            $kappunggesamt = new Azebo_Model_Saldo($stunden, $minuten, true);
+        }
+        $mitarbeiter->setKappungGesamt($kappunggesamt);
+
+        // KappungMonat setzen
+        $kappungMonatString = $daten['kappungmonat'];
+        if ($kappungMonatString !== null & $kappungMonatString != '') {
+            $preg = '^(\d{1,3}):(\d{1,2})$';
+            $parts = array();
+            preg_match("/$preg/", $kappungMonatString, $parts);
+            $stunden = $parts[1];
+            $minuten = $parts[2];
+            $kappungmonat = new Azebo_Model_Saldo($stunden, $minuten, true);
+        }
+        $mitarbeiter->setKappungMonat($kappungmonat);
+
+        // In die DB schreiben
         $mitarbeiter->save();
     }
-    
+
     public function getArbeitsregelNachId($id) {
         $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
         return $arbeitsregelTabelle->getArbeitsregelNachId($id);
     }
-    
+
     public function getArbeitsregelnNachBenutzername($benutzername) {
         $mitarbeiter = $this->getMitarbeiterNachBenutzername($benutzername);
         $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
         return $arbeitsregelTabelle->getArbeitsregelnNachMitarbeiterId($mitarbeiter->id);
     }
-    
+
     public function saveArbeitsregel($daten) {
         $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
-        if($daten['id'] == 0) {
+        if ($daten['id'] == 0) {
             $arbeitsregel = $arbeitsregelTabelle->createRow();
         } else {
             $arbeitsregel = $arbeitsregelTabelle->getArbeitsregelNachId($daten['id']);
@@ -211,15 +239,15 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $arbeitsregel->setKernAnfang($daten['kernAnfang']);
         $arbeitsregel->setKernEnde($daten['kernEnde']);
         $arbeitsregel->setRahmenEnde($daten['rahmenEnde']);
-        
+
         $arbeitsregel->save();
     }
-    
+
     public function deleteArbeitsregel($id) {
         $arbeitsregel = $this->getArbeitsregelNachId($id);
         $arbeitsregel->delete();
     }
-    
+
     public function getAbgeschlossenAbgelegtNachMonatUndHochschule($monat, $hochschule) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
         $arbeitsmonate = $monatsTabelle->getArbeitsmonateNachMonat($monat);
@@ -227,15 +255,15 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         foreach ($arbeitsmonate as $arbeitsmonat) {
             $mitarbeiterId = $arbeitsmonat->mitarbeiter_id;
             $mitarbeiter = $this->getMitarbeiterNachId($mitarbeiterId);
-            if($hochschule == $this->getHochschuleNachBenutzernamen($mitarbeiter->benutzername)) {
+            if ($hochschule == $this->getHochschuleNachBenutzernamen($mitarbeiter->benutzername)) {
                 $erg[] = $arbeitsmonat;
             }
         }
-        
+
         $abgeschlossen = count($erg);
         $abgelegt = 0;
         foreach ($erg as $monat) {
-            if($monat->abgelegt == 'ja') {
+            if ($monat->abgelegt == 'ja') {
                 $abgelegt++;
             }
         }

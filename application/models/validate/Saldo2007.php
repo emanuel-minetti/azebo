@@ -29,23 +29,29 @@ class Azebo_Validate_Saldo2007 extends Zend_Validate_Abstract {
 
     const FORMAT = 'format';
     const NEGATIV = 'negativ';
+    const MINUTEN = 'minuten';
 
     protected $_messageTemplates = array(
         self::FORMAT => 'Bitte geben Sie das Saldo im Format \'+/- hh:mm\' ein.',
         self::NEGATIV => 'Das Saldo 2007 darf nicht negativ sein!',
+        self::MINUTEN => 'Die Minuten müssen weniger als 60 betragen!',
     );
 
     public function isValid($value) {
         $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';
         $parts = array();
-        if (preg_match("/$preg/", $value, $parts)) {
+        if (!preg_match("/$preg/", $value, $parts)) {
+            $this->_error(self::FORMAT);
+            return false;
+        } else {
+            if ($parts[3] >= 60) {
+                $this->_error(self::MINUTEN);
+                return false;
+            }
             if ($parts[1] == '-') {
                 $this->_error(self::NEGATIV);
                 return false;
             }
-        } else {
-            $this->_error(self::FORMAT);
-            return false;
         }
         return true;
     }

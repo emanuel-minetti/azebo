@@ -21,43 +21,33 @@
  */
 
 /**
- * Description of Saldo
+ * Description of Kappung
  *
  * @author Emanuel Minetti
  */
-class Azebo_Validate_Saldo extends Zend_Validate_Abstract {
+class Azebo_Validate_Kappung extends Zend_Validate_Abstract {
 
     const FORMAT = 'format';
     const ZU_GROSS = 'zuGross';
     const MINUTEN = 'minuten';
 
     protected $_messageTemplates = array(
-        self::FORMAT => 'Bitte geben Sie das Saldo im Format \'+/- hh:mm\' ein.',
-        self::ZU_GROSS => 'Das Saldo darf 100 Stunden nicht überschreiten!',
+        self::FORMAT => 'Bitte geben Sie das Saldo im Format \'[hh]h:mm\' ein.',
         self::MINUTEN => 'Die Minuten müssen weniger als 60 betragen!',
     );
 
     public function isValid($value) {
-        //TODO Nicht mit 100:00 vergleichen sondern der individuellen Kappungsgrenze!
-        $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';
-        if (preg_match("/$preg/", $value, $parts)) {
-            if($parts[3] >= 60) {
-                $this->_error(self::MINUTEN);
-                return false;
-            }
-            if ($parts[1] == '-' || $parts[2] < 100) {
-                return true;
-            } elseif ($parts[2] == 100 && $parts[3] == 0) {
-                return true;
-            } else {
-                $this->_error(self::ZU_GROSS);
-                return false;
-            }
-        } else {
+        $preg = '^(\d{1,3}):(\d{1,2})$';
+        $parts = array();
+        if (!preg_match("/$preg/", $value, $parts)) {
             $this->_error(self::FORMAT);
             return false;
+        } elseif ($parts[2] >= 60) {
+            $this->_error(self::MINUTEN);
+            return false;
         }
+
+        return true;
     }
 
 }
-

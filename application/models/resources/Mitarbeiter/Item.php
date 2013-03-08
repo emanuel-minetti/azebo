@@ -148,7 +148,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitstagTabelle->saveArbeitstag($tag, $this->id, $daten);
     }
 
-    
     public function saveArbeitsmonat(Zend_Date $monat) {
         $saldo = $this->getSaldo($monat);
         $urlaubMonat = $this->getUrlaubNachMonat($monat);
@@ -428,6 +427,62 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $this->_zeiten = $ns->zeiten;
         }
         return $this->_zeiten;
+    }
+
+    public function getKappungGesamt() {
+        $stunden = $this->_row->kappungtotalstunden;
+        $minuten = $this->_row->kappungtotalminuten;
+        if ($stunden === null && $minuten === null) {
+            // keine Kappungsgrenze in der Tabelle, also Standard-Kappung
+            $zeiten = $this->_getZeiten();
+            $stunden = $zeiten->kappung->gesamt->stunden;
+            $minuten = $zeiten->kappung->gesamt->minuten;
+        }
+        if ($stunden != -1) {
+            // keine Standard-Kappung, also gib 'null' zurück
+            $kappung = new Azebo_Model_Saldo($stunden, $minuten, true);
+        } else {
+            $kappung = null;
+        }
+        return $kappung;
+    }
+
+    public function getKappungMonat() {
+        $stunden = $this->_row->kappungmonatstunden;
+        $minuten = $this->_row->kappungmonatminuten;
+        if ($stunden === null && $minuten === null) {
+            // keine Kappungsgrenze in der Tabelle, also Standard-Kappung
+            $zeiten = $this->_getZeiten();
+            $stunden = $zeiten->kappung->monat->stunden;
+            $minuten = $zeiten->kappung->monat->minuten;
+        }
+        if ($stunden != -1) {
+            // keine Standard-Kappung, also gib 'null' zurück
+            $kappung = new Azebo_Model_Saldo($stunden, $minuten, true);
+        } else {
+            $kappung = null;
+        }
+        return $kappung;
+    }
+
+    public function setKappungGesamt($kappung) {
+        if ($kappung === null) {
+            $this->_row->kappungtotalstunden = null;
+            $this->_row->kappungtotalminuten = null;
+        } else {
+            $this->_row->kappungtotalstunden = $kappung->getStunden();
+            $this->_row->kappungtotalminuten = $kappung->getMinuten();
+        }
+    }
+
+    public function setKappungMonat($kappung) {
+        if ($kappung === null) {
+            $this->_row->kappungmonatstunden = null;
+            $this->_row->kappungmonatminuten = null;
+        } else {
+            $this->_row->kappungmonatstunden = $kappung->getStunden();
+            $this->_row->kappungmonatminuten = $kappung->getMinuten();
+        }
     }
 
 }

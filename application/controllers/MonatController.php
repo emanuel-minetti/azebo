@@ -557,8 +557,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $urlaubMonatString = $this->urlaubMonat;
         $urlaubGesamtString = $this->urlaubGesamt;
         if($this->vorjahrRestBisher != 0) {
-            $urlaubBisherString .= '     (Rest Vortjahr: ' . $this->vorjahrRestBisher . ')';
-            $urlaubGesamtString .= '     (Rest Vortjahr: ' . $this->vorjahrRestGesamt . ')';
+            $urlaubBisherString .= '     (Rest Vorjahr: ' . $this->vorjahrRestBisher . ')';
+            $urlaubGesamtString .= '     (Rest Vorjahr: ' . $this->vorjahrRestGesamt . ')';
         }
 
         // Setzen von Textbausteinen

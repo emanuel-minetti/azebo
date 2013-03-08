@@ -67,6 +67,20 @@ class Azebo_Form_Mitarbeiter_Mitarbeiterdetail extends AzeboLib_Form_Abstract {
             'validators' => array('Digits',),
         ));
         
+        $this->addElement('Text', 'kappunggesamt', array(
+            'label' => 'Kappungsgrenze für Überstunden',
+            'required' => false,
+            'filters' => array('StringTrim'),
+            'validators' => array('Kappung',),
+        ));
+        
+        $this->addElement('Text', 'kappungmonat', array(
+            'label' => 'Kappungsgrenze für Überstunden in einem Monat',
+            'required' => false,
+            'filters' => array('StringTrim'),
+            'validators' => array('Kappung',),
+        ));
+        
          $this->addElement('SubmitButton', 'absenden', array(
             'required' => false,
             'ignore' => true,

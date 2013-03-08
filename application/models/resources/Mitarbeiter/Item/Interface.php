@@ -126,4 +126,12 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getUrlaubGesamt(Zend_Date $monat);
     
+    public function getKappungMonat();
+    
+    public function setKappungMonat($kappung);
+    
+    public function getKappungGesamt();
+    
+    public function setKappungGesamt($kappung);
+    
 }

@@ -212,5 +212,19 @@ class Azebo_Model_Saldo {
         }
         return $saldoString;
     }
+    
+    public function getStringOhneVorzeichen() {
+        if ($this->_stunden === null) {
+            return '0:00';
+        } else {
+            $saldoString = $this->_stunden . ':';
+            if ($this->_minuten <= 9) {
+                $saldoString .= '0' . $this->_minuten;
+            } else {
+                $saldoString .= $this->_minuten;
+            }
+            return $saldoString;
+        }
+    }
 
 }
