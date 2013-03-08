@@ -158,7 +158,13 @@ class Azebo_Model_Saldo {
         return $this;
     }
 
-    //TODO Kappung: dokumentieren!
+    /**
+     * Gibt -1, 0 oder 1 zurück. Ist $this kleiner als $saldo wird -1
+     * zurückgegeben, ist es größer 1 und ist es gleich 0.
+     * 
+     * @param Azebo_Model_Saldo $saldo
+     * @return int 
+     */
     public function vergleiche(Azebo_Model_Saldo $saldo) {
 
         if ($this->_stunden < $saldo->getStunden()) {

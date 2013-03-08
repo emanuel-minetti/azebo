@@ -250,12 +250,23 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $urlaub;
     }
 
-    //TODO getSaldo Kommentieren und Dokumentieren!
+    /**
+     * Gibt das Saldo des laufenden Monats (also des im Parameter $monat
+     * übergebenen Monats zurück. Ist $vorlaeufig == true, so werden nur die
+     * Tage berücksichtigt, bei denen Beginn und Ende bzw. eine Dienstbefreiung
+     * eingetragen sind.
+     * 
+     * @param Zend_Date $monat
+     * @param type $vorlaeufig
+     * @return \Azebo_Model_Saldo 
+     */
     public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
         $saldoBisher = $this->getSaldoBisher($monat);
         if ($saldoBisher->getRest()) {
-            $saldo = new Azebo_Model_Saldo(0, 0, true, true, $saldoBisher->getRestStunden(), $saldoBisher->getRestMinuten());
+            $saldo = new Azebo_Model_Saldo(0, 0, true, true,
+                            $saldoBisher->getRestStunden(),
+                            $saldoBisher->getRestMinuten());
         } else {
             $saldo = new Azebo_Model_Saldo(0, 0, true);
         }
@@ -277,7 +288,14 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $saldo;
     }
 
-    //TODO Kappung: Dokumentieren und kommentieren!
+    /**
+     * Gibt das Gesamtsaldo für einen Monat zurück. Ist $differenz == true,
+     * so wird die in der Monatstabelle einzutragende Differenz zurückgegeben.
+     * 
+     * @param Zend_Date $monat der Monat
+     * @param type $differenz
+     * @return \Azebo_Model_Saldo 
+     */
     public function getSaldoGesamt(Zend_Date $monat, $differenz = false) {
         $saldoBisher = $this->getSaldoBisher($monat);
         $saldo = $this->getSaldo($monat);
@@ -290,13 +308,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
 
         $saldoGesamt = Azebo_Model_Saldo::copy($saldoBisher);
-        $log = Zend_Registry::get('log');
-        $log->debug('KappungMonat: ' . $kappungMonat->getString());
-        $log->debug('SaldoGesamt Zuerst: ' . $saldoGesamt->getString());
         $saldoGesamt->add($saldo, true);
 
         // die Gesamt-Kappungs-Grenze anwenden
-        $log->debug('SaldoGesamt Vorher: ' . $saldoGesamt->getString());
         $kappungGesamt = $this->getKappungGesamt();
         if ($kappungGesamt !== null && $saldoGesamt->getPositiv() &&
                 $saldoGesamt->vergleiche($kappungGesamt) == 1) {
