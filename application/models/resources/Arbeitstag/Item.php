@@ -122,6 +122,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
             //Iteriere über die Regeln
             foreach ($arbeitsregeln as $arbeitsregel) {
                 if ($arbeitsregel->getVon()->compare($this->getTag()) != 1 &&
+                        $arbeitsregel->getBis() !== null &&
                         $arbeitsregel->getBis()->compare($this->getTag()) != -1) {
                     if ($arbeitsregel->wochentag == 'Alle') {
                         //Regel gilt für 'alle' Wochentage
