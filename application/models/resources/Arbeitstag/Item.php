@@ -121,23 +121,10 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
             //Iteriere über die Regeln
             foreach ($arbeitsregeln as $arbeitsregel) {
-                if ($arbeitsregel->wochentag == 'Alle') {
-                    //Regel gilt für 'alle' Wochentage
-                    if ($arbeitsregel->kalenderwoche == 'alle') {
-                        $this->_regel = $arbeitsregel;
-                        break;
-                    } else {
-                        $kwUngerade = $this->getTag()->get(Zend_Date::WEEK) % 2;
-                        if (($kwUngerade && $arbeitsregel->kalenderwoche == 'ungerade') ||
-                                (!$kwUngerade && $arbeitsregel->kalenderwoche == 'gerade')) {
-                            $this->_regel = $arbeitsregel;
-                            break;
-                        }
-                    }
-                } else {
-                    //Regel gilt für einen Wochentag
-                    if ($arbeitsregel->wochentag ==
-                            $this->getTag()->get(Zend_Date::WEEKDAY)) {
+                if ($arbeitsregel->getVon()->compare($this->getTag()) != 1 &&
+                        $arbeitsregel->getBis()->compare($this->getTag()) != -1) {
+                    if ($arbeitsregel->wochentag == 'Alle') {
+                        //Regel gilt für 'alle' Wochentage
                         if ($arbeitsregel->kalenderwoche == 'alle') {
                             $this->_regel = $arbeitsregel;
                             break;
@@ -147,6 +134,22 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                                     (!$kwUngerade && $arbeitsregel->kalenderwoche == 'gerade')) {
                                 $this->_regel = $arbeitsregel;
                                 break;
+                            }
+                        }
+                    } else {
+                        //Regel gilt für einen Wochentag
+                        if ($arbeitsregel->wochentag ==
+                                $this->getTag()->get(Zend_Date::WEEKDAY)) {
+                            if ($arbeitsregel->kalenderwoche == 'alle') {
+                                $this->_regel = $arbeitsregel;
+                                break;
+                            } else {
+                                $kwUngerade = $this->getTag()->get(Zend_Date::WEEK) % 2;
+                                if (($kwUngerade && $arbeitsregel->kalenderwoche == 'ungerade') ||
+                                        (!$kwUngerade && $arbeitsregel->kalenderwoche == 'gerade')) {
+                                    $this->_regel = $arbeitsregel;
+                                    break;
+                                }
                             }
                         }
                     }

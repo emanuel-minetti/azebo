@@ -55,11 +55,11 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
         // die Regeln, die diesen Monat gelten finden
         $regeln = array();
         foreach ($dbRegeln as $dbRegel) {
-            if ($dbRegel->von->compare($erster) != 1) {
+            if ($dbRegel->von->compare($letzter) != 1) {
                 if ($dbRegel->bis === null) {
                     array_push($regeln, $dbRegel);
                 } else {
-                    if ($dbRegel->bis->compare($letzter) != -1) {
+                    if ($dbRegel->bis->compare($erster) != -1) {
                         array_push($regeln, $dbRegel);
                     }
                 }

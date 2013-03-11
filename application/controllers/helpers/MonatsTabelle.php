@@ -28,18 +28,18 @@
 class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Abstract {
 
     public function direct(Zend_Date $erster, Zend_Date $letzter, Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter) {
-        
+
         // Hole die Befreiungsoptionen für diesen Mitarbeiter
         $befreiungService = new Azebo_Service_Befreiung();
         $befreiungOptionen = $befreiungService->getOptionen($mitarbeiter);
         $arbeitstage = $mitarbeiter->getArbeitstageNachMonat($erster);
-        
+
         // Initialisiere die Daten
         $tabellenDaten = new Zend_Dojo_Data();
         $tabellenDaten->setIdentifier('datum');
         $anzahlHoheTage = 0;
         $extraZeilen = 0;
-        
+
         // Iteriere über die Tage
         foreach ($arbeitstage as $arbeitstag) {
             if ($arbeitstag->tag->compare($erster, Zend_Date::DATE_MEDIUM)
@@ -165,7 +165,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 }
             }
         }
-        
+
         return array(
             'tabellenDaten' => $tabellenDaten,
             'hoheTage' => $anzahlHoheTage,
