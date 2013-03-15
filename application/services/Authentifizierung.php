@@ -176,7 +176,7 @@ class Azebo_Service_Authentifizierung {
             $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
             $options = $config->ldap->physalis->toArray();
             //Der Konstruktor von Zend_Auth_Adapter_Ldap erwartet als Optionen
-            //ein Array von Arrays, deren key ein servername ist.
+            //ein Array von Arrays, deren key ein Servername ist.
             $options = array(
                 'physalis' => $options,
             );
