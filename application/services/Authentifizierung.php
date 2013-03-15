@@ -181,7 +181,7 @@ class Azebo_Service_Authentifizierung {
                 'physalis' => $options,
             );
 
-            $this->_log->debug('Optionen: ' . print_r($options, true));
+            //$this->_log->debug('Optionen: ' . print_r($options, true));
             
             $authAdapter = new Zend_Auth_Adapter_Ldap($options, $daten['benutzername'], $daten['passwort']); 
             $this->setAuthAdapter($authAdapter);

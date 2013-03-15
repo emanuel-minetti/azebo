@@ -62,23 +62,31 @@ class Azebo_Validate_Pause extends Zend_Validate_Abstract {
             $endeWert = substr($contextEnde, 1);
             $beginn = new Zend_Date($beginnWert, Zend_Date::TIMES);
             $ende = new Zend_Date($endeWert, Zend_Date::TIMES);
-            
+
             //berechne die Anwesenheitszeit
             $zeitService = new Azebo_Service_Zeitrechner();
             $anwesend = $zeitService->anwesend($beginn, $ende);
-            
+
             // hole die Zeiten
             $ns = new Zend_Session_Namespace();
             $pause = $ns->zeiten->pause;
-            
+            $mitarbeiter = $ns->mitarbeiter;
+
             //prüfe
-            if($anwesend->compareTime($pause->kurz->dauer) != 1) {
+            if ($anwesend->compareTime($pause->kurz->dauer) != 1) {
                 $this->_error(self::ZU_KURZ);
                 return false;
             }
-            if($anwesend->compareTime($pause->kurz->ab) != -1) {
-                $this->_error(self::ZU_LANG);
-                return false;
+            if ($mitarbeiter->getHochschule() == 'khb') {
+                if ($anwesend->compareTime($pause->kurz->ab) == 1) {
+                    $this->_error(self::ZU_LANG);
+                    return false;
+                }
+            } else {
+                if ($anwesend->compareTime($pause->kurz->ab) != -1) {
+                    $this->_error(self::ZU_LANG);
+                    return false;
+                }
             }
         }
         return true;
