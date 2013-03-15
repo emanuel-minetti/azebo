@@ -59,8 +59,13 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 $saldo = null;
 
                 $datum = $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.yyyy');
+                $pdfTag = $tag->toString('EE');
+                $pdfDatum = $feiertag['name'] != '' ?
+                        $feiertag['name'] . ' ' . $tag->toString('dd.MM.') :
+                        $tag->toString('dd.MM.');
                 if ($nachmittag) {
                     $datum .= ' Vormittag';
+                    $pdfDatum .= ' Vormittag';
                     $anzahlHoheTage++;
                 }
 
@@ -95,6 +100,8 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
 
                 $tabellenDaten->addItem(array(
                     'datum' => $datum,
+                    'pdfTag' => $pdfTag,
+                    'pdfDatum' => $pdfDatum,
                     'tag' => $tag->toString('dd'),
                     'feiertag' => $feiertag['feiertag'],
                     'beginn' => $beginn,
@@ -120,6 +127,11 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                     // füge die Zeile für den Nachmittag hinzu
                     $datum = $feiertag['name'] . ' ' .
                             $tag->toString('EE, dd.MM.yyyy') . ' Nachmittag';
+                    $pdfTag = $tag->toString('EE');
+                    $pdfDatum = $feiertag['name'] != '' ?
+                            $feiertag['name'] . ' ' . $tag->toString('dd.MM.') :
+                            $tag->toString('dd.MM.');
+                    $pdfDatum .= ' Nachmittag';
                     $anzahlHoheTage++;
 
                     $beginn = null;
@@ -149,6 +161,8 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                     }
                     $tabellenDaten->addItem(array(
                         'datum' => $datum,
+                        'pdfTag' => $pdfTag,
+                        'pdfDatum' => $pdfDatum,
                         'tag' => $tag->toString('dd'),
                         'feiertag' => $feiertag['feiertag'],
                         'beginn' => $beginn,

@@ -58,19 +58,19 @@ class LoginController extends AzeboLib_Controller_Abstract {
             $ergebnis = $this->_authService->authentifiziere($form->getValues());
 
             if ($ergebnis === 'FehlerLDAP') {
-                 $this->_log->info("Anmeldung fehlgeschlagen: {$form->getValues()}");
+                 $this->_log->info('Anmeldung fehlgeschlagen:' . print_r($form->getValues(), true));
                 $form->setDescription(
                         'Anmeldung fehlgeschlagen! Bitte versuchen Sie es erneut.');
                 return $this->render('login');
             } else if ($ergebnis === 'FehlerDB') {
-                $this->_log->info("Anmeldung fehlgeschlagen: {$form->getValues()}");
+                $this->_log->info('Anmeldung fehlgeschlagen: ' . print_r($form->getValues(), true));
                 $form->setDescription(
                         'Sie sind noch nicht für den Arbeitszeitbogen' . 
                         ' registriert! Bitte informieren Sie Ihre Büroleitung.');
                 return $this->render('login');
                 
             } else if ($ergebnis === 'Erfolg') {
-                $this->_log->debug("Anmeldung erfolgreich: {$form->getValues()}");
+                $this->_log->debug('Anmeldung erfolgreich: '  . print_r($form->getValues(), true));
             }
 
             return $this->_helper->redirector->gotoSimple('index', 'index', 'default');

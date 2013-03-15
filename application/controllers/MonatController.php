@@ -372,6 +372,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 } elseif (isset($postDaten['nachmittagButton'])) {
                     // Nachmittag wurde gedrückt, also
                     // schalte das DB-Feld um und passe die Form an
+                    //TODO BUG!!! Nachmittag entfernen muss auch in der DB entfernt werden!
                     $this->mitarbeiter->
                             getArbeitstagNachTag($this->zuBearbeitendesDatum)->
                             toggleNachmittag();
@@ -497,9 +498,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Kopf der Tabelle
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->SetFillColor(220);
-        $pdf->SetWidths(array(30, 14, 14, 27, 48, 14, 14, 14, 15));
-        $pdf->SetAligns(array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'));
+        $pdf->SetWidths(array(9, 19, 14, 14, 27, 50, 14, 14, 14, 15));
+        $pdf->SetAligns(array('C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C', 'C'));
         $pdf->Row(array(
+            'Tag',
             'Datum',
             'Beginn',
             'Ende',
@@ -521,11 +523,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // Tabellenkörper
         $pdf->SetFont('Times', '', 10);
-        $pdf->SetAligns(array('C', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'C'));
+        $pdf->SetAligns(array('C', 'C', 'C', 'C', 'L', 'L', 'C', 'C', 'C', 'C'));
         foreach ($tabelle['tabellenDaten'] as $row) {
             $fill = $row['feiertag'] == null ? false : true;
             $pdf->Row(array(
-                $row['datum'],
+                $row['pdfTag'],
+                $row['pdfDatum'],
                 $row['beginn'],
                 $row['ende'],
                 $row['befreiung'],

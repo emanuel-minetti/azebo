@@ -60,7 +60,7 @@ class Azebo_Service_Authentifizierung {
     public function authentifiziere(array $daten) {
         $adapter = $this->_getAuthAdapter($daten);
         $auth = $this->_getAuth();
-        
+
         //TODO Hier schlägt #ZF-9378 zu!
         $ergebnis = $auth->authenticate($adapter);
 
@@ -91,13 +91,12 @@ class Azebo_Service_Authentifizierung {
         $this->_log->debug('Gruppen: ' . print_r($gruppen, true));
 
         //Hole den Namen aus dem LDAP
-        $ldap->bind();        
+        $ldap->bind();
         $benutzer = $ldap->getEntry('uid=' . $daten['benutzername'] . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
         $vorname = $benutzer['givenname'][0];
         $nachname = $benutzer['sn'][0];
 //        $this->_log->debug('Vorname: ' . $vorname);
 //        $this->_log->debug('Nachname: ' . $nachname);
-
         //Hole den Mitarbeiter aus dem Modell
         $mitarbeiter = $this->_mitarbeiterModell
                 ->getMitarbeiterNachBenutzername($daten['benutzername']);
@@ -105,7 +104,7 @@ class Azebo_Service_Authentifizierung {
             $this->clear();
             return 'FehlerDB';
         }
-        
+
         //Setze Rolle, Hochschule, Vor- und Nachname
         $mitarbeiter->setRolle($gruppen);
         $mitarbeiter->setHochschule($gruppen);
@@ -118,12 +117,12 @@ class Azebo_Service_Authentifizierung {
         $auth->getStorage()->write($mitarbeiter);
         $ns = new Zend_Session_Namespace();
         $ns->mitarbeiter = $mitarbeiter;
-        
+
         // die configs/zeiten.ini einlesen und in die Session geben
         $hs = $mitarbeiter->getHochschule();
         $ns->zeiten = new Zend_Config_Ini(
-                APPLICATION_PATH . '/configs/zeiten.ini', $hs);
-        
+                        APPLICATION_PATH . '/configs/zeiten.ini', $hs);
+
         return 'Erfolg';
     }
 
@@ -175,8 +174,16 @@ class Azebo_Service_Authentifizierung {
     private function _getAuthAdapter($daten) {
         if (null === $this->_authAdapter) {
             $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
-            $options = $config->ldap->toArray();
-            $authAdapter = new Zend_Auth_Adapter_Ldap($options, $daten['benutzername'], $daten['passwort']);
+            $options = $config->ldap->physalis->toArray();
+            //Der Konstruktor von Zend_Auth_Adapter_Ldap erwartet als Optionen
+            //ein Array von Arrays, deren key ein servername ist.
+            $options = array(
+                'physalis' => $options,
+            );
+
+            $this->_log->debug('Optionen: ' . print_r($options, true));
+            
+            $authAdapter = new Zend_Auth_Adapter_Ldap($options, $daten['benutzername'], $daten['passwort']); 
             $this->setAuthAdapter($authAdapter);
         }
         return $this->_authAdapter;
