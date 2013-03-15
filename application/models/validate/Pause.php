@@ -73,6 +73,7 @@ class Azebo_Validate_Pause extends Zend_Validate_Abstract {
             $mitarbeiter = $ns->mitarbeiter;
 
             //prüfe
+            //TODO Warum muss 'zu kurz' bei Pause eigentlich geprüft werden?
             if ($anwesend->compareTime($pause->kurz->dauer) != 1) {
                 $this->_error(self::ZU_KURZ);
                 return false;
