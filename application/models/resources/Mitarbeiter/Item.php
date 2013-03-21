@@ -325,7 +325,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
         if ($differenz) {
             $saldoBisher = new Azebo_Model_Saldo($saldoBisher->getStunden(),
-                            $saldoBisher->getMinuten(), false);
+                            $saldoBisher->getMinuten(), !$saldoBisher->getPositiv());
             $saldoGesamt->add($saldoBisher);
         }
 
