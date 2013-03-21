@@ -55,7 +55,7 @@ kern.beginn = "09:00:00"
 kern.ende.normal = "15:00:00"
 kern.ende.freitag = "14:00:00"
 
-kappung.gesamt.stunden = 30
+kappung.gesamt.stunden = 50
 kappung.gesamt.minuten = 0
-kappung.monat.stunden = 10
+kappung.monat.stunden = -1
 kappung.monat.minuten = 0
