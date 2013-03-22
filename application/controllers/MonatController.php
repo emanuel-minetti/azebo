@@ -372,7 +372,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 } elseif (isset($postDaten['nachmittagButton'])) {
                     // Nachmittag wurde gedrückt, also
                     // schalte das DB-Feld um und passe die Form an
-                    //TODO BUG!!! Nachmittag entfernen muss auch in der DB entfernt werden!
                     $this->mitarbeiter->
                             getArbeitstagNachTag($this->zuBearbeitendesDatum)->
                             toggleNachmittag();
