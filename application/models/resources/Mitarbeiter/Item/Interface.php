@@ -46,6 +46,8 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     public function getRolle();
 
     public function getName();
+    
+    public function getSortierName();
 
     /**
      * @param Zend_Date $tag

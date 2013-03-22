@@ -47,6 +47,13 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $this->_vorname . ' ' . $this->_nachname;
     }
+    
+    public function getSortierName() {
+        if($this->_vorname === null || $this->_nachname === null) {
+            $this->getName();
+        }
+        return $this->_nachname . ', ' . $this->_vorname;
+    }
 
     /**
      * Gibt einen Arbeitstag für den angegbenen Tag zurück.
