@@ -1,0 +1,61 @@
+[alle]
+rahmen.beginn.normal = "07:00:00"
+rahmen.ende.normal = "19:00:00"
+
+kern.beginn = "09:30:00"
+kern.ende.normal = "14:30:00"
+kern.ende.freitag = "14:00:00"
+
+soll.normal = "07:48:00"
+soll.beamter = "08:00:00"
+
+pause.kurz.ab = "06:00:00"
+pause.kurz.dauer = "00:30:00"
+pause.lang.ab = "09:30:00"
+pause.lang.dauer = "00:45:00"
+
+maximal = "10:45:00"
+
+urlaub.tage = 26
+urlaub.resturlaubbis = '30.9.'
+
+[hfm : alle]
+kern.ende.freitag="13:00:00"
+rahmen.ende.normal = "20:00:00"
+
+rahmen.sommer.von.jahr2012 = "31.05.2012"
+rahmen.sommer.bis.jahr2012 = "01.09.2012"
+rahmen.beginn.sommer.jahr2012 = "06:30:00"
+
+rahmen.sommer.von.jahr2013 = "31.05.2013"
+rahmen.sommer.bis.jahr2013 = "01.09.2013"
+rahmen.beginn.sommer.jahr2013 = "06:30:00"
+
+kappung.gesamt.stunden = 100
+kappung.gesamt.minuten = 0
+kappung.monat.stunden = -1
+kappung.monat.minuten = 0
+
+[hfs : alle]
+rahmen.beginn.normal = "07:00:00"
+rahmen.ende.normal = "20:00:00"
+kern.beginn = "10:00:00"
+kern.ende.normal = "15:00:00"
+kern.ende.freitag = "14:00:00"
+
+kappung.gesamt.stunden = 40
+kappung.gesamt.minuten = 0
+kappung.monat.stunden = 20
+kappung.monat.minuten = 0
+
+[khb : alle]
+rahmen.beginn.normal = "08:00:00"
+rahmen.ende.normal = "18:00:00"
+kern.beginn = "09:00:00"
+kern.ende.normal = "15:00:00"
+kern.ende.freitag = "14:00:00"
+
+kappung.gesamt.stunden = 50
+kappung.gesamt.minuten = 0
+kappung.monat.stunden = -1
+kappung.monat.minuten = 0

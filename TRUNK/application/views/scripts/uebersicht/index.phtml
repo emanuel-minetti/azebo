@@ -1,0 +1,31 @@
+<br /><br />
+<div id="view-content">
+    <h3><?= $this->seitenName ?></h3>
+    <div id="gridDiv" style="width: 393px; height: 326px"></div>
+</div>
+
+<script type="text/javascript">
+    dojo.ready(function() {
+        var jahresDaten = <?= $this->jahresDaten->toJson() ?>;
+        
+        var dataStore =
+            new dojo.data.ItemFileReadStore({ data:jahresDaten });
+        
+        var layout =[[
+                {'name':'Monat','field':'monat','width':'90px'},
+                {'name':'Abge- schlossen','field':'abgeschlossen','width':'90px'},
+                {'name':'Saldo des Monats','field':'saldo','width':'90px'},
+                {'name':'Urlaubstage des Monats','field':'urlaub','width':'90px'},
+            ]];
+        
+        var grid = new dojox.grid.DataGrid({
+            store:dataStore,
+            structure:layout,
+            selectionMode:"none"
+        });
+        
+        grid.placeAt('gridDiv');
+        grid.startup();
+    });
+
+</script>

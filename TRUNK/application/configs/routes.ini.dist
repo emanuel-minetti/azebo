@@ -1,0 +1,61 @@
+routes.monat.type = "Zend_Controller_Router_Route_Regex"
+routes.monat.route = "monat/(\d+)/(\d+)\z"
+routes.monat.defaults.controller = monat
+routes.monat.defaults.action = index
+routes.monat.map.jahr = 1
+routes.monat.map.monat = 2
+routes.monat.reverse = "monat/%d/%d"
+
+routes.druck.type = "Zend_Controller_Router_Route_Regex"
+routes.druck.route = "druck/(\d+)/(\d+)\z"
+routes.druck.defaults.controller = monat
+routes.druck.defaults.action = druck
+routes.druck.map.jahr = 1
+routes.druck.map.monat = 2
+routes.druck.reverse = "druck/%d/%d"
+
+routes.monatEdit.type = "Zend_Controller_Router_Route_Regex"
+routes.monatEdit.route = "monat/(\d+)/(\d+)/(\d+)\z"
+routes.monatEdit.defaults.controller = monat
+routes.monatEdit.defaults.action = edit
+routes.monatEdit.map.jahr = 1
+routes.monatEdit.map.monat = 2
+routes.monatEdit.map.tag = 3
+routes.monatEdit.reverse = "monat/%d/%d/%d"
+
+routes.uebersicht.type = "Zend_Controller_Router_Route_Regex"
+routes.uebersicht.route = "uebersicht/(\d+)\z"
+routes.uebersicht.defaults.controller = uebersicht
+routes.uebersicht.defaults.action = index
+routes.uebersicht.map.jahr = 1
+routes.uebersicht.reverse = "uebersicht/%d"
+
+routes.mitarbeiterdetail.type = "Zend_Controller_Router_Route_Regex"
+routes.mitarbeiterdetail.route = "bueroleitung/mitarbeiterdetail/([a-z]+)\z"
+routes.mitarbeiterdetail.defaults.controller = bueroleitung
+routes.mitarbeiterdetail.defaults.action = detail
+routes.mitarbeiterdetail.map.benutzername = 1
+routes.mitarbeiterdetail.reverse = "bueroleitung/mitarbeiterdetail/%s"
+
+routes.arbeitsregel.type = "Zend_Controller_Router_Route_Regex"
+routes.arbeitsregel.route = "bueroleitung/arbeitsregel/([a-z]+)/(\d+)\z"
+routes.arbeitsregel.defaults.controller = bueroleitung
+routes.arbeitsregel.defaults.action = arbeitsregel
+routes.arbeitsregel.map.mitarbeiter = 1
+routes.arbeitsregel.map.id = 2
+routes.arbeitsregel.reverse = "bueroleitung/arbeitsregel/%s/%d"
+
+routes.monatsdetail.type = "Zend_Controller_Router_Route_Regex"
+routes.monatsdetail.route = "bueroleitung/monatsdetail/(\d+)\z"
+routes.monatsdetail.defaults.controller = bueroleitung
+routes.monatsdetail.defaults.action = monatsdetail
+routes.monatsdetail.map.monat = 1
+routes.monatsdetail.reverse = "bueroleitung/monatsdetail/%d"
+
+routes.monatsedit.type = "Zend_Controller_Router_Route_Regex"
+routes.monatsedit.route = "bueroleitung/monatsedit/(\w+)/([a-z]+)\z"
+routes.monatsedit.defaults.controller = bueroleitung
+routes.monatsedit.defaults.action = monatsedit
+routes.monatsedit.map.monat = 1
+routes.monatsedit.map.benutzername = 2
+routes.monatsedit.reverse = "bueroleitung/monatsedit/%s/%s"

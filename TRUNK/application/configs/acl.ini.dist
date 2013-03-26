@@ -1,0 +1,15 @@
+acl.roles.gast = null
+acl.roles.mitarbeiter = gast
+acl.roles.bueroleitung = mitarbeiter
+acl.roles.scit = bueroleitung
+
+acl.resources.deny.all.all = gast
+
+acl.resources.allow.login.all = gast
+acl.resources.allow.error.all = gast
+
+acl.resources.allow.index.all = mitarbeiter
+acl.resources.allow.monat.all = mitarbeiter
+acl.resources.allow.uebersicht.all = mitarbeiter
+
+acl.resources.allow.bueroleitung.all = bueroleitung
