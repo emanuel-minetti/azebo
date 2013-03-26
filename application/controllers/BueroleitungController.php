@@ -280,8 +280,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $zuBearbeitenderMitarbeiter = $this->model->
                 getMitarbeiterNachBenutzername($benutzername);
 
-        $this->erweitereSeitenName(' ' . $monat->toString('MMM yyyy') .
-                ' ' . $zuBearbeitenderMitarbeiter->getName());
+        $this->erweitereSeitenName(' ' . $zuBearbeitenderMitarbeiter->getName() .
+                ' ' . $monat->toString('MMMM yyyy'));
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -325,7 +325,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $monat = new Zend_Date($monatParam, 'MM_yyyy');
 
         $this->erweitereSeitenName(' Anzeigen ' . $mitarbeiter->getName() .
-                ' ' . $monat->toString('MMM yyyy'));
+                ' ' . $monat->toString('MMMM yyyy'));
 
         // befülle die Reihen der Tabelle
         $tageImMonat = $monat->get(Zend_Date::MONTH_DAYS);
