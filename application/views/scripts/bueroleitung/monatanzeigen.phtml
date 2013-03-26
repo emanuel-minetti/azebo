@@ -2,9 +2,9 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <? if ($this->hochschule != 'hfm'): ?>
-        <div id="gridDiv" style="width: 882px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+        <div id="gridDiv" style="width: 881px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
     <? else: ?>    
-        <div id="gridDiv" style="width: 831px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+        <div id="gridDiv" style="width: 830px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
     <? endif; ?>
     <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
         <? if ($this->hatRest): ?>

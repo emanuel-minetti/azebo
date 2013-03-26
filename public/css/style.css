@@ -263,7 +263,5 @@ div#Fusszeile {
 }
 
 td.erg {
-    /*border-right-style: solid !important;
-    border-right-width: 2px !important;*/
     border-right-color: black !important;
 }
