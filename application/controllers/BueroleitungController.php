@@ -350,8 +350,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->saldoBisher = $saldoBisher->getString();
         $saldo = $mitarbeiter->getSaldo($monat, true);
         $this->view->saldo = $saldo->getString();
-        $saldoGesamt = Azebo_Model_Saldo::copy($saldoBisher);
-        $saldoGesamt->add($saldo, true);
+//        $saldoGesamt = Azebo_Model_Saldo::copy($saldoBisher);
+//        $saldoGesamt->add($saldo, true);
+        $saldoGesamt = $mitarbeiter->getSaldoGesamt($monat);
         $this->view->saldoGesamt = $saldoGesamt->getString();
         if ($mitarbeiter->getHochschule() == 'hfm' &&
                 $saldoBisher->getRest()) {
