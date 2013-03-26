@@ -3,18 +3,18 @@
     <h3><?= $this->seitenName ?></h3>
     <div id="view-content">
         <? if ($this->hochschule != 'hfm'): ?>
-            <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
+            <div id="gridObenDiv" style="width: 882px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
         <? else: ?>
-            <div id="gridObenDiv" style="width: 830px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
+            <div id="gridObenDiv" style="width: 831px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
         <? endif; ?>
         <a name="form"></a>
         <h4>Daten für den <?= $this->tag; ?>.<?= $this->monat; ?>. bearbeiten</h4>
         <?= $this->tagForm; ?>
 
         <? if ($this->hochschule != 'hfm'): ?>
-            <div id="gridUntenDiv" style="width: 881px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
+            <div id="gridUntenDiv" style="width: 882px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
         <? else: ?>
-            <div id="gridUntenDiv" style="width: 830px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
+            <div id="gridUntenDiv" style="width: 831px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
         <? endif; ?>
     </div>
     <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
@@ -53,7 +53,7 @@
 <? endif; ?>
                 {'name':'An- wesend','field':'anwesend','width':'55px'},
                 {'name':'Ist','field':'ist','width':'55px'},
-                {'name':'Soll','field':'soll','width':'55px'},
+                {'name':'Soll','field':'soll','width':'55px','formatter': function(val, rowIdx, cell) {cell.customClasses.push('erg');}},
                 {'name':'+/-','field':'summe','width':'55px'},
             ]];
         

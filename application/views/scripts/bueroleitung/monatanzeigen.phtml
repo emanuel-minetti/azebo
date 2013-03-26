@@ -2,9 +2,9 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <? if ($this->hochschule != 'hfm'): ?>
-        <div id="gridDiv" style="width: 881px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+        <div id="gridDiv" style="width: 882px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
     <? else: ?>    
-        <div id="gridDiv" style="width: 830px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
+        <div id="gridDiv" style="width: 831px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
     <? endif; ?>
     <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
         <? if ($this->hatRest): ?>
@@ -48,7 +48,7 @@
 <? endif; ?>
                 {'name':'An- wesend','field':'anwesend','width':'55px'},
                 {'name':'Ist','field':'ist','width':'55px'},
-                {'name':'Soll','field':'soll','width':'55px'},
+                {'name':'Soll','field':'soll','width':'55px','formatter': function(val, rowIdx, cell) {cell.customClasses.push('erg');}},
                 {'name':'+/-','field':'saldo','width':'55px'},
             ]];
         
