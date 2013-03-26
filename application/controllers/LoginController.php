@@ -80,6 +80,14 @@ class LoginController extends AzeboLib_Controller_Abstract {
     }
     
      public function logoutAction() {
+         // überschreibe den schon gesetzten Seitennamen
+         $this->_seitenName = 'Abmeldung';
+         $this->view->seitenName = $this->_seitenName;
+         
+         // entferne den Büroleitungsknopf falls er angezeigt wurde
+         $this->view->istBueroleitung = false;
+         
+         // entferne die Authentifizierung und die Session
          $this->_authService->clear();
          $ns = new Zend_Session_Namespace();
          $ns->unsetAll();
