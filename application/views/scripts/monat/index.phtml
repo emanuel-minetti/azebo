@@ -51,7 +51,7 @@
 <? endif; ?>
                 {'name':'An- wesend','field':'anwesend','width':'55px'},
                 {'name':'Ist','field':'ist','width':'55px'},
-                {'name':'Soll','field':'soll','width':'55px','formatter': function(val, rowIdx, cell) {cell.customClasses.push('erg');}},
+                {'name':'Soll','field':'soll','width':'55px','formatter': function(val, rowIdx, cell) {cell.customClasses.push('erg'); return val;}},
                 {'name':'+/-','field':'saldo','width':'55px'},
             ]];
         
