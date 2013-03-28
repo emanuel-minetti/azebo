@@ -213,6 +213,18 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                 }
             }
         }
+        
+        // für die KHB den Tag der offenen Tür (So) doppelt berechnen.
+        $ns = new Zend_Session_Namespace();
+        $mitarbeiter = $ns->mitarbeiter;
+        if($mitarbeiter->getHochschule() == 'khb') {
+            $feiertag = $this->getFeiertag();
+            $tag = $this->getTag();
+            if($feiertag['name'] == 'Tag der offenen Tür' &&
+                    $tag->get(Zend_Date::WEEKDAY_DIGIT) == 0) {
+                $this->_saldo->add($this->_saldo);
+            }
+        }
 
         return $this->_saldo;
     }
