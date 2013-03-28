@@ -28,11 +28,13 @@
 class Azebo_Service_Feiertag {
 
     public $log;
-    
     public $karfreitag;
     public $ostermontag;
     public $himmelfahrt;
     public $pfingstmontag;
+    public $hochschule;
+    public $tdotSa;
+    public $tdotSo;
 
     /**
      * Stellt die beweglichen Feiertage des Jahres zur Verfügung
@@ -45,7 +47,7 @@ class Azebo_Service_Feiertag {
         $tageNach21Maerz = easter_days($jahr);
         $ostersonntag = new Zend_Date('21.3.' . $jahr);
         $ostersonntag->add($tageNach21Maerz, Zend_Date::DAY);
-        
+
         $this->karfreitag = new Zend_Date($ostersonntag);
         $this->karfreitag->add('-2', Zend_Date::DAY);
         $this->ostermontag = new Zend_Date($ostersonntag);
@@ -54,12 +56,20 @@ class Azebo_Service_Feiertag {
         $this->himmelfahrt->add(39, Zend_Date::DAY);
         $this->pfingstmontag = new Zend_Date($ostersonntag);
         $this->pfingstmontag->add(50, Zend_Date::DAY);
-        
-//        $ns = new Zend_Session_Namespace();
-//        $zeitenConfig = $ns->zeiten;
-//        $tdotSaArray = $zeitenConfig->tagdotuer->sa;
-//        $tdotSa = $tdotSaArray->"jahr.$jahr";
-//        $this->log->debug('Tag der Offenen Tür: x' . $tdotSa . 'x');
+
+        $ns = new Zend_Session_Namespace();
+        $mitarbeiter = $ns->mitarbeiter;
+        $this->hochschule = $mitarbeiter->getHochschule();
+        if ($this->hochschule == 'khb') {
+            $zeitenConfig = $ns->zeiten;
+            $jahrString = "jahr$jahr";
+            $tdotSa = $zeitenConfig->tagdotuer->sa->$jahrString;
+            $tdotSo = $zeitenConfig->tagdotuer->so->$jahrString;
+            $this->tdotSa = new Zend_Date($tdotSa, 'dd.MM.yyyy');
+            $this->tdotSo = new Zend_Date($tdotSo, 'dd.MM.yyyy');
+            $this->log->debug('Tag der Offenen Tür: x' . $this->tdotSa->toString('dd.MM.yyyy') . 'x');
+            $this->log->debug('Tag der Offenen Tür: x' . $this->tdotSo->toString('dd.MM.yyyy') . 'x');
+        }
     }
 
     /**
@@ -124,7 +134,7 @@ class Azebo_Service_Feiertag {
                 return $feiertag;
             }
         }
-        
+
         //Heilig Abend
         if ($datum->get(Zend_Date::MONTH) == 12) {
             if ($datum->get(Zend_Date::DAY) == 24) {
@@ -151,7 +161,7 @@ class Azebo_Service_Feiertag {
                 return $feiertag;
             }
         }
-        
+
         //Silvester
         if ($datum->get(Zend_Date::MONTH) == 12) {
             if ($datum->get(Zend_Date::DAY) == 31) {
@@ -193,6 +203,13 @@ class Azebo_Service_Feiertag {
         if ($datum->get(Zend_Date::WEEKDAY_DIGIT) == 0 ||
                 $datum->get(Zend_Date::WEEKDAY_DIGIT) == 6) {
             $feiertag['feiertag'] = true;
+        }
+
+        if ($this->hochschule == 'khb') {
+            if ($datum->compareDate($this->tdotSa) == 0 ||
+                    $datum->compareDate($this->tdotSo) == 0) {
+                $feiertag['name'] = 'Tag der offenen Tür';
+            }
         }
 
         return $feiertag;
