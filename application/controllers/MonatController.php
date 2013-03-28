@@ -562,7 +562,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $urlaubBisherString = $this->urlaubBisher;
         $urlaubMonatString = $this->urlaubMonat;
         $urlaubGesamtString = $this->urlaubGesamt;
-        //TODO Hier gehts weiter!
         if ($this->vorjahrRestBisher != 0) {
             if ($this->mitarbeiter->getHochschule() == 'khb') {
                 $urlaubBisherString .= '     (+ Rest Vorjahr: ' .
