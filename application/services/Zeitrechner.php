@@ -80,10 +80,6 @@ class Azebo_Service_Zeitrechner {
         $ns = new Zend_Session_Namespace();
         $pause = $ns->zeiten->pause;
         
-//        $log = Zend_Registry::get('log');
-//        $log->debug('Lang Ab1 : ' . $zeiten->pause->lang->ab);
-//        $log->debug('Lang Ab2 : ' . $pause->lang->ab);
-        
         $ist = new Zend_Date($anwesend);
         if (!$ohnePause) {
             if ($anwesend->compare(
@@ -96,7 +92,7 @@ class Azebo_Service_Zeitrechner {
             } else {
                 $ist->sub($pause->lang->dauer, Zend_Date::TIMES);
             }
-        }
+        }        
         return $ist;
     }
 
