@@ -569,12 +569,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $urlaubGesamtString .= '     (+ Rest Vorjahr: ' .
                         $this->vorjahrRestGesamt . ')';
             } elseif ($this->mitarbeiter->getHochschule() == 'hfm') {
-                $urlaubBisherString .= ' + (Vorjahr: ' .
-                        $this->vorjahrRestBisher . ') = ';
+                $urlaubBisherString .= ' + Vorjahr: ' .
+                        $this->vorjahrRestBisher . ' = ';
                 $urlaubBisherString .=
                         $this->urlaubBisher + $this->vorjahrRestBisher;
-                $urlaubGesamtString .= ' + (Vorjahr: ' .
-                        $this->vorjahrRestGesamt . ') = ';
+                $urlaubGesamtString .= ' + Vorjahr: ' .
+                        $this->vorjahrRestGesamt . ' = ';
                 $urlaubGesamtString .=
                         $this->urlaubGesamt + $this->vorjahrRestGesamt;
             } else {
