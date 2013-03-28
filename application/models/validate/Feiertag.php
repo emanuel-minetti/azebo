@@ -58,7 +58,7 @@ class Azebo_Validate_Feiertag extends Zend_Validate_Abstract {
                     if ($feiertag['name'] == '') {
                         $this->_error(self::WE_OHNE_BEM);
                         return false;
-                    } else {
+                    } elseif($feiertag['name'] != 'Tag der offenen Tür') {
                         $this->_error(self::FT_OHNE_BEM);
                         return false;
                     }

@@ -350,8 +350,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->saldoBisher = $saldoBisher->getString();
         $saldo = $mitarbeiter->getSaldo($monat, true);
         $this->view->saldo = $saldo->getString();
-//        $saldoGesamt = Azebo_Model_Saldo::copy($saldoBisher);
-//        $saldoGesamt->add($saldo, true);
         $saldoGesamt = $mitarbeiter->getSaldoGesamt($monat);
         $this->view->saldoGesamt = $saldoGesamt->getString();
         if ($mitarbeiter->getHochschule() == 'hfm' &&
@@ -362,19 +360,16 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         }
 
         // setze die Urlaubswerte
-        //$this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher($monat);
         $urlaubBisher = $mitarbeiter->getUrlaubBisher($monat);
         $this->view->urlaubBisher = $urlaubBisher;
         $this->view->urlaub = $mitarbeiter->getUrlaubNachMonat($monat);
         $gesamt = $mitarbeiter->getUrlaubGesamt($monat);
-        //$this->view->urlaubGesamt = $gesamt['rest'];
         $urlaubGesamt = $gesamt['rest'];
         $this->view->urlaubGesamt = $urlaubGesamt;
         $urlaubVorjahrBisher = $mitarbeiter->getUrlaubVorjahrBisher($monat);
         if ($urlaubVorjahrBisher != 0) {
             $this->view->hatVorjahrRest = true;
             $this->view->vorjahrRestBisher = $urlaubVorjahrBisher;
-            //$this->view->vorjahrRestGesamt = $gesamt['vorjahr'];
             $urlaubVorjahrGesamt = $gesamt['vorjahr'];
             $this->view->vorjahrRestGesamt = $urlaubVorjahrGesamt;
         }
