@@ -67,8 +67,6 @@ class Azebo_Service_Feiertag {
             $tdotSo = $zeitenConfig->tagdotuer->so->$jahrString;
             $this->tdotSa = new Zend_Date($tdotSa, 'dd.MM.yyyy');
             $this->tdotSo = new Zend_Date($tdotSo, 'dd.MM.yyyy');
-            $this->log->debug('Tag der Offenen Tür: x' . $this->tdotSa->toString('dd.MM.yyyy') . 'x');
-            $this->log->debug('Tag der Offenen Tür: x' . $this->tdotSo->toString('dd.MM.yyyy') . 'x');
         }
     }
 
