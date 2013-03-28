@@ -54,6 +54,12 @@ class Azebo_Service_Feiertag {
         $this->himmelfahrt->add(39, Zend_Date::DAY);
         $this->pfingstmontag = new Zend_Date($ostersonntag);
         $this->pfingstmontag->add(50, Zend_Date::DAY);
+        
+//        $ns = new Zend_Session_Namespace();
+//        $zeitenConfig = $ns->zeiten;
+//        $tdotSaArray = $zeitenConfig->tagdotuer->sa;
+//        $tdotSa = $tdotSaArray->"jahr.$jahr";
+//        $this->log->debug('Tag der Offenen Tür: x' . $tdotSa . 'x');
     }
 
     /**

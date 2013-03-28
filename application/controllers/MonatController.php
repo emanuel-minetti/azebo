@@ -191,6 +191,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $this->view->vorjahrRestGesamt = $this->vorjahrRestGesamt;
         }
 
+        $this->urlaubZusammenBisher = $this->urlaubBisher + $this->vorjahrRestBisher;
+        $this->view->urlaubZusammenBisher = $this->urlaubZusammenBisher;
+        $this->urlaubZusammenGesamt = $this->urlaubGesamt + $this->vorjahrRestGesamt;
+        $this->view->urlaubZusammenGesamt = $this->urlaubZusammenGesamt;
+
         // prüfe ob der Monat bereits abgeschlossen ist, d.h. in der DB
         // vorhanden ist
         $this->bearbeitbar = true;
@@ -557,13 +562,27 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $urlaubBisherString = $this->urlaubBisher;
         $urlaubMonatString = $this->urlaubMonat;
         $urlaubGesamtString = $this->urlaubGesamt;
+        //TODO Hier gehts weiter!
         if ($this->vorjahrRestBisher != 0) {
             if ($this->mitarbeiter->getHochschule() == 'khb') {
-                $urlaubBisherString .= '     (+ Rest Vorjahr: ' . $this->vorjahrRestBisher . ')';
-                $urlaubGesamtString .= '     (+ Rest Vorjahr: ' . $this->vorjahrRestGesamt . ')';
+                $urlaubBisherString .= '     (+ Rest Vorjahr: ' .
+                        $this->vorjahrRestBisher . ')';
+                $urlaubGesamtString .= '     (+ Rest Vorjahr: ' .
+                        $this->vorjahrRestGesamt . ')';
+            } elseif ($this->mitarbeiter->getHochschule() == 'hfm') {
+                $urlaubBisherString .= ' + (Vorjahr: ' .
+                        $this->vorjahrRestBisher . ') = ';
+                $urlaubBisherString .=
+                        $this->urlaubBisher + $this->vorjahrRestBisher;
+                $urlaubGesamtString .= ' + (Vorjahr: ' .
+                        $this->vorjahrRestGesamt . ') = ';
+                $urlaubGesamtString .=
+                        $this->urlaubGesamt + $this->vorjahrRestGesamt;
             } else {
-                $urlaubBisherString .= '     (Rest Vorjahr: ' . $this->vorjahrRestBisher . ')';
-                $urlaubGesamtString .= '     (Rest Vorjahr: ' . $this->vorjahrRestGesamt . ')';
+                $urlaubBisherString .=
+                        '     (Rest Vorjahr: ' . $this->vorjahrRestBisher . ')';
+                $urlaubGesamtString .=
+                        '     (Rest Vorjahr: ' . $this->vorjahrRestGesamt . ')';
             }
         }
 

@@ -362,16 +362,27 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         }
 
         // setze die Urlaubswerte
-        $this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher($monat);
+        //$this->view->urlaubBisher = $mitarbeiter->getUrlaubBisher($monat);
+        $urlaubBisher = $mitarbeiter->getUrlaubBisher($monat);
+        $this->view->urlaubBisher = $urlaubBisher;
         $this->view->urlaub = $mitarbeiter->getUrlaubNachMonat($monat);
         $gesamt = $mitarbeiter->getUrlaubGesamt($monat);
-        $this->view->urlaubGesamt = $gesamt['rest'];
+        //$this->view->urlaubGesamt = $gesamt['rest'];
+        $urlaubGesamt = $gesamt['rest'];
+        $this->view->urlaubGesamt = $urlaubGesamt;
         $urlaubVorjahrBisher = $mitarbeiter->getUrlaubVorjahrBisher($monat);
         if ($urlaubVorjahrBisher != 0) {
             $this->view->hatVorjahrRest = true;
             $this->view->vorjahrRestBisher = $urlaubVorjahrBisher;
-            $this->view->vorjahrRestGesamt = $gesamt['vorjahr'];
+            //$this->view->vorjahrRestGesamt = $gesamt['vorjahr'];
+            $urlaubVorjahrGesamt = $gesamt['vorjahr'];
+            $this->view->vorjahrRestGesamt = $urlaubVorjahrGesamt;
         }
+        
+        $urlaubZusammenBisher = $urlaubBisher + $urlaubVorjahrBisher;
+        $this->view->urlaubZusammenBisher = $urlaubZusammenBisher;
+        $urlaubZusammenGesamt = $urlaubGesamt + $urlaubVorjahrGesamt;
+        $this->view->urlaubZusammenGesamt = $urlaubZusammenGesamt;
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {

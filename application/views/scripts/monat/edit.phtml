@@ -30,13 +30,21 @@
     </p>
     <p>Resturlaub Vormonat: <?= $this->urlaubBisher; ?>
         <? if ($this->hatVorjahrRest): ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
+            <? if ($this->hochschule != 'hfm'): ?>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
+            <? else: ?>
+                + (Vorjahr: <?= $this->vorjahrRestBisher; ?>) = <?= $this->urlaubZusammenBisher; ?>
+            <? endif; ?>
         <? endif; ?>
     </p>
     <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
     <p>Resturlaub gesamt: <?= $this->urlaubGesamt; ?>
         <? if ($this->hatVorjahrRest): ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
+            <? if ($this->hochschule != 'hfm'): ?>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
+            <? else: ?>
+                + (Vorjahr: <?= $this->vorjahrRestGesamt; ?>) = <?= $this->urlaubZusammenGesamt; ?>
+            <? endif; ?>
         <? endif; ?>
     </p>
 </div>
@@ -58,18 +66,18 @@
             ]];
         
 <? if ($this->monatsDatenOben !== null): ?>
-                                
+                                        
             var monatsDatenOben = <?= $this->monatsDatenOben->toJson() ?>;
-                         
+                                 
             var dataStoreOben =
                 new dojo.data.ItemFileReadStore({ data:monatsDatenOben });
-                                
+                                        
             var gridOben = new dojox.grid.DataGrid({
                 store:dataStoreOben,
                 structure:layout,
                 selectionMode:"none"
             });
-                                 
+                                         
             dojo.connect(gridOben, "onStyleRow", function(row){
                 var item = gridOben.getItem(row.index);
                 if(item) {
@@ -81,10 +89,10 @@
                 gridOben.focus.styleRow(row);
                 gridOben.edit.styleRow(row);
             });
-                                
+                                        
             gridOben.placeAt('gridObenDiv');
             gridOben.startup();
-                                    
+                                            
             dojo.connect(gridOben, "onRowClick", null, function(e){
                 var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
                 url += "/" + gridOben._getItemAttr(e.rowIndex, 'tag') + "#form";
@@ -92,18 +100,18 @@
             });        
 <? endif; ?>
 <? if ($this->monatsDatenUnten !== null): ?>
-                                
+                                        
             var monatsDatenUnten = <?= $this->monatsDatenUnten->toJson() ?>;
-                         
+                                 
             var dataStoreUnten =
                 new dojo.data.ItemFileReadStore({ data:monatsDatenUnten });
-                                
+                                        
             var gridUnten = new dojox.grid.DataGrid({
                 store:dataStoreUnten,
                 structure:layout,
                 selectionMode:"none"
             });
-                                 
+                                         
             dojo.connect(gridUnten, "onStyleRow", function(row){
                 var item = gridUnten.getItem(row.index);
                 if(item) {
@@ -115,10 +123,10 @@
                 gridUnten.focus.styleRow(row);
                 gridUnten.edit.styleRow(row);
             });
-                                
+                                        
             gridUnten.placeAt('gridUntenDiv');
             gridUnten.startup();
-                                    
+                                            
             dojo.connect(gridUnten, "onRowClick", null, function(e){
                 var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
                 url += "/" + gridUnten._getItemAttr(e.rowIndex, 'tag') + "#form";

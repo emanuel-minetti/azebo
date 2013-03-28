@@ -19,13 +19,21 @@
     </p>
     <p>Resturlaub Vormonat: <?= $this->urlaubBisher; ?>
         <? if ($this->hatVorjahrRest): ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
+            <? if ($this->hochschule != 'hfm'): ?>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
+            <? else: ?>
+                + (Vorjahr: <?= $this->vorjahrRestBisher; ?>) = <?= $this->urlaubZusammenBisher; ?>
+            <? endif; ?>
         <? endif; ?>
     </p>
     <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
     <p>Resturlaub gesamt: <?= $this->urlaubGesamt; ?>
         <? if ($this->hatVorjahrRest): ?>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
+            <? if ($this->hochschule != 'hfm'): ?>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
+            <? else: ?>
+                + (Vorjahr: <?= $this->vorjahrRestGesamt; ?>) = <?= $this->urlaubZusammenGesamt; ?>
+            <? endif; ?>
         <? endif; ?>
     </p>
 </div>
