@@ -23,6 +23,14 @@ routes.monatEdit.map.monat = 2
 routes.monatEdit.map.tag = 3
 routes.monatEdit.reverse = "monat/%d/%d/%d"
 
+routes.monatBlock.type = "Zend_Controller_Router_Route_Regex"
+routes.monatBlock.route = "monat/(\d+)/(\d+)/block\z"
+routes.monatBlock.defaults.controller = monat
+routes.monatBlock.defaults.action = block
+routes.monatBlock.map.jahr = 1
+routes.monatBlock.map.monat = 2
+routes.monatBlock.reverse = "monat/%d/%d/block"
+
 routes.uebersicht.type = "Zend_Controller_Router_Route_Regex"
 routes.uebersicht.route = "uebersicht/(\d+)\z"
 routes.uebersicht.defaults.controller = uebersicht

@@ -428,6 +428,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $this->view->extraZeilenUnten = 0;
         }
     }
+    
+    public function blockAction() {
+        $this->erweitereSeitenName(' - Block hinzufügen');
+    }
 
     private function _getMitarbeiterTagForm() {
         $model = new Azebo_Model_Mitarbeiter();
