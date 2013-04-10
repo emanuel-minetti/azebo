@@ -431,6 +431,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
     
     public function blockAction() {
         $this->erweitereSeitenName(' - Block hinzufügen');
+        
+        $model = new Azebo_Model_Mitarbeiter();
+        $form = $model->getForm('mitarbeiterBlock');
+        $this->view->form = $form;
     }
 
     private function _getMitarbeiterTagForm() {
