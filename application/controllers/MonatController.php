@@ -588,7 +588,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Setzen von Textbausteinen
         if ($this->mitarbeiter->getHochschule() == 'khb') {
             $vormonatSaldoText = 'Saldo Vormonat: ';
-            $monatSaldoText = 'Saldo dises Monat: ';
+            $monatSaldoText = 'Saldo dieses Monat: ';
             $gesamtSaldoText = 'Übertrag Folgemonat: ';
             $urlaubBisherText = 'Resturlaub Vormonat: ';
             $urlaubMonatText = 'Urlaub dieses Monats: ';
