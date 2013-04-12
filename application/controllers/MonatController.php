@@ -431,6 +431,21 @@ class MonatController extends AzeboLib_Controller_Abstract {
     
     public function blockAction() {
         $request = $this->getRequest();
+        
+        // falls der Monat nicht bearbeitbar ist, gibt es keinen Link hierher.
+        // Der User versucht etwas Böses!
+        if (!$this->bearbeitbar) {
+            $errors = new ArrayObject();
+            $errors->type =
+                    Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
+            $errors->request = $request;
+            $errors->exception = new AzeboLib_Exception(
+                            'Auf diese Seite haben Sie keinen Zugriff!',
+                            null, null);
+            $request->setParam('error_handler', $errors);
+            $this->_forward('nichterlaubt', 'error');
+        }
+        
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterBlock');
         $monatElement = $form->getElement('monat');
@@ -442,7 +457,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $valid = $form->isValid($postDaten);
                     $daten = $form->getValues();
                     if ($valid) {
-                        //TODO prüfen ob der Monat bearbeitbar ist!
+                        
                     }
             }
         }
