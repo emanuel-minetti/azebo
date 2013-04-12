@@ -6,13 +6,16 @@
     <? else: ?>
         <div id="gridDiv" style="width: 830px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
     <? endif; ?>
-    <p style="width: 180px; text-align: center">
-        <a href=<?=
+    <? if ($this->bearbeitbar): ?>
+        <p style="width: 180px; text-align: center">
+            <a href=<?=
     $this->url(array(
         'monat' => $this->monat,
         'jahr' => $this->jahr,
-        ), 'monatBlock', true);?>>Einträge blockweise bearbeiten</a>
-    </p>
+            ), 'monatBlock', true);
+        ?>>Einträge blockweise bearbeiten</a>
+        </p>
+    <? endif; ?>
     <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
         <? if ($this->hatRest): ?>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
