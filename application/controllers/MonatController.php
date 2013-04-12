@@ -430,10 +430,20 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
     
     public function blockAction() {
-        $this->erweitereSeitenName(' - Block hinzufügen');
+        $this->erweitereSeitenName(' - ' . $this->zuBearbeitendesDatum
+                        ->toString('MMMM yyyy'));
+        $this->erweitereSeitenName(' Block bearbeiten');
         
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterBlock');
+        $urlHelper = $this->_helper->getHelper('url');
+        $url = $urlHelper->url(array(
+            'monat' => $this->monat,
+            'jahr' => $this->jahr,
+                ), 'monatBlock', true);
+        $form->setAction($url);
+        $form->setMethod('post');
+        $form->setName('blockForm');
         $this->view->form = $form;
     }
 

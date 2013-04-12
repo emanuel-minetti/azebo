@@ -26,9 +26,71 @@
  * @author Emanuel Minetti
  */
 class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
-    
+
+    const UNGUELTIGES_DATUM = 'Bitte geben Sie das Datum im Format dd.mm.jjjj an!';
+    const UNGUELTIGE_OPTION = 'Bitte wählen Sie eine der Optionen aus!';
+
     public function init() {
+        $this->addElementPrefixPath(
+                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
+
+        $this->addElement('DateTextBox', 'von', array(
+            'label' => 'Von: ',
+            'datePattern' => 'dd.MM.yyyy',
+            'invalidMessage' => self::UNGUELTIGES_DATUM,
+            'required' => true,
+            'missingMessage' => 'Bitte geben Sie einen Wert ein!',
+            //'filters' => array('StringTrim', 'DatumAlsDate', ),
+            'autofocus' => true,
+        ));
+
+        $this->addElement('DateTextBox', 'bis', array(
+            'label' => 'Bis: ',
+            'datePattern' => 'dd.MM.yyyy',
+            'invalidMessage' => self::UNGUELTIGES_DATUM,
+            'required' => true,
+            'missingMessage' => 'Bitte geben Sie einen Wert ein!',
+            //'filters' => array('StringTrim', 'DatumAlsDate'),
+            'validators' => array('BisNachVon'),
+        ));
         
+        $befreiungOptionen = array(
+            'keine' => '',
+            'urlaub' => 'Urlaub',
+            'krankheit' => 'Krankheit',
+        );
+        $this->addElement('FilteringSelect', 'befreiung', array(
+                    'label' => 'Dienstbefreiung: ',
+                    'multiOptions' => $befreiungOptionen,
+                    'invalidMessage' => self::UNGUELTIGE_OPTION,
+                    'filters' => array('StringTrim', 'Alpha'),
+                    'validators' => array(
+                        'BefreiungArbeitsfrei',
+                        'BefreiungNachmittag',
+                    ),
+                    'tabindex' => 8,
+                ));
+
+        $this->addElement('SubmitButton', 'absenden', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Absenden',
+            'decorators' => array(
+                'DijitElement',
+                'Errors',
+                array('HtmlTag', array('tag' => 'dd')),
+            //array('HtmlTag', array('tag' => 'dt')),
+            ),
+            'validators' => array('RegelEindeutig'),
+                //TODO Decoratoren anpassen!
+        ));
+
+        $this->addElement('SubmitButton', 'zuruecksetzen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Zurücksetzen',
+        ));
     }
+
 }
 
