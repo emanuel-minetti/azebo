@@ -430,12 +430,28 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
     
     public function blockAction() {
+        //TODO Der Link darf nur auf einen bearbeitbaren Seite eingeblendet werden!
+        $request = $this->getRequest();
+        $model = new Azebo_Model_Mitarbeiter();
+        $form = $model->getForm('mitarbeiterBlock');
+        $monatElement = $form->getElement('monat');
+        $monatElement->setValue($this->zuBearbeitendesDatum->toString('yyyy-MM-dd'));
+        
+        if ($request->isPost()) {
+            $postDaten = $request->getPost();
+            if (isset($postDaten['absenden'])) {
+                $valid = $form->isValid($postDaten);
+                    $daten = $form->getValues();
+                    if ($valid) {
+                        //TODO prüfen ob der Monat bearbeitbar ist!
+                    }
+            }
+        }
+        
         $this->erweitereSeitenName(' - ' . $this->zuBearbeitendesDatum
                         ->toString('MMMM yyyy'));
         $this->erweitereSeitenName(' Block bearbeiten');
         
-        $model = new Azebo_Model_Mitarbeiter();
-        $form = $model->getForm('mitarbeiterBlock');
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
             'monat' => $this->monat,

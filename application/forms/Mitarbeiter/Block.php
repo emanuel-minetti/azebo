@@ -40,8 +40,9 @@ class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
             'invalidMessage' => self::UNGUELTIGES_DATUM,
             'required' => true,
             'missingMessage' => 'Bitte geben Sie einen Wert ein!',
-            //'filters' => array('StringTrim', 'DatumAlsDate', ),
+            'validators' => array('BlockMonat'),
             'autofocus' => true,
+            'tabindex' => 1,
         ));
 
         $this->addElement('DateTextBox', 'bis', array(
@@ -50,8 +51,8 @@ class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
             'invalidMessage' => self::UNGUELTIGES_DATUM,
             'required' => true,
             'missingMessage' => 'Bitte geben Sie einen Wert ein!',
-            //'filters' => array('StringTrim', 'DatumAlsDate'),
-            'validators' => array('BisNachVon'),
+            'validators' => array('BisNachVon', 'BlockMonat'),
+            'tabindex' => 2,
         ));
         
         $befreiungOptionen = array(
@@ -64,11 +65,7 @@ class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
                     'multiOptions' => $befreiungOptionen,
                     'invalidMessage' => self::UNGUELTIGE_OPTION,
                     'filters' => array('StringTrim', 'Alpha'),
-                    'validators' => array(
-                        'BefreiungArbeitsfrei',
-                        'BefreiungNachmittag',
-                    ),
-                    'tabindex' => 8,
+                    'tabindex' => 3,
                 ));
 
         $this->addElement('SubmitButton', 'absenden', array(
@@ -81,8 +78,8 @@ class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
                 array('HtmlTag', array('tag' => 'dd')),
             //array('HtmlTag', array('tag' => 'dt')),
             ),
-            'validators' => array('RegelEindeutig'),
-                //TODO Decoratoren anpassen!
+            'tabindex' => 4,
+            //TODO Decoratoren anpassen!
         ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
@@ -90,6 +87,8 @@ class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
             'ignore' => true,
             'label' => 'Zurücksetzen',
         ));
+        
+         $this->addElement('Hidden', 'monat', array());
     }
 
 }
