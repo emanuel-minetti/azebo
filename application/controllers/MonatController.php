@@ -430,7 +430,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
     
     public function blockAction() {
-        //TODO Der Link darf nur auf einen bearbeitbaren Seite eingeblendet werden!
         $request = $this->getRequest();
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterBlock');
