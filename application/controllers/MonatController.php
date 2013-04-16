@@ -428,10 +428,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $this->view->extraZeilenUnten = 0;
         }
     }
-    
+
     public function blockAction() {
         $request = $this->getRequest();
-        
+
         // falls der Monat nicht bearbeitbar ist, gibt es keinen Link hierher.
         // Der User versucht etwas Böses!
         if (!$this->bearbeitbar) {
@@ -445,27 +445,49 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $request->setParam('error_handler', $errors);
             $this->_forward('nichterlaubt', 'error');
         }
-        
+
         $model = new Azebo_Model_Mitarbeiter();
         $form = $model->getForm('mitarbeiterBlock');
         $monatElement = $form->getElement('monat');
         $monatElement->setValue($this->zuBearbeitendesDatum->toString('yyyy-MM-dd'));
-        
+
         if ($request->isPost()) {
             $postDaten = $request->getPost();
             if (isset($postDaten['absenden'])) {
                 $valid = $form->isValid($postDaten);
-                    $daten = $form->getValues();
-                    if ($valid) {
-                        
+                $daten = $form->getValues();
+                if ($valid) {
+                    $von = $daten['von'];
+                    $bis = $daten['bis'];
+                    $filter = new Azebo_Filter_DatumAlsDate();
+                    $tagIndex = $filter->filter($von);
+                    $tagBis = $filter->filter($bis);
+                    // iterriere über die Tage
+                    while ($tagIndex->compareDate($tagBis) != 1) {
+                        $arbeitstag = $this->mitarbeiter->getArbeitstagNachTag($tagIndex);
+                        // Feiertage werden nicht bearbeitet
+                        $feiertag = $arbeitstag->getFeiertag();
+                        if (!$feiertag['feiertag']) {
+                            $arbeitstag->setBeginn(null);
+                            $arbeitstag->setEnde(null);
+                            $arbeitstag->befreiung = $daten['befreiung'];
+                            $arbeitstag->save();
+                        }
+                        $tagIndex->addDay(1);
                     }
+                    // redirect
+                    return $this->_helper->redirector->gotoRoute(array(
+                        'monat' => $this->monat,
+                        'jahr' => $this->jahr,
+                    ), 'monat');
+                }
             }
         }
-        
+
         $this->erweitereSeitenName(' - ' . $this->zuBearbeitendesDatum
                         ->toString('MMMM yyyy'));
         $this->erweitereSeitenName(' Block bearbeiten');
-        
+
         $urlHelper = $this->_helper->getHelper('url');
         $url = $urlHelper->url(array(
             'monat' => $this->monat,
