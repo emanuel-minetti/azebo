@@ -10,7 +10,7 @@ body {
 
 div#Seite {
     text-align: left;    /* Seiteninhalt wieder links ausrichten */
-    margin: 0 auto;      /* standardkonforme horizontale Zentrierung */ 
+    margin: 0 auto;      /* Standardkonforme horizontale Zentrierung */ 
     padding: 0;
 }
 
@@ -150,7 +150,6 @@ div#center a {
 }
 
 a {
-    /*padding: 0.5em;*/
     display: block;
     text-decoration: none;
     background: #8d9a94;
@@ -193,14 +192,6 @@ td.monatsuebersicht {
 td.monatsuebersicht textarea{
     font-size: 80%;
 }
-
-/*tr.feier {
-    color: #fe3c1a;
-}*/
-
-/*tr.gerade {
-    background-color: #d8d0ae;
-}*/
 
 table.mituebersicht{
     border-collapse: collapse;

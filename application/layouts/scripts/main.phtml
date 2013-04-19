@@ -5,7 +5,8 @@
         <?= $this->headTitle(); ?>
         <?= $this->headLink(); ?>
         <?= $this->headScript(); ?>
-        <? if($this->dojo()->isEnabled()) {
+        <?
+        if ($this->dojo()->isEnabled()) {
             $this->dojo()->setLocalPath('/javascript/dojo/dojo.js')
                     ->addStyleSheetModule('dijit.themes.tundra')
                     ->addStyleSheet('/javascript/dojox/grid/resources/Grid.css')
@@ -13,23 +14,28 @@
             echo $this->dojo();
         }
         ?>
+<!--    
+        <style type="text/css">
+            .tundra .dojoxGridRowOdd {background-color: green !important;}
+        </style>
+-->
     </head>
     <body class="tundra">
         <div id="Seite">
             <div id="Kopfzeile">
                 <h1><a href="
-                       <?=$this->baseUrl('') ?>
+<?= $this->baseUrl('') ?>
                        "><?= $this->placeholder('Zend_View_Helper_HeadTitle') ?></a></h1>
                 <h2><?= $this->seitenName ?></h2>
             </div>
             <div class="Navigation">
-                <?= $this->render('nav.phtml') ?>
+<?= $this->render('nav.phtml') ?>
             </div>
             <div id="Inhalt">
-                <?= $this->layout()->content ?>
+<?= $this->layout()->content ?>
             </div>
 
-            <div id="Fusszeile">&copy; 2012 ServiceCenter IT. Version: <?= $this->version?></div>
+            <div id="Fusszeile">&copy; 2012 ServiceCenter IT. Version: <?= $this->version ?></div>
         </div>
     </body>
 </html>
