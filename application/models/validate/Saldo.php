@@ -39,6 +39,7 @@ class Azebo_Validate_Saldo extends Zend_Validate_Abstract {
 
     public function isValid($value) {
         //TODO Nicht mit 100:00 vergleichen sondern der individuellen Kappungsgrenze!
+        //TODO Wichtig für HfS!!
         $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';
         if (preg_match("/$preg/", $value, $parts)) {
             if($parts[3] >= 60) {

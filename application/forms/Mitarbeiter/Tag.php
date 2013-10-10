@@ -61,6 +61,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'filters' => array('StringTrim', 'ZeitAlsDate',),
                     'validators' => array(
                         'Beginn',
+                        'BefreiungZeiten',
                     ),
                     'tabindex' => 1,
                     'autofocus' => true,
@@ -81,6 +82,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                         'Ende',
                         'ZehnStunden',
                         'IstArbeitstag',
+                        'BefreiungZeiten',
                     ),
                     'tabindex' => 2,
                 ));
