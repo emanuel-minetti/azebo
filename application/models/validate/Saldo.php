@@ -21,7 +21,8 @@
  */
 
 /**
- * Description of Saldo
+ * Prüft ob ein Saldo-Übertrag ein vernünftiges Format hat und kleiner als die
+ * Kappungsgrenze ist.
  *
  * @author Emanuel Minetti
  */
@@ -33,28 +34,36 @@ class Azebo_Validate_Saldo extends Zend_Validate_Abstract {
 
     protected $_messageTemplates = array(
         self::FORMAT => 'Bitte geben Sie das Saldo im Format \'+/- hh:mm\' ein.',
-        self::ZU_GROSS => 'Das Saldo darf 100 Stunden nicht überschreiten!',
+        self::ZU_GROSS => 'Das Saldo darf die Kappungsgrenze nicht überschreiten!',
         self::MINUTEN => 'Die Minuten müssen weniger als 60 betragen!',
     );
 
-    public function isValid($value) {
-        //TODO Nicht mit 100:00 vergleichen sondern der individuellen Kappungsgrenze!
-        //TODO Wichtig für HfS!!
+    public function isValid($value, $context = null) {
+        // Kappungsgrenze holen
+        $model = new Azebo_Model_Mitarbeiter();
+        $mitarbeiter = $model->
+                getMitarbeiterNachBenutzername($context['benutzername']);
+        $kappung = $mitarbeiter->getKappungGesamt();
+        
+        // Vorzeichen, Stunden und Minuten aus dem String '$value' extrahieren
         $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';
         if (preg_match("/$preg/", $value, $parts)) {
             if($parts[3] >= 60) {
                 $this->_error(self::MINUTEN);
                 return false;
             }
-            if ($parts[1] == '-' || $parts[2] < 100) {
+            // Werte mit den Werten der Kappungsgrenze vergleichen
+            if ($parts[1] == '-' || $parts[2] < $kappung->getStunden()) {
                 return true;
-            } elseif ($parts[2] == 100 && $parts[3] == 0) {
+            } elseif ($parts[2] == $kappung->getStunden() &&
+                    $parts[3] <= $kappung->getMinuten()) {
                 return true;
             } else {
                 $this->_error(self::ZU_GROSS);
                 return false;
             }
         } else {
+            // der '$value' String lässt sich nicht parsen
             $this->_error(self::FORMAT);
             return false;
         }

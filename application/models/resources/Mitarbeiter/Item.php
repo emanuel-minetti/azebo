@@ -501,9 +501,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $minuten = $zeiten->kappung->gesamt->minuten;
         }
         if ($stunden != -1) {
-            // keine Standard-Kappung, also gib 'null' zurück
             $kappung = new Azebo_Model_Saldo($stunden, $minuten, true);
         } else {
+            // keine Standard-Kappung, also gib 'null' zurück
             $kappung = null;
         }
         return $kappung;
@@ -519,9 +519,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $minuten = $zeiten->kappung->monat->minuten;
         }
         if ($stunden != -1) {
-            // keine Standard-Kappung, also gib 'null' zurück
             $kappung = new Azebo_Model_Saldo($stunden, $minuten, true);
         } else {
+            // keine Standard-Kappung, also gib 'null' zurück
             $kappung = null;
         }
         return $kappung;
