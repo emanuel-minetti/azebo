@@ -157,21 +157,26 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function saveArbeitsmonat(Zend_Date $monat) {
         $saldo = $this->getSaldoGesamt($monat, true);
-        $urlaubMonat = $this->getUrlaubNachMonat($monat);
-        $urlaubBisherVorjahr = $this->getUrlaubVorjahrBisher($monat);
-        if ($urlaubMonat <= $urlaubBisherVorjahr) {
-            // Urlaub dieses Monats kleiner-gleich dem Resturlaub vom Vorjahr
-            $urlaub = 0;
-            $urlaubVorjahr = $urlaubMonat;
-        } else {
-            // Urlaub dieses Monats größer dem Resturlaub vom Vorjahr
-            $urlaub = $urlaubMonat - $urlaubBisherVorjahr;
-            $urlaubVorjahr = $urlaubBisherVorjahr;
-        }
+        //TODO Codepflege!
+//        $urlaubMonat = $this->getUrlaubNachMonat($monat);
+//        //TODO Resturlaub: Hier ist anscheinend ein Wurm drin!
+//        $urlaubBisherVorjahr = $this->getUrlaubVorjahrBisher($monat);
+//        //TODO Resturlaub: Oder hier ist anscheinend ein Wurm drin!
+//        if ($urlaubMonat <= $urlaubBisherVorjahr) {
+//            // Urlaub dieses Monats kleiner-gleich dem Resturlaub vom Vorjahr
+//            $urlaub = 0;
+//            $urlaubVorjahr = $urlaubMonat;
+//        } else {
+//            // Urlaub dieses Monats größer dem Resturlaub vom Vorjahr
+//            $urlaub = $urlaubMonat - $urlaubBisherVorjahr;
+//            // FALSCH!!!!
+//            $urlaubVorjahr = $urlaubBisherVorjahr;
+//        }
+        $urlaubGesamt = $this->getUrlaubGesamt($monat);
 
         $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
-        $arbeitsmonatTabelle->saveArbeitsmonat(
-                $this->id, $monat, $saldo, $urlaub, $urlaubVorjahr);
+        $arbeitsmonatTabelle->saveArbeitsmonat($this->id, $monat, $saldo,
+                $urlaubGesamt['diff'], $urlaubGesamt['diffVorjahr']);
     }
 
     public function setNachname($nachname) {
@@ -447,7 +452,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     /**
      * Berechnet den Resturlaub inklusive des als Parameter übergebenen Monats.
      * Zurückgegeben wird ein Array mit den Schlüsseln 'rest' und 'vorjahr' für
-     * den Resturlaub des laufenden und des vorangegangenen Jahres.
+     * den Resturlaub des laufenden und des vorangegangenen Jahres, sowie den
+     * Schlüsseln 'diff' und 'diffVorjahr' für die DB-Eintäge bei 'urlaub' und
+     * 'urlaubvorjahr'.
      * 
      * Falls der im Monat $monat eingetragene Urlaub den gesamten Resturlaub
      * überschreitet, wird für 'rest' ein negativer Wert zurückgegeben! Es ist 
@@ -461,6 +468,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $urlaub = $this->getUrlaubBisher($monat);
         $urlaubVorjahr = $this->getUrlaubVorjahrBisher($monat);
         $urlaubMonat = $this->getUrlaubNachMonat($monat);
+        $diff = 0;
+        $diffVorjahr = 0;
         $gesamt = array();
         if ($urlaubMonat != 0) {
             // diesen Monat wurde Urlaub genommen, also berechne neue Restwerte
@@ -468,18 +477,24 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 // der Resturlau des Vorjahres übersteigt den genommenen Urlaub,
                 // also ziehe ihn vom Vorjahresrest ab.
                 $urlaubVorjahr -= $urlaubMonat;
+                $diffVorjahr = $urlaubMonat;
+                $diff = 0;
             } else {
                 // diesen Monat wurde mehr Urlaub genommen, als Rest vom Vorjahr
                 // vorhanden ist, also passe Resturlaub von diesem und vom
                 // Vorjahr an. Der diesjährige Rest kann auch negativ werden!
                 $ueberschuss = $urlaubMonat - $urlaubVorjahr;
+                $diffVorjahr = $urlaubVorjahr;
                 $urlaubVorjahr = 0;
                 $urlaub -= $ueberschuss;
+                $diff = $ueberschuss;
             }
         }
         // gib die (evtl. angepassten) Werte zurück
         $gesamt['rest'] = $urlaub;
         $gesamt['vorjahr'] = $urlaubVorjahr;
+        $gesamt['diff'] = $diff;
+        $gesamt['diffVorjahr'] = $diffVorjahr;
         return $gesamt;
     }
 

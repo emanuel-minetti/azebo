@@ -173,6 +173,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
 
         // Urlaubswerte setzen
+        //TODO Resturlaub: Hier scheint es zu stimmen!
         $this->urlaubBisher = $this->mitarbeiter->getUrlaubBisher(
                 $this->zuBearbeitendesDatum);
         $this->view->urlaubBisher = $this->urlaubBisher;
