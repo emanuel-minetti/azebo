@@ -47,7 +47,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
                         ->getArbeitstageNachMonatUndMitarbeiterId(
                                 $monat, $mitarbeiter->id);
     }
-
+   
     public function getMitarbeiterNachHochschule($hochschule) {
 
         $gruppenNamen = Zend_Registry::get('gruppen');
