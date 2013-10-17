@@ -53,5 +53,9 @@ interface Azebo_Resource_Arbeitsregel_Item_Interface {
     public function setRahmenEnde($ende);
     
     public function setKernEnde($ende);
+    
+    public function getOhneKern();
+    
+    public function setOhneKern($ohneKern);
 }
 
