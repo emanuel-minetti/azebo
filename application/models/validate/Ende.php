@@ -59,11 +59,13 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
             $arbeitsregel = $arbeitstag->getRegel();
             $rahmenEnde = null;
             $kernEnde = null;
-            
+            $ohneKern = null;
+
             if ($arbeitsregel !== null) {
                 // Mitarbeiter hat indviduelle Arbeitszeitregelung, also anwenden
                 $rahmenEnde = $arbeitsregel->getRahmenEnde();
                 $kernEnde = $arbeitsregel->getKernEnde();
+                $ohneKern = $arbeitsregel->getOhneKern();
             }
             if ($rahmenEnde === null) {
                 // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,
@@ -90,21 +92,25 @@ class Azebo_Validate_Ende extends Zend_Validate_Abstract {
             $mitternacht = new Zend_Date('00:00:00', Zend_Date::TIMES);
             $dreiUhr = new Zend_Date('03:00:00', Zend_Date::TIMES);
 
-            //prüfe
-            if ($value->compareTime($rahmenEnde) == 1 ||
-                    ($value->compareTime($mitternacht) != -1 &&
-                    $value->compareTime($dreiUhr) != 1)) {
-                // ende nach dem Rahmenende oder zwischen 0:00 und 3:00
-                if ($bemerkung == '') {
-                    $this->_error(self::NACH_RAHMEN);
-                    return false;
+            // prüfe Kern, falls die Arbeitsregel nicht 'ohneKern' angibt
+            if ($ohneKern !== null && $ohneKern == 'nein') {
+                // prüfe Rahmen
+                if ($value->compareTime($rahmenEnde) == 1 ||
+                        ($value->compareTime($mitternacht) != -1 &&
+                        $value->compareTime($dreiUhr) != 1)) {
+                    // ende nach dem Rahmenende oder zwischen 0:00 und 3:00
+                    if ($bemerkung == '') {
+                        $this->_error(self::NACH_RAHMEN);
+                        return false;
+                    }
                 }
-            }
-            if ($value->compareTime($kernEnde) == -1) {
-                //vor Ende der Kernarbeitszeit
-                if ($bemerkung == '' && $befreiung == 'keine') {
-                    $this->_error(self::VOR_KERN);
-                    return false;
+                // prüfe Kern
+                if ($value->compareTime($kernEnde) == -1) {
+                    //vor Ende der Kernarbeitszeit
+                    if ($bemerkung == '' && $befreiung == 'keine') {
+                        $this->_error(self::VOR_KERN);
+                        return false;
+                    }
                 }
             }
         }

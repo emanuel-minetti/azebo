@@ -148,6 +148,13 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
             'autofocus' =>true,
         ));
+        
+        $this->addElement('CheckBox', 'ohneKern', array(
+            'label' => 'Ohne Kernarbeitszeit',
+            'checkedValue' => 'ja',
+            'uncheckedValue' => 'nein',
+            'checked' => false,
+        ));
 
         $this->addElement('SubmitButton', 'absenden', array(
             'required' => false,

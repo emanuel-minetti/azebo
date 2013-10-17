@@ -75,11 +75,13 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
             $arbeitsregel = $arbeitstag->getRegel();
             $rahmenBeginn = null;
             $kernBeginn = null;
-            
+            $ohneKern = null;
+
             if ($arbeitsregel !== null) {
                 // Mitarbeiter hat indviduelle Arbeitszeitregelung, also anwenden
                 $rahmenBeginn = $arbeitsregel->getRahmenAnfang();
                 $kernBeginn = $arbeitsregel->getKernAnfang();
+                $ohneKern = $arbeitsregel->getOhneKern();
             }
             if ($rahmenBeginn === null) {
                 // Mitarbeiter hat keine indviduelle Arbeitszeitregelung,
@@ -96,19 +98,23 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
             $befreiung = $context['befreiung'];
             $befreiung = trim($befreiung);
 
-            //prüfe
-            if ($value->compareTime($rahmenBeginn) == -1) {
-                //vor Beginn der Rahmenarbeitszeit
-                if ($bemerkung == '') {
-                    $this->_error(self::VOR_RAHMEN);
-                    return false;
+            // prüfe Rahmen und Kern, falls die Arbeitsregel nicht 'ohneKern' angibt
+            if ($ohneKern !== null && $ohneKern == 'nein') {
+                // prüfe Rahmen
+                if ($value->compareTime($rahmenBeginn) == -1) {
+                    //vor Beginn der Rahmenarbeitszeit
+                    if ($bemerkung == '') {
+                        $this->_error(self::VOR_RAHMEN);
+                        return false;
+                    }
                 }
-            }
-            if ($value->compareTime($kernBeginn) == 1) {
-                //nach Beginn der Kernarbeitszeit
-                if ($bemerkung == '' && $befreiung == 'keine') {
-                    $this->_error(self::NACH_KERN);
-                    return false;
+                // prüfe Kern
+                if ($value->compareTime($kernBeginn) == 1) {
+                    //nach Beginn der Kernarbeitszeit
+                    if ($bemerkung == '' && $befreiung == 'keine') {
+                        $this->_error(self::NACH_KERN);
+                        return false;
+                    }
                 }
             }
         }

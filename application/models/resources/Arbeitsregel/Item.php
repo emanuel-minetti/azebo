@@ -94,5 +94,12 @@ class Azebo_Resource_Arbeitsregel_Item extends AzeboLib_Model_Resource_Db_Table_
     public function setRahmenEnde($ende) {
         $this->_row->rahmenende = $this->_dzService->zeitPhpZuSql($ende);
     }
-
+    
+    public function getOhneKern() {
+        return $this->_row->ohnekern;
+    }
+    
+    public function setOhneKern($ohneKern) {
+        $this->_row->ohnekern = $ohneKern;
+    }
 }
