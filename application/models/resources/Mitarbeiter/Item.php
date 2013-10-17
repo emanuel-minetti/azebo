@@ -157,21 +157,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function saveArbeitsmonat(Zend_Date $monat) {
         $saldo = $this->getSaldoGesamt($monat, true);
-        //TODO Codepflege!
-//        $urlaubMonat = $this->getUrlaubNachMonat($monat);
-//        //TODO Resturlaub: Hier ist anscheinend ein Wurm drin!
-//        $urlaubBisherVorjahr = $this->getUrlaubVorjahrBisher($monat);
-//        //TODO Resturlaub: Oder hier ist anscheinend ein Wurm drin!
-//        if ($urlaubMonat <= $urlaubBisherVorjahr) {
-//            // Urlaub dieses Monats kleiner-gleich dem Resturlaub vom Vorjahr
-//            $urlaub = 0;
-//            $urlaubVorjahr = $urlaubMonat;
-//        } else {
-//            // Urlaub dieses Monats größer dem Resturlaub vom Vorjahr
-//            $urlaub = $urlaubMonat - $urlaubBisherVorjahr;
-//            // FALSCH!!!!
-//            $urlaubVorjahr = $urlaubBisherVorjahr;
-//        }
         $urlaubGesamt = $this->getUrlaubGesamt($monat);
 
         $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
@@ -584,6 +569,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $kappung = null;
         }
         return $kappung;
+    }
+    
+    public function getIstnachKalenderwoche($kalenderwoche) {
+        
     }
 
 }
