@@ -3,8 +3,8 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 26, 2013 at 05:49 AM
--- Server version: 5.1.66
+-- Generation Time: Oct 17, 2013 at 01:16 PM
+-- Server version: 5.1.63
 -- PHP Version: 5.3.3-7+squeeze14
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -33,13 +33,13 @@ CREATE TABLE IF NOT EXISTS `arbeitsmonat` (
   `saldominuten` int(11) NOT NULL,
   `saldopositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
   `urlaubvorjahr` int(11) NOT NULL,
-  `urlaub` int(11) NOT NULL DEFAULT '0',
+  `urlaub` int(11) NOT NULL,
   `abgelegt` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   `saldo2007stunden` int(11) DEFAULT NULL,
   `saldo2007minuten` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `mitarbeiter_id` (`mitarbeiter_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=48 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=36 ;
 
 -- --------------------------------------------------------
 
@@ -54,6 +54,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsregel` (
   `kalenderwoche` enum('gerade','ungerade','alle') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'alle',
   `rahmenanfang` time DEFAULT NULL,
   `rahmenende` time DEFAULT NULL,
+  `ohnekern` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   `kernanfang` time DEFAULT NULL,
   `kernende` time DEFAULT NULL,
   `soll` time NOT NULL,
@@ -61,7 +62,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsregel` (
   `bis` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `mitarbeiter_id` (`mitarbeiter_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=49 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=42 ;
 
 -- --------------------------------------------------------
 
@@ -83,7 +84,7 @@ CREATE TABLE IF NOT EXISTS `arbeitstag` (
   `nachmittagende` time DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mitarbeiter-tag` (`mitarbeiter_id`,`tag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=196 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=320 ;
 
 -- --------------------------------------------------------
 
@@ -99,12 +100,14 @@ CREATE TABLE IF NOT EXISTS `mitarbeiter` (
   `saldouebertragminuten` int(11) NOT NULL,
   `saldouebertragpositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
   `urlaubvorjahr` int(11) NOT NULL,
-  `urlaub` int(11) NOT NULL DEFAULT '0',
+  `urlaub` int(11) NOT NULL,
   `saldo2007stunden` int(11) DEFAULT NULL,
   `saldo2007minuten` int(11) DEFAULT NULL,
   `vertreter` int(11) DEFAULT NULL,
-  `kappungtotal` int(11) DEFAULT NULL,
-  `kappungmonat` int(11) DEFAULT NULL,
+  `kappungtotalstunden` int(11) DEFAULT NULL,
+  `kappungtotalminuten` int(11) DEFAULT NULL,
+  `kappungmonatstunden` int(11) DEFAULT NULL,
+  `kappungmonatminuten` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `benutzername` (`benutzername`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
