@@ -572,7 +572,12 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
     
     public function getIstnachKalenderwoche($kalenderwoche) {
-        
+        $tag = new Zend_Date();
+        $tag->setWeek(10);
+        $tag->setWeekday(1);
+        //$log = Zend_Registry::get('log');
+        //$log->debug('Datum' . $tag->toString());
+           
     }
 
 }

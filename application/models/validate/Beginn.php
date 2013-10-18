@@ -76,7 +76,7 @@ class Azebo_Validate_Beginn extends Zend_Validate_Abstract {
             $rahmenBeginn = null;
             $kernBeginn = null;
             $ohneKern = null;
-
+            
             if ($arbeitsregel !== null) {
                 // Mitarbeiter hat indviduelle Arbeitszeitregelung, also anwenden
                 $rahmenBeginn = $arbeitsregel->getRahmenAnfang();
