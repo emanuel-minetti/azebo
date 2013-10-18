@@ -187,7 +187,9 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/routes.ini');
         $router->addDefaultRoutes();
         $router->addConfig($config, 'routes');
-    }
+    }   
+    
+    
 
 }
 
