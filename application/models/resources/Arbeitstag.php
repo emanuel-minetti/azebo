@@ -130,6 +130,44 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
 
         $arbeitstag->save();
     }
+    
+    public function getArbeitstageNachKalenderwocheUndMitarbeiterId(
+            $kalenderwoche, $mitarbeiterId) {
+        $montag = new Zend_Date();
+        $montag->setWeek($kalenderwoche);
+        $montag->setWeekday(1);
+        $sonntag = new Zend_Date($montag);
+        $sonntag->setWeekday(7);
+
+        $select = $this->select();
+        $select->where('mitarbeiter_id = ?', $mitarbeiterId)
+                ->where('tag >= ?', Azebo_Service_DatumUndZeitUmwandler::datumPhpZuSql($montag))
+                ->where('tag <= ?', Azebo_Service_DatumUndZeitUmwandler::datumPhpZuSql($sonntag))
+                ->order('tag ASC');
+        $dbTage = $this->fetchAll($select);
+        $arbeitstage = array();
+
+        $tag = new Zend_Date($montag);
+        while ($tag->compareWeek($kalenderwoche) == 0) {
+
+            if ($dbTage->current() !== null &&
+                    $dbTage->current()->getTag()->equals(
+                            $tag, Zend_Date::DATE_MEDIUM)) {
+                array_push($arbeitstage, $dbTage->current());
+                $dbTage->next();
+            } else {
+                $arbeitstag = $this->createRow();
+                $arbeitstag->setTag($tag);
+                $arbeitstag->mitarbeiter_id = $mitarbeiterId;
+                array_push($arbeitstage, $arbeitstag);
+            }
+
+            $tag->addDay(1);
+        }
+
+        //$log->debug('Arbeitstage: ' . print_r($arbeitstage, true));
+        return $arbeitstage;
+    }
 
 }
 

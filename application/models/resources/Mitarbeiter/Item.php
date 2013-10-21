@@ -47,9 +47,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $this->_vorname . ' ' . $this->_nachname;
     }
-    
+
     public function getSortierName() {
-        if($this->_vorname === null || $this->_nachname === null) {
+        if ($this->_vorname === null || $this->_nachname === null) {
             $this->getName();
         }
         return $this->_nachname . ', ' . $this->_vorname;
@@ -160,8 +160,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $urlaubGesamt = $this->getUrlaubGesamt($monat);
 
         $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
-        $arbeitsmonatTabelle->saveArbeitsmonat($this->id, $monat, $saldo,
-                $urlaubGesamt['diff'], $urlaubGesamt['diffVorjahr']);
+        $arbeitsmonatTabelle->saveArbeitsmonat($this->id, $monat, $saldo, $urlaubGesamt['diff'], $urlaubGesamt['diffVorjahr']);
     }
 
     public function setNachname($nachname) {
@@ -570,14 +569,31 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $kappung;
     }
-    
+
+    /**
+     * Gibt die Ist-Arbeitszeit einer Kalenderwoche, gegeben als int, als
+     * AZebo_Model_Saldo zurück.
+     * 
+     * @param int $kalenderwoche
+     * @return \Azebo_Model_Saldo 
+     */
     public function getIstnachKalenderwoche($kalenderwoche) {
-        $tag = new Zend_Date();
-        $tag->setWeek(10);
-        $tag->setWeekday(1);
-        //$log = Zend_Registry::get('log');
-        //$log->debug('Datum' . $tag->toString());
-           
+        $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
+        $arbeitstage = $arbeitstagTabelle->
+                getArbeitstageNachKalenderwocheUndMitarbeiterId(
+                $kalenderwoche, $this->_row->id);
+        $gesamt = new Azebo_Model_Saldo(0, 0, true);
+        foreach ($arbeitstage as $arbeitstag) {
+            $ist = $arbeitstag->getIst();
+            if ($ist !== NULL) {
+                $istSaldo = new Azebo_Model_Saldo(
+                        $ist->get(Zend_Date::HOUR),
+                        $ist->get(Zend_Date::MINUTE),
+                        true);
+                $gesamt->add($istSaldo);
+            }
+        }
+        return $gesamt;
     }
 
 }
