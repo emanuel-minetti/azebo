@@ -256,3 +256,17 @@ div#Fusszeile {
 td.erg {
     border-right-color: black !important;
 }
+
+div#links {
+    float: left;
+    width: 25em;
+}
+
+div#rechts {
+    width: 20em;
+    margin-left: 26em;
+}
+
+div#form {
+  clear: both;
+}

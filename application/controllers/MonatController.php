@@ -284,6 +284,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->view->monatsDaten = $tabelle['tabellenDaten'];
         $this->view->hoheTageImMonat = $tabelle['hoheTage'];
         $this->view->extraZeilen = $tabelle['extraZeilen'];
+        
+        // füge für die HfS die wochenarbeitszeiten hinzu
+        if($this->mitarbeiter->getHochschule() == 'hfs') {
+            $kwService = new Azebo_Service_KWnachMonat();
+            $kwZeiten = $kwService->getIstIKwNachMonatundMitarbeiterId(
+                    $this->zuBearbeitendesDatum, $this->mitarbeiter->id);
+            $this->view->kwZeiten = $kwZeiten;
+        }
 
         // die Form für den Monatsabschluss hinzufügen
         $this->view->monatForm = $abschlussForm;
