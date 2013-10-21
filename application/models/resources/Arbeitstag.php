@@ -131,7 +131,16 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
         $arbeitstag->save();
     }
     
-    public function getArbeitstageNachKalenderwocheUndMitarbeiterId(
+    /**
+     * Gibt die Ist-Arbeitszeit einer Kalenderwoche, gegeben als int zwischen 1
+     * und 53, und eines Mitarbeiters, gegeben als Id, zurück.
+     * Der Rückgabewert ist ein Azebo_Model_Saldo.
+     * 
+     * @param int $kalenderwoche
+     * @param int $mitarbeiterId
+     * @return \Azebo_Model_Saldo 
+     */
+    public function getIstNachKalenderwocheUndMitarbeiterId(
             $kalenderwoche, $mitarbeiterId) {
         $montag = new Zend_Date();
         $montag->setWeek($kalenderwoche);
@@ -164,9 +173,19 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
 
             $tag->addDay(1);
         }
-
-        //$log->debug('Arbeitstage: ' . print_r($arbeitstage, true));
-        return $arbeitstage;
+        
+        $gesamt = new Azebo_Model_Saldo(0,0,true);
+        foreach ($arbeitstage as $arbeitstag) {
+            $ist = $arbeitstag->getIst();
+            if ($ist !== NULL) {
+                $istSaldo = new Azebo_Model_Saldo(
+                        $ist->get(Zend_Date::HOUR),
+                        $ist->get(Zend_Date::MINUTE),
+                        true);
+                $gesamt->add($istSaldo);
+            }
+        }
+        return $gesamt;
     }
 
 }

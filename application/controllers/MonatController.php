@@ -223,8 +223,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function indexAction() {
-        //TODO Debug-Code entfernen!
-       //$this->mitarbeiter->getIstnachKalenderwoche(40);
         //TODO KHB: Die Monatstabelle anpassen!!?
         $request = $this->getRequest();
         $abschlussForm = $this->_getMitarbeiterAbschlussForm();
