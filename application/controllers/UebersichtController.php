@@ -86,6 +86,16 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         }
         
         $this->view->jahresDaten = $jahresDaten;
+        
+        // Falls der Mitarbeiter zur HfS gehört, soll der Vertreter-Link
+        // angezeigt werden.
+        // Also übergebe den Mitarbeiter und die Hochschule an den View
+        $this->view->mitarbeiter = $this->mitarbeiter->benutzername;
+        $this->view->hochschule = $this->mitarbeiter->getHochschule();
+    }
+    
+    public function vertreterAction() {
+        $this->erweitereSeitenName(' Vertreter einrichten');
     }
 }
 

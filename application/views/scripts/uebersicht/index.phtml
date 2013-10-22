@@ -3,6 +3,13 @@
     <h3><?= $this->seitenName ?></h3>
     <div id="gridDiv" style="width: 393px; height: 326px"></div>
 </div>
+<?
+if ($this->hochschule == 'hfs') {
+    echo "<p style=\"width: 180px; text-align: center; margin-bottom: 0px;\"><a href  =";
+    echo $this->url(array('mitarbeiter' => $this->mitarbeiter), 'vertreter', true);
+    echo ">Vertreter einrichten</a></p>";
+}
+?>
 
 <script type="text/javascript">
     dojo.ready(function() {

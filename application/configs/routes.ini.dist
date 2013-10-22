@@ -38,6 +38,13 @@ routes.uebersicht.defaults.action = index
 routes.uebersicht.map.jahr = 1
 routes.uebersicht.reverse = "uebersicht/%d"
 
+routes.vertreter.type = "Zend_Controller_Router_Route_Regex"
+routes.vertreter.route = "uebersicht/([a-z]+)\z"
+routes.vertreter.defaults.controller = uebersicht
+routes.vertreter.defaults.action = vertreter
+routes.vertreter.map.mitarbeiter = 1
+routes.vertreter.reverse = "uebersicht/%s"
+
 routes.mitarbeiterdetail.type = "Zend_Controller_Router_Route_Regex"
 routes.mitarbeiterdetail.route = "bueroleitung/mitarbeiterdetail/([a-z]+)\z"
 routes.mitarbeiterdetail.defaults.controller = bueroleitung

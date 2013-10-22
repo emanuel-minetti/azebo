@@ -68,7 +68,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     public function mitarbeiterAction() {
         $this->erweitereSeitenName(' Übersicht Mitarbeiter');
 
-        $daten = $this->_getMitarbeiterTabellenDaten(null);
+        $mitarbeiterTabelleService = new Azebo_Service_MitarbeiterTabelle();
+        $daten = $mitarbeiterTabelleService->_getMitarbeiterTabellenDaten($this->mitarbeiter, null);
 
         $this->view->mitarbeiterDaten = $daten['daten'];
         $this->view->zeilen = $daten['zeilen'];
@@ -267,7 +268,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 $monat->toString('MMMM yyyy'));
         $this->view->monat = $monat->toString('MM_yyyy');
 
-        $daten = $this->_getMitarbeiterTabellenDaten($monat);
+        $mitarbeiterTabelleService = new Azebo_Service_MitarbeiterTabelle();
+        $daten = $mitarbeiterTabelleService->_getMitarbeiterTabellenDaten($this->mitarbeiter, $monat);
 
         $this->view->mitarbeiterDaten = $daten['daten'];
         $this->view->zeilen = $daten['zeilen'];
@@ -606,79 +608,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         }
 
         return $zeitDaten;
-    }
-
-    /**
-     * Befüllt ein Zend_Dojo_Data-Objekt mit den Mitarbeiternamen und den
-     * zugehörigen Daten. Der Parameter $monat ist entweder 'null', dann wird
-     * die Mitarbeiter-Tabelle befüllt, oder ein Zend_Date-Objekt, dann wird die
-     * Monatsdetail-Tabelle befüllt.
-     * 
-     * Zurückgegeben wird ein Array mit den Schlüsseln 'daten' für die 
-     * Tabellendaten und 'zeilen' für die Anzahl der Zeilen.
-     * 
-     * @param Zend_Date|null $monat
-     * @return array
-     */
-    private function _getMitarbeiterTabellenDaten($monat) {
-        // intialisiere das Datenarray und die Tabellendaten
-        $mitarbeiterDatenArray = array();
-        $mitarbeiterDaten = new Zend_Dojo_Data();
-        $mitarbeiterDaten->setIdentifier('mitarbeiter');
-        $zeilen = 0;
-
-        // hole die Mitarbeiter der Hochschule
-        $hsMitarbeiter = $this->model->getMitarbeiterNachHochschule(
-                $this->mitarbeiter->getHochschule());
-
-        // füge die Mitarbeiter dem Array hinzu
-        if ($monat instanceof Zend_Date) {
-            $this->_log->debug('Hallo!');
-            foreach ($hsMitarbeiter as $mitarbeiter) {
-                $arbeitsmonat = $mitarbeiter->getArbeitsmonat($monat);
-                if ($arbeitsmonat === null) {
-                    $abgeschlossen = 'Nein';
-                    $abgelegt = 'Nein';
-                } else {
-                    $abgeschlossen = 'Ja';
-                    $abgelegt = $arbeitsmonat->abgelegt == 'ja' ? 'Ja' : 'Nein';
-                }
-                $mitarbeiterDatenArray[] = array(
-                    'mitarbeiter' => $mitarbeiter->benutzername,
-                    'mitarbeitername' => $mitarbeiter->getSortierName(),
-                    'abgeschlossen' => $abgeschlossen,
-                    'abgelegt' => $abgelegt,
-                );
-                $zeilen++;
-            }
-        } else {
-            foreach ($hsMitarbeiter as $mitarbeiter) {
-                $mitarbeiterDatenArray[] = array(
-                    'mitarbeiter' => $mitarbeiter->benutzername,
-                    'mitarbeitername' => $mitarbeiter->getSortierName(),
-                    'abgeschlossen' => $mitarbeiter->getAbgeschlossenBis(),
-                    'abgelegt' => $mitarbeiter->getAbgelegtBis(),
-                );
-                $zeilen++;
-            }
-        }
-
-        // $mitarbeiterDatenArray nach Nach- und Vornamen sortieren!
-        $namen = array();
-        foreach ($mitarbeiterDatenArray as $key => $row) {
-            $namen[$key] = $row['mitarbeitername'];
-        }
-        array_multisort($namen, SORT_ASC, $mitarbeiterDatenArray);
-
-        // die Arraydaten den Tabellendaten hinzufügen
-        foreach ($mitarbeiterDatenArray as $mitarbeiter) {
-            $mitarbeiterDaten->addItem($mitarbeiter);
-        }
-
-        return array(
-            'daten' => $mitarbeiterDaten,
-            'zeilen' => $zeilen,
-        );
     }
 
 }
