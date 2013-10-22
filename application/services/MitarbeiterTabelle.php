@@ -32,10 +32,14 @@ class Azebo_Service_MitarbeiterTabelle {
      * zugehörigen Daten. Der Parameter $monat ist entweder 'null', dann wird
      * die Mitarbeiter-Tabelle befüllt, oder ein Zend_Date-Objekt, dann wird die
      * Monatsdetail-Tabelle befüllt.
+     * Der Parameter $mitarbeiter wird benötigt, um die Hochschule, deren
+     * Mitarbeiter angezeigt werden sollen, zu ermitteln. 
+     * 
      * 
      * Zurückgegeben wird ein Array mit den Schlüsseln 'daten' für die 
      * Tabellendaten und 'zeilen' für die Anzahl der Zeilen.
      * 
+     * @param Azebo_Resources_Mitarbeiter_Inerface $mitarbeiter
      * @param Zend_Date|null $monat
      * @return array
      */
