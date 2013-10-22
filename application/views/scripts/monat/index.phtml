@@ -7,7 +7,7 @@
         <div id="gridDiv" style="width: 830px; height: <?= ($this->tageImMonat + $this->extraZeilen) * 40 + $this->hoheTageImMonat * 16 + 37 ?>px"></div>
     <? endif; ?>
     <? if ($this->bearbeitbar): ?>
-        <p style="width: 180px; text-align: center">
+        <p style="width: 180px; text-align: center; margin-bottom: 0px;">
             <a href=<?=
     $this->url(array(
         'monat' => $this->monat,

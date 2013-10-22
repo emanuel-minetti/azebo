@@ -373,11 +373,22 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $urlaubVorjahrGesamt = $gesamt['vorjahr'];
             $this->view->vorjahrRestGesamt = $urlaubVorjahrGesamt;
         }
+        else {
+            $urlaubVorjahrGesamt = 0;
+        }
         
         $urlaubZusammenBisher = $urlaubBisher + $urlaubVorjahrBisher;
         $this->view->urlaubZusammenBisher = $urlaubZusammenBisher;
         $urlaubZusammenGesamt = $urlaubGesamt + $urlaubVorjahrGesamt;
         $this->view->urlaubZusammenGesamt = $urlaubZusammenGesamt;
+        
+         // füge für die HfS die wochenarbeitszeiten hinzu
+        if ($this->mitarbeiter->getHochschule() == 'hfs') {
+            $kwService = new Azebo_Service_KWnachMonat();
+            $kwZeiten = $kwService->getIstIKwNachMonatundMitarbeiterId(
+                    $monat, $this->mitarbeiter->id);
+            $this->view->kwZeiten = $kwZeiten;
+        }
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {
