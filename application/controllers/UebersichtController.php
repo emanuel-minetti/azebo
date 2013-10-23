@@ -96,6 +96,12 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
     
     public function vertreterAction() {
         $this->erweitereSeitenName(' Vertreter einrichten');
+        
+        $mitarbeiterTabelleService = new Azebo_Service_MitarbeiterTabelle();
+        $daten = $mitarbeiterTabelleService->_getMitarbeiterTabellenDaten($this->mitarbeiter, null);
+
+        $this->view->mitarbeiterDaten = $daten['daten'];
+        $this->view->zeilen = $daten['zeilen'];
     }
 }
 
