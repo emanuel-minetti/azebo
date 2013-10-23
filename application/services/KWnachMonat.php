@@ -38,7 +38,8 @@ class Azebo_Service_KWnachMonat {
      * @param int $mitarbeiterId
      * @return array
      */
-    public function getIstIKwNachMonatundMitarbeiterId($monat, $mitarbeiterId) {
+    public function getIstKwNachMonatundMitarbeiterId($datum, $mitarbeiterId) {
+        $monat = new Zend_Date($datum);
         $monat->setDay(1);
         $kwAnfang = $monat->get(Zend_Date::WEEK);
         $monat->setDay($monat->get(Zend_Date::MONTH_DAYS));

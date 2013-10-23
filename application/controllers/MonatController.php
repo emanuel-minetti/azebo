@@ -113,11 +113,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         $heute = new Zend_Date();
 
-        // Hohle die Parameter
+        // Hole die Parameter
         $this->tag = $this->_getParam('tag', $heute->get(Zend_Date::DAY));
         $this->monat = $this->_getParam('monat', $heute->get(Zend_Date::MONTH));
         $this->jahr = $this->_getParam('jahr', $heute->get(Zend_Date::YEAR));
-
+        
         $this->view->tag = $this->tag;
         $this->view->monat = $this->monat;
         $this->view->jahr = $this->jahr;
@@ -216,7 +216,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // füge für die HfS die wochenarbeitszeiten hinzu
         if ($this->mitarbeiter->getHochschule() == 'hfs') {
             $kwService = new Azebo_Service_KWnachMonat();
-            $kwZeiten = $kwService->getIstIKwNachMonatundMitarbeiterId(
+            $kwZeiten = $kwService->getIstKwNachMonatundMitarbeiterId(
                     $this->zuBearbeitendesDatum, $this->mitarbeiter->id);
             $this->view->kwZeiten = $kwZeiten;
         }
@@ -367,7 +367,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                             }
                         }
 
-                        // speichen, in der Session als ungeprüft
+                        // speichern, in der Session als ungeprüft
                         // markieren und redirect
                         $this->mitarbeiter->saveArbeitstag(
                                 $this->zuBearbeitendesDatum, $daten);

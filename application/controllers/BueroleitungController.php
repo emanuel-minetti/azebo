@@ -387,7 +387,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
          // füge für die HfS die wochenarbeitszeiten hinzu
         if ($this->mitarbeiter->getHochschule() == 'hfs') {
             $kwService = new Azebo_Service_KWnachMonat();
-            $kwZeiten = $kwService->getIstIKwNachMonatundMitarbeiterId(
+            $kwZeiten = $kwService->getIstKwNachMonatundMitarbeiterId(
                     $monat, $this->mitarbeiter->id);
             $this->view->kwZeiten = $kwZeiten;
         }
