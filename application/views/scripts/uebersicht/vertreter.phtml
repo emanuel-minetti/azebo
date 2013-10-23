@@ -28,9 +28,7 @@
         
         dojo.connect(grid, "onRowClick", null, function(e){
             var url = "<?=
-$this->url(array(
-    'benutzername' => '',
-        ), 'mitarbeiterdetail', true);
+$this->url(array('vertreter' => ''), 'vertreter', true);
 ?>";
             var mitarbeiter = grid._getItemAttr(e.rowIndex, 'mitarbeiter');
             url += mitarbeiter;

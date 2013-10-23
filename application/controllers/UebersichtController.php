@@ -90,7 +90,6 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         // Falls der Mitarbeiter zur HfS gehört, soll der Vertreter-Link
         // angezeigt werden.
         // Also übergebe den Mitarbeiter und die Hochschule an den View
-        $this->view->mitarbeiter = $this->mitarbeiter->benutzername;
         $this->view->hochschule = $this->mitarbeiter->getHochschule();
     }
     
@@ -102,6 +101,17 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
 
         $this->view->mitarbeiterDaten = $daten['daten'];
         $this->view->zeilen = $daten['zeilen'];
+    }
+    
+    public function vertretereditAction() {
+        $this->erweitereSeitenName(' Vertreter bearbeiten');
+        
+        $vertreter = $this->_getParam('vertreter');
+        $mitarbeiterModel = new Azebo_Model_Mitarbeiter();
+        $vertreter = $mitarbeiterModel->getMitarbeiterNachBenutzername($vertreter);
+        $vertreterName = $vertreter->getName();
+        $this->view->vertreter = $vertreterName;
+        $this->view->neu = true;
     }
 }
 
