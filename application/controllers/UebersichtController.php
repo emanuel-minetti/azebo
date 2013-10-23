@@ -94,7 +94,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
     }
     
     public function vertreterAction() {
-        $this->erweitereSeitenName(' Vertreter einrichten');
+        $this->erweitereSeitenName(' Vertreter auswählen');
         
         $mitarbeiterTabelleService = new Azebo_Service_MitarbeiterTabelle();
         $daten = $mitarbeiterTabelleService->_getMitarbeiterTabellenDaten($this->mitarbeiter, null);
@@ -104,14 +104,35 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
     }
     
     public function vertretereditAction() {
-        $this->erweitereSeitenName(' Vertreter bearbeiten');
+        $this->erweitereSeitenName(' Vertreter einrichten');
         
         $vertreter = $this->_getParam('vertreter');
         $mitarbeiterModel = new Azebo_Model_Mitarbeiter();
-        $vertreter = $mitarbeiterModel->getMitarbeiterNachBenutzername($vertreter);
-        $vertreterName = $vertreter->getName();
+        $vertreterItem = $mitarbeiterModel->getMitarbeiterNachBenutzername($vertreter);
+        $vertreterName = $vertreterItem->getName();
         $this->view->vertreter = $vertreterName;
+        
+        //TODO Vertreter müssen auch entfernt werden können!!
         $this->view->neu = true;
+        
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $postDaten = $request->getPost();
+            if(isset($postDaten['abschliessen'])) {
+                $this->mitarbeiter->vertreter = $vertreterItem->id;
+                $this->mitarbeiter->save();
+            }
+        }
+        
+        $form = new Azebo_Form_Mitarbeiter_Vertreter();
+        $urlHelper = $this->_helper->getHelper('url');
+        $url = $urlHelper->url(array(
+            'vertreter' => $vertreter,
+                ), 'vertreter', true);
+        $form->setAction($url);
+        $form->setMethod('post');
+        $form->setName('vertreterForm');
+        $this->view->form = $form;
     }
 }
 
