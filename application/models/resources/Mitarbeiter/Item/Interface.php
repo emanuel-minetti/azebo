@@ -142,4 +142,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function setKappungGesamt($kappung);
     
+    public function hatVertreter();
+    
 }

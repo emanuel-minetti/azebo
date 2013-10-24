@@ -56,7 +56,7 @@ class Azebo_Form_Mitarbeiter_Vertreter extends AzeboLib_Form_Abstract {
                 array('HtmlTag', array('tag' => 'dd',),)),
         ));
         
-        $this->addElement('SubmitButton', 'zurück', array(
+        $this->addElement('SubmitButton', 'zurueck', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Zurück',

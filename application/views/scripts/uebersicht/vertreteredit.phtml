@@ -2,9 +2,22 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <?
-    if($this->neu) {
-        echo "$this->vertreter als Vertreter einrichten";
+    if (!$this->erfolg) {
+        if ($this->neu) {
+            echo "$this->vertreter als Vertreter einrichten";
+        } else {
+            echo "$this->vertreter ist als Ihr Vertreter eingerichtet. Falls Sie
+                einen anderen Vertreter auswählen möchten, müssen Sie den
+                bereits eingerichteten vorher entfernen.";
+        }
         echo "$this->form";
+    } else {
+        // erfolg == true
+        if($this->neu) {
+            echo "$this->vertreter wurde erfolgreich als Vertreter eingerichtet.";
+        } else {
+            echo "$this->vertreter wurde erfolgreich als Vertreter entfernt.";
+        }
     }
     ?>
 </div>

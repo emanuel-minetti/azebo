@@ -93,6 +93,19 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
     }
 
     public function vertreterAction() {
+        // Falls der Mitarbeiter schon einen Vertreter hat, leite ihn direkt
+        // auf die edit-Seite weiter.
+        if ($this->mitarbeiter->hatVertreter()) {
+            $vertreterId = $this->mitarbeiter->vertreter;
+            $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
+            $vertreter = $mitarbeiterTabelle->getMitarbeiterNachId($vertreterId);
+            $urlHelper = $this->_helper->getHelper('url');
+            $url = $urlHelper->url(array(
+                'vertreter' => $vertreter->benutzername,
+                    ), 'vertreter', true);
+            $this->_redirect($url);
+        }
+
         $this->erweitereSeitenName(' Vertreter auswählen');
 
         $mitarbeiterTabelleService = new Azebo_Service_MitarbeiterTabelle();
@@ -104,6 +117,9 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
 
     public function vertretereditAction() {
         $this->erweitereSeitenName(' Vertreter einrichten');
+
+        $neu = !$this->mitarbeiter->hatVertreter();
+        $erfolg = false;
 
         $vertreter = $this->_getParam('vertreter');
         $mitarbeiterModel = new Azebo_Model_Mitarbeiter();
@@ -117,8 +133,12 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
             'vertreter' => $vertreter,
                 ), 'vertreter', true);
         $form->setAction($url);
-
-        //TODO Vertreter müssen auch entfernt werden können!!
+        if ($neu) {
+            $form->removeElement('entfernen');
+        } else {
+            $form->removeElement('abschliessen');
+            $form->removeElement('zurueck');
+        }
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -127,10 +147,26 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
             if (isset($postDaten['abschliessen']) && $valid) {
                 $this->mitarbeiter->vertreter = $vertreterItem->id;
                 $this->mitarbeiter->save();
+                $ns = new Zend_Session_Namespace();
+                $ns->mitarbeiter = $this->mitarbeiter;
+                $erfolg = true;
+            } elseif (isset($postDaten['entfernen'])) {
+                $this->mitarbeiter->vertreter = null;
+                $this->mitarbeiter->save();
+                $ns = new Zend_Session_Namespace();
+                $ns->mitarbeiter = $this->mitarbeiter;
+                $erfolg = true;
+            } elseif (isset($postDaten['zurueck'])) {
+                $url = $urlHelper->url(array(
+                    'controller' => 'uebersicht',
+                    'action' => 'vertreter',
+                        ), 'default', true);
+                $this->_redirect($url);
             }
         }
         $this->view->vertreter = $vertreterName;
-        $this->view->neu = true;
+        $this->view->neu = $neu;
+        $this->view->erfolg = $erfolg;
         $this->view->form = $form;
     }
 
