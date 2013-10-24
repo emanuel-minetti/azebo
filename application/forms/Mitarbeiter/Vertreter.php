@@ -29,11 +29,48 @@
 class Azebo_Form_Mitarbeiter_Vertreter extends AzeboLib_Form_Abstract {
 
     public function init() {
-        $this->addElement('Hidden', 'vertreter', array());
+        
+        $this->addElementPrefixPath(
+                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
 
         $this->addElement('SubmitButton', 'abschliessen', array(
+            'required' => false,
+            'ignore' => true,
             'label' => 'Vertreter einrichten',
+            'validators' => array(
+                'Vertreter',
+            ),
+            'decorators' => array(
+                array('DijitElement',),
+                array('Errors',),
+                array('HtmlTag', array('tag' => 'dd',),)),
         ));
+        
+        $this->addElement('SubmitButton', 'entfernen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Vertreter entfernen',
+            'decorators' => array(
+                array('DijitElement',),
+                array('Errors',),
+                array('HtmlTag', array('tag' => 'dd',),)),
+        ));
+        
+        $this->addElement('SubmitButton', 'zurück', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Zurück',
+            'decorators' => array(
+                array('DijitElement',),
+                array('Errors',),
+                array('HtmlTag', array('tag' => 'dd',),)),
+        ));
+        
+        $this->addElement('Hidden', 'vertreter', array(
+        ));
+        
+        $this->setMethod('post');
+        $this->setName('vertreterForm');
     }
 
 }
