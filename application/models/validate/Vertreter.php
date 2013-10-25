@@ -28,10 +28,12 @@
 class Azebo_Validate_Vertreter extends Zend_Validate_Abstract {
 
     const SELBST = 'selbst';
+    const VERTRETER = 'vertreter';
 
     protected $_messageTemplates = array(
         self::SELBST => "Sie können sich nicht selbst als Vertreter auswählen!
             Bitte wählen Sie 'Zurück', und wählen einen anderen Vertreter!",
+        self::VERTRETER => '',
     );
 
     public function isValid($value, $context = null) {
@@ -43,8 +45,41 @@ class Azebo_Validate_Vertreter extends Zend_Validate_Abstract {
             $mitarbeiter = $ns->mitarbeiter;
             $mitarbeiterBN = $mitarbeiter->benutzername;
             $vertreterBN = $context['vertreter'];
-            if($vertreterBN == $mitarbeiterBN) {
+            if ($vertreterBN == $mitarbeiterBN) {
                 $this->_error(self::SELBST);
+                return false;
+            }
+            if ($mitarbeiter->istVertreter()) {
+                // Fehlermeldung zusammenbasteln und zurückgeben
+                $message = '';
+                $vertretene = $mitarbeiter->getVertretene();
+                if (count($vertretene) == 1) {
+                    $vertretener = $vertretene[0];
+                    $vertretener = $vertretener->getName();
+                    $message = "Sie sind Vertreter für
+                    $vertretener. Sie können also selbst keinen
+                    Vertreter einsetzten. Bitten Sie $vertretener
+                    Sie als Vertreter zu entfernen, und versuchen Sie es
+                    erneut.";
+                } else {
+                    $vertretener = $vertretene[0];
+                    $vertretener = $vertretener->getName();
+                    $message = "Sie sind Vertreter für
+                        $vertretener";
+                    for ($index = 1; $index < count($vertretene) - 1; $index++) {
+                        $vertretener = $vertretene[$index];
+                        $vertretener = $vertretener->getName();
+                        $message .= ", " . $vertretene[$index]->getName();
+                    }
+                    $vertretener = $vertretene[count($vertretene ) - 1];
+                    $vertretener = $vertretener->getName();
+                    $message .= " und " . $vertretener .
+                            ". ";
+                    $message .= "Bitten Sie die Vertretenen Sie als Vertreter
+                        zu entfernen, und versuchen Sie es erneut.";
+                }
+                $this->setMessage($message, self::VERTRETER);
+                $this->_error(self::VERTRETER);
                 return false;
             }
         }

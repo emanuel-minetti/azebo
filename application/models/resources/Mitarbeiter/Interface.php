@@ -30,4 +30,6 @@ extends AzeboLib_Model_Resource_Db_Interface {
     public function getMitarbeiterNachId($id);
 
     public function getMitarbeiterNachBenutzername($benutzername);
+    
+    public function getIstVertreterFuerNachId($id);
 }

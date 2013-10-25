@@ -231,7 +231,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function indexAction() {
-        //TODO KHB: Die Monatstabelle anpassen!!?
         $request = $this->getRequest();
         $abschlussForm = $this->_getMitarbeiterAbschlussForm();
         if ($request->isPost()) {

@@ -92,6 +92,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         $this->view->hochschule = $this->mitarbeiter->getHochschule();
     }
 
+    //TODO Die ganzen Vertreter-Aktionen kommentieren!
     public function vertreterAction() {
         // Falls der Mitarbeiter schon einen Vertreter hat, leite ihn direkt
         // auf die edit-Seite weiter.

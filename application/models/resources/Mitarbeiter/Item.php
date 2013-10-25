@@ -573,5 +573,17 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function hatVertreter() {
         return $this->_row->vertreter === null ? false : true;
     }
+    
+    public function getVertretene() {
+        $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
+        $vertretene = $mitarbeiterTabelle->getIstVertreterFuerNachId($this->id);
+        return $vertretene;
+    }
 
+
+    public function istVertreter() {
+        $vertretene = $this->getVertretene();
+        $anzahl = count($vertretene);
+        return $anzahl == 0 ? false : true;
+    }
 }

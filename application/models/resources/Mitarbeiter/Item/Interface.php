@@ -144,4 +144,8 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function hatVertreter();
     
+    public function istVertreter();
+    
+    public function getVertretene();
+    
 }

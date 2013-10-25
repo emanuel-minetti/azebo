@@ -43,6 +43,20 @@ implements Azebo_Resource_Mitarbeiter_Interface {
 
         return $this->fetchRow($select);
     }
+    
+    public function getIstVertreterFuerNachId($id) {
+        $vertretene = array();
+        $select = $this->select();
+        $select->where('vertreter = ?', $id);
+        $dbMitarbeiter = $this->fetchAll($select);
+        //$vertretene = $dbMitarbeiter->toArray();
+        $vertretene = array();
+        foreach ($dbMitarbeiter as $dbMitarbeiter) {
+            $mitarbeiter = $this->getMitarbeiterNachId($dbMitarbeiter->id);
+            $vertretene[] = $mitarbeiter;
+        }
+        return $vertretene;
+    }
 
 }
 
