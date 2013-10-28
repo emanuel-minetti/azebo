@@ -1,0 +1,39 @@
+<br/><br/>
+<div id="view-content">
+    <h3><?= $this->seitenName; ?></h3>
+    <p style="text-align: center">
+        Bitte wählen Sie aus, für wen Sie sich anmelden wollen:
+    </p>
+    <div id="gridDiv" style="width: 156px; height: <?= 38 + $this->zeilen * 24 ?>px; margin-right: 50%; float: right;"></div>
+</div>
+<script type="text/javascript">
+    dojo.ready(function() {
+        var mitarbeiterDaten = <?= $this->daten->toJson() ?>;
+        
+        var dataStore =
+            new dojo.data.ItemFileReadStore({ data:mitarbeiterDaten });
+        
+        var layout =[[
+                {'name':'Mitarbeiter','field':'name','width':'147px'},
+            ]];
+        
+        var grid = new dojox.grid.DataGrid({
+            store:dataStore,
+            structure:layout,
+            selectionMode:"none"
+        });
+        
+        grid.placeAt('gridDiv');
+        grid.startup();
+        
+        dojo.connect(grid, "onRowClick", null, function(e){
+            var url = "<?=
+$this->url(array('controller' => 'login', 'action' => 'vertreterlogin', 'id' => ''), 'default', true);
+?>";
+            var mitarbeiterId = grid._getItemAttr(e.rowIndex, 'id');
+            url += mitarbeiterId;
+            console.debug(url);
+            location.href = url;
+        });
+    });
+</script>

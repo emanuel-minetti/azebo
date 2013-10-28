@@ -84,21 +84,39 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                         $monat, $this->id);
     }
 
-    public function setRolle(array $gruppen) {
+    /**
+     * Setzt die Rolle eines Mitarbeiters. Die Rolle bestimmt, welche Seiten
+     * ein Mitarbeiter angezeigt bekommen darf und welche Aktionen er ausführen
+     * darf. Wird ein Mitarbeiter von einem anderen vertreten, so soll er nicht
+     * dessen Rolle erben.
+     * 
+     * Als Parameter werden die LDAP-Gruppen übergeben, denen der Mitarbeiter
+     * angehört. Wird der Mitarbeiter vertreten so wird diese Methode ohne
+     * Parameter aufgerufen und der Mitarbeiter erhält nur die Rolle
+     * 'mitarbeiter'.
+     * 
+     * 
+     * @param array $gruppen 
+     */
+    public function setRolle(array $gruppen = null) {
 
-        $gruppenNamen = Zend_Registry::get('gruppen');
+        if ($gruppen !== null) {
+            $gruppenNamen = Zend_Registry::get('gruppen');
 
-        foreach ($gruppen as $gruppe) {
-            if ($gruppe == $gruppenNamen->buero->hfs ||
-                    $gruppe == $gruppenNamen->buero->hfm ||
-                    $gruppe == $gruppenNamen->buero->khb) {
-                $this->_rolle = 'bueroleitung';
+            foreach ($gruppen as $gruppe) {
+                if ($gruppe == $gruppenNamen->buero->hfs ||
+                        $gruppe == $gruppenNamen->buero->hfm ||
+                        $gruppe == $gruppenNamen->buero->khb) {
+                    $this->_rolle = 'bueroleitung';
+                }
+                if ($gruppe == $gruppenNamen->scit) {
+                    $this->_rolle = 'scit';
+                }
             }
-            if ($gruppe == $gruppenNamen->scit) {
-                $this->_rolle = 'scit';
+            if ($this->_rolle === null) {
+                $this->_rolle = 'mitarbeiter';
             }
-        }
-        if ($this->_rolle === null) {
+        } else {
             $this->_rolle = 'mitarbeiter';
         }
     }
@@ -569,21 +587,21 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $kappung;
     }
-    
+
     public function hatVertreter() {
         return $this->_row->vertreter === null ? false : true;
     }
-    
+
     public function getVertretene() {
         $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
         $vertretene = $mitarbeiterTabelle->getIstVertreterFuerNachId($this->id);
         return $vertretene;
     }
 
-
     public function istVertreter() {
         $vertretene = $this->getVertretene();
         $anzahl = count($vertretene);
         return $anzahl == 0 ? false : true;
     }
+
 }

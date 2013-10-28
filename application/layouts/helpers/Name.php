@@ -28,12 +28,12 @@
  */
 class Zend_View_Helper_Name extends Zend_View_Helper_Abstract {
     
-    public function name() {
-        $authService = new Azebo_Service_Authentifizierung();
-        $identity = $authService->getIdentity();
+    public function name() {        
+        $ns = new Zend_Session_Namespace();
+        $mitarbeiter = $ns->mitarbeiter;
         $name = '';
-        if($identity !== null) {
-            $name = $identity->getName();
+        if($mitarbeiter !== null) {
+            $name = $mitarbeiter->getName();
         }
         return $name;
     }

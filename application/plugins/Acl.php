@@ -105,11 +105,10 @@ class Azebo_Plugin_Acl extends Zend_Controller_Plugin_Abstract {
     }
 
     protected function _getBenutzerRolle() {
-        if ($this->_auth->hasIdentity()) {
-            $authData = $this->_auth->getIdentity();
-            $rolle = $authData->getRolle() !== null ?
-                    strtolower($authData->getRolle()) : 'gast';
-        } else { 
+        $ns = new Zend_Session_Namespace();
+        if($ns->mitarbeiter !== null) {
+            $rolle = $ns->mitarbeiter->getRolle();
+        } else {
             $rolle = 'gast';
         }
         return $rolle;
