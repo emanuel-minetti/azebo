@@ -42,7 +42,7 @@ class Azebo_Validate_Azv extends Zend_Validate_Abstract {
         $monat = new Zend_Date($context['monat'], 'MM.yyyy');
         $ns = new Zend_Session_Namespace();
         $mitarbeiter = $ns->mitarbeiter;
-        $rest = $mitarbeiter->getAzvTage() -$mitarbeiter->getAzvTageBisher();
+        $rest = $mitarbeiter->getAzvTage() -$mitarbeiter->getAzvTageBisher($monat);
         $rest -= $mitarbeiter->getAzvTageNachMonat($monat);
         
         // teste

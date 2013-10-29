@@ -621,12 +621,13 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $this->getBeamter() ? $zeiten->azv->tage : 0;
     }
 
-    public function getAzvTageBisher() {
+    public function getAzvTageBisher(Zend_Date $monat) {
         $azvGesamt = 0;
         $arbeitsmonate = $this->getArbeitsmonate();
         foreach ($arbeitsmonate as $arbeitsmonat) {
             $azv = $arbeitsmonat->azv;
-            if ($azv !== null) {
+            if ($azv !== null &&
+                    $arbeitsmonat->getMonat()->compareMonth($monat) == -1) {
                 $azvGesamt += $azv;
             }
         }

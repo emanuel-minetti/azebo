@@ -108,6 +108,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
      */
     public $bearbeitbar;
 
+    /**
+     * Ob die AZV-Tage angezeigt werden sollen.
+     * 
+     * @var boolean
+     */
+    public $azvAnzeigen;
+
     public function init() {
         parent::init();
 
@@ -117,7 +124,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->tag = $this->_getParam('tag', $heute->get(Zend_Date::DAY));
         $this->monat = $this->_getParam('monat', $heute->get(Zend_Date::MONTH));
         $this->jahr = $this->_getParam('jahr', $heute->get(Zend_Date::YEAR));
-        
+
         $this->view->tag = $this->tag;
         $this->view->monat = $this->monat;
         $this->view->jahr = $this->jahr;
@@ -219,6 +226,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $kwZeiten = $kwService->getIstKwNachMonatundMitarbeiterId(
                     $this->zuBearbeitendesDatum, $this->mitarbeiter->id);
             $this->view->kwZeiten = $kwZeiten;
+        }
+
+        // übergebe dem View die AZV-Tage, falls passend 
+        if ($this->mitarbeiter->getBeamter() && $this->zuBearbeitendesDatum->compareDate('31.12.2013', 'dd.MM.YYYY') == 1) {
+            $this->azvAnzeigen = true;
+            $this->view->azvAnzeigen = true;
+            $this->view->azvRest = $this->mitarbeiter->getAzvTage() - $this->mitarbeiter->getAzvTageBisher($this->zuBearbeitendesDatum);
+            $this->view->azvMonat = $this->mitarbeiter->getAzvTageNachMonat($this->zuBearbeitendesDatum);
+        } else {
+            $this->view->azvAnzeigen = false;
         }
     }
 
@@ -663,6 +680,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
             }
         }
 
+        $azvTageRest =
+                $this->mitarbeiter->getAzvTage() -
+                $this->mitarbeiter->getAzvTageBisher(
+                        $this->zuBearbeitendesDatum);
+        $azvTageMonat = $this->mitarbeiter->getAzvTageNachMonat(
+                $this->zuBearbeitendesDatum);
+
         // Setzen von Textbausteinen
         if ($this->mitarbeiter->getHochschule() == 'khb') {
             $vormonatSaldoText = 'Saldo Vormonat: ';
@@ -671,6 +695,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $urlaubBisherText = 'Resturlaub Vormonat: ';
             $urlaubMonatText = 'Urlaub dieses Monats: ';
             $urlaubGesamtText = 'Übertrag Folgemonat: ';
+            $azvTageRestText = 'AZV-Tage-Rest: ';
+            $azvTageMonatText = 'AZV-Tage dieses Monats: ';
         } else {
             $vormonatSaldoText = 'Saldo Vormonat: ';
             $monatSaldoText = 'Saldo dieses Monats: ';
@@ -678,6 +704,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $urlaubBisherText = 'Resturlaub Vormonat: ';
             $urlaubMonatText = 'Urlaub dieses Monats: ';
             $urlaubGesamtText = 'Resturlaub Gesamt: ';
+            $azvTageRestText = 'AZV-Tage-Rest: ';
+            $azvTageMonatText = 'AZV-Tage dieses Monats: ';
         }
 
 
@@ -691,6 +719,15 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $urlaubMonatString), false);
         $pdf->Row(array($gesamtSaldoText, $saldoGesamtString, $urlaubGesamtText,
             $urlaubGesamtString), false);
+        // AZV-Tage
+        if ($this->azvAnzeigen) {
+            $pdf->Cell(95);
+            $pdf->Cell(48, 5, $azvTageRestText, 1, 0, 'R');
+            $pdf->Cell(47, 5, $azvTageRest, 1, 1, 'C');
+            $pdf->Cell(95);
+            $pdf->Cell(48, 5, $azvTageMonatText, 1, 0, 'R');
+            $pdf->Cell(47, 5, $azvTageMonat, 1, 1, 'C');
+        }
         $pdf->Ln(10);
 
         $pdf->SetWidths(array(60, 70, 60));

@@ -69,7 +69,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->erweitereSeitenName(' Übersicht Mitarbeiter');
 
         $mitarbeiterTabelleService = new Azebo_Service_MitarbeiterTabelle();
-        $daten = $mitarbeiterTabelleService->_getMitarbeiterTabellenDaten($this->mitarbeiter, null);
+        $daten = $mitarbeiterTabelleService->_getMitarbeiterTabellenDaten(
+                $this->mitarbeiter, null);
 
         $this->view->mitarbeiterDaten = $daten['daten'];
         $this->view->zeilen = $daten['zeilen'];
@@ -150,7 +151,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $id = $this->_getParam('id');
         $form = $this->_getArbeitsregelForm($benutzername, $id);
 
-        $this->erweitereSeitenName(' Bearbeite Arbeitszeit ' . $zuBearbeitenderMitarbeiter->getName());
+        $this->erweitereSeitenName(' Bearbeite Arbeitszeit ' .
+                $zuBearbeitenderMitarbeiter->getName());
 
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -269,7 +271,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->monat = $monat->toString('MM_yyyy');
 
         $mitarbeiterTabelleService = new Azebo_Service_MitarbeiterTabelle();
-        $daten = $mitarbeiterTabelleService->_getMitarbeiterTabellenDaten($this->mitarbeiter, $monat);
+        $daten = $mitarbeiterTabelleService->
+                _getMitarbeiterTabellenDaten($this->mitarbeiter, $monat);
 
         $this->view->mitarbeiterDaten = $daten['daten'];
         $this->view->zeilen = $daten['zeilen'];
@@ -374,22 +377,33 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $this->view->vorjahrRestBisher = $urlaubVorjahrBisher;
             $urlaubVorjahrGesamt = $gesamt['vorjahr'];
             $this->view->vorjahrRestGesamt = $urlaubVorjahrGesamt;
-        }
-        else {
+        } else {
             $urlaubVorjahrGesamt = 0;
         }
-        
+
         $urlaubZusammenBisher = $urlaubBisher + $urlaubVorjahrBisher;
         $this->view->urlaubZusammenBisher = $urlaubZusammenBisher;
         $urlaubZusammenGesamt = $urlaubGesamt + $urlaubVorjahrGesamt;
         $this->view->urlaubZusammenGesamt = $urlaubZusammenGesamt;
-        
-         // füge für die HfS die wochenarbeitszeiten hinzu
+
+        // füge für die HfS die wochenarbeitszeiten hinzu
         if ($this->mitarbeiter->getHochschule() == 'hfs') {
             $kwService = new Azebo_Service_KWnachMonat();
             $kwZeiten = $kwService->getIstKwNachMonatundMitarbeiterId(
                     $monat, $this->mitarbeiter->id);
             $this->view->kwZeiten = $kwZeiten;
+        }
+
+        // übergebe dem View die AZV-Tage, falls passend 
+        if ($mitarbeiter->getBeamter() &&
+                $monat->compareDate('31.12.2013', 'dd.MM.YYYY')) {
+            $this->view->azvAnzeigen = true;
+            $this->view->azvRest =
+                    $mitarbeiter->getAzvTage() - $this->mitarbeiter->
+                            getAzvTageBisher($monat);
+            $this->view->azvMonat = $mitarbeiter->getAzvTageNachMonat($monat);
+        } else {
+            $this->view->azvAnzeigen = false;
         }
     }
 
@@ -517,9 +531,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     'displayedValue', $rahmenEnde);
             $elemente['soll']->setDijitParam('displayedValue', $soll);
             // 'ohneKern'
-            if($this->mitarbeiter->getHochschule() == 'hfs') {
+            if ($this->mitarbeiter->getHochschule() == 'hfs') {
                 $ohneKern = $arbeitsregel->getOhneKern();
-                if($ohneKern == 'ja') {
+                if ($ohneKern == 'ja') {
                     $elemente['ohneKern']->setChecked(true);
                 } else {
                     $elemente['ohneKern']->setChecked(false);
@@ -541,7 +555,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $soll = new Zend_Date($soll, 'HH:mm:ss');
             $form->getElement('soll')->
                     setDijitParam('displayedValue', $soll->toString('HHmm'));
-            if($this->mitarbeiter->getHochschule() != 'hfs') {
+            if ($this->mitarbeiter->getHochschule() != 'hfs') {
                 $form->removeElement('ohneKern');
             }
         }
@@ -586,8 +600,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     $rahmenEnde->toString('HH:mm');
             $soll = $arbeitsregel->getSoll()->toString('HH:mm');
             // 'ohneKern'
-            if($this->mitarbeiter->getHochschule() == 'hfs') {
-                if($arbeitsregel->getOhneKern() == 'ja') {
+            if ($this->mitarbeiter->getHochschule() == 'hfs') {
+                if ($arbeitsregel->getOhneKern() == 'ja') {
                     $kernAnfang = 'ohne';
                     $kernEnde = 'ohne';
                 }

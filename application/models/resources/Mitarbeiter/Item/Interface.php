@@ -150,7 +150,7 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getAzvTage();
     
-    public function getAzvTageBisher();
+    public function getAzvTageBisher(Zend_Date $monat);
     
     public function getAzvTageNachMonat(Zend_Date $monat);
     

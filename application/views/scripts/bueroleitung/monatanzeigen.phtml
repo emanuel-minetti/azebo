@@ -37,6 +37,12 @@
                 <? endif; ?>
             <? endif; ?>
         </p>
+        <?
+        if ($this->azvAnzeigen) {
+            echo "<p>AZV-Tage-Rest:  $this->azvRest</p>";
+            echo "<p>AZV-Tage dieses Monats:  $this->azvMonat</p>";
+        }
+        ?>
     </div>
     <div id="rechts">
         <?
