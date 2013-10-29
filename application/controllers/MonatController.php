@@ -231,6 +231,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function indexAction() {
+        
+        //TODO Debugging entfernen!
+        $this->_log->debug('AZV-Tage: ' . $this->mitarbeiter->getAzvTage());
+        $this->_log->debug('AZV-Tage-Bisher: ' . $this->mitarbeiter->getAzvTageBisher());
+        
         $request = $this->getRequest();
         $abschlussForm = $this->_getMitarbeiterAbschlussForm();
         if ($request->isPost()) {

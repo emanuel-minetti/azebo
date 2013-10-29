@@ -604,4 +604,22 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $anzahl == 0 ? false : true;
     }
 
+    public function getAzvTage() {
+        $zeiten = $this->_getZeiten();
+        return $zeiten->azv->tage;
+    }
+
+    public function getAzvTageBisher() {
+        $azvGesamt = 0;
+        $arbeitsmonate = $this->getArbeitsmonate();
+        foreach ($arbeitsmonate as $arbeitsmonat) {
+            $azv = $arbeitsmonat->azv;
+            if($azv !== null) {
+                $azvGesamt += $azv;
+            }
+        }
+        
+        return $azvGesamt;
+    }
+
 }

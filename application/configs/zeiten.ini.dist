@@ -19,6 +19,8 @@ maximal = "10:45:00"
 urlaub.tage = 26
 urlaub.resturlaubbis = '30.9.'
 
+azv.tage = 1
+
 [hfm : alle]
 kern.ende.freitag="13:00:00"
 rahmen.ende.normal = "20:00:00"

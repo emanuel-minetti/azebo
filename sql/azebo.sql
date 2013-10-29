@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 17, 2013 at 01:16 PM
+-- Generation Time: Oct 28, 2013 at 02:40 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.3.3-7+squeeze14
 
@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsmonat` (
   `saldopositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
   `urlaubvorjahr` int(11) NOT NULL,
   `urlaub` int(11) NOT NULL,
+  `azv` int(11) DEFAULT NULL,
   `abgelegt` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   `saldo2007stunden` int(11) DEFAULT NULL,
   `saldo2007minuten` int(11) DEFAULT NULL,
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `arbeitstag` (
   `nachmittagende` time DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mitarbeiter-tag` (`mitarbeiter_id`,`tag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=320 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=334 ;
 
 -- --------------------------------------------------------
 
