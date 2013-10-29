@@ -152,4 +152,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getAzvTageBisher();
     
+    public function getAzvTageNachMonat(Zend_Date $monat);
+    
 }

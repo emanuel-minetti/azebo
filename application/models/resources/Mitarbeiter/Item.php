@@ -37,11 +37,14 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
         if ($this->_vorname === null || $this->_nachname === null) {
 
-            $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+            $config = new Zend_Config_Ini(
+                            APPLICATION_PATH . '/configs/ldap.ini');
             $options = $config->ldap->physalis->toArray();
             $ldap = new Zend_Ldap($options);
             $ldap->bind();
-            $benutzer = $ldap->getEntry('uid=' . $this->_row->benutzername . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
+            $benutzer = $ldap->getEntry(
+                    'uid=' . $this->_row->benutzername .
+                    ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
             $this->_vorname = $benutzer['givenname'][0];
             $this->_nachname = $benutzer['sn'][0];
         }
@@ -156,7 +159,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 $hochschulString = 'Hochschule für Musik "Hanns Eisler"';
                 break;
             case 'hfs':
-                $hochschulString = 'Hochschule für Schauspielkunst \'Ernst Busch\'';
+                $hochschulString =
+                        'Hochschule für Schauspielkunst \'Ernst Busch\'';
                 break;
             case 'khb':
                 $hochschulString = 'weißensee kunsthochschule berlin';
@@ -176,9 +180,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function saveArbeitsmonat(Zend_Date $monat) {
         $saldo = $this->getSaldoGesamt($monat, true);
         $urlaubGesamt = $this->getUrlaubGesamt($monat);
+        $azv = $this->getAzvTageNachMonat($monat);
 
         $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
-        $arbeitsmonatTabelle->saveArbeitsmonat($this->id, $monat, $saldo, $urlaubGesamt['diff'], $urlaubGesamt['diffVorjahr']);
+        $arbeitsmonatTabelle->saveArbeitsmonat(
+                $this->id, $monat, $saldo, $urlaubGesamt['diff'], $urlaubGesamt['diffVorjahr'], $azv);
     }
 
     public function setNachname($nachname) {
@@ -207,7 +213,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         } else {
             $restStunden = $this->getRow()->saldo2007stunden;
             $restMinuten = $this->getRow()->saldo2007minuten;
-            $uebertrag = new Azebo_Model_Saldo($stunden, $minuten, $positiv, true, $restStunden, $restMinuten);
+            $uebertrag = new Azebo_Model_Saldo(
+                            $stunden, $minuten, $positiv, true, $restStunden,
+                            $restMinuten);
         }
         return $uebertrag;
     }
@@ -339,7 +347,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
         if ($differenz) {
             $saldoBisher = new Azebo_Model_Saldo($saldoBisher->getStunden(),
-                            $saldoBisher->getMinuten(), !$saldoBisher->getPositiv());
+                            $saldoBisher->getMinuten(),
+                            !$saldoBisher->getPositiv());
             $saldoGesamt->add($saldoBisher);
         }
 
@@ -360,7 +369,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function getArbeitsmonateNachJahr(Zend_Date $jahr) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
-        return $monatsTabelle->getArbeitsmonateNachJahrUndMitarbeiterId($jahr, $this->id);
+        return $monatsTabelle->getArbeitsmonateNachJahrUndMitarbeiterId(
+                        $jahr, $this->id);
     }
 
     public function getAbgelegtBis() {
@@ -401,7 +411,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function setSaldoUebertrag(Azebo_Model_Saldo $saldo) {
         $this->_row->saldouebertragstunden = $saldo->getStunden();
         $this->_row->saldouebertragminuten = $saldo->getMinuten();
-        $this->_row->saldouebertragpositiv = $saldo->getPositiv() ? 'ja' : 'nein';
+        $this->_row->saldouebertragpositiv =
+                $saldo->getPositiv() ? 'ja' : 'nein';
     }
 
     public function getArbeitsregeln() {
@@ -412,7 +423,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function getArbeitsmonat(Zend_Date $monat) {
         $monatTabelle = new Azebo_Resource_Arbeitsmonat();
         return $monatTabelle->
-                        getArbeitsmonatNachMitabeiterIdUndMonat($this->id, $monat);
+                        getArbeitsmonatNachMitabeiterIdUndMonat(
+                                $this->id, $monat);
     }
 
     public function deleteArbeitsmonat(Zend_Date $monat) {
@@ -606,7 +618,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function getAzvTage() {
         $zeiten = $this->_getZeiten();
-        return $zeiten->azv->tage;
+        return $this->getBeamter() ? $zeiten->azv->tage : 0;
     }
 
     public function getAzvTageBisher() {
@@ -614,12 +626,23 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitsmonate = $this->getArbeitsmonate();
         foreach ($arbeitsmonate as $arbeitsmonat) {
             $azv = $arbeitsmonat->azv;
-            if($azv !== null) {
+            if ($azv !== null) {
                 $azvGesamt += $azv;
             }
         }
-        
+
         return $azvGesamt;
+    }
+
+    public function getAzvTageNachMonat(Zend_Date $monat) {
+        $arbeitstage = $this->getArbeitstageNachMonat($monat);
+        $anzahl = 0;
+        foreach ($arbeitstage as $arbeitstag) {
+            if ($arbeitstag->befreiung == 'azv') {
+                $anzahl++;
+            }
+        }
+        return $anzahl;
     }
 
 }

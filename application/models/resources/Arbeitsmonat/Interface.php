@@ -25,15 +25,15 @@
  * @author Emanuel Minetti
  */
 interface Azebo_Resource_Arbeitsmonat_Interface {
-    
+
     public function getArbeitsmonateNachMitarbeiterId($mitarbeiterId);
-    
+
     public function getArbeitsmonateNachJahrUndMitarbeiterId(Zend_Date $jahr, $mitarbeiterId);
-    
-    public function saveArbeitsmonat($mitarbeiterId, Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub, $urlaubVorjahr);
-    
+
+    public function saveArbeitsmonat($mitarbeiterId, Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub, $urlaubVorjahr, $azv);
+
     public function getArbeitsmonateNachMonat(Zend_Date $monat);
-    
+
     public function getArbeitsmonatNachMitabeiterIdUndMonat($mitarbeiterId, Zend_Date $monat);
 }
 
