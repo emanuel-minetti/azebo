@@ -53,7 +53,16 @@ class Azebo_Form_Mitarbeiter_Abschluss extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Monat prüfen',
-            'validators' => array('Monat', 'Urlaub', 'Azv'),
+            'validators' => array('Monat', 'Urlaub', 'Azv',),
+            'decorators' => array('DijitElement', 'Errors',),
+            //'tabindex' => 1,
+        ));
+        
+        $this->addElement('SubmitButton', 'uebertragen', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Jahr abschließen',
+            'validators' => array('Jahr',),
             'decorators' => array('DijitElement', 'Errors',),
             //'tabindex' => 1,
         ));

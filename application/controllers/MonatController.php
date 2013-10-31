@@ -121,10 +121,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $heute = new Zend_Date();
 
         // Hole die Parameter
-        $this->tag = $this->_getParam('tag', $heute->get(Zend_Date::DAY));
+        $this->tag = $this->_getParam('tag',1);
         $this->monat = $this->_getParam('monat', $heute->get(Zend_Date::MONTH));
         $this->jahr = $this->_getParam('jahr', $heute->get(Zend_Date::YEAR));
-
+        
         $this->view->tag = $this->tag;
         $this->view->monat = $this->monat;
         $this->view->jahr = $this->jahr;
@@ -288,6 +288,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     //         getUrlaubBisher();
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
+            }
+            //TODO Hier gehts weiter
+            if(isset($postDaten['uebertragen'])) {
+                $valid = $abschlussForm->isValid($postDaten);
+                //$abschlussForm = $this->_getMitarbeiterAbschlussForm();
             }
         }
 

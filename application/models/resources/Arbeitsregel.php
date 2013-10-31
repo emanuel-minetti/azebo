@@ -81,4 +81,24 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
         return $this->find($id)->current();
     }
 
+    public function getArbeitsbeginnNachMitarbeiterIdUndJahr($mitarbeiterId, Zend_Date $jahr) {
+        $arbeitsregeln = $this->getArbeitsregelnNachMitarbeiterId($mitarbeiterId);
+        $gefiltert = array();
+        foreach ($arbeitsregeln as $arbeitsregel) {
+            if ($arbeitsregel->getVon()->compareYear($jahr) != 1) {
+                $gefiltert[] = $arbeitsregel;
+            }
+        }
+        $ergebis = new Zend_Date($jahr);
+        $ergebis->setMonth(12);
+        $ergebis->setDay(31);
+        foreach ($gefiltert as $arbeitsregel) {
+            if($arbeitsregel->getVon()->compareDate($ergebis) == -1) {
+                $ergebis = $arbeitsregel->getVon();
+            }
+        }
+        
+        return $ergebis;
+    }
+ 
 }
