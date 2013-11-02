@@ -121,10 +121,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $heute = new Zend_Date();
 
         // Hole die Parameter
-        $this->tag = $this->_getParam('tag',1);
+        $this->tag = $this->_getParam('tag', 1);
         $this->monat = $this->_getParam('monat', $heute->get(Zend_Date::MONTH));
         $this->jahr = $this->_getParam('jahr', $heute->get(Zend_Date::YEAR));
-        
+
         $this->view->tag = $this->tag;
         $this->view->monat = $this->monat;
         $this->view->jahr = $this->jahr;
@@ -210,6 +210,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $arbeitmonate = $this->mitarbeiter->getArbeitsmonate();
         foreach ($arbeitmonate as $arbeitsmonat) {
             if ($this->zuBearbeitendesDatum->compareMonth(
+                            $arbeitsmonat->getMonat()) == 0 &&
+                    $this->zuBearbeitendesDatum->compareYear(
                             $arbeitsmonat->getMonat()) == 0) {
                 $this->bearbeitbar = false;
                 break;
@@ -289,10 +291,62 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
             }
-            //TODO Hier gehts weiter
-            if(isset($postDaten['uebertragen'])) {
+
+            if (isset($postDaten['uebertragen'])) {
                 $valid = $abschlussForm->isValid($postDaten);
-                //$abschlussForm = $this->_getMitarbeiterAbschlussForm();
+                if ($valid) {
+                    // Ermittle das Silvester-Datum
+                    $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
+                    $jahr = $uebertragenBis->get(Zend_Date::YEAR);
+                    $jahr++;
+                    $silvester = new Zend_Date("31.12.$jahr");
+
+                    // Saldo neu setzen
+                    $saldo = $this->mitarbeiter->getSaldoGesamt($silvester);
+                    $this->mitarbeiter->setSaldoUebertrag($saldo);
+
+                    // Saldo2007 setzen
+                    if ($this->mitarbeiter->getHochschule() == 'hfm') {
+                        if ($saldo->getRest()) {
+                            $saldo2007 = new Azebo_Model_Saldo(
+                                            $saldo->getRestStunden(),
+                                            $saldo->getRestMinuten(), true);
+                            $this->mitarbeiter->setSaldo2007($saldo2007);
+                        } else {
+                            $this->mitarbeiter->setSaldo2007(null);
+                        }
+                    }
+
+                    // Resturlaub setzen
+                    $urlaubGesamt = $this->mitarbeiter->getUrlaubGesamt($silvester);
+                    $this->mitarbeiter->setUrlaubVorjahr($urlaubGesamt['rest']);
+
+                    // ÜbertragenBis aktualisieren
+                    $this->mitarbeiter->setUebertragenbis($silvester);
+
+                    // DB aktualisieren
+                    $this->mitarbeiter->save();
+
+                    // Arbeitsmonate als übertragen markieren
+                    $arbeitsmonate = $this->mitarbeiter->getArbeitsmonateNachJahr(
+                            $silvester);
+                    foreach ($arbeitsmonate as $arbeitsmonat) {
+                        $arbeitsmonat->setUebertragen();
+                        $arbeitsmonat->save();
+                    }
+
+                    // Alte Monate und Tage löschen
+                    $silvesterVorjahr = new Zend_Date($silvester);
+                    $silvesterVorjahr->subYear(1);
+                    $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
+                    $arbeitsmonatTabelle->deleteArbeitsmonateBis($silvesterVorjahr, $this->mitarbeiter->id);
+                    $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
+                    $arbeitstagTabelle->deleteArbeitstageBis($silvesterVorjahr, $this->mitarbeiter->id);
+
+                    // Die Abschluss-Form neu laden, um die richtigen Knöpfe zu
+                    // setzen
+                    $abschlussForm = $this->_getMitarbeiterAbschlussForm();
+                }
             }
         }
 
@@ -558,14 +612,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $form->setMethod('post');
         $form->setName('monatForm');
 
-        // entferne die 'Prüfen'-, 'Abschließen'-, oder 'Ausdrucken'-Buttons,
-        // je nachdem ob der Monat bereits geprüft bzw. abgeschlossen ist.
+        // entferne die 'Prüfen'-, 'Abschließen'-, 'Vorjahr abschließen' oder
+        // 'Ausdrucken'-Buttons, je nachdem ob der Monat bereits geprüft bzw.
+        // abgeschlossen ist.
         $ns = new Zend_Session_Namespace();
         $geprueft = $ns->geprueft;
         $index = $this->zuBearbeitendesDatum->toString('MM-yyyy');
         if (!$this->bearbeitbar) {
             $form->removeElement('pruefen');
             $form->removeElement('abschliessen');
+            $form->removeElement('uebertragen');
 
             $druckElement = $form->getElement('ausdrucken');
             $druckElement->setAttrib('onclick', 'drucke();');
@@ -573,9 +629,20 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $geprueft[$index]) {
             $form->removeElement('ausdrucken');
             $form->removeElement('pruefen');
+            $form->removeElement('uebertragen');
         } else {
-            $form->removeElement('ausdrucken');
-            $form->removeElement('abschliessen');
+            // zeige den Prüfen-Knopf, außer das letzte Jahr ist noch nicht
+            // abgeschlossen
+            if ($this->mitarbeiter->getUebertragenbis()->get(Zend_Date::YEAR) >=
+                    $this->zuBearbeitendesDatum->get(Zend_Date::YEAR) - 1) {
+                $form->removeElement('ausdrucken');
+                $form->removeElement('abschliessen');
+                $form->removeElement('uebertragen');
+            } else {
+                $form->removeElement('ausdrucken');
+                $form->removeElement('abschliessen');
+                $form->removeElement('pruefen');
+            }
         }
 
         $monatElement = $form->getElement('monat');

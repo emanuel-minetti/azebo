@@ -65,8 +65,10 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
 
         $erster = new Zend_Date($jahr);
         $erster->setMonth(1);
+        $erster->setDay(1);
         $letzter = new Zend_Date($jahr);
         $letzter->setMonth(12);
+        $letzter->setDay(31);
 
         $select = $this->select();
         $select->where('mitarbeiter_id = ?', $mitarbeiterId)
@@ -126,6 +128,16 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
         $arbeitsmonat = $this->fetchRow($select);
         
         return $arbeitsmonat;
+    }
+    
+    public function deleteArbeitsmonateBis(Zend_Date $bis, $mitarbeiterId) {
+        $dzService = new Azebo_Service_DatumUndZeitUmwandler();
+        $sqlBis = $dzService->datumPhpZuSql($bis);
+        $where = array();
+        $where[] = $this->getAdapter()->quoteInto('monat <= ?', $sqlBis);
+        $where[] = $this->getAdapter()->quoteInto('mitarbeiter_id = ?',
+                $mitarbeiterId);
+        $this->delete($where);
     }
 
 }

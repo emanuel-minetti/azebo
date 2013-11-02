@@ -443,8 +443,13 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function setSaldo2007(Azebo_Model_Saldo $saldo) {
-        $this->_row->saldo2007stunden = $saldo->getStunden();
-        $this->_row->saldo2007minuten = $saldo->getMinuten();
+        if ($saldo !== null) {
+            $this->_row->saldo2007stunden = $saldo->getStunden();
+            $this->_row->saldo2007minuten = $saldo->getMinuten();
+        } else {
+            $this->_row->saldo2007stunden = null;
+            $this->_row->saldo2007minuten = null;           
+        }
     }
 
     public function getUrlaub() {
@@ -644,6 +649,23 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             }
         }
         return $anzahl;
+    }
+
+    /**
+     * @return Zend_Date 
+     */
+    public function getUebertragenbis() {
+        $dzService = new Azebo_Service_DatumUndZeitUmwandler();
+        $ergebnis = $dzService->datumSqlZuPhp($this->_row->uebertragenbis);
+        if ($ergebnis === null) {
+            $ergebnis = new Zend_Date('31.12.2012');
+        }
+        return $ergebnis;
+    }
+
+    public function setUebertragenbis(Zend_Date $uebertragenbis) {
+        $dzService = new Azebo_Service_DatumUndZeitUmwandler();
+        $this->_row->uebertragenbis = $dzService->datumPhpZuSql($uebertragenbis);
     }
 
 }

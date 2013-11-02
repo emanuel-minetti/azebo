@@ -35,5 +35,7 @@ extends AzeboLib_Model_Resource_Db_Interface {
 
     public function saveArbeitstag(
             Zend_Date $tag, $mitarbeiterId, array $daten);
+    
+    public function deleteArbeitstageBis(Zend_Date $bis, $mitarbeiterId);
 }
 

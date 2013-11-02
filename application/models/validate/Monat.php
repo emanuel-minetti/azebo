@@ -32,9 +32,12 @@
 class Azebo_Validate_Monat extends Zend_Validate_Abstract {
     
     const FEHLT = 'Fehlt';
+    const VORJAHR = 'Vorjahr';
 
     protected $_messageTemplates = array(
         self::FEHLT => '',
+        self::VORJAHR => 'Der Monat kann nicht abgeschlossen werden, bevor das
+            Vorjahr abgeschlossen wurde.',
     );
 
     public function isValid($value, $context = null) {
@@ -47,6 +50,13 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
         $model = new Azebo_Model_Mitarbeiter();
         $arbeitstage = $model->getArbeitstageNachMonatUndMitarbeiter(
                 $monat, $mitarbeiter);
+        
+        // prüfen, ob das Vorjahr abgeschlossen ist
+        if($mitarbeiter->getUebertragenBis()->get(Zend_Date::YEAR) <
+                $monat->get(Zend_Date::YEAR) - 1) {
+            $this->_error(self::VORJAHR);
+            $isValid = false;
+        }
 
         //prüfen, ob alle nötigen Tage ausgefüllt sind
         $fehltage = array();

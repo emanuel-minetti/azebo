@@ -78,5 +78,8 @@ class Azebo_Resource_Arbeitsmonat_Item extends AzeboLib_Model_Resource_Db_Table_
         $this->_row->monat = $this->_dzService->datumPhpZuSql($monat);
     }
 
-}
+    public function setUebertragen($uebertragen = true) {
+        $this->_row->uebertragen = $uebertragen ? 'ja' : 'nein';
+    }
 
+}

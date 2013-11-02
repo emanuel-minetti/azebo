@@ -110,6 +110,8 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
      */
     public function getArbeitsmonat(Zend_Date $monat);
     
+    public function getArbeitsmonateNachJahr(Zend_Date $jahr);
+    
     public function deleteArbeitsmonat(Zend_Date $monat);
     
     public function arbeitsmonatAblegen(Zend_Date $monat);
@@ -153,5 +155,9 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     public function getAzvTageBisher(Zend_Date $monat);
     
     public function getAzvTageNachMonat(Zend_Date $monat);
+    
+    public function getUebertragenbis();
+    
+    public function setUebertragenbis(Zend_Date $uebertragenbis);
     
 }

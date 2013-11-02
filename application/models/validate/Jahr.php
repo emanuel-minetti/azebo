@@ -35,34 +35,29 @@ class Azebo_Validate_Jahr extends Zend_Validate_Abstract {
     );
 
     public function isValid($value, $context = null) {
-        //TODO Debugging entfernen!
-        $log = Zend_Registry::get('log');
-        $log->debug('Anfang');
 
         // hole die Daten
         $monat = new Zend_Date($context['monat'], 'MM.yyyy');
+        $monat->subYear(1);
         $ns = new Zend_Session_Namespace();
         $mitarbeiter = $ns->mitarbeiter;
         $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
+        // ermittle ab wann die Monate abgeschlossen sein müssen
         $beginn = new Zend_Date($arbeitsregelTabelle->
                                 getArbeitsbeginnNachMitarbeiterIdUndJahr(
                                         $mitarbeiter->id, $monat));
-        $log->debug('Beginn1: ' . $beginn->toString());
         $erster = new Zend_Date($monat);
         $erster->setMonth(1);
         $erster->setDay(1);
         if ($beginn->compareDate($erster) == -1) {
             $beginn = $erster;
         }
-        $log->debug('Beginn2: ' . $beginn->toString());
-        
 
         // teste
         $fehlMonate = array();
         $fehler = false;
         $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
         while ($beginn->compareYear($monat) == 0) {
-            $log->debug('Monat geprüft: ' . $beginn->toString());
             $arbeitsmonat = $arbeitsmonatTabelle->
                     getArbeitsmonatNachMitabeiterIdUndMonat(
                     $mitarbeiter->id, $beginn);
@@ -90,7 +85,6 @@ class Azebo_Validate_Jahr extends Zend_Validate_Abstract {
                         $fehlMonate[$anzahl - 1];
             }
             $meldung .= ' abschließen, bevor Sie das Jahr abschließen können!';
-            $log->debug($meldung);
             $this->setMessage($meldung, self::FEHLEND);
             $this->_error(self::FEHLEND);
             return false;

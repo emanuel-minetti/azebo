@@ -33,4 +33,6 @@ interface Azebo_Resource_Arbeitsmonat_Item_Interface {
     public function getMonat();
     
     public function setMonat(Zend_Date $monat);
+    
+    public function setUebertragen($uebertragen = true);
 }
