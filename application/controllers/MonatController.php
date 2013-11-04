@@ -172,7 +172,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // Salden setzen
         $this->saldoBisher = $this->mitarbeiter->getSaldoBisher(
-                $this->zuBearbeitendesDatum);
+                $this->zuBearbeitendesDatum, true);
         $this->view->saldoBisher = $this->saldoBisher->getString();
         $this->saldo = $this->mitarbeiter->getSaldo(
                 $this->zuBearbeitendesDatum, true);
@@ -308,62 +308,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             if (isset($postDaten['uebertragen'])) {
                 $valid = $abschlussForm->isValid($postDaten);
                 if ($valid) {
-                    // Ermittle das Silvester-Datum
-                    $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
-                    $jahr = $uebertragenBis->get(Zend_Date::YEAR);
-                    $jahr++;
-                    $silvester = new Zend_Date("31.12.$jahr");
-
-                    // Saldo neu setzen
-                    $saldo = $this->mitarbeiter->getSaldoGesamt($silvester);
-                    $this->mitarbeiter->setSaldoUebertrag($saldo);
-
-                    // Saldo2007 setzen
-                    if ($this->mitarbeiter->getHochschule() == 'hfm') {
-                        if ($saldo->getRest()) {
-                            $saldo2007 = new Azebo_Model_Saldo(
-                                            $saldo->getRestStunden(),
-                                            $saldo->getRestMinuten(), true);
-                            $this->mitarbeiter->setSaldo2007($saldo2007);
-                        } else {
-                            $this->mitarbeiter->setSaldo2007(null);
-                        }
-                    }
-
-                    // Resturlaub setzen
-                    $urlaubGesamt = $this->mitarbeiter->getUrlaubGesamt($silvester);
-                    $this->mitarbeiter->setUrlaubVorjahr($urlaubGesamt['rest']);
-
-                    // ÜbertragenBis aktualisieren
-                    $this->mitarbeiter->setUebertragenbis($silvester);
-
-                    // DB aktualisieren
-                    $this->mitarbeiter->save();
-
-                    // Arbeitsmonate als übertragen markieren
-                    $arbeitsmonate = $this->mitarbeiter->getArbeitsmonateNachJahr(
-                            $silvester);
-                    foreach ($arbeitsmonate as $arbeitsmonat) {
-                        $arbeitsmonat->setUebertragen();
-                        $arbeitsmonat->save();
-                    }
-
-                    // Alte Monate und Tage löschen
-                    $silvesterVorjahr = new Zend_Date($silvester);
-                    $silvesterVorjahr->subYear(1);
-                    $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
-                    $arbeitsmonatTabelle->deleteArbeitsmonateBis($silvesterVorjahr, $this->mitarbeiter->id);
-                    $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
-                    $arbeitstagTabelle->deleteArbeitstageBis($silvesterVorjahr, $this->mitarbeiter->id);
-
-                    // Mache einen 'redirect' um den Controller neu zu laden
-                    // und damit die richtigen Salden und Urlaubswerte
-                    // anzuzeigen.
-                    $redirector = $this->_helper->getHelper('Redirector');
-                    $redirector->gotoSimple('index', 'monat', null, array(
-                        'jahr' => $this->jahr,
-                        'monat' => $this->monat,
-                    ));
+                    $this->_schliesseJahrAb();
                 }
             }
         }
@@ -831,6 +776,65 @@ class MonatController extends AzeboLib_Controller_Abstract {
         header('Content-type: application/pdf');
         header('Content-Disposition: attachment; filename="bogen.pdf"');
         $pdf->Output();
+    }
+
+    private function _schliesseJahrAb() {
+        // Ermittle das Silvester-Datum
+        $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
+        $jahr = $uebertragenBis->get(Zend_Date::YEAR);
+        $jahr++;
+        $silvester = new Zend_Date("31.12.$jahr");
+
+        // Saldo neu setzen
+        $saldo = $this->mitarbeiter->getSaldoGesamt($silvester);
+        $this->mitarbeiter->setSaldoUebertrag($saldo);
+
+        // Saldo2007 setzen
+        if ($this->mitarbeiter->getHochschule() == 'hfm') {
+            if ($saldo->getRest()) {
+                $saldo2007 = new Azebo_Model_Saldo(
+                                $saldo->getRestStunden(),
+                                $saldo->getRestMinuten(), true);
+                $this->mitarbeiter->setSaldo2007($saldo2007);
+            } else {
+                $this->mitarbeiter->setSaldo2007(null);
+            }
+        }
+
+        // Resturlaub setzen
+        $urlaubGesamt = $this->mitarbeiter->getUrlaubGesamt($silvester);
+        $this->mitarbeiter->setUrlaubVorjahr($urlaubGesamt['rest']);
+
+        // ÜbertragenBis aktualisieren
+        $this->mitarbeiter->setUebertragenbis($silvester);
+
+        // DB aktualisieren
+        $this->mitarbeiter->save();
+
+        // Arbeitsmonate als übertragen markieren
+        $arbeitsmonate = $this->mitarbeiter->getArbeitsmonateNachJahr(
+                $silvester);
+        foreach ($arbeitsmonate as $arbeitsmonat) {
+            $arbeitsmonat->setUebertragen();
+            $arbeitsmonat->save();
+        }
+
+        // Alte Monate und Tage löschen
+        $silvesterVorjahr = new Zend_Date($silvester);
+        $silvesterVorjahr->subYear(1);
+        $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
+        $arbeitsmonatTabelle->deleteArbeitsmonateBis($silvesterVorjahr, $this->mitarbeiter->id);
+        $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
+        $arbeitstagTabelle->deleteArbeitstageBis($silvesterVorjahr, $this->mitarbeiter->id);
+
+        // Mache einen 'redirect' um den Controller neu zu laden
+        // und damit die richtigen Salden und Urlaubswerte
+        // anzuzeigen.
+        $redirector = $this->_helper->getHelper('Redirector');
+        $redirector->gotoSimple('index', 'monat', null, array(
+            'jahr' => $this->jahr,
+            'monat' => $this->monat,
+        ));
     }
 
 }

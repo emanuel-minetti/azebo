@@ -47,7 +47,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
                         ->getArbeitstageNachMonatUndMitarbeiterId(
                                 $monat, $mitarbeiter->id);
     }
-   
+
     public function getMitarbeiterNachHochschule($hochschule) {
 
         $gruppenNamen = Zend_Registry::get('gruppen');
@@ -202,16 +202,18 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $mitarbeiter->setKappungGesamt($kappunggesamt);
 
         // KappungMonat setzen, falls sie nicht Standard ist
-        $kappungMonatString = $daten['kappungmonat'];
-        if ($kappungMonatString !== null & $kappungMonatString != '') {
-            $preg = '^(\d{1,3}):(\d{1,2})$';
-            $parts = array();
-            preg_match("/$preg/", $kappungMonatString, $parts);
-            $stunden = $parts[1];
-            $minuten = $parts[2];
-            $kappungmonat = new Azebo_Model_Saldo($stunden, $minuten, true);
-        } else {
-            $kappungmonat = null;
+        if (isset($daten['kappungmonat'])) {
+            $kappungMonatString = $daten['kappungmonat'];
+            if ($kappungMonatString !== null & $kappungMonatString != '') {
+                $preg = '^(\d{1,3}):(\d{1,2})$';
+                $parts = array();
+                preg_match("/$preg/", $kappungMonatString, $parts);
+                $stunden = $parts[1];
+                $minuten = $parts[2];
+                $kappungmonat = new Azebo_Model_Saldo($stunden, $minuten, true);
+            } else {
+                $kappungmonat = null;
+            }
         }
         // nicht setzen, falls sie nicht Standard ist
         $standardMonat = $mitarbeiter->getKappungMonatStandard();

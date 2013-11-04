@@ -41,7 +41,9 @@ class Azebo_Resource_Arbeitsmonat_Item extends AzeboLib_Model_Resource_Db_Table_
         $stunden = $this->getRow()->saldostunden;
         $minuten = $this->getRow()->saldominuten;
         $positiv = $this->getRow()->saldopositiv == 'ja' ? true : false;
-        if ($this->getRow()->saldo2007stunden === null) {
+        if ($this->getRow()->saldo2007stunden === null ||
+                ($this->getRow()->saldo2007stunden == 0 &&
+                $this->getRow()->saldo2007minuten == 0)) {
             $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
         } else {
             $restStunden = $this->getRow()->saldo2007stunden;

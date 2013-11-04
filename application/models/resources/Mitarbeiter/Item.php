@@ -229,13 +229,33 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      *
      * @return Azebo_Model_Saldo 
      */
-    public function getSaldoBisher(Zend_Date $bis) {
+    public function getSaldoBisher(Zend_Date $bis, $anzeigen = false) {
         $saldo = $this->getSaldouebertrag();
         $monate = $this->getArbeitsmonate();
         foreach ($monate as $monat) {
             if ($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
                 $monatsSaldo = $monat->getSaldo();
                 $saldo->add($monatsSaldo, true);
+            }
+        }
+        if ($anzeigen && count($monate) != 0) {
+            $saldoRest = $monate[count($monate) - 1]->getSaldo()->getRest();
+            //TODO Debugging entfernen!!
+//            $log = Zend_Registry::get('log');
+//            $log->debug('Hat Rest: ' . $saldoRest);
+//            $log->debug('RestStunden: ' . $monate[count($monate) - 1]->getSaldo()->getRestStunden());
+//            $log->debug('RestMinuten: ' . $monate[count($monate) - 1]->getSaldo()->getRestMinuten());
+//            $log->debug('Monat: ' . $monate[count($monate) - 1]->getMonat());
+            if ($saldoRest) {
+                $saldo = new Azebo_Model_Saldo(
+                                $saldo->getStunden(),
+                                $saldo->getMinuten(),
+                                $saldo->getPositiv(),
+                                $saldoRest,
+                                        $monate[count($monate) - 1]->
+                                        getSaldo()->getRestStunden(),
+                                        $monate[count($monate) - 1]->
+                                        getSaldo()->getRestMinuten());
             }
         }
         return $saldo;
@@ -319,7 +339,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      * @return \Azebo_Model_Saldo 
      */
     public function getSaldoGesamt(Zend_Date $monat, $differenz = false) {
-        $saldoBisher = $this->getSaldoBisher($monat);
+        $saldoBisher = $this->getSaldoBisher($monat, true);
         $saldo = $this->getSaldo($monat);
 
         // die Monats-Kappungs-Grenze anwenden
@@ -448,7 +468,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $this->_row->saldo2007minuten = $saldo->getMinuten();
         } else {
             $this->_row->saldo2007stunden = null;
-            $this->_row->saldo2007minuten = null;           
+            $this->_row->saldo2007minuten = null;
         }
     }
 
