@@ -16,56 +16,58 @@
         ?>>Einträge blockweise bearbeiten</a>
         </p>
     <? endif; ?>
-    <div id="links">
-        <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
-            <? if ($this->hatRest): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
-            <? endif; ?>
-        </p>
-        <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
-        <p>Saldo gesamt: <?= $this->saldoGesamt; ?>
-            <? if ($this->hatRest): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoGesamt2007; ?>)
-            <? endif; ?>
-        </p>
-        <p>Resturlaub Vormonat: <?= $this->urlaubBisher; ?>
-            <? if ($this->hatVorjahrRest): ?>
-                <? if ($this->hochschule != 'hfm'): ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
-                <? else: ?>
-                    + Vorjahr: <?= $this->vorjahrRestBisher; ?> = <?= $this->urlaubZusammenBisher; ?>
+    <? if ($this->jahresabschlussFehlt): ?> 
+        <div id="links">
+            <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
+                <? if ($this->hatRest): ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
                 <? endif; ?>
-            <? endif; ?>
-        </p>
+            </p>
+            <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
+            <p>Saldo gesamt: <?= $this->saldoGesamt; ?>
+                <? if ($this->hatRest): ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoGesamt2007; ?>)
+                <? endif; ?>
+            </p>
+            <p>Resturlaub Vormonat: <?= $this->urlaubBisher; ?>
+                <? if ($this->hatVorjahrRest): ?>
+                    <? if ($this->hochschule != 'hfm'): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
+                    <? else: ?>
+                        + Vorjahr: <?= $this->vorjahrRestBisher; ?> = <?= $this->urlaubZusammenBisher; ?>
+                    <? endif; ?>
+                <? endif; ?>
+            </p>
 
-        <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
-        <p>Resturlaub gesamt: <?= $this->urlaubGesamt; ?>
-            <? if ($this->hatVorjahrRest): ?>
-                <? if ($this->hochschule != 'hfm'): ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
-                <? else: ?>
-                    + Vorjahr: <?= $this->vorjahrRestGesamt; ?> = <?= $this->urlaubZusammenGesamt; ?>
+            <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
+            <p>Resturlaub gesamt: <?= $this->urlaubGesamt; ?>
+                <? if ($this->hatVorjahrRest): ?>
+                    <? if ($this->hochschule != 'hfm'): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
+                    <? else: ?>
+                        + Vorjahr: <?= $this->vorjahrRestGesamt; ?> = <?= $this->urlaubZusammenGesamt; ?>
+                    <? endif; ?>
                 <? endif; ?>
-            <? endif; ?>
-        </p>
-        <?
-        if($this->azvAnzeigen) {
-            echo "<p>AZV-Tage-Rest:  $this->azvRest</p>" ;
-            echo "<p>AZV-Tage dieses Monats:  $this->azvMonat</p>" ;
-        }
-        ?>
-    </div>
-    <div id="rechts">
-        <?
-        if ($this->hochschule == 'hfs') {
-            foreach ($this->kwZeiten as $kw => $istZeit) {
-                echo "<p>Ist-Arbeitszeit in der KW $kw: ";
-                echo $istZeit->getString();
-                echo '</p>';
+            </p>
+            <?
+            if ($this->azvAnzeigen) {
+                echo "<p>AZV-Tage-Rest:  $this->azvRest</p>";
+                echo "<p>AZV-Tage dieses Monats:  $this->azvMonat</p>";
             }
-        }
-        ?>
-    </div>
+            ?>
+        </div>
+        <div id="rechts">
+            <?
+            if ($this->hochschule == 'hfs') {
+                foreach ($this->kwZeiten as $kw => $istZeit) {
+                    echo "<p>Ist-Arbeitszeit in der KW $kw: ";
+                    echo $istZeit->getString();
+                    echo '</p>';
+                }
+            }
+            ?>
+        </div>
+    <? endif; ?>
     <div id="form">
         <a name="monatForm"></a>
         <?= $this->monatForm; ?>

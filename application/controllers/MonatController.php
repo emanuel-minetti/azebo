@@ -115,6 +115,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
      */
     public $azvAnzeigen;
 
+    /**
+     * Ob das Vorjahr noch abgeschlossen werden muss
+     * 
+     * @var boolean
+     */
+    public $jahresabschlussFehlt;
+
     public function init() {
         parent::init();
 
@@ -239,6 +246,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
         } else {
             $this->view->azvAnzeigen = false;
         }
+
+        // Prüfen, ob das Vorjahr abgeschlossen ist.
+        $this->jahresabschlussFehlt =
+                $this->mitarbeiter->getUebertragenbis()->get(Zend_Date::YEAR) >=
+                $this->zuBearbeitendesDatum->get(Zend_Date::YEAR) - 1;
+        $this->view->jahresabschlussFehlt = $this->jahresabschlussFehlt;
     }
 
     public function getSeitenName() {
@@ -343,9 +356,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
                     $arbeitstagTabelle->deleteArbeitstageBis($silvesterVorjahr, $this->mitarbeiter->id);
 
-                    // Die Abschluss-Form neu laden, um die richtigen Knöpfe zu
-                    // setzen
-                    $abschlussForm = $this->_getMitarbeiterAbschlussForm();
+                    // Mache einen 'redirect' um den Controller neu zu laden
+                    // und damit die richtigen Salden und Urlaubswerte
+                    // anzuzeigen.
+                    $redirector = $this->_helper->getHelper('Redirector');
+                    $redirector->gotoSimple('index', 'monat', null, array(
+                        'jahr' => $this->jahr,
+                        'monat' => $this->monat,
+                    ));
                 }
             }
         }
@@ -633,8 +651,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         } else {
             // zeige den Prüfen-Knopf, außer das letzte Jahr ist noch nicht
             // abgeschlossen
-            if ($this->mitarbeiter->getUebertragenbis()->get(Zend_Date::YEAR) >=
-                    $this->zuBearbeitendesDatum->get(Zend_Date::YEAR) - 1) {
+            if ($this->jahresabschlussFehlt) {
                 $form->removeElement('ausdrucken');
                 $form->removeElement('abschliessen');
                 $form->removeElement('uebertragen');
