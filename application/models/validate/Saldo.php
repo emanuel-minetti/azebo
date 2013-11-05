@@ -31,24 +31,47 @@ class Azebo_Validate_Saldo extends Zend_Validate_Abstract {
     const FORMAT = 'format';
     const ZU_GROSS = 'zuGross';
     const MINUTEN = 'minuten';
+    const KAPPUNG_FORMAT = 'kappung';
 
     protected $_messageTemplates = array(
         self::FORMAT => 'Bitte geben Sie das Saldo im Format \'+/- hh:mm\' ein.',
         self::ZU_GROSS => 'Das Saldo darf die Kappungsgrenze nicht überschreiten!',
         self::MINUTEN => 'Die Minuten müssen weniger als 60 betragen!',
+        self::KAPPUNG_FORMAT => 'Die Kappungsgrenze konnte nicht verarbeitet werden!',
     );
 
     public function isValid($value, $context = null) {
-        // Kappungsgrenze holen
+        // Mitarbeiter holen
         $model = new Azebo_Model_Mitarbeiter();
         $mitarbeiter = $model->
                 getMitarbeiterNachBenutzername($context['benutzername']);
-        $kappung = $mitarbeiter->getKappungGesamt();
-        
+        // Kappungsgrenze holen
+        if ($mitarbeiter !== null) {
+            // Mitarbeiter ist in der DB und wird bearbeitet
+            $kappung = $mitarbeiter->getKappungGesamt();
+        } else {
+            // Mitarbeiter ist neu (nicht in der DB), also hole die
+            // Kappungsgrenze aus dem $context.
+            $preg = '^(\d{1,3}):(\d{1,2})$';
+            if (preg_match("/$preg/", $context['kappunggesamt'], $parts)) {
+                if ($parts[2] >= 60) {
+                    $this->_error(self::KAPPUNG_FORMAT);
+                    return false;
+                } else {
+                    $kappungGesamtStunden = $parts[1];
+                    $kappungGesamtMinuten = $parts[2];
+                    $kappung = new Azebo_Model_Saldo(
+                                    $kappungGesamtStunden,
+                                    $kappungGesamtMinuten,
+                                    true);
+                }
+            }
+        }
+
         // Vorzeichen, Stunden und Minuten aus dem String '$value' extrahieren
         $preg = '^(\+|-) (\d{1,3}):(\d{1,2})$';
         if (preg_match("/$preg/", $value, $parts)) {
-            if($parts[3] >= 60) {
+            if ($parts[3] >= 60) {
                 $this->_error(self::MINUTEN);
                 return false;
             }
