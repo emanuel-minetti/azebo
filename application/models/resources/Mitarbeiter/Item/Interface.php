@@ -162,4 +162,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function setUebertragenbis(Zend_Date $uebertragenbis);
     
+    public function jahresabschlussFehlt(Zend_Date $monat);
+    
 }

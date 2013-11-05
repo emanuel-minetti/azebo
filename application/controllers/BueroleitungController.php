@@ -405,6 +405,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         } else {
             $this->view->azvAnzeigen = false;
         }
+        
+        // Prüfen, ob das Vorjahr abgeschlossen ist.
+        $this->view->jahresabschlussFehlt = $mitarbeiter->jahresabschlussFehlt($monat);
     }
 
     private function _getNeuerMitarbeiterForm($mitglieder) {

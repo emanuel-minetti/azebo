@@ -687,4 +687,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $this->_row->uebertragenbis = $dzService->datumPhpZuSql($uebertragenbis);
     }
 
+    public function jahresabschlussFehlt(Zend_Date $monat) {
+        return $this->getUebertragenbis()->get(Zend_Date::YEAR) < 
+                $monat->get(Zend_Date::YEAR) -1;
+    }
+
 }

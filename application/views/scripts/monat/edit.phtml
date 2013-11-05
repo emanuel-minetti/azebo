@@ -17,55 +17,60 @@
             <div id="gridUntenDiv" style="width: 830px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
         <? endif; ?>
     </div>
-    <div id="links">
-        <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
-            <? if ($this->hatRest): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
-            <? endif; ?>
-        </p>
-        <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
-        <p>Saldo gesamt: <?= $this->saldoGesamt; ?>
-            <? if ($this->hatRest): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoGesamt2007; ?>)
-            <? endif; ?>
-        </p>
-        <p>Resturlaub Vormonat: <?= $this->urlaubBisher; ?>
-            <? if ($this->hatVorjahrRest): ?>
-                <? if ($this->hochschule != 'hfm'): ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
-                <? else: ?>
-                    + Vorjahr: <?= $this->vorjahrRestBisher; ?> = <?= $this->urlaubZusammenBisher; ?>
+    <? if (!$this->jahresabschlussFehlt): ?>
+        <div id="links">
+            <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
+                <? if ($this->hatRest): ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
                 <? endif; ?>
-            <? endif; ?>
-        </p>
-        <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
-        <p>Resturlaub gesamt: <?= $this->urlaubGesamt; ?>
-            <? if ($this->hatVorjahrRest): ?>
-                <? if ($this->hochschule != 'hfm'): ?>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
-                <? else: ?>
-                    + Vorjahr: <?= $this->vorjahrRestGesamt; ?> = <?= $this->urlaubZusammenGesamt; ?>
+            </p>
+            <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
+            <p>Saldo gesamt: <?= $this->saldoGesamt; ?>
+                <? if ($this->hatRest): ?>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoGesamt2007; ?>)
                 <? endif; ?>
-            <? endif; ?>
-        </p>
-        <?
-        if($this->azvAnzeigen) {
-            echo "<p>AZV-Tage-Rest:  $this->azvRest</p>" ;
-            echo "<p>AZV-Tage dieses Monats:  $this->azvMonat</p>" ;
-        }
-        ?>
-    </div>
-    <div id="rechts">
-        <?
-        if ($this->hochschule == 'hfs') {
-            foreach ($this->kwZeiten as $kw => $istZeit) {
-                echo "<p>Ist-Arbeitszeit in der KW $kw: ";
-                echo $istZeit->getString();
-                echo '</p>';
+            </p>
+            <p>Resturlaub Vormonat: <?= $this->urlaubBisher; ?>
+                <? if ($this->hatVorjahrRest): ?>
+                    <? if ($this->hochschule != 'hfm'): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
+                    <? else: ?>
+                        + Vorjahr: <?= $this->vorjahrRestBisher; ?> = <?= $this->urlaubZusammenBisher; ?>
+                    <? endif; ?>
+                <? endif; ?>
+            </p>
+            <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
+            <p>Resturlaub gesamt: <?= $this->urlaubGesamt; ?>
+                <? if ($this->hatVorjahrRest): ?>
+                    <? if ($this->hochschule != 'hfm'): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
+                    <? else: ?>
+                        + Vorjahr: <?= $this->vorjahrRestGesamt; ?> = <?= $this->urlaubZusammenGesamt; ?>
+                    <? endif; ?>
+                <? endif; ?>
+            </p>
+            <?
+            if ($this->azvAnzeigen) {
+                echo "<p>AZV-Tage-Rest:  $this->azvRest</p>";
+                echo "<p>AZV-Tage dieses Monats:  $this->azvMonat</p>";
             }
-        }
-        ?>
-    </div> 
+            ?>
+        </div>
+        <div id="rechts">
+            <?
+            if ($this->hochschule == 'hfs') {
+                foreach ($this->kwZeiten as $kw => $istZeit) {
+                    echo "<p>Ist-Arbeitszeit in der KW $kw: ";
+                    echo $istZeit->getString();
+                    echo '</p>';
+                }
+            }
+            ?>
+        </div>
+    <? else: ?>
+        Das Vorjahr ist noch nicht abgeschlossen, also können keine korrekten
+        Salden angezeigt werden.
+    <? endif; ?>
 </div>
 <script type="text/javascript">
     dojo.ready(function() {
@@ -85,18 +90,18 @@
             ]];
         
 <? if ($this->monatsDatenOben !== null): ?>
-                                                
+                                                    
             var monatsDatenOben = <?= $this->monatsDatenOben->toJson() ?>;
-                                         
+                                             
             var dataStoreOben =
                 new dojo.data.ItemFileReadStore({ data:monatsDatenOben });
-                                                
+                                                    
             var gridOben = new dojox.grid.DataGrid({
                 store:dataStoreOben,
                 structure:layout,
                 selectionMode:"none"
             });
-                                                 
+                                                     
             dojo.connect(gridOben, "onStyleRow", function(row){
                 var item = gridOben.getItem(row.index);
                 if(item) {
@@ -108,10 +113,10 @@
                 gridOben.focus.styleRow(row);
                 gridOben.edit.styleRow(row);
             });
-                                                
+                                                    
             gridOben.placeAt('gridObenDiv');
             gridOben.startup();
-                                                    
+                                                        
             dojo.connect(gridOben, "onRowClick", null, function(e){
                 var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
                 url += "/" + gridOben._getItemAttr(e.rowIndex, 'tag') + "#form";
@@ -119,18 +124,18 @@
             });        
 <? endif; ?>
 <? if ($this->monatsDatenUnten !== null): ?>
-                                                
+                                                    
             var monatsDatenUnten = <?= $this->monatsDatenUnten->toJson() ?>;
-                                         
+                                             
             var dataStoreUnten =
                 new dojo.data.ItemFileReadStore({ data:monatsDatenUnten });
-                                                
+                                                    
             var gridUnten = new dojox.grid.DataGrid({
                 store:dataStoreUnten,
                 structure:layout,
                 selectionMode:"none"
             });
-                                                 
+                                                     
             dojo.connect(gridUnten, "onStyleRow", function(row){
                 var item = gridUnten.getItem(row.index);
                 if(item) {
@@ -142,10 +147,10 @@
                 gridUnten.focus.styleRow(row);
                 gridUnten.edit.styleRow(row);
             });
-                                                
+                                                    
             gridUnten.placeAt('gridUntenDiv');
             gridUnten.startup();
-                                                    
+                                                        
             dojo.connect(gridUnten, "onRowClick", null, function(e){
                 var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
                 url += "/" + gridUnten._getItemAttr(e.rowIndex, 'tag') + "#form";

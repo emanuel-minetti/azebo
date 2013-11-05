@@ -16,7 +16,7 @@
         ?>>Einträge blockweise bearbeiten</a>
         </p>
     <? endif; ?>
-    <? if ($this->jahresabschlussFehlt): ?> 
+    <? if (!$this->jahresabschlussFehlt): ?> 
         <div id="links">
             <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
                 <? if ($this->hatRest): ?>
@@ -67,6 +67,11 @@
             }
             ?>
         </div>
+    <? else: ?>
+        <p>
+            Das Vorjahr ist noch nicht abgeschlossen, also können keine korrekten
+            Salden angezeigt werden.
+        </p>
     <? endif; ?>
     <div id="form">
         <a name="monatForm"></a>

@@ -248,9 +248,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
 
         // Prüfen, ob das Vorjahr abgeschlossen ist.
-        $this->jahresabschlussFehlt =
-                $this->mitarbeiter->getUebertragenbis()->get(Zend_Date::YEAR) >=
-                $this->zuBearbeitendesDatum->get(Zend_Date::YEAR) - 1;
+        $this->jahresabschlussFehlt = $this->mitarbeiter->jahresabschlussFehlt(
+                $this->zuBearbeitendesDatum);
         $this->view->jahresabschlussFehlt = $this->jahresabschlussFehlt;
     }
 
@@ -596,7 +595,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         } else {
             // zeige den Prüfen-Knopf, außer das letzte Jahr ist noch nicht
             // abgeschlossen
-            if ($this->jahresabschlussFehlt) {
+            if (!$this->jahresabschlussFehlt) {
                 $form->removeElement('ausdrucken');
                 $form->removeElement('abschliessen');
                 $form->removeElement('uebertragen');
