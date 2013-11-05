@@ -779,7 +779,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     private function _schliesseJahrAb() {
-        // Ermittle das Silvester-Datum
+        // Ermittle den Dezember des abzuschließenden Jahres
         $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
         $jahr = $uebertragenBis->get(Zend_Date::YEAR);
         $jahr++;

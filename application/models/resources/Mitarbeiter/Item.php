@@ -245,12 +245,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         if ($anzeigen && count($monate) != 0) {
             $saldoRest = $monate[count($monate) - 1]->getSaldo()->getRest();
-            //TODO Debugging entfernen
-            $log = Zend_Registry::get('log');
-            $log->debug('Hat Rest: ' . $saldoRest);
-            $log->debug('RestStunden: ' . $monate[count($monate) - 1]->getSaldo()->getRestStunden());
-            $log->debug('RestMinuten: ' . $monate[count($monate) - 1]->getSaldo()->getRestMinuten());
-            $log->debug('Monat: ' . $monate[count($monate) - 1]->getMonat());
             if ($saldoRest) {
             $saldo = new Azebo_Model_Saldo(
                             $saldo->getStunden(),
