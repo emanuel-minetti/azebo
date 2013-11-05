@@ -783,17 +783,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
         $jahr = $uebertragenBis->get(Zend_Date::YEAR);
         $jahr++;
-        $silvester = new Zend_Date("31.12.$jahr");
+        $dezember = new Zend_Date("1.12.$jahr");
 
         // Saldo neu setzen
-        $saldo = $this->mitarbeiter->getSaldoGesamt($silvester);
+        $saldo = $this->mitarbeiter->getSaldoGesamt($dezember);
         $this->mitarbeiter->setSaldoUebertrag($saldo);
 
         // Saldo2007 setzen
         if ($this->mitarbeiter->getHochschule() == 'hfm') {
             if ($saldo->getRest()) {
-                $saldo2007 = new Azebo_Model_Saldo(
-                                $saldo->getRestStunden(),
+                $saldo2007 = new Azebo_Model_Saldo($saldo->getRestStunden(),
                                 $saldo->getRestMinuten(), true);
                 $this->mitarbeiter->setSaldo2007($saldo2007);
             } else {
@@ -802,30 +801,30 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
 
         // Resturlaub setzen
-        $urlaubGesamt = $this->mitarbeiter->getUrlaubGesamt($silvester);
+        $urlaubGesamt = $this->mitarbeiter->getUrlaubGesamt($dezember);
         $this->mitarbeiter->setUrlaubVorjahr($urlaubGesamt['rest']);
 
         // ÜbertragenBis aktualisieren
-        $this->mitarbeiter->setUebertragenbis($silvester);
+        $this->mitarbeiter->setUebertragenbis($dezember);
 
         // DB aktualisieren
         $this->mitarbeiter->save();
 
         // Arbeitsmonate als übertragen markieren
         $arbeitsmonate = $this->mitarbeiter->getArbeitsmonateNachJahr(
-                $silvester);
+                $dezember);
         foreach ($arbeitsmonate as $arbeitsmonat) {
             $arbeitsmonat->setUebertragen();
             $arbeitsmonat->save();
         }
 
         // Alte Monate und Tage löschen
-        $silvesterVorjahr = new Zend_Date($silvester);
-        $silvesterVorjahr->subYear(1);
+        $dezemberVorjahr = new Zend_Date($dezember);
+        $dezemberVorjahr->subYear(1);
         $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
-        $arbeitsmonatTabelle->deleteArbeitsmonateBis($silvesterVorjahr, $this->mitarbeiter->id);
+        $arbeitsmonatTabelle->deleteArbeitsmonateBis($dezemberVorjahr, $this->mitarbeiter->id);
         $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
-        $arbeitstagTabelle->deleteArbeitstageBis($silvesterVorjahr, $this->mitarbeiter->id);
+        $arbeitstagTabelle->deleteArbeitstageBis($dezemberVorjahr, $this->mitarbeiter->id);
 
         // Mache einen 'redirect' um den Controller neu zu laden
         // und damit die richtigen Salden und Urlaubswerte

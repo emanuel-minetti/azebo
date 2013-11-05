@@ -88,6 +88,8 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getArbeitsmonate();
     
+    public function getArbeitsmonateBis(Zend_Date $monat);
+    
     public function getSaldoBisher(Zend_Date $bis, $anzeigen = false);
     
     public function getSaldo(Zend_Date $monat);
@@ -100,7 +102,7 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function setSaldoUebertrag(Azebo_Model_Saldo $saldo);
     
-    public function setSaldo2007(Azebo_Model_Saldo $saldo);
+    public function setSaldo2007($saldo);
     
     public function getArbeitsregeln();
     

@@ -60,6 +60,32 @@ class Azebo_Resource_Arbeitsmonat extends AzeboLib_Model_Resource_Db_Table_Abstr
 
         return $dbMonate;
     }
+    
+    /**
+     * Holt die Arbeitsmonate eines Mitarbeiters nach seiner Id und einem Monat,
+     * bis zu die Arbeitmonate geholt werden sollen. Falls der
+     * Parameter '$filter' true ist (Standard) werden nur die nicht bereits
+     * übertragenen Arbeitsmonate zurückgegeben. Das ist wichtig um Saldo,
+     * Saldo2007, Urlaub, Resturlaub und Azv richtig zu berechnen.
+     * 
+     * @param integer $mitarbeiterId
+     * @param boolean $filter
+     * @return Zend_Db_Table_Rowset_Abstract 
+     */
+    public function getArbeitsmonateNachMitarbeiterIdUndBis($mitarbeiterId, Zend_Date $monat, $filter = true) {
+
+        $dzService = new Azebo_Service_DatumUndZeitUmwandler();
+        $select = $this->select();
+        $select->where('mitarbeiter_id = ?', $mitarbeiterId);
+        $select->where('monat < ?', $dzService->datumPhpZuSql($monat));
+        $select->order('monat ASC');
+        if ($filter) {
+            $select->where('uebertragen = ?', 'nein');
+        }
+        $dbMonate = $this->fetchAll($select);
+
+        return $dbMonate;
+    }
 
     public function getArbeitsmonateNachJahrUndMitarbeiterId(Zend_Date $jahr, $mitarbeiterId) {
         $dzService = new Azebo_Service_DatumUndZeitUmwandler();

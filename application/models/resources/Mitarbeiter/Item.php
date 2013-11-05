@@ -225,13 +225,18 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $monatsTabelle->getArbeitsmonateNachMitarbeiterId($this->id);
     }
 
+    public function getArbeitsmonateBis(Zend_Date $monat) {
+        $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
+        return $monatsTabelle->getArbeitsmonateNachMitarbeiterIdUndBis($this->id, $monat);
+    }
+
     /**
      *
      * @return Azebo_Model_Saldo 
      */
     public function getSaldoBisher(Zend_Date $bis, $anzeigen = false) {
         $saldo = $this->getSaldouebertrag();
-        $monate = $this->getArbeitsmonate();
+        $monate = $this->getArbeitsmonateBis($bis);
         foreach ($monate as $monat) {
             if ($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
                 $monatsSaldo = $monat->getSaldo();
@@ -240,22 +245,22 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         if ($anzeigen && count($monate) != 0) {
             $saldoRest = $monate[count($monate) - 1]->getSaldo()->getRest();
-            //TODO Debugging entfernen!!
-//            $log = Zend_Registry::get('log');
-//            $log->debug('Hat Rest: ' . $saldoRest);
-//            $log->debug('RestStunden: ' . $monate[count($monate) - 1]->getSaldo()->getRestStunden());
-//            $log->debug('RestMinuten: ' . $monate[count($monate) - 1]->getSaldo()->getRestMinuten());
-//            $log->debug('Monat: ' . $monate[count($monate) - 1]->getMonat());
+            //TODO Debugging entfernen
+            $log = Zend_Registry::get('log');
+            $log->debug('Hat Rest: ' . $saldoRest);
+            $log->debug('RestStunden: ' . $monate[count($monate) - 1]->getSaldo()->getRestStunden());
+            $log->debug('RestMinuten: ' . $monate[count($monate) - 1]->getSaldo()->getRestMinuten());
+            $log->debug('Monat: ' . $monate[count($monate) - 1]->getMonat());
             if ($saldoRest) {
-                $saldo = new Azebo_Model_Saldo(
-                                $saldo->getStunden(),
-                                $saldo->getMinuten(),
-                                $saldo->getPositiv(),
-                                $saldoRest,
-                                        $monate[count($monate) - 1]->
-                                        getSaldo()->getRestStunden(),
-                                        $monate[count($monate) - 1]->
-                                        getSaldo()->getRestMinuten());
+            $saldo = new Azebo_Model_Saldo(
+                            $saldo->getStunden(),
+                            $saldo->getMinuten(),
+                            $saldo->getPositiv(),
+                            $saldoRest,
+                                    $monate[count($monate) - 1]->
+                                    getSaldo()->getRestStunden(),
+                                    $monate[count($monate) - 1]->
+                                    getSaldo()->getRestMinuten());
             }
         }
         return $saldo;
@@ -462,7 +467,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitsmonat->save();
     }
 
-    public function setSaldo2007(Azebo_Model_Saldo $saldo) {
+    public function setSaldo2007($saldo) {
         if ($saldo !== null) {
             $this->_row->saldo2007stunden = $saldo->getStunden();
             $this->_row->saldo2007minuten = $saldo->getMinuten();
