@@ -256,6 +256,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $arbeitsregel->setKernAnfang($daten['kernAnfang']);
         $arbeitsregel->setKernEnde($daten['kernEnde']);
         $arbeitsregel->setRahmenEnde($daten['rahmenEnde']);
+        $arbeitsregel->setOhneKern($daten['ohneKern']);
 
         $arbeitsregel->save();
     }
