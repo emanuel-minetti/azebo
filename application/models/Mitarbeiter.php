@@ -267,6 +267,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     }
 
     public function getAbgeschlossenAbgelegtNachMonatUndHochschule($monat, $hochschule) {
+        //TODO Hier Optimieren!!
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
         $arbeitsmonate = $monatsTabelle->getArbeitsmonateNachMonat($monat);
         $erg = array();

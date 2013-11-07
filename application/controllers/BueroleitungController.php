@@ -174,6 +174,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     $daten['rahmenEnde'] =
                             $zeitFilter->filter($daten['rahmenEnde']);
                     $daten['soll'] = $zeitFilter->filter($daten['soll']);
+                    $daten['ohneKern'] = $daten['ohneKern'] === null ?
+                            'nein' : $daten['ohneKern'];
 
                     $this->model->saveArbeitsregel($daten);
 
@@ -405,7 +407,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         } else {
             $this->view->azvAnzeigen = false;
         }
-        
+
         // Prüfen, ob das Vorjahr abgeschlossen ist.
         $this->view->jahresabschlussFehlt = $mitarbeiter->jahresabschlussFehlt($monat);
     }
