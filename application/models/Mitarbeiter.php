@@ -48,6 +48,13 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
                                 $monat, $mitarbeiter->id);
     }
 
+    /**
+     * Gibt ein Array mit den Mitarbeiter-Items aller Mitarbeiter einer Hochschule
+     * zurück. Die Hochschule wird als 'khb', 'hfm' oder 'hfs' übergeben.
+     * 
+     * @param string $hochschule
+     * @return array
+     */
     public function getMitarbeiterNachHochschule($hochschule) {
 
         $gruppenNamen = Zend_Registry::get('gruppen');
@@ -97,7 +104,8 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $gruppen = array();
         $attributes = array('cn');
         $ldap = new Zend_Ldap($options);
-        $users = $ldap->search('(&(objectClass=posixGroup)(memberUid=' . $benutzername . '))', 'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de', Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
+        $users = $ldap->search(
+                '(&(objectClass=posixGroup)(memberUid=' . $benutzername . '))', 'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de', Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
         foreach ($users as $user) {
             $gruppen[] = $user['cn'][0];
         }
@@ -115,6 +123,13 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         return $hochschule;
     }
 
+    /**
+     * Gibt ein Array mit den Benutzernamen aller Mitarbeiter einer Hochschule
+     * zurück. Die Hochschule wird als 'khb', 'hfm' oder 'hfs' übergeben.
+     * 
+     * @param string $hochschule
+     * @return array
+     */
     public function getBenutzernamenNachHochschule($hochschule) {
 
         $gruppenNamen = Zend_Registry::get('gruppen');
@@ -148,7 +163,8 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $options = $config->ldap->physalis->toArray();
         $ldap = new Zend_Ldap($options);
         $ldap->bind();
-        $benutzer = $ldap->getEntry('uid=' . $benutzername . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
+        $benutzer = $ldap->getEntry(
+                'uid=' . $benutzername . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
 //        $log = Zend_Registry::get('log');
 //        $log->debug('Benutzer: ' . print_r($benutzer, true));
         $vorname = $benutzer['givenname'][0];
@@ -235,7 +251,8 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     public function getArbeitsregelnNachBenutzername($benutzername) {
         $mitarbeiter = $this->getMitarbeiterNachBenutzername($benutzername);
         $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
-        return $arbeitsregelTabelle->getArbeitsregelnNachMitarbeiterId($mitarbeiter->id);
+        return $arbeitsregelTabelle->getArbeitsregelnNachMitarbeiterId(
+                        $mitarbeiter->id);
     }
 
     public function saveArbeitsregel($daten) {
@@ -243,9 +260,11 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         if ($daten['id'] == 0) {
             $arbeitsregel = $arbeitsregelTabelle->createRow();
         } else {
-            $arbeitsregel = $arbeitsregelTabelle->getArbeitsregelNachId($daten['id']);
+            $arbeitsregel = $arbeitsregelTabelle->getArbeitsregelNachId(
+                    $daten['id']);
         }
-        $mitarbeiter = $this->getMitarbeiterNachBenutzername($daten['benutzername']);
+        $mitarbeiter = $this->getMitarbeiterNachBenutzername(
+                $daten['benutzername']);
         $arbeitsregel->mitarbeiter_id = $mitarbeiter->id;
         $arbeitsregel->setVon($daten['von']);
         $arbeitsregel->setBis($daten['bis']);
@@ -267,14 +286,14 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     }
 
     public function getAbgeschlossenAbgelegtNachMonatUndHochschule($monat, $hochschule) {
-        //TODO Hier Optimieren!!
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
         $arbeitsmonate = $monatsTabelle->getArbeitsmonateNachMonat($monat);
+        $benutzernamen = $this->getBenutzernamenNachHochschule($hochschule);
         $erg = array();
         foreach ($arbeitsmonate as $arbeitsmonat) {
             $mitarbeiterId = $arbeitsmonat->mitarbeiter_id;
             $mitarbeiter = $this->getMitarbeiterNachId($mitarbeiterId);
-            if ($hochschule == $this->getHochschuleNachBenutzernamen($mitarbeiter->benutzername)) {
+            if(in_array($mitarbeiter->benutzername, $benutzernamen)) {
                 $erg[] = $arbeitsmonat;
             }
         }
