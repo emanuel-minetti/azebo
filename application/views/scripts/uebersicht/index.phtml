@@ -3,10 +3,15 @@
     <h3><?= $this->seitenName ?></h3>
     <div id="gridDiv" style="width: 393px; height: 326px"></div>
 </div>
+
+<p style="width: 180px; text-align: center; margin-bottom: 0px;"><a href=<?= $this->url(array(
+        'controller' => 'uebersicht',
+        'action' => 'farben',
+        ), 'default', true);?>>Farben einrichten</a></p>
+
 <?
 if ($this->hochschule == 'hfs') {
     echo "<p style=\"width: 180px; text-align: center; margin-bottom: 0px;\"><a href  =";
-    //echo $this->url(array('mitarbeiter' => $this->mitarbeiter), 'vertreter', true);
     echo $this->url(array(
         'controller' => 'uebersicht',
         'action' => 'vertreter',

@@ -32,7 +32,7 @@ div.Navigation {
     margin: 0;
     padding: 0.5em 1em;
     display: block;
-    background: #d8d0ae;
+    background-color: #d8d0ae;
     border-color: #8d9a94;
     border-style: solid;
     border-top: 0;
@@ -218,7 +218,7 @@ td.nicht-ok {
     color: #fe3c1a;
 }
 
-th.mituebersicht{
+th.mituebersicht {
     background: #8d9a94;
 }
 

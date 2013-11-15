@@ -164,4 +164,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function jahresabschlussFehlt(Zend_Date $monat);
     
+    public function getFarben();
+    
 }

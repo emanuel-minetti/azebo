@@ -692,4 +692,18 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 $monat->get(Zend_Date::YEAR) -1;
     }
 
+    public function getFarben() {
+        $kopf = '#' . $this->_row->farbekopf;
+        $hoover = '#' . $this->_row->farbehoover;
+        $link = '#' . $this->_row->farbelink;
+        $zeile = '#' . $this->_row->farbezeile;
+        $farben = array(
+            'kopf' => $kopf,
+            'hoover' => $hoover,
+            'link' => $link,
+            'zeile' => $zeile
+        );
+        return $farben;
+    }
+
 }

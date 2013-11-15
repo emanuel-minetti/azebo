@@ -169,6 +169,10 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         $this->view->erfolg = $erfolg;
         $this->view->form = $form;
     }
+    
+    public function farbenAction() {
+         $this->erweitereSeitenName(' Farben einrichten');
+    }
 
 }
 

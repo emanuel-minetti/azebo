@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Oct 31, 2013 at 01:52 PM
+-- Generation Time: Nov 15, 2013 at 03:07 PM
 -- Server version: 5.1.63
 -- PHP Version: 5.3.3-7+squeeze14
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsmonat` (
   `uebertragen` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   PRIMARY KEY (`id`),
   KEY `mitarbeiter_id` (`mitarbeiter_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=42 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1140 ;
 
 -- --------------------------------------------------------
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsregel` (
   `bis` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `mitarbeiter_id` (`mitarbeiter_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=43 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=236 ;
 
 -- --------------------------------------------------------
 
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `arbeitstag` (
   `nachmittagende` time DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `mitarbeiter-tag` (`mitarbeiter_id`,`tag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=339 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22485 ;
 
 -- --------------------------------------------------------
 
@@ -111,6 +111,10 @@ CREATE TABLE IF NOT EXISTS `mitarbeiter` (
   `kappungmonatstunden` int(11) DEFAULT NULL,
   `kappungmonatminuten` int(11) DEFAULT NULL,
   `uebertragenbis` date DEFAULT NULL,
+  `farbekopf` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `farbehoover` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `farbelink` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `farbezeile` char(6) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `benutzername` (`benutzername`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=21 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=152 ;

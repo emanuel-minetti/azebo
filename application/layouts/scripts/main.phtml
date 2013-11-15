@@ -14,25 +14,81 @@
             echo $this->dojo();
         }
         ?>
-<!--    
-        <style type="text/css">
-            .tundra .dojoxGridRowOdd {background-color: green !important;}
-        </style>
--->
-    </head>
-    <body class="tundra">
+
+        <?
+        $this->setHelperPath(APPLICATION_PATH . '/layouts/helpers');
+        $farben = $this->farbe();
+        ?>
+        <? if ($farben !== null): ?>
+            <style type="text/css">
+                div#Kopfzeile {
+                    background-color:
+                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?>;}
+                div.Navigation {
+                    background-color:
+                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?>;}
+                ul.Navigation li ul a {
+                    background-color:
+                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?>;}
+                div#Fusszeile {
+                    background-color:
+                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?>;}
+                .tundra .dojoxGridRowOdd {
+                    background-color:
+                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?> !important;}
+                ul.Navigation li a:hover {
+                    background-color:
+                        <?= $farben['hoover'] !== null ? $farben['hoover'] : '#648d9f' ?>;}
+                a:hover {
+                    background-color:
+                        <?= $farben['hoover'] !== null ? $farben['hoover'] : '#648d9f' ?>;}
+                div#Kopfzeile {
+                    border-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
+                div.Navigation {
+                    border-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
+                ul.Navigation li a {
+                    background-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
+                ul.Navigation li ul {
+                    border-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
+                a {
+                    background-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
+                a.no-link:hover {
+                    background-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
+                th.mituebersicht {
+                    background-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
+                div#Fusszeile {
+                    border-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
+                .tundra .dojoxGridRowOver {
+                    background-color:
+                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?> !important;}
+                .tundra .dojoxGridRowOver .dojoxGridCell {
+                    background-color:
+                        <?= $farben['link'] !== null ? $farben['zeile'] : '#60a1ea' ?> !important;}
+                </style>
+            <? endif; ?>
+
+        </head>
+        <body class="tundra">
         <div id="Seite">
             <div id="Kopfzeile">
                 <h1><a href="
-<?= $this->baseUrl('') ?>
+                    <?= $this->baseUrl('') ?>
                        "><?= $this->placeholder('Zend_View_Helper_HeadTitle') ?></a></h1>
                 <h2><?= $this->seitenName ?></h2>
             </div>
             <div class="Navigation">
-<?= $this->render('nav.phtml') ?>
+                <?= $this->render('nav.phtml') ?>
             </div>
             <div id="Inhalt">
-<?= $this->layout()->content ?>
+                <?= $this->layout()->content ?>
             </div>
 
             <div id="Fusszeile">&copy; 2012 ServiceCenter IT. Version: <?= $this->version ?></div>
