@@ -257,12 +257,12 @@ td.erg {
     border-right-color: black !important;
 }
 
-div#links {
+div.links {
     float: left;
     width: 25em;
 }
 
-div#rechts {
+div.rechts {
     width: 20em;
     margin-left: 26em;
 }

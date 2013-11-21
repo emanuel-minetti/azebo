@@ -10,7 +10,8 @@
             $this->dojo()->setLocalPath('/javascript/dojo/dojo.js')
                     ->addStyleSheetModule('dijit.themes.tundra')
                     ->addStyleSheet('/javascript/dojox/grid/resources/Grid.css')
-                    ->addStyleSheet('/javascript/dojox/grid/resources/tundraGrid.css');
+                    ->addStyleSheet('/javascript/dojox/grid/resources/tundraGrid.css')
+                    ->addStyleSheet('/javascript/dojox/widget/ColorPicker/ColorPicker.css');
             echo $this->dojo();
         }
         ?>
@@ -19,61 +20,59 @@
         $this->setHelperPath(APPLICATION_PATH . '/layouts/helpers');
         $farben = $this->farbe();
         ?>
-        <? if ($farben !== null): ?>
-            <style type="text/css">
-                div#Kopfzeile {
-                    background-color:
-                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?>;}
-                div.Navigation {
-                    background-color:
-                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?>;}
-                ul.Navigation li ul a {
-                    background-color:
-                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?>;}
-                div#Fusszeile {
-                    background-color:
-                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?>;}
-                .tundra .dojoxGridRowOdd {
-                    background-color:
-                        <?= $farben['kopf'] !== null ? $farben['kopf'] : '#d8d0ae' ?> !important;}
-                ul.Navigation li a:hover {
-                    background-color:
-                        <?= $farben['hoover'] !== null ? $farben['hoover'] : '#648d9f' ?>;}
-                a:hover {
-                    background-color:
-                        <?= $farben['hoover'] !== null ? $farben['hoover'] : '#648d9f' ?>;}
-                div#Kopfzeile {
-                    border-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
-                div.Navigation {
-                    border-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
-                ul.Navigation li a {
-                    background-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
-                ul.Navigation li ul {
-                    border-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
-                a {
-                    background-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
-                a.no-link:hover {
-                    background-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
-                th.mituebersicht {
-                    background-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
-                div#Fusszeile {
-                    border-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?>;}
-                .tundra .dojoxGridRowOver {
-                    background-color:
-                        <?= $farben['link'] !== null ? $farben['link'] : '#8d9a94' ?> !important;}
-                .tundra .dojoxGridRowOver .dojoxGridCell {
-                    background-color:
-                        <?= $farben['link'] !== null ? $farben['zeile'] : '#60a1ea' ?> !important;}
-                </style>
-            <? endif; ?>
+        <style type="text/css">
+            div#Kopfzeile {
+                background-color: <?= $farben->kopf ?>;
+            }
+            div.Navigation {
+                background-color: <?= $farben->kopf ?>;
+            }
+            ul.Navigation li ul a {
+                background-color: <?= $farben->kopf ?>;
+            }
+            div#Fusszeile {
+                background-color: <?= $farben->kopf ?>;
+            }
+            .tundra .dojoxGridRowOdd {
+                background-color: <?= $farben->kopf ?> !important;
+            }
+            ul.Navigation li a:hover {
+                background-color: <?= $farben->hoover ?>;
+            }
+            a:hover {
+                background-color: <?= $farben->hoover ?>;
+            }
+            div#Kopfzeile {
+                border-color: <?= $farben->link ?>;
+            }
+            div.Navigation {
+                border-color: <?= $farben->link ?>;
+            }
+            ul.Navigation li a {
+                background-color: <?= $farben->link ?>;
+            }
+            ul.Navigation li ul {
+                border-color: <?= $farben->link ?>;
+            }
+            a {
+                background-color: <?= $farben->link ?>;
+            }
+            a.no-link:hover {
+                background-color: <?= $farben->link ?>;
+            }
+            th.mituebersicht {
+                background-color: <?= $farben->link ?>;
+            }
+            div#Fusszeile {
+                border-color: <?= $farben->link ?>;
+            }
+            .tundra .dojoxGridRowOver {
+                background-color: <?= $farben->link ?> !important;
+            }
+            .tundra .dojoxGridRowOver .dojoxGridCell {
+                background-color: <?= $farben->zeile ?> !important;
+            }
+            </style>
 
         </head>
         <body class="tundra">

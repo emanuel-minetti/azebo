@@ -32,6 +32,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     private $_rolle = null;
     private $_hochschule = null;
     private $_zeiten = null;
+    private $_farben = null;
 
     public function getName() {
 
@@ -246,15 +247,15 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         if ($anzeigen && count($monate) != 0) {
             $saldoRest = $monate[count($monate) - 1]->getSaldo()->getRest();
             if ($saldoRest) {
-            $saldo = new Azebo_Model_Saldo(
-                            $saldo->getStunden(),
-                            $saldo->getMinuten(),
-                            $saldo->getPositiv(),
-                            $saldoRest,
-                                    $monate[count($monate) - 1]->
-                                    getSaldo()->getRestStunden(),
-                                    $monate[count($monate) - 1]->
-                                    getSaldo()->getRestMinuten());
+                $saldo = new Azebo_Model_Saldo(
+                                $saldo->getStunden(),
+                                $saldo->getMinuten(),
+                                $saldo->getPositiv(),
+                                $saldoRest,
+                                        $monate[count($monate) - 1]->
+                                        getSaldo()->getRestStunden(),
+                                        $monate[count($monate) - 1]->
+                                        getSaldo()->getRestMinuten());
             }
         }
         return $saldo;
@@ -688,22 +689,34 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function jahresabschlussFehlt(Zend_Date $monat) {
-        return $this->getUebertragenbis()->get(Zend_Date::YEAR) < 
-                $monat->get(Zend_Date::YEAR) -1;
+        return $this->getUebertragenbis()->get(Zend_Date::YEAR) <
+                $monat->get(Zend_Date::YEAR) - 1;
     }
 
     public function getFarben() {
-        $kopf = '#' . $this->_row->farbekopf;
-        $hoover = '#' . $this->_row->farbehoover;
-        $link = '#' . $this->_row->farbelink;
-        $zeile = '#' . $this->_row->farbezeile;
-        $farben = array(
-            'kopf' => $kopf,
-            'hoover' => $hoover,
-            'link' => $link,
-            'zeile' => $zeile
-        );
-        return $farben;
+        if ($this->_farben === null) {
+            $this->_farben = new Azebo_Model_Farben();
+            $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/farben.ini');
+            $configFarben = $config->farben;
+            $kopf = $this->_row->farbekopf !== null ?
+                    $this->_row->farbekopf : $configFarben->kopf;
+            $hoover = $this->_row->farbehoover !== null ?
+                    $this->_row->farbehoover : $configFarben->hoover;
+            $link = $this->_row->farbelink !== null ?
+                    $this->_row->farbelink : $configFarben->link;
+            $zeile = $this->_row->farbezeile !== null ?
+                    $this->_row->farbezeile : $configFarben->zeile;
+            $kopf = '#' . $kopf;
+            $hoover = '#' . $hoover;
+            $link = '#' . $link;
+            $zeile = '#' . $zeile;
+            
+            $this->_farben->kopf = $kopf;
+            $this->_farben->hoover = $hoover;
+            $this->_farben->link = $link;
+            $this->_farben->zeile = $zeile;
+        }
+        return $this->_farben;
     }
 
 }

@@ -20,25 +20,16 @@
  *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
  */
 
+//TODO Kommentieren!
 /**
- * Prüft ob ein Benutzer angemeldet ist und gibt, falls ja, die Farbpräferenzen
- * des Mitarbeiters als Array von Strings zurück. Falls nicht wird NULL
- * zurückgegeben.
+ * Description of Farben
  *
  * @author Emanuel Minetti
  */
-class Zend_View_Helper_Farbe extends Zend_View_Helper_Abstract {
-    
-    public function farbe() {        
-        $ns = new Zend_Session_Namespace();
-        $mitarbeiter = $ns->mitarbeiter;
-        if($mitarbeiter !== null) {
-            $farben = $mitarbeiter->getFarben();
-        } else {
-            $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/farben.ini');
-            $farben = $config->farben;
-        }
-        return $farben;
-    }
+class Azebo_Model_Farben {
+    public $kopf;
+    public $hoover;
+    public $link;
+    public $zeile;
 }
 

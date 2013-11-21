@@ -27,44 +27,36 @@
  *
  * @author Emanuel Minetti
  */
-class Azebo_Form_Mitarbeiter_Abschluss extends AzeboLib_Form_Abstract {
+class Azebo_Form_Mitarbeiter_Farben extends AzeboLib_Form_Abstract {
 
     public function init() {
-        $this->addElementPrefixPath(
-                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
-        $this->addElement('Hidden', 'monat', array());
-
-        $this->addElement('SubmitButton', 'abschliessen', array(
-            'required' => false,
-            'ignore' => true,
-            'label' => 'Monat abschließen',
-            'decorators' => array('DijitElement', 'Errors',),
-            //'tabindex' => 1,
+        $this->addElement('Hidden', 'farbeKopf', array(
+            'decorators' => array('DijitElement'),
+        ));
+        $this->addElement('Hidden', 'farbeHoover', array(
+            'decorators' => array('DijitElement'),
+        ));
+        $this->addElement('Hidden', 'farbeLink', array(
+            'decorators' => array('DijitElement'),
+        ));
+        $this->addElement('Hidden', 'farbeZeile', array(
+            'decorators' => array('DijitElement'),
         ));
 
-        $this->addElement('Button', 'ausdrucken', array(
+        $this->addElement('SubmitButton', 'zuruecksetzen', array(
             'required' => false,
             'ignore' => true,
-            'label' => 'Bogen ausdrucken',
-            'decorators' => array('DijitElement', 'Errors',),
-            //'tabindex' => 1,
-        ));
-
-        $this->addElement('SubmitButton', 'pruefen', array(
-            'required' => false,
-            'ignore' => true,
-            'label' => 'Monat prüfen',
-            'validators' => array('Monat', 'Urlaub', 'Azv',),
-            'decorators' => array('DijitElement', 'Errors',),
+            'label' => 'Zurücksetzen',
+            //'decorators' => array('DijitElement', 'Errors',),
             //'tabindex' => 1,
         ));
         
-        $this->addElement('SubmitButton', 'uebertragen', array(
+        $this->addElement('SubmitButton', 'uebernehmen', array(
             'required' => false,
             'ignore' => true,
-            'label' => 'Vorjahr abschließen',
+            'label' => 'Übernehmen',
             'validators' => array('Jahr',),
-            'decorators' => array('DijitElement', 'Errors',),
+            //'decorators' => array('DijitElement', 'Errors',),
             //'tabindex' => 1,
         ));
     }

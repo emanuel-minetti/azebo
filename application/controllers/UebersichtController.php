@@ -91,7 +91,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         // Also übergebe den Mitarbeiter und die Hochschule an den View
         $this->view->hochschule = $this->mitarbeiter->getHochschule();
     }
-    
+
     public function vertreterAction() {
         // Falls der Mitarbeiter schon einen Vertreter hat, leite ihn direkt
         // auf die edit-Seite weiter.
@@ -169,9 +169,22 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         $this->view->erfolg = $erfolg;
         $this->view->form = $form;
     }
-    
+
     public function farbenAction() {
-         $this->erweitereSeitenName(' Farben einrichten');
+        $this->erweitereSeitenName(' Farben einrichten');
+        $this->view->dojo()->requireModule("dojox.widget.ColorPicker")
+                ->requireModule("dojo.dom");
+        
+        //$this->view->farbe = '#00ff00';
+        $this->view->farben = $this->mitarbeiter->getFarben();
+
+        $form = new Azebo_Form_Mitarbeiter_Farben();
+        $form->setMethod('post');
+        $form->setAction($this->_helper->getHelper('url')->url(array(
+            'controller' => 'uebersicht',
+            'action' => 'farben',
+        ),'default', true));
+        $this->view->form = $form;
     }
 
 }

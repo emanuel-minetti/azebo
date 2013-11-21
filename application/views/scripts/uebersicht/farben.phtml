@@ -2,8 +2,70 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <p style="text-align: center">
-        Hier können Sie die Farbgebung des Arbeitszeitbogens individuell einstellen.
-        Beachten Sie, dass diese Farben nur für die Anzeige gelten. Der Ausdruck bleibt
-        weiterhin in neutralen Farben gehalten.
+        Die Darstellung des Arbeitszeitbogens wird durch vier Farben strukturiert.
+        Diese Farben können individuell angepasst werden.
+        Zum Übernehmen der Farbauswahl müssen Sie "Übernehmen" drücken. 
+        Durch Drücken von "Zurücksetzen" können Sie die Standardfarben wiederherstellen.
     </p>
+    <table width="80%">
+        <tr>
+            <td>
+                <div id="pickerKopf"
+                     dojoType="dojox.widget.ColorPicker"
+                     showHsv="false"
+                     webSave="false"
+                     value="<?= $this->farben->kopf ?>"
+                     onChange="handler(arguments[0], 'farbeKopf')"></div>
+            </td>
+            <td>
+                Dies ist die Farbe für die Kopf- und Fußzeile des Arbeitszeitbogens.
+                Außerdem werden die ungeraden Tage in der Monatsansicht durch diese Farbe hervorgehoben.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="pickerLink"
+                     dojoType="dojox.widget.ColorPicker"
+                     showHsv="false"
+                     webSave="false"
+                     value="<?= $this->farben->link ?>"
+                     onChange="handler(arguments[0], 'farbeLink')"></div>
+            </td>
+            <td>
+                Dies ist die Farbe, mit der Verknüpfungen im Arbeitszeitbogen gekennzeichnet werden.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="pickerHoover"
+                     dojoType="dojox.widget.ColorPicker"
+                     showHsv="false"
+                     webSave="false"
+                     value="<?= $this->farben->hoover ?>"
+                     onChange="handler(arguments[0], 'farbeHoover')"></div>
+            </td>
+            <td>
+                Dies ist die Farbe, in der Verknüpfungen erscheinen, wenn sie mit dem Mauszeiger berührt werden.
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="pickerZeile"
+                     dojoType="dojox.widget.ColorPicker"
+                     showHsv="false"
+                     webSave="false"
+                     value="<?= $this->farben->zeile ?>"
+                     onChange="handler(arguments[0], 'farbeZeile')"></div>
+            </td>
+            <td>
+                Dies ist die Farbe, mit der in der Monatsansicht die berührte Zeile gekennzeichnet wird.
+            </td>
+        </tr>
+    </table>
+    <div id="form"><?= $this->form ?></div>
 </div>
+<script type="text/javascript">
+    var handler = function(val, id){
+        dojo.dom.byId(id).value = val;
+    };
+</script>

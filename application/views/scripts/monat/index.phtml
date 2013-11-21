@@ -17,7 +17,7 @@
         </p>
     <? endif; ?>
     <? if (!$this->jahresabschlussFehlt): ?> 
-        <div id="links">
+        <div class="links">
             <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
                 <? if ($this->hatRest): ?>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
@@ -56,7 +56,7 @@
             }
             ?>
         </div>
-        <div id="rechts">
+        <div class="rechts">
             <?
             if ($this->hochschule == 'hfs') {
                 foreach ($this->kwZeiten as $kw => $istZeit) {
