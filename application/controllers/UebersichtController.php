@@ -170,6 +170,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         $this->view->form = $form;
     }
 
+    //TODO Kommentieren!
     public function farbenAction() {
         $this->erweitereSeitenName(' Farben einrichten');
         $this->view->dojo()->requireModule("dojox.widget.ColorPicker")
@@ -185,6 +186,26 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
             'action' => 'farben',
         ),'default', true));
         $this->view->form = $form;
+        
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $postDaten = $request->getPost();
+            if(isset($postDaten['uebernehmen'])) {
+                $farben = new Azebo_Model_Farben();
+                $farben->kopf = $postDaten['farbeKopf'];
+                $farben->hoover = $postDaten['farbeHoover'];
+                $farben->link = $postDaten['farbeLink'];
+                $farben->zeile = $postDaten['farbeZeile'];
+                
+                $this->mitarbeiter->setFarben($farben);
+                $this->mitarbeiter->save();
+                $this->view->farben = $farben;
+            } else { // zurücksetzen
+                $this->mitarbeiter->setFarben(null);
+                $this->mitarbeiter->save();
+                $this->view->farben = $this->mitarbeiter->getFarben();
+            }
+        }
     }
 
 }

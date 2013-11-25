@@ -696,7 +696,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function getFarben() {
         if ($this->_farben === null) {
             $this->_farben = new Azebo_Model_Farben();
-            $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/farben.ini');
+            $config = new Zend_Config_Ini(
+                    APPLICATION_PATH . '/configs/farben.ini');
             $configFarben = $config->farben;
             $kopf = $this->_row->farbekopf !== null ?
                     $this->_row->farbekopf : $configFarben->kopf;
@@ -710,13 +711,49 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $hoover = '#' . $hoover;
             $link = '#' . $link;
             $zeile = '#' . $zeile;
-            
+
             $this->_farben->kopf = $kopf;
             $this->_farben->hoover = $hoover;
             $this->_farben->link = $link;
             $this->_farben->zeile = $zeile;
         }
         return $this->_farben;
+    }
+
+    public function setFarben($farben) {
+        if ($farben !== null) {
+            $this->_farben = $farben;
+
+            $kopf = substr($farben->kopf, 1);
+            $hoover = substr($farben->hoover, 1);
+            $link = substr($farben->link, 1);
+            $zeile = substr($farben->zeile, 1);
+
+            $this->_row->farbekopf = $kopf;
+            $this->_row->farbehoover = $hoover;
+            $this->_row->farbelink = $link;
+            $this->_row->farbezeile = $zeile;
+        } else { // $farben === null
+            $config = new Zend_Config_Ini(
+                            APPLICATION_PATH . '/configs/farben.ini');
+            $configFarben = $config->farben;
+            
+            $kopf = '#' . $configFarben->kopf;
+            $hoover = '#' . $configFarben->hoover;
+            $link = '#' . $configFarben->link;
+            $zeile = '#' . $configFarben->zeile;
+            
+            $this->_farben = new Azebo_Model_Farben();
+            $this->_farben->kopf = $kopf;
+            $this->_farben->hoover = $hoover;
+            $this->_farben->link = $link;
+            $this->_farben->zeile = $zeile;
+            
+            $this->_row->farbekopf = null;
+            $this->_row->farbehoover = null;
+            $this->_row->farbelink = null;
+            $this->_row->farbezeile = null;
+        }
     }
 
 }

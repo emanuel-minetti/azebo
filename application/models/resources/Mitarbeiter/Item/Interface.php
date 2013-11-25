@@ -166,4 +166,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getFarben();
     
+    public function setFarben($farben);
+    
 }
