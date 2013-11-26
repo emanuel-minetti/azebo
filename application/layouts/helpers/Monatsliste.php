@@ -24,7 +24,8 @@
  * Erzeugt über die öffentliche Methode die Listenelemente füe die
  * Monatsnavigation.
  * 
- * Sucht das gegenwärtige Jahr, und setzt die Links entsprechend.
+ * Sucht das gegenwärtige Jahr, und setzt die Links entsprechend. Ist das
+ * Vorjahr noch nicht abgeschlossen, werden die Links auf das Vorjahr gesetzt.
  *
  * @author Emanuel Minetti
  */
