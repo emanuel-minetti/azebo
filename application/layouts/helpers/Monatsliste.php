@@ -31,10 +31,27 @@
 class Zend_View_Helper_Monatsliste extends Zend_View_Helper_Abstract {
 
     public function monatsliste() {
+        // initialisiere den HTML-String
         $html = "";
-        $date = new Zend_Date();
         
+        // hole den Januar des laufenden Jahres
+        $date = new Zend_Date();
         $date->setDate($date->getYear());
+        
+        // hole den Mitarbeiter aus der Session
+        $ns = new Zend_Session_Namespace();
+        $mitarbeiter = $ns->mitarbeiter;
+        if($mitarbeiter !== null) {
+            if($mitarbeiter->jahresabschlussFehlt($date)) {
+                // falls das vergangene Jahr noch nicht abgeschlossen ist,
+                // verlinke auf das vergangene Jahr, damit der Mitarbeiter
+                // noch nicht abgeschlossene Monate bearbeiten und abschließen
+                // kann
+                $date->subYear(1);
+            }
+        } 
+        
+        // baue den HTML-String
         for ($i = 0; $i < 12; $i++) {
             $url = $this->view->url(array(
                 'monat' => $date->toString('M'),
