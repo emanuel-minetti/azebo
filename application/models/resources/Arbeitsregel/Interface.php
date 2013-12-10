@@ -36,4 +36,6 @@ extends AzeboLib_Model_Resource_Db_Interface {
     
     public function getArbeitsbeginnNachMitarbeiterIdUndJahr($mitarbeiterId, Zend_Date $jahr);
     
+     public function getArbeitsbeginnNachMitarbeiterId($mitarbeiterId);
+    
 }

@@ -256,6 +256,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     }
 
     public function saveArbeitsregel($daten) {
+        // hole die Arbeitesregel, je nachdem einen neue oder die zu bearbeitende
         $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
         if ($daten['id'] == 0) {
             $arbeitsregel = $arbeitsregelTabelle->createRow();
@@ -263,8 +264,12 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
             $arbeitsregel = $arbeitsregelTabelle->getArbeitsregelNachId(
                     $daten['id']);
         }
+        
+        // hole den Mitarbeiter
         $mitarbeiter = $this->getMitarbeiterNachBenutzername(
                 $daten['benutzername']);
+        
+        // setze die Daten
         $arbeitsregel->mitarbeiter_id = $mitarbeiter->id;
         $arbeitsregel->setVon($daten['von']);
         $arbeitsregel->setBis($daten['bis']);
@@ -276,8 +281,23 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $arbeitsregel->setKernEnde($daten['kernEnde']);
         $arbeitsregel->setRahmenEnde($daten['rahmenEnde']);
         $arbeitsregel->setOhneKern($daten['ohneKern']);
-
+        
+        // falls dies die erste Regel ist,
+        // setze 'uebertragenBis' in der Mitarbeiter-Tabelle
+        if(count(
+                $arbeitsregelTabelle->getArbeitsregelnNachMitarbeiterId(
+                        $mitarbeiter->id)) == 0) {
+            $uebertragenbis = new Zend_Date($daten['von']);
+            $uebertragenbis->subYear(1);
+            $uebertragenbis->setDay('31');
+            $uebertragenbis->setMonth('12');
+            $mitarbeiter->setUebertragenbis($uebertragenbis);
+            $mitarbeiter->save();
+        } 
+        
+        // schreibe die Regel in die DB
         $arbeitsregel->save();
+        
     }
 
     public function deleteArbeitsregel($id) {

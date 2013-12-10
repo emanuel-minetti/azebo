@@ -100,5 +100,14 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
         
         return $ergebis;
     }
+    
+    public function getArbeitsbeginnNachMitarbeiterId($mitarbeiterId) {
+        $select = $this->select();
+        $select->where('mitarbeiter_id = ?', $mitarbeiterId);
+        $select->order('von ASC');
+        $regeln = $this->fetchAll($select);
+        
+        return $regeln[0]->getVon(); 
+    }
  
 }
