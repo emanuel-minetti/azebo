@@ -59,6 +59,7 @@ class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
             'keine' => '',
             'urlaub' => 'Urlaub',
             'krankheit' => 'Krankheit',
+            'sonstige' => 'Sonstige Dienstbefreiung',
         );
         $this->addElement('FilteringSelect', 'befreiung', array(
                     'label' => 'Dienstbefreiung: ',
