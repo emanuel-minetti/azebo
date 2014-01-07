@@ -193,7 +193,7 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
         $sqlBis = $dzService->datumPhpZuSql($bis);
         $where = array();
         $where[] = $this->getAdapter()->quoteInto('tag <= ?', $sqlBis);
-        $where[] = $this->getAdapter()->quoteInto('mitarbeiter_id <= ?',
+        $where[] = $this->getAdapter()->quoteInto('mitarbeiter_id = ?',
                 $mitarbeiterId);
         $this->delete($where);
     }
