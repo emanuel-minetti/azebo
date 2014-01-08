@@ -55,12 +55,15 @@ class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
             'tabindex' => 2,
         ));
         
-        $befreiungOptionen = array(
-            'keine' => '',
-            'urlaub' => 'Urlaub',
-            'krankheit' => 'Krankheit',
-            'sonstige' => 'Sonstige Dienstbefreiung',
-        );
+        $befreiungService = new Azebo_Service_Befreiung();
+        $ns = new Zend_Session_Namespace();
+        $mitarbeiter = $ns->mitarbeiter;
+        $befreiungOptionen = $befreiungService->getOptionen($mitarbeiter);
+        unset($befreiungOptionen['azv']);
+        unset($befreiungOptionen['sonder']);
+        unset($befreiungOptionen['ft']);
+        
+        
         $this->addElement('FilteringSelect', 'befreiung', array(
                     'label' => 'Dienstbefreiung: ',
                     'multiOptions' => $befreiungOptionen,
