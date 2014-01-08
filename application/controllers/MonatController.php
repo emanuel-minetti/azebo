@@ -778,52 +778,57 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     private function _schliesseJahrAb() {
-        // Ermittle den Dezember des abzuschließenden Jahres
-        $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
-        $jahr = $uebertragenBis->get(Zend_Date::YEAR);
-        $jahr++;
-        $dezember = new Zend_Date("1.12.$jahr");
+        // Falls das Jahr schon abgeschlossen ist, darf außer dem Redirect
+        // nichts passieren
+        if ($this->jahresabschlussFehlt) {
 
-        // Saldo neu setzen
-        $saldo = $this->mitarbeiter->getSaldoGesamt($dezember);
-        $this->mitarbeiter->setSaldoUebertrag($saldo);
+            // Ermittle den Dezember des abzuschließenden Jahres
+            $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
+            $jahr = $uebertragenBis->get(Zend_Date::YEAR);
+            $jahr++;
+            $dezember = new Zend_Date("1.12.$jahr");
 
-        // Saldo2007 setzen
-        if ($this->mitarbeiter->getHochschule() == 'hfm') {
-            if ($saldo->getRest()) {
-                $saldo2007 = new Azebo_Model_Saldo($saldo->getRestStunden(),
-                                $saldo->getRestMinuten(), true);
-                $this->mitarbeiter->setSaldo2007($saldo2007);
-            } else {
-                $this->mitarbeiter->setSaldo2007(null);
+            // Saldo neu setzen
+            $saldo = $this->mitarbeiter->getSaldoGesamt($dezember);
+            $this->mitarbeiter->setSaldoUebertrag($saldo);
+
+            // Saldo2007 setzen
+            if ($this->mitarbeiter->getHochschule() == 'hfm') {
+                if ($saldo->getRest()) {
+                    $saldo2007 = new Azebo_Model_Saldo($saldo->getRestStunden(),
+                                    $saldo->getRestMinuten(), true);
+                    $this->mitarbeiter->setSaldo2007($saldo2007);
+                } else {
+                    $this->mitarbeiter->setSaldo2007(null);
+                }
             }
+
+            // Resturlaub setzen
+            $urlaubGesamt = $this->mitarbeiter->getUrlaubGesamt($dezember);
+            $this->mitarbeiter->setUrlaubVorjahr($urlaubGesamt['rest']);
+
+            // ÜbertragenBis aktualisieren
+            $this->mitarbeiter->setUebertragenbis($dezember);
+
+            // DB aktualisieren
+            $this->mitarbeiter->save();
+
+            // Arbeitsmonate als übertragen markieren
+            $arbeitsmonate = $this->mitarbeiter->getArbeitsmonateNachJahr(
+                    $dezember);
+            foreach ($arbeitsmonate as $arbeitsmonat) {
+                $arbeitsmonat->setUebertragen();
+                $arbeitsmonat->save();
+            }
+
+            // Alte Monate und Tage löschen
+            $dezemberVorjahr = new Zend_Date($dezember);
+            $dezemberVorjahr->subYear(1);
+            $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
+            $arbeitsmonatTabelle->deleteArbeitsmonateBis($dezemberVorjahr, $this->mitarbeiter->id);
+            $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
+            $arbeitstagTabelle->deleteArbeitstageBis($dezemberVorjahr, $this->mitarbeiter->id);
         }
-
-        // Resturlaub setzen
-        $urlaubGesamt = $this->mitarbeiter->getUrlaubGesamt($dezember);
-        $this->mitarbeiter->setUrlaubVorjahr($urlaubGesamt['rest']);
-
-        // ÜbertragenBis aktualisieren
-        $this->mitarbeiter->setUebertragenbis($dezember);
-
-        // DB aktualisieren
-        $this->mitarbeiter->save();
-
-        // Arbeitsmonate als übertragen markieren
-        $arbeitsmonate = $this->mitarbeiter->getArbeitsmonateNachJahr(
-                $dezember);
-        foreach ($arbeitsmonate as $arbeitsmonat) {
-            $arbeitsmonat->setUebertragen();
-            $arbeitsmonat->save();
-        }
-
-        // Alte Monate und Tage löschen
-        $dezemberVorjahr = new Zend_Date($dezember);
-        $dezemberVorjahr->subYear(1);
-        $arbeitsmonatTabelle = new Azebo_Resource_Arbeitsmonat();
-        $arbeitsmonatTabelle->deleteArbeitsmonateBis($dezemberVorjahr, $this->mitarbeiter->id);
-        $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
-        $arbeitstagTabelle->deleteArbeitstageBis($dezemberVorjahr, $this->mitarbeiter->id);
 
         // Mache einen 'redirect' um den Controller neu zu laden
         // und damit die richtigen Salden und Urlaubswerte

@@ -190,7 +190,7 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
 
     public function deleteArbeitstageBis(Zend_Date $bis, $mitarbeiterId) {
         $dzService = new Azebo_Service_DatumUndZeitUmwandler();
-        $sqlBis = $dzService->datumPhpZuSql($bis);
+        $sqlBis = $dzService->datumPhpZuSql($bis);   
         $where = array();
         $where[] = $this->getAdapter()->quoteInto('tag <= ?', $sqlBis);
         $where[] = $this->getAdapter()->quoteInto('mitarbeiter_id = ?',
