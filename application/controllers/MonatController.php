@@ -511,9 +511,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     // iterriere über die Tage
                     while ($tagIndex->compareDate($tagBis) != 1) {
                         $arbeitstag = $this->mitarbeiter->getArbeitstagNachTag($tagIndex);
-                        // Feiertage werden nicht bearbeitet
-                        $feiertag = $arbeitstag->getFeiertag();
-                        if (!$feiertag['feiertag']) {
+                        // Arbeitsfreie Tage werden nicht bearbeitet
+                        $arbeitsfrei = !$arbeitstag->getRegel();
+                        if(!$arbeitsfrei) {
                             $arbeitstag->setBeginn(null);
                             $arbeitstag->setEnde(null);
                             $arbeitstag->befreiung = $daten['befreiung'];
