@@ -28,7 +28,7 @@ if ($this->hochschule == 'hfs') {
             new dojo.data.ItemFileReadStore({ data:jahresDaten });
         
         var layout =[[
-                {'name':'Monat','field':'monat','width':'90px'},
+                {'name':'Monat','field':'monatName','width':'90px'},
                 {'name':'Abge- schlossen','field':'abgeschlossen','width':'90px'},
                 {'name':'Saldo des Monats','field':'saldo','width':'90px'},
                 {'name':'Urlaubstage des Monats','field':'urlaub','width':'90px'},
@@ -42,6 +42,16 @@ if ($this->hochschule == 'hfs') {
         
         grid.placeAt('gridDiv');
         grid.startup();
+        
+        dojo.connect(grid, "onRowClick", null, function(e){
+            var monat = grid._getItemAttr(e.rowIndex, 'monat');
+            var url = "<?= $this->url(array(
+                'monat' => '',
+                'jahr' => $this->jahr,
+            ), 'monat', true); ?>";
+                        url += monat;
+            location.href = url;
+        });
     });
 
 </script>

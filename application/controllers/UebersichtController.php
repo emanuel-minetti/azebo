@@ -77,7 +77,8 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
             $abgeschlossen = $saldo->getStunden() === null ? 'Nein' : 'Ja';
             $urlaub = $arbeitsmonat->urlaub;
             $jahresDaten->addItem(array(
-                'monat' => $monat->toString('MMMM'),
+                'monatName' => $monat->toString('MMMM'),
+                'monat' => $monat->toString('M'),
                 'abgeschlossen' => $abgeschlossen,
                 'saldo' => $saldo->getString(),
                 'urlaub' => $urlaub,
@@ -85,6 +86,8 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         }
 
         $this->view->jahresDaten = $jahresDaten;
+        
+        $this->view->jahr = $this->jahr->toString('yyyy');
 
         // Falls der Mitarbeiter zur HfS gehört, soll der Vertreter-Link
         // angezeigt werden.
