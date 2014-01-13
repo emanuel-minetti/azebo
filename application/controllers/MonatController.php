@@ -214,7 +214,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // prüfe ob der Monat bereits abgeschlossen ist, d.h. in der DB
         // vorhanden ist
         $this->bearbeitbar = true;
-        $arbeitmonate = $this->mitarbeiter->getArbeitsmonate();
+        $arbeitmonate = $this->mitarbeiter->getArbeitsmonate(false);
         foreach ($arbeitmonate as $arbeitsmonat) {
             if ($this->zuBearbeitendesDatum->compareMonth(
                             $arbeitsmonat->getMonat()) == 0 &&

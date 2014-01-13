@@ -221,9 +221,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $uebertrag;
     }
 
-    public function getArbeitsmonate() {
+    //TODO Kommentieren!!!
+    public function getArbeitsmonate($filter = true) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
-        return $monatsTabelle->getArbeitsmonateNachMitarbeiterId($this->id);
+        return $monatsTabelle->getArbeitsmonateNachMitarbeiterId($this->id, $filter);
     }
 
     public function getArbeitsmonateBis(Zend_Date $monat) {
