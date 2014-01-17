@@ -153,6 +153,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         //JS einbinden
         $this->_view->headScript()->appendFile('/js/nav.js');
+//        $this->_view->headScript()->appendFile('/js/hallo.js');
 
         //Icon setzen
         $this->_view->headLink(array(
@@ -168,7 +169,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                 addHelperPath('AzeboLib/View/Helper/', 'AzeboLib_View_Helper');
 
         //Die Version festlegen
-        $this->_view->version = '1.18';
+        $this->_view->version = '1.19';
     }
 
     protected function _initDbProfiler() {
