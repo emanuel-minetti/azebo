@@ -65,8 +65,12 @@ class Azebo_Service_Feiertag {
             $jahrString = "jahr$jahr";
             $tdotSa = $zeitenConfig->tagdotuer->sa->$jahrString;
             $tdotSo = $zeitenConfig->tagdotuer->so->$jahrString;
-            $this->tdotSa = new Zend_Date($tdotSa, 'dd.MM.yyyy');
-            $this->tdotSo = new Zend_Date($tdotSo, 'dd.MM.yyyy');
+            if (isset($tdotSa)) {
+                $this->tdotSa = new Zend_Date($tdotSa, 'dd.MM.yyyy');
+            }
+            if (isset($tdotSo)) {
+                $this->tdotSo = new Zend_Date($tdotSo, 'dd.MM.yyyy');
+            }
         }
     }
 
@@ -204,8 +208,10 @@ class Azebo_Service_Feiertag {
         }
 
         if ($this->hochschule == 'khb') {
-            if ($datum->compareDate($this->tdotSa) == 0 ||
-                    $datum->compareDate($this->tdotSo) == 0) {
+            if (($this->tdotSa !== null &&
+                    $datum->compareDate($this->tdotSa) == 0) ||
+                    ($this->tdotSo !== null &&
+                    $datum->compareDate($this->tdotSo) == 0)) {
                 $feiertag['name'] = 'Tag der offenen Tür';
             }
         }
