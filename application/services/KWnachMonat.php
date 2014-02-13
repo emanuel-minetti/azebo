@@ -26,6 +26,7 @@
  * @author Emanuel Minetti
  */
 class Azebo_Service_KWnachMonat {
+
     /**
      * Berechnet die Ist-Arbeitszeiten der Kalenderwochen eines Monats,
      * gegeben als Zend_Date, und eines Mitarbeiters, gegeben als Id.
@@ -45,14 +46,14 @@ class Azebo_Service_KWnachMonat {
         $monat->setDay($monat->get(Zend_Date::MONTH_DAYS));
         $kwEnde = $monat->get(Zend_Date::WEEK);
         $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
-        $ergebnis  = array();
-        $log = Zend_Registry::get('log');
-        for($kw = $kwAnfang; $kw <= $kwEnde; $kw++) {
-            $ergebnis[$kw] = $arbeitstagTabelle->getIstNachKalenderwocheUndMitarbeiterId($kw, $mitarbeiterId, $datum->get(Zend_Date::YEAR));
-            $log->debug('KW: ' . $kw);
-            $log->debug('Ist: ' . $ergebnis[$kw]->getString());
+        $ergebnis = array();
+        for ($kw = $kwAnfang; $kw <= $kwEnde; $kw++) {
+            $ergebnis[$kw] = $arbeitstagTabelle->
+                    getIstNachKalenderwocheUndMitarbeiterId(
+                    $kw, $mitarbeiterId, $datum->get(Zend_Date::YEAR));
         }
         return $ergebnis;
     }
+
 }
 

@@ -156,8 +156,14 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $ns->feiertagsservice = $feiertagsservice;
         $this->ns = $ns;
 
+//        $this->_log->debug('Pfad: ' . print_r($this->view->dojo()->getModulePaths(), true));
+//        $this->view->dojo()->registerModulePath('custom','/js');
+//        $this->_log->debug('Pfad2: ' . print_r($this->view->dojo()->getModulePaths(), true));
+//         $this->view->dojo()->requireModule('custom.test');
+        
         // Aktiviere Dojo
-        $this->view->dojo()->enable()
+        $this->view->dojo()
+                ->enable()
                 ->setDjConfigOption('parseOnLoad', true)
                 ->requireModule('dojox.grid.DataGrid')
                 ->requireModule('dojo.data.ItemFileReadStore')
