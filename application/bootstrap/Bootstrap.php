@@ -153,7 +153,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         //JS einbinden
         $this->_view->headScript()->appendFile('/js/nav.js');
-//        $this->_view->headScript()->appendFile('/js/hallo.js');
+//        $this->_view->headScript()->appendFile('/js/dojo.js');
 
         //Icon setzen
         $this->_view->headLink(array(

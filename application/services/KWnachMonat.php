@@ -46,8 +46,11 @@ class Azebo_Service_KWnachMonat {
         $kwEnde = $monat->get(Zend_Date::WEEK);
         $arbeitstagTabelle = new Azebo_Resource_Arbeitstag();
         $ergebnis  = array();
+        $log = Zend_Registry::get('log');
         for($kw = $kwAnfang; $kw <= $kwEnde; $kw++) {
-            $ergebnis[$kw] = $arbeitstagTabelle->getIstNachKalenderwocheUndMitarbeiterId($kw, $mitarbeiterId);
+            $ergebnis[$kw] = $arbeitstagTabelle->getIstNachKalenderwocheUndMitarbeiterId($kw, $mitarbeiterId, $datum->get(Zend_Date::YEAR));
+            $log->debug('KW: ' . $kw);
+            $log->debug('Ist: ' . $ergebnis[$kw]->getString());
         }
         return $ergebnis;
     }

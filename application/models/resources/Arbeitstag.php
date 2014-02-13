@@ -141,8 +141,11 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
      * @return \Azebo_Model_Saldo 
      */
     public function getIstNachKalenderwocheUndMitarbeiterId(
-            $kalenderwoche, $mitarbeiterId) {
+            $kalenderwoche, $mitarbeiterId, $jahr = 0) {
         $montag = new Zend_Date();
+        if($jahr !== 0) {
+            $montag->setYear($jahr);
+        }
         $montag->setWeek($kalenderwoche);
         $montag->setWeekday(1);
         $sonntag = new Zend_Date($montag);
@@ -155,6 +158,9 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
                 ->order('tag ASC');
         $dbTage = $this->fetchAll($select);
         $arbeitstage = array();
+        
+        $log = Zend_Registry::get('log');
+        $log->debug('Gefundene ATage: ' . count($dbTage));
 
         $tag = new Zend_Date($montag);
         while ($tag->compareWeek($kalenderwoche) == 0) {
@@ -164,11 +170,13 @@ class Azebo_Resource_Arbeitstag extends AzeboLib_Model_Resource_Db_Table_Abstrac
                             $tag, Zend_Date::DATE_MEDIUM)) {
                 array_push($arbeitstage, $dbTage->current());
                 $dbTage->next();
+                $log->debug('Tag gefunden!');
             } else {
                 $arbeitstag = $this->createRow();
                 $arbeitstag->setTag($tag);
                 $arbeitstag->mitarbeiter_id = $mitarbeiterId;
                 array_push($arbeitstage, $arbeitstag);
+                $log->debug('Tag nicht gefunden!');
             }
 
             $tag->addDay(1);
