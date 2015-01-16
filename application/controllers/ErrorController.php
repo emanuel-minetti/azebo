@@ -85,6 +85,8 @@ class ErrorController extends AzeboLib_Controller_Abstract {
 
         // Log exception, if logger available
         $this->_log($priority, $errors);
+        //TODO Richtig machen!
+        $this->_log->debug('Hallo');
 
         // conditionally display exceptions
         if ($this->getInvokeArg('displayExceptions') == true) {
