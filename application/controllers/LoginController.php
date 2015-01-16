@@ -69,7 +69,13 @@ class LoginController extends AzeboLib_Controller_Abstract {
                         ' registriert! Bitte informieren Sie Ihre Büroleitung.');
                 return $this->render('login');
             } else if ($ergebnis === 'Erfolg') {
-                $this->_log->debug('Anmeldung erfolgreich: ' . print_r($form->getValues(), true));
+                //Logge das Login
+                $loginLogger = Zend_Registry::get('loginLogger');
+                $ns = new Zend_Session_Namespace();
+                $mitarbeiter = $ns->mitarbeiter;
+                $name = $mitarbeiter->getName();
+                $ip = $_SERVER['REMOTE_ADDR'];
+                $loginLogger->info($name . "\t\t" . $ip);
             }
             // weiterleiten! Falls der Mitarbeiter Vertreter für jemanden
             // anderen ist, leite ihn zur Auswahl-Seite weiter. Sonst zum

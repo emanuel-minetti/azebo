@@ -31,6 +31,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
     protected function _initLogging() {
         $this->bootstrap('frontController');
+        
+        //Der Standard-Logger
         $logger = new Zend_Log();
 
         $streamWriter = new Zend_Log_Writer_Stream(APPLICATION_PATH .
@@ -47,6 +49,13 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         $this->_logger = $logger;
         Zend_Registry::set('log', $logger);
+        
+        //Der Login-Logger
+        $loginLogger = new Zend_Log();
+        $loginStreamWriter = new Zend_Log_Writer_Stream(APPLICATION_PATH .
+                '/../data/logs/loginLog.log');
+        $loginLogger->addWriter($loginStreamWriter);
+        Zend_Registry::set('loginLogger', $loginLogger);
     }
 
     protected function _initSetFrontController() {
