@@ -27,7 +27,6 @@
  */
 class Azebo_Service_Feiertag {
 
-    public $log;
     public $karfreitag;
     public $ostermontag;
     public $himmelfahrt;
@@ -42,7 +41,6 @@ class Azebo_Service_Feiertag {
      * @param Zend_Date $jahr 
      */
     public function __construct($jahr) {
-        $this->log = Zend_Registry::get('log');
 
         $tageNach21Maerz = easter_days($jahr);
         $ostersonntag = new Zend_Date('21.3.' . $jahr);
