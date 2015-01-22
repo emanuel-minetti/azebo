@@ -46,24 +46,33 @@ class LoginController extends AzeboLib_Controller_Abstract {
         $request = $this->getRequest();
         $form = $this->_forms['login'];
 
-        //TODO Logging überarbeiten!
         if ($request->isPost()) {
-            if (!$form->isValid($request->getPost())) {
-                $this->_log->info("Anmeldung fehlgeschlagen: Validation gescheitert! {$form->getValues()}");
+            
+            // Prüfe die Formular-Daten
+            $valid = $form->isValid($request->getPost());
+            
+            // Kopiere die Formular-Daten und entferne das Passwort, falls die
+            // Daten geloggt werden sollen
+            $formData = $form->getValues();
+            unset($formData['passwort']);
+
+            if (!$valid) {
+                $this->_log->info('Anmeldung fehlgeschlagen: Validation gescheitert!' . print_r($formData, true));
                 $form->setDescription(
                         'Anmeldung fehlgeschlagen! Bitte beachten Sie die Fehlermedungen:');
                 return $this->render('login');
             }
 
+            // Frage den LDAP-Server
             $ergebnis = $this->_authService->authentifiziere($form->getValues());
 
             if ($ergebnis === 'FehlerLDAP') {
-                $this->_log->info('Anmeldung fehlgeschlagen:' . print_r($form->getValues(), true));
+                $this->_log->info('Anmeldung fehlgeschlagen (FehlerLDAP):' . print_r($formData, true));
                 $form->setDescription(
                         'Anmeldung fehlgeschlagen! Bitte versuchen Sie es erneut.');
                 return $this->render('login');
             } else if ($ergebnis === 'FehlerDB') {
-                $this->_log->info('Anmeldung fehlgeschlagen: ' . print_r($form->getValues(), true));
+                $this->_log->info('Anmeldung fehlgeschlagen (FehlerDB): ' . print_r($formData, true));
                 $form->setDescription(
                         'Sie sind noch nicht für den Arbeitszeitbogen' .
                         ' registriert! Bitte informieren Sie Ihre Büroleitung.');
@@ -74,9 +83,10 @@ class LoginController extends AzeboLib_Controller_Abstract {
                 $ns = new Zend_Session_Namespace();
                 $mitarbeiter = $ns->mitarbeiter;
                 $name = $mitarbeiter->getName();
-                $ip = $_SERVER['REMOTE_ADDR'];
+                $ip = $request->getServer('REMOTE_ADDR');
                 $loginLogger->info($name . "\t\t" . $ip);
             }
+            
             // weiterleiten! Falls der Mitarbeiter Vertreter für jemanden
             // anderen ist, leite ihn zur Auswahl-Seite weiter. Sonst zum
             // laufenden Monat.

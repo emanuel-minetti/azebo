@@ -101,9 +101,9 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $postDaten = $request->getPost();
             if (isset($postDaten['absenden'])) {
                 $valid = $formDetail->isValid($postDaten);
-                $this->_log->debug('Valide: ' . "$valid");
+                //$this->_log->debug('Valide: ' . "$valid");
                 if ($valid) {
-                    $this->_log->debug('Hallo2!');
+                    //$this->_log->debug('Hallo2!');
                     $daten = $formDetail->getValues();
                     $this->model->saveMitarbeiter(
                             $zuBearbeitenderMitarbeiter, $daten);

@@ -88,7 +88,7 @@ class Azebo_Service_Authentifizierung {
         foreach ($users as $user) {
             $gruppen[] = $user['cn'][0];
         }
-        $this->_log->debug('Gruppen: ' . print_r($gruppen, true));
+        //$this->_log->debug('Gruppen: ' . print_r($gruppen, true));
 
         //Hole den Namen aus dem LDAP
         $ldap->bind();
