@@ -83,10 +83,14 @@ class ErrorController extends AzeboLib_Controller_Abstract {
         $priority = Zend_Log::WARN;
         $this->view->message = 'Sie haben keinen Zugriff auf diese Seite!';
 
-        // Log exception, if logger available
+        // Logge Vorfall
+        $ns = new Zend_Session_Namespace();
+        $mitarbeiter = $ns->mitarbeiter;
+        $this->_log->warn('Der Mitarbeiter \'' . $mitarbeiter->getName() .
+                "' hat versucht eine Büroleitungs-URL aufzurufen! \n"
+                . "Die folgenden zwei Meldungen beziehen sich auf diesen"
+                . "Vorfall");
         $this->_log($priority, $errors);
-        //TODO Richtig machen!
-        $this->_log->debug('Hallo');
 
         // conditionally display exceptions
         if ($this->getInvokeArg('displayExceptions') == true) {
