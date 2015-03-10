@@ -21,8 +21,8 @@
  */
 
 /**
- * Prüft ob durch den Abschluss eines Monats der Resturlaub des laufenden Jahres
- * negative Werte annehmen würde.
+ * Prüft ob alle Monate des abgelaufenen Jahres, in denen der Mitarbeiter
+ * eine Arbeitsregel hatte, abgeschlossen sind.
  *
  * @author Emanuel Minetti
  */
