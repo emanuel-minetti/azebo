@@ -16,7 +16,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 class IndexController extends AzeboLib_Controller_Abstract {
