@@ -221,15 +221,63 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $uebertrag;
     }
 
-    //TODO Kommentieren!!!
+    /**
+     * Gibt die Arbeitsmonate des Mitarbeiters zurück. Falls $filter == true
+     * ist, werden nur nicht übertragenen Monate zurückgegeben.
+     * 
+     * @param boolean $filter gibt an, ob übertragene Monate gefiltert werden
+     * sollen 
+     * @return Zend_Db_Table_Rowset_Abstract
+     */
     public function getArbeitsmonate($filter = true) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
         return $monatsTabelle->getArbeitsmonateNachMitarbeiterId($this->id, $filter);
     }
 
+    /**
+     * Gibt die nicht übertragenen Arbeitsmonate des Mitarbeiters bis zu einem
+     * übergebenen $monat zurück.
+     * 
+     * @param Zend_Date $monat der Monat bis zu dem die Arbeitsmonate geholt
+     * werden. 
+     * @return Zend_Db_Table_Rowset_Abstract
+     */
     public function getArbeitsmonateBis(Zend_Date $monat) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
-        return $monatsTabelle->getArbeitsmonateNachMitarbeiterIdUndBis($this->id, $monat);
+        return $monatsTabelle->getArbeitsmonateNachMitarbeiterIdUndBis(
+                $this->id, $monat);
+    }
+    
+    /**
+     * Gibt die nicht-übertragenen und nicht-abgeschlossenen Monate bis $monat
+     * zurück.
+     * 
+     * @param type $monat der Monat bis zu dem die Fehlmonate gesucht werden.
+     * @return array ein Array von Zend_Date, die Monate, die weder
+     * abgeschlossen noch übertragen sind.
+     */
+    public function getFehlmonateBis($monat) {
+        $result = array();
+        $tempMonat = $this->getUebertragenbis();
+        $tempMonat->addMonth(1);
+        
+        //in $result alle *nicht-übertragenen* Monate bis $monat abspeichern! 
+        while($tempMonat->compare($monat) == -1) {
+            $result[] = new Zend_Date($tempMonat);
+            $tempMonat->addMonth(1);
+        }
+        
+        //die *abgeschlossenen* Monate aus $result entfernen!
+        $monateAbgeschlossen = $this->getArbeitsmonateBis($monat);
+        for ($i = 0; $i < count($result); $i++) {
+            for ($j = 0; $j < count($monateAbgeschlossen); $j++) {
+                if($result[$i]->equals($monateAbgeschlossen[$j]->getMonat(), Zend_Date::MONTH)) {
+                    array_splice($result, $i, 1);
+                }
+            }
+        }
+        
+        return $result;
     }
 
     /**
@@ -276,8 +324,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function getUrlaubVorjahrBisher(Zend_Date $bis) {
         $zeiten = $this->_getZeiten();
         $vorjahrRestBis = $zeiten->urlaub->resturlaubbis;
-        $vorjahrRestBis = new Zend_Date($vorjahrRestBis, 'dd.MM.');
-        if ($bis->compareMonth($vorjahrRestBis) != 1) {
+        $vorjahrRestBisDate = new Zend_Date($vorjahrRestBis, 'dd.MM.');
+        if ($bis->compareMonth($vorjahrRestBisDate) != 1) {
             // Vorjahresurlaub noch gültig
             $urlaub = $this->getUrlaubVorjahr();
             $monate = $this->getArbeitsmonate();
@@ -295,13 +343,13 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     /**
      * Gibt das Saldo des laufenden Monats (also des im Parameter $monat
-     * übergebenen Monats zurück. Ist $vorlaeufig == true, so werden nur die
+     * übergebenen Monats) zurück. Ist $vorlaeufig == true, so werden nur die
      * Tage berücksichtigt, bei denen Beginn und Ende bzw. eine Dienstbefreiung
      * eingetragen sind.
      * 
      * @param Zend_Date $monat
-     * @param type $vorlaeufig
-     * @return \Azebo_Model_Saldo 
+     * @param boolean $vorlaeufig
+     * @return Azebo_Model_Saldo 
      */
     public function getSaldo(Zend_Date $monat, $vorlaeufig = false) {
         $arbeitstage = $this->getArbeitstageNachMonat($monat);

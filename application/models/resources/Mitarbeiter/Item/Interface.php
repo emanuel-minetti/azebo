@@ -168,4 +168,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function setFarben($farben);
     
+    public function getFehlmonateBis($monat);
+    
 }

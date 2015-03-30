@@ -26,18 +26,17 @@
  * angegeben ist oder Beginn und Ende für diesen Tag eingetragen wurden. Wurde
  * außerdem ein Nachmittag hinzugefügt, so müssen auch bei diesem Beginn und
  * Ende eingetragen sein.
- *
+ * 
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Monat extends Zend_Validate_Abstract {
     
-    const FEHLT = 'Fehlt';
-    const VORJAHR = 'Vorjahr';
+    const FEHLT_TAG = 'FehltTag';
+    const FEHLT_MONAT = 'FehltMonat';
 
     protected $_messageTemplates = array(
-        self::FEHLT => '',
-        self::VORJAHR => 'Der Monat kann nicht abgeschlossen werden, bevor das
-            Vorjahr abgeschlossen wurde.',
+        self::FEHLT_TAG => '',
+        self::FEHLT_MONAT => '',
     );
 
     public function isValid($value, $context = null) {
@@ -51,12 +50,12 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
         $arbeitstage = $model->getArbeitstageNachMonatUndMitarbeiter(
                 $monat, $mitarbeiter);
         
-        // prüfen, ob das Vorjahr abgeschlossen ist
-        if($mitarbeiter->getUebertragenBis()->get(Zend_Date::YEAR) <
-                $monat->get(Zend_Date::YEAR) - 1) {
-            $this->_error(self::VORJAHR);
-            $isValid = false;
-        }
+        //prüfen, ob alle Monate abgeschlossen sind
+        $log = Zend_Registry::get('log');
+        $monate = $mitarbeiter->getFehlmonateBis($monat);
+        $log->debug('Monate: ' . print_r($monate,true));
+        //TODO Hier bin ich!!!!!
+        //TODO Den Kommentar der Klasse anpassen!!
 
         //prüfen, ob alle nötigen Tage ausgefüllt sind
         $fehltage = array();
@@ -96,13 +95,14 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
                 for ($index = 0; $index < count($fehltage) -2 ; $index++) {
                     $message .= $fehltage[$index]->toString('dd.MM., ');
                 }
-                $message .= $fehltage[count($fehltage) -2]->toString('dd.MM') . ' und ' .
+                $message .= $fehltage[count($fehltage) -2]->toString('dd.MM') . 
+                        ' und ' .
                         $fehltage[count($fehltage) -1]->toString('dd.MM') .
                         '! Bitte tragen Sie für diese Tage Ihre Arbeitszeit
                             oder eine Dienstbefreiung ein.';
             }
-            $this->setMessage($message, self::FEHLT);
-            $this->_error(self::FEHLT);
+            $this->setMessage($message, self::FEHLT_TAG);
+            $this->_error(self::FEHLT_TAG);
         }
 
         return $isValid;
