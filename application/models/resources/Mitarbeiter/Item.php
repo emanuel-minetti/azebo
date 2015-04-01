@@ -252,11 +252,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      * Gibt die nicht-übertragenen und nicht-abgeschlossenen Monate bis $monat
      * zurück.
      * 
-     * @param type $monat der Monat bis zu dem die Fehlmonate gesucht werden.
+     * @param Zend_Date $monat der Monat bis zu dem die Fehlmonate gesucht werden.
      * @return array ein Array von Zend_Date, die Monate, die weder
      * abgeschlossen noch übertragen sind.
      */
-    public function getFehlmonateBis($monat) {
+    public function getFehlmonateBis(Zend_Date $monat) {
         $result = array();
         $tempMonat = $this->getUebertragenbis();
         $tempMonat->addMonth(1);
@@ -277,6 +277,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             }
         }
         
+        //TODO Hier liegt der Fehler!!!
+        // Es muss auch der Arbeitbeginn brücksichtigt werden!!
+        // Benutze getArbeitsbeginnNachMitarbeiterId() oder getArbeitsbeginnNachMitarbeiterIdUndJahr()!!!!
         return $result;
     }
 

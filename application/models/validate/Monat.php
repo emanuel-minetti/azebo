@@ -80,7 +80,6 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
             $this->setMessage($message, self::FEHLT_MONAT);
             $this->_error(self::FEHLT_MONAT);
         }
-        //TODO Hier bin ich!!!!!
 
         //prüfen, ob alle nötigen Tage ausgefüllt sind
         $fehltage = array();
