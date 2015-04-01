@@ -46,12 +46,6 @@ class Azebo_Validate_Jahr extends Zend_Validate_Abstract {
         $beginn = new Zend_Date($arbeitsregelTabelle->
                                 getArbeitsbeginnNachMitarbeiterIdUndJahr(
                                         $mitarbeiter->id, $monat));
-        $erster = new Zend_Date($monat);
-        $erster->setMonth(1);
-        $erster->setDay(1);
-        if ($beginn->compareDate($erster) == -1) {
-            $beginn = $erster;
-        }
 
         // teste
         $fehlMonate = array();

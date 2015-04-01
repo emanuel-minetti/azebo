@@ -21,7 +21,11 @@
  */
 
 /**
- * Prüft ob an jedem Tag des Monats, an dem der Mitarbeiter eine Sollarbeitszeit
+ * Prüft, ob ein Monat abgeschlossen werden kann. Im Einzelnen werden die
+ * folgenden zwei Punkte geprüft:
+ * Erstens: Prüft, ob alle Monate vorher, die noch nicht übertragen waren,
+ * abgeschlossen sind.
+ * Zweitens: Prüft, ob an jedem Tag des Monats, an dem der Mitarbeiter eine Sollarbeitszeit
  * hat, ein Eintrag vorhanden ist. Also ob entweder eine Dienstbefreiung 
  * angegeben ist oder Beginn und Ende für diesen Tag eingetragen wurden. Wurde
  * außerdem ein Nachmittag hinzugefügt, so müssen auch bei diesem Beginn und
@@ -50,12 +54,33 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
         $arbeitstage = $model->getArbeitstageNachMonatUndMitarbeiter(
                 $monat, $mitarbeiter);
         
-        //prüfen, ob alle Monate abgeschlossen sind
+        //die nicht abgeschlossenen Monate holen ...
         $log = Zend_Registry::get('log');
         $monate = $mitarbeiter->getFehlmonateBis($monat);
         $log->debug('Monate: ' . print_r($monate,true));
+        //und die Fehlermeldung (für die Monate) zusammenbasteln
+        if (count($monate) > 0) {
+            $isValid = false;
+            $message = '';
+            if (count($monate) == 1) {
+                $message = 'Der Monat ' . $monate[0]->toString('MMMM YYYY') . ' ist'
+                        . ' noch nicht abgeschlossen!';
+            } else {
+                $message = 'Die Monate ';
+                for ($i = 0; $i < count($monate) - 2; $i++) {
+                    $message .= $monate[$i]->toString('MMMM YYYY') . ', ';
+                }
+                $message .= $monate[count($monate) - 2]->toString('MMMM YYYY');
+                $message .= ' und ' . $monate[count($monate) - 1]->toString('MMMM YYYY');
+                $message .= ' sind noch nicht abgeschlossen!';
+            }
+            
+            $message .= ' Bitte schließen sie die'
+                        . ' Monate in chronologischer Reihenfolge ab.';
+            $this->setMessage($message, self::FEHLT_MONAT);
+            $this->_error(self::FEHLT_MONAT);
+        }
         //TODO Hier bin ich!!!!!
-        //TODO Den Kommentar der Klasse anpassen!!
 
         //prüfen, ob alle nötigen Tage ausgefüllt sind
         $fehltage = array();
@@ -82,7 +107,7 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
             }
         }
         
-        //Fehlermeldung zusammenbasteln
+        //Fehlermeldung (für die Tage) zusammenbasteln
         if(count($fehltage) > 0) {
             $isValid = false;
             if(count($fehltage) == 1) {
