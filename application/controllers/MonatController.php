@@ -297,6 +297,18 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $this->view->saldo = $saldo->getString();
                     $this->mitarbeiter->saveArbeitsmonat($monat);
                     $this->bearbeitbar = false;
+                    
+                    //falls der zu bearbeitende Monat der Dezember ist,
+                    //schließe auch das Jahr ab!
+                    $dezember = new Zend_Date('01.12.2000');
+                    //$this->_log->debug('Zu bearbeitendes Datum: ' . $this->zuBearbeitendesDatum->toString());
+                    //$this->_log->debug('Dezember: ' . $dezember->toString());
+                    if ($this->zuBearbeitendesDatum->compareMonth($dezember)
+                            == 0) {
+                        //$this->_log->debug('JETZT schließe ich ab!!');
+                        $this->jahresabschlussFehlt = true;
+                        $this->_schliesseJahrAb();
+                    }
 
                     // aktualisiere den View
                     $this->view->bearbeitbar = false;
@@ -307,6 +319,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             if (isset($postDaten['uebertragen'])) {
                 $valid = $abschlussForm->isValid($postDaten);
                 if ($valid) {
+                    $this->_log->debug('Habe abgeschlossen!!');
                     $this->_schliesseJahrAb();
                 }
             }
@@ -774,6 +787,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
     private function _schliesseJahrAb() {
         // Falls das Jahr schon abgeschlossen ist, darf außer dem Redirect
         // nichts passieren
+        
+        //TODO Wie irgendwie ja schon geahnt, dürfen die Daten in der Mitarbeiter-Tabelle
+        //TODO nicht einfach überschrieben werden! Es muss wohl eine neue Tabelle
+        //TODO angelegt werden!
+        //TODO Nachfragen!!
         if ($this->jahresabschlussFehlt) {
 
             // Ermittle den Dezember des abzuschließenden Jahres
@@ -781,6 +799,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $jahr = $uebertragenBis->get(Zend_Date::YEAR);
             $jahr++;
             $dezember = new Zend_Date("1.12.$jahr");
+            $this->_log->debug('Schließe ab bis: ' . $dezember->toString());
 
             // Saldo neu setzen
             $saldo = $this->mitarbeiter->getSaldoGesamt($dezember);
