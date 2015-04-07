@@ -259,8 +259,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $result = array();
         //betrachte die Monate seit Arbeitsbeginn oder *nach* dem letzten
         //Übertrag, je nachdem was später liegt
-        $model = new Azebo_Model_Mitarbeiter();
-        $arbeitsregelTabelle = $model->getResource('Arbeitsregel');
+        $arbeitsregelTabelle = new Azebo_Resource_Arbeitsregel();
         $arbeitsbeginn = $arbeitsregelTabelle->
                 getArbeitsbeginnNachMitarbeiterId($this->id);
         $uebertragenBis = $this->getUebertragenBis()->addMonth(1);
@@ -284,6 +283,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         for ($i = 0; $i < count($result); $i++) {
             for ($j = 0; $j < count($monateAbgeschlossen); $j++) {
                 if ($result[$i]->compareMonth(
+                                $monateAbgeschlossen[$j]->getMonat()) == 0 &&
+                        $result[$i]->compareYear(
                                 $monateAbgeschlossen[$j]->getMonat()) == 0) {
                     array_splice($result, $i, 1);
                 }
