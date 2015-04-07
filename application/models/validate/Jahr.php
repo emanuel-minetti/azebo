@@ -78,7 +78,7 @@ class Azebo_Validate_Jahr extends Zend_Validate_Abstract {
                 $meldung .= $fehlMonate[$anzahl - 2] . ' und ' .
                         $fehlMonate[$anzahl - 1];
             }
-            $meldung .= ' abschließen, bevor Sie das Jahr abschließen können!';
+            $meldung .= ' abschließen, um das Jahr abzuschließen!';
             $this->setMessage($meldung, self::FEHLEND);
             $this->_error(self::FEHLEND);
             return false;
