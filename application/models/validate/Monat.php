@@ -57,7 +57,7 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
         //die nicht abgeschlossenen Monate holen ...
         $log = Zend_Registry::get('log');
         $monate = $mitarbeiter->getFehlmonateBis($monat);
-        $log->debug('Monate: ' . print_r($monate,true));
+        //$log->debug('Monate: ' . print_r($monate,true));
         //und die Fehlermeldung (für die Monate) zusammenbasteln
         if (count($monate) > 0) {
             $isValid = false;

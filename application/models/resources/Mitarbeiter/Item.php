@@ -39,7 +39,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         if ($this->_vorname === null || $this->_nachname === null) {
 
             $config = new Zend_Config_Ini(
-                            APPLICATION_PATH . '/configs/ldap.ini');
+                    APPLICATION_PATH . '/configs/ldap.ini');
             $options = $config->ldap->physalis->toArray();
             $ldap = new Zend_Ldap($options);
             $ldap->bind();
@@ -160,8 +160,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 $hochschulString = 'Hochschule für Musik "Hanns Eisler"';
                 break;
             case 'hfs':
-                $hochschulString =
-                        'Hochschule für Schauspielkunst \'Ernst Busch\'';
+                $hochschulString = 'Hochschule für Schauspielkunst \'Ernst Busch\'';
                 break;
             case 'khb':
                 $hochschulString = 'weißensee kunsthochschule berlin';
@@ -215,8 +214,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $restStunden = $this->getRow()->saldo2007stunden;
             $restMinuten = $this->getRow()->saldo2007minuten;
             $uebertrag = new Azebo_Model_Saldo(
-                            $stunden, $minuten, $positiv, true, $restStunden,
-                            $restMinuten);
+                    $stunden, $minuten, $positiv, true, $restStunden, $restMinuten);
         }
         return $uebertrag;
     }
@@ -245,41 +243,54 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function getArbeitsmonateBis(Zend_Date $monat) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
         return $monatsTabelle->getArbeitsmonateNachMitarbeiterIdUndBis(
-                $this->id, $monat);
+                        $this->id, $monat);
     }
-    
+
     /**
      * Gibt die nicht-übertragenen und nicht-abgeschlossenen Monate bis $monat
      * zurück.
      * 
-     * @param Zend_Date $monat der Monat bis zu dem die Fehlmonate gesucht werden.
+     * @param Zend_Date $monat der Monat bis zu dem die Fehlmonate gesucht
+     * werden.
      * @return array ein Array von Zend_Date, die Monate, die weder
      * abgeschlossen noch übertragen sind.
      */
     public function getFehlmonateBis(Zend_Date $monat) {
         $result = array();
-        $tempMonat = $this->getUebertragenbis();
-        $tempMonat->addMonth(1);
-        
-        //in $result alle *nicht-übertragenen* Monate bis $monat abspeichern! 
-        while($tempMonat->compare($monat) == -1) {
+        //betrachte die Monate seit Arbeitsbeginn oder *nach* dem letzten
+        //Übertrag, je nachdem was später liegt
+        $model = new Azebo_Model_Mitarbeiter();
+        $arbeitsregelTabelle = $model->getResource('Arbeitsregel');
+        $arbeitsbeginn = $arbeitsregelTabelle->
+                getArbeitsbeginnNachMitarbeiterId($this->id);
+        $uebertragenBis = $this->getUebertragenBis()->addMonth(1);
+        $tempMonat = $arbeitsbeginn->compareDate($uebertragenBis) == 1 ?
+                $arbeitsbeginn : $uebertragenBis;
+
+        $log = Zend_Registry::get('log');
+        $log->debug('Arbeitsbeginn: ' . $arbeitsbeginn->toString());
+        $log->debug('UebertragenBis: ' . $uebertragenBis->toString());
+        $log->debug('tempMonat: ' . $tempMonat->toString());
+
+        //in $result alle *nicht-übertragenen* Monate (seit Arbeitsbeginn) bis
+        //$monat abspeichern! 
+        while ($tempMonat->compare($monat) == -1) {
             $result[] = new Zend_Date($tempMonat);
             $tempMonat->addMonth(1);
         }
-        
+
         //die *abgeschlossenen* Monate aus $result entfernen!
         $monateAbgeschlossen = $this->getArbeitsmonateBis($monat);
         for ($i = 0; $i < count($result); $i++) {
             for ($j = 0; $j < count($monateAbgeschlossen); $j++) {
-                if($result[$i]->equals($monateAbgeschlossen[$j]->getMonat(), Zend_Date::MONTH)) {
+                if ($result[$i]->compareMonth(
+                                $monateAbgeschlossen[$j]->getMonat()) == 0) {
                     array_splice($result, $i, 1);
                 }
             }
         }
-        
-        //TODO Hier liegt der Fehler!!!
-        // Es muss auch der Arbeitbeginn brücksichtigt werden!!
-        // Benutze getArbeitsbeginnNachMitarbeiterId() oder getArbeitsbeginnNachMitarbeiterIdUndJahr()!!!!
+
+        //TODO Ausführlich testen!!
         return $result;
     }
 
@@ -300,14 +311,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $saldoRest = $monate[count($monate) - 1]->getSaldo()->getRest();
             if ($saldoRest) {
                 $saldo = new Azebo_Model_Saldo(
-                                $saldo->getStunden(),
-                                $saldo->getMinuten(),
-                                $saldo->getPositiv(),
-                                $saldoRest,
-                                        $monate[count($monate) - 1]->
-                                        getSaldo()->getRestStunden(),
-                                        $monate[count($monate) - 1]->
-                                        getSaldo()->getRestMinuten());
+                        $saldo->getStunden(), $saldo->getMinuten(), $saldo->getPositiv(), $saldoRest, $monate[count($monate) - 1]->
+                                getSaldo()->getRestStunden(), $monate[count($monate) - 1]->
+                                getSaldo()->getRestMinuten());
             }
         }
         return $saldo;
@@ -358,9 +364,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $arbeitstage = $this->getArbeitstageNachMonat($monat);
         $saldoBisher = $this->getSaldoBisher($monat);
         if ($saldoBisher->getRest()) {
-            $saldo = new Azebo_Model_Saldo(0, 0, true, true,
-                            $saldoBisher->getRestStunden(),
-                            $saldoBisher->getRestMinuten());
+            $saldo = new Azebo_Model_Saldo(0, 0, true, true, $saldoBisher->getRestStunden(), $saldoBisher->getRestMinuten());
         } else {
             $saldo = new Azebo_Model_Saldo(0, 0, true);
         }
@@ -410,17 +414,11 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 $saldoGesamt->vergleiche($kappungGesamt) == 1) {
             // $saldoGesamt darf nicht einfach überschrieben werden,
             // sonst geht u.U. der Rest 2007 bei der HfM verloren!
-            $saldoGesamt = new Azebo_Model_Saldo($kappungGesamt->getStunden(),
-                            $kappungGesamt->getMinuten(), true,
-                            $saldoGesamt->getRest(),
-                            $saldoGesamt->getRestStunden(),
-                            $saldoGesamt->getRestMinuten());
+            $saldoGesamt = new Azebo_Model_Saldo($kappungGesamt->getStunden(), $kappungGesamt->getMinuten(), true, $saldoGesamt->getRest(), $saldoGesamt->getRestStunden(), $saldoGesamt->getRestMinuten());
         }
 
         if ($differenz) {
-            $saldoBisher = new Azebo_Model_Saldo($saldoBisher->getStunden(),
-                            $saldoBisher->getMinuten(),
-                            !$saldoBisher->getPositiv());
+            $saldoBisher = new Azebo_Model_Saldo($saldoBisher->getStunden(), $saldoBisher->getMinuten(), !$saldoBisher->getPositiv());
             $saldoGesamt->add($saldoBisher);
         }
 
@@ -483,8 +481,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     public function setSaldoUebertrag(Azebo_Model_Saldo $saldo) {
         $this->_row->saldouebertragstunden = $saldo->getStunden();
         $this->_row->saldouebertragminuten = $saldo->getMinuten();
-        $this->_row->saldouebertragpositiv =
-                $saldo->getPositiv() ? 'ja' : 'nein';
+        $this->_row->saldouebertragpositiv = $saldo->getPositiv() ? 'ja' : 'nein';
     }
 
     public function getArbeitsregeln() {
@@ -726,7 +723,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     /**
      * @return Zend_Date 
      */
-    public function getUebertragenbis() {
+    public function getUebertragenBis() {
         $dzService = new Azebo_Service_DatumUndZeitUmwandler();
         $ergebnis = $dzService->datumSqlZuPhp($this->_row->uebertragenbis);
         if ($ergebnis === null) {
@@ -741,7 +738,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function jahresabschlussFehlt(Zend_Date $monat) {
-        return $this->getUebertragenbis()->get(Zend_Date::YEAR) <
+        return $this->getUebertragenBis()->get(Zend_Date::YEAR) <
                 $monat->get(Zend_Date::YEAR) - 1;
     }
 
@@ -787,20 +784,20 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $this->_row->farbezeile = $zeile;
         } else { // $farben === null
             $config = new Zend_Config_Ini(
-                            APPLICATION_PATH . '/configs/farben.ini');
+                    APPLICATION_PATH . '/configs/farben.ini');
             $configFarben = $config->farben;
-            
+
             $kopf = '#' . $configFarben->kopf;
             $hoover = '#' . $configFarben->hoover;
             $link = '#' . $configFarben->link;
             $zeile = '#' . $configFarben->zeile;
-            
+
             $this->_farben = new Azebo_Model_Farben();
             $this->_farben->kopf = $kopf;
             $this->_farben->hoover = $hoover;
             $this->_farben->link = $link;
             $this->_farben->zeile = $zeile;
-            
+
             $this->_row->farbekopf = null;
             $this->_row->farbehoover = null;
             $this->_row->farbelink = null;
