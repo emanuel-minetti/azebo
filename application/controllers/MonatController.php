@@ -293,18 +293,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($valid && $this->mitarbeiter->getArbeitsmonat($this->zuBearbeitendesDatum) === null) {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
-                    //TODO Urlaub: Codepflege!
                     $saldo = $this->mitarbeiter->getSaldo($monat);
-                    //$urlaub = $this->mitarbeiter->getUrlaubNachMonat($monat);
                     $this->view->saldo = $saldo->getString();
                     $this->mitarbeiter->saveArbeitsmonat($monat);
                     $this->bearbeitbar = false;
 
                     // aktualisiere den View
                     $this->view->bearbeitbar = false;
-                    //TODO Urlaub: sieht komisch aus!
-                    //$this->view->urlaubBisher = $this->mitarbeiter->
-                    //         getUrlaubBisher();
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
             }
