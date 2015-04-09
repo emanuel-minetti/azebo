@@ -170,4 +170,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     
     public function getFehlmonateBis(Zend_Date $monat);
     
+    public function getVorjahr();
+    
 }

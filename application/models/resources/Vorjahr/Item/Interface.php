@@ -24,19 +24,10 @@
  *
  * @author Emanuel Minetti
  */
-interface Azebo_Resource_Arbeitsmonat_Interface {
+interface Azebo_Resource_Vorjahr_Item_Interface {
 
-    public function getArbeitsmonateNachMitarbeiterId($mitarbeiterId, $filter = true);
+    public function getSaldo();
     
-    public function getArbeitsmonateNachMitarbeiterIdUndBis($mitarbeiterId, Zend_Date $monat, $filter = true);
-
-    public function getArbeitsmonateNachJahrUndMitarbeiterId(Zend_Date $jahr, $mitarbeiterId);
-
-    public function saveArbeitsmonat($mitarbeiterId, Zend_Date $monat, Azebo_Model_Saldo $saldo, $urlaub, $urlaubVorjahr, $azv);
-
-    public function getArbeitsmonateNachMonat(Zend_Date $monat);
-
-    public function getArbeitsmonatNachMitabeiterIdUndMonat($mitarbeiterId, Zend_Date $monat);
+    public function setSaldo(Azebo_Model_Saldo $saldo);
     
-    public function deleteArbeitsmonateBis(Zend_Date $bis, $mitarbeiterId);
 }

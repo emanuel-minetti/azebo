@@ -300,6 +300,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     
                     //falls der zu bearbeitende Monat der Dezember ist,
                     //schließe auch das Jahr ab!
+                    //TODO Debugging entfernen!
                     $dezember = new Zend_Date('01.12.2000');
                     //$this->_log->debug('Zu bearbeitendes Datum: ' . $this->zuBearbeitendesDatum->toString());
                     //$this->_log->debug('Dezember: ' . $dezember->toString());
@@ -794,6 +795,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         //TODO Nachfragen!!
         if ($this->jahresabschlussFehlt) {
 
+            //TODO Debugging entfernen!
             // Ermittle den Dezember des abzuschließenden Jahres
             $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
             $jahr = $uebertragenBis->get(Zend_Date::YEAR);

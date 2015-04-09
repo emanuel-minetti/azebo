@@ -266,6 +266,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $tempMonat = $arbeitsbeginn->compareDate($uebertragenBis) == 1 ?
                 $arbeitsbeginn : $uebertragenBis;
 
+        //TODO Debugging entfernen!
         $log = Zend_Registry::get('log');
         $log->debug('Arbeitsbeginn: ' . $arbeitsbeginn->toString());
         $log->debug('UebertragenBis: ' . $uebertragenBis->toString());
@@ -804,6 +805,12 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $this->_row->farbelink = null;
             $this->_row->farbezeile = null;
         }
+    }
+    
+    public function getVorjahr() {
+        $vorjahrTabelle = new Azebo_Resource_Vorjahr();
+        $vorjahr = $vorjahrTabelle->getVorjahrNachMitarbeiterId($this->id);
+        return $vorjahr;
     }
 
 }
