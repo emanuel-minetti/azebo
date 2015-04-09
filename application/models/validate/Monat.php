@@ -60,7 +60,7 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
         $vorjahr = $mitarbeiter->getVorjahr();
         $monate = $mitarbeiter->getFehlmonateBis($monat);
         //$log->debug('Monate: ' . print_r($monate,true));
-        $log->debug('Vorjahr: ' . print_r($vorjahr,true));
+        //$log->debug('Vorjahr: ' . print_r($vorjahr,true));
         //und die Fehlermeldung (für die Monate) zusammenbasteln
         if (count($monate) > 0) {
             $isValid = false;

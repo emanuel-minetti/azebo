@@ -43,7 +43,11 @@ class Azebo_Resource_Vorjahr extends AzeboLib_Model_Resource_Db_Table_Abstract i
 
         $select = $this->select();
         $select->where('mitarbeiter_id = ?', $mitarbeiterId);
-        $vorjahr = $this->fetchAll($select);
+        $vorjahr = $this->fetchRow($select);
+        if($vorjahr === null) {
+            $vorjahr = $this->createRow();
+            $vorjahr->mitarbeiter_id = $mitarbeiterId;
+        }
 
         return $vorjahr;
     }

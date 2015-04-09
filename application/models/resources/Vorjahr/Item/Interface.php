@@ -26,8 +26,8 @@
  */
 interface Azebo_Resource_Vorjahr_Item_Interface {
 
-    public function getSaldo();
+    public function getSaldouebertrag();
     
-    public function setSaldo(Azebo_Model_Saldo $saldo);
+    public function setSaldouebertrag(Azebo_Model_Saldo $saldo);
     
 }

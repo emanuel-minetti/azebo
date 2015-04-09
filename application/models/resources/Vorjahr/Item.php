@@ -33,12 +33,31 @@ class Azebo_Resource_Vorjahr_Item extends AzeboLib_Model_Resource_Db_Table_Row_A
 //        parent::__construct($config);
 //        $this->_dzService = new Azebo_Service_DatumUndZeitUmwandler();
 //    }
-    public function getSaldo() {
-        return null;
-    }
 
-    public function setSaldo(\Azebo_Model_Saldo $saldo) {
-        
+        /**
+     *
+     * @return Azebo_Model_Saldo 
+     */
+    public function getSaldouebertrag() {
+        $stunden = $this->getRow()->saldouebertragstunden;
+        $minuten = $this->getRow()->saldouebertragminuten;
+        $positiv = $this->getRow()->saldouebertragpositiv == 'ja' ?
+                true : false;
+        if ($this->getRow()->saldo2007stunden === null) {
+            $uebertrag = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        } else {
+            $restStunden = $this->getRow()->saldo2007stunden;
+            $restMinuten = $this->getRow()->saldo2007minuten;
+            $uebertrag = new Azebo_Model_Saldo(
+                    $stunden, $minuten, $positiv, true, $restStunden, $restMinuten);
+        }
+        return $uebertrag;
+    }
+    
+    public function setSaldouebertrag(Azebo_Model_Saldo $saldo) {
+        $this->_row->saldouebertragstunden = $saldo->getStunden();
+        $this->_row->saldouebertragminuten = $saldo->getMinuten();
+        $this->_row->saldouebertragpositiv = $saldo->getPositiv() ? 'ja' : 'nein';
     }
 
 }

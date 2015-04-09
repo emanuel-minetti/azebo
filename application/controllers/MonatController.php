@@ -802,6 +802,13 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $jahr++;
             $dezember = new Zend_Date("1.12.$jahr");
             $this->_log->debug('Schließe ab bis: ' . $dezember->toString());
+            
+            // Die zu überschreibenden Daten 'retten', also in der Tabelle
+            // 'vorjahr' abspeichern
+            $vorjahr = $this->mitarbeiter->getVorjahr();
+            $uebertrag = $this->mitarbeiter->getSaldouebertrag();
+            $vorjahr->setSaldouebertrag($uebertrag);
+            $vorjahr->save();
 
             // Saldo neu setzen
             $saldo = $this->mitarbeiter->getSaldoGesamt($dezember);
