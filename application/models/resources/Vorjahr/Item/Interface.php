@@ -30,4 +30,14 @@ interface Azebo_Resource_Vorjahr_Item_Interface {
     
     public function setSaldouebertrag(Azebo_Model_Saldo $saldo);
     
+    public function setSaldo2007(Azebo_Model_Saldo $saldo);
+    
+    public function getUrlaub();
+    
+    public function getUrlaubVorjahr();
+    
+    public function setUrlaub($urlaub);
+    
+    public function setUrlaubVorjahr($urlaub);
+    
 }

@@ -54,10 +54,36 @@ class Azebo_Resource_Vorjahr_Item extends AzeboLib_Model_Resource_Db_Table_Row_A
         return $uebertrag;
     }
     
-    public function setSaldouebertrag(Azebo_Model_Saldo $saldo) {
+    public function setSaldouebertrag(Azebo_Model_Saldo $saldo) { 
         $this->_row->saldouebertragstunden = $saldo->getStunden();
         $this->_row->saldouebertragminuten = $saldo->getMinuten();
         $this->_row->saldouebertragpositiv = $saldo->getPositiv() ? 'ja' : 'nein';
+    }
+
+    public function setSaldo2007(Azebo_Model_Saldo $saldo) {
+        if ($saldo !== null) {
+            $this->_row->saldo2007stunden = $saldo->getStunden();
+            $this->_row->saldo2007minuten = $saldo->getMinuten();
+        } else {
+            $this->_row->saldo2007stunden = null;
+            $this->_row->saldo2007minuten = null;
+        }
+    }
+    
+    public function getUrlaub() {
+        return $this->_row->urlaub;
+    }
+    
+    public function getUrlaubVorjahr() {
+        return $this->_row->urlaubvorjahr;
+    }
+    
+    public function setUrlaub($urlaub) {
+        $this->_row->urlaub = $urlaub;
+    }
+    
+    public function setUrlaubVorjahr($urlaub) {
+        $this->_row->urlaubvorjahr = $urlaub;
     }
 
 }

@@ -807,6 +807,9 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
     }
     
+    /**
+     * @return Azebo_Resource_Vorjahr_Item
+     */
     public function getVorjahr() {
         $vorjahrTabelle = new Azebo_Resource_Vorjahr();
         $vorjahr = $vorjahrTabelle->getVorjahrNachMitarbeiterId($this->id);

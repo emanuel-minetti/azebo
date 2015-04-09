@@ -808,6 +808,17 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $vorjahr = $this->mitarbeiter->getVorjahr();
             $uebertrag = $this->mitarbeiter->getSaldouebertrag();
             $vorjahr->setSaldouebertrag($uebertrag);
+            // TODO 'saldo2007' testen!!!!!!
+            if ($this->mitarbeiter->getHochschule() == 'hfm') {
+                if ($uebertrag->getRest()) {
+                    $saldo2007 = new Azebo_Model_Saldo($uebertrag->getRestStunden(), $uebertrag->getRestMinuten(), true);
+                    $vorjahr->setSaldo2007($saldo2007);
+                } else {
+                    $this->mitarbeiter->setSaldo2007(null);
+                }
+            }
+            $vorjahr->setUrlaub($this->mitarbeiter->getUrlaub());
+            $vorjahr->setUrlaubVorjahr($this->mitarbeiter->getUrlaubVorjahr());
             $vorjahr->save();
 
             // Saldo neu setzen
