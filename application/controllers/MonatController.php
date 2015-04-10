@@ -193,7 +193,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
 
         // Urlaubswerte setzen
-        //TODO Resturlaub: Hier scheint es zu stimmen!
         $this->urlaubBisher = $this->mitarbeiter->getUrlaubBisher(
                 $this->zuBearbeitendesDatum);
         $this->view->urlaubBisher = $this->urlaubBisher;
@@ -300,13 +299,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     
                     //falls der zu bearbeitende Monat der Dezember ist,
                     //schließe auch das Jahr ab!
-                    //TODO Debugging entfernen!
                     $dezember = new Zend_Date('01.12.2000');
-                    //$this->_log->debug('Zu bearbeitendes Datum: ' . $this->zuBearbeitendesDatum->toString());
-                    //$this->_log->debug('Dezember: ' . $dezember->toString());
                     if ($this->zuBearbeitendesDatum->compareMonth($dezember)
                             == 0) {
-                        //$this->_log->debug('JETZT schließe ich ab!!');
                         $this->jahresabschlussFehlt = true;
                         $this->_schliesseJahrAb();
                     }
@@ -789,26 +784,18 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Falls das Jahr schon abgeschlossen ist, darf außer dem Redirect
         // nichts passieren
         
-        //TODO Wie irgendwie ja schon geahnt, dürfen die Daten in der Mitarbeiter-Tabelle
-        //TODO nicht einfach überschrieben werden! Es muss wohl eine neue Tabelle
-        //TODO angelegt werden!
-        //TODO Nachfragen!!
         if ($this->jahresabschlussFehlt) {
-
-            //TODO Debugging entfernen!
             // Ermittle den Dezember des abzuschließenden Jahres
             $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
             $jahr = $uebertragenBis->get(Zend_Date::YEAR);
             $jahr++;
             $dezember = new Zend_Date("1.12.$jahr");
-            $this->_log->debug('Schließe ab bis: ' . $dezember->toString());
             
             // Die zu überschreibenden Daten 'retten', also in der Tabelle
             // 'vorjahr' abspeichern
             $vorjahr = $this->mitarbeiter->getVorjahr();
             $uebertrag = $this->mitarbeiter->getSaldouebertrag();
             $vorjahr->setSaldouebertrag($uebertrag);
-            // TODO 'saldo2007' testen!!!!!!
             if ($this->mitarbeiter->getHochschule() == 'hfm') {
                 if ($uebertrag->getRest()) {
                     $saldo2007 = new Azebo_Model_Saldo($uebertrag->getRestStunden(), $uebertrag->getRestMinuten(), true);

@@ -267,12 +267,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $tempMonat = $arbeitsbeginn->compareDate($uebertragenBis) == 1 ?
                 $arbeitsbeginn : $uebertragenBis;
 
-        //TODO Debugging entfernen!
-        $log = Zend_Registry::get('log');
-        $log->debug('Arbeitsbeginn: ' . $arbeitsbeginn->toString());
-        $log->debug('UebertragenBis: ' . $uebertragenBis->toString());
-        $log->debug('tempMonat: ' . $tempMonat->toString());
-
         //in $result alle *nicht-übertragenen* Monate (seit Arbeitsbeginn) bis
         //$monat abspeichern! 
         while ($tempMonat->compare($monat) == -1) {
@@ -292,8 +286,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 }
             }
         }
-
-        //TODO Ausführlich testen!!
+        
         return $result;
     }
 
@@ -305,7 +298,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $uebertragenBis = $this->getUebertragenBis();
         if ($bis->compareYear($uebertragenBis) == 1) {
             // falls $bis nach dem letzten Übertrag liegt berechne das Saldo wie
-            // gewöhnlich, sonst ...
+            // gewöhnlich
             $saldo = $this->getSaldouebertrag();
             $monate = $this->getArbeitsmonateBis($bis);
         } else {
@@ -316,8 +309,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $monate = $this->getArbeitsmonateBis($bis, false);
         }
         foreach ($monate as $monat) {
-                $monatsSaldo = $monat->getSaldo();
-                $saldo->add($monatsSaldo, true);
+            $monatsSaldo = $monat->getSaldo();
+            $saldo->add($monatsSaldo, true);
         }
         if ($anzeigen && count($monate) != 0) {
             $saldoRest = $monate[count($monate) - 1]->getSaldo()->getRest();
@@ -331,31 +324,47 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $saldo;
     }
 
-    //TODO ÜbertragenBis berücksichtigen!!
     public function getUrlaubBisher(Zend_Date $bis) {
-        $urlaub = $this->getUrlaub();
-        $monate = $this->getArbeitsmonate();
+        $uebertragenBis = $this->getUebertragenBis();
+        if ($bis->compareYear($uebertragenBis) == 1) {
+            // falls $bis nach dem letzten Übertrag liegt berechne das Saldo wie
+            // gewöhnlich
+            $urlaub = $this->getUrlaub();
+            $monate = $this->getArbeitsmonateBis($bis);
+        } else {
+            // $bis liegt vor dem letzten Übertrag, also berechne das Saldo
+            // ausgehend von den Daten des Vorjahres und berücksichtige auch
+            // Monate die schon übertragen sind
+            $urlaub = $this->getVorjahr()->getUrlaub();
+            $monate = $this->getArbeitsmonateBis($bis, false);
+        }
         foreach ($monate as $monat) {
-            if ($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
-                $urlaub -= $monat->urlaub;
-            }
+            $urlaub -= $monat->urlaub;
         }
         return $urlaub;
     }
-
-    //TODO ÜbertragenBis berücksichtigen!!
+    
     public function getUrlaubVorjahrBisher(Zend_Date $bis) {
         $zeiten = $this->_getZeiten();
         $vorjahrRestBis = $zeiten->urlaub->resturlaubbis;
         $vorjahrRestBisDate = new Zend_Date($vorjahrRestBis, 'dd.MM.');
+        $uebertragenBis = $this->getUebertragenBis();
         if ($bis->compareMonth($vorjahrRestBisDate) != 1) {
             // Vorjahresurlaub noch gültig
-            $urlaub = $this->getUrlaubVorjahr();
-            $monate = $this->getArbeitsmonate();
+            if ($bis->compareYear($uebertragenBis) == 1) {
+                // falls $bis nach dem letzten Übertrag liegt berechne das Saldo wie
+                // gewöhnlich
+                $urlaub = $this->getUrlaubVorjahr();
+                $monate = $this->getArbeitsmonateBis($bis);
+            } else {
+                // $bis liegt vor dem letzten Übertrag, also berechne das Saldo
+                // ausgehend von den Daten des Vorjahres und berücksichtige auch
+                // Monate die schon übertragen sind
+                $urlaub = $this->getVorjahr()->getUrlaubVorjahr();
+                $monate = $this->getArbeitsmonateBis($bis, false);
+            }
             foreach ($monate as $monat) {
-                if ($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
-                    $urlaub -= $monat->urlaubvorjahr;
-                }
+                $urlaub -= $monat->urlaubvorjahr;
             }
         } else {
             // Vorjahresurlaub nicht mehr gültig
