@@ -233,17 +233,18 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     /**
-     * Gibt die nicht übertragenen Arbeitsmonate des Mitarbeiters bis zu einem
-     * übergebenen $monat zurück.
+     * Gibt die Arbeitsmonate des Mitarbeiters bis zu einem
+     * übergebenen $monat zurück. Ist $filter == true (Default), werden nur
+     * die nicht übertragenen Monate zurückgegeben.
      * 
      * @param Zend_Date $monat der Monat bis zu dem die Arbeitsmonate geholt
      * werden. 
      * @return Zend_Db_Table_Rowset_Abstract
      */
-    public function getArbeitsmonateBis(Zend_Date $monat) {
+    public function getArbeitsmonateBis(Zend_Date $monat, $filter = true) {
         $monatsTabelle = new Azebo_Resource_Arbeitsmonat();
         return $monatsTabelle->getArbeitsmonateNachMitarbeiterIdUndBis(
-                        $this->id, $monat);
+                        $this->id, $monat, $filter);
     }
 
     /**
@@ -301,13 +302,22 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      * @return Azebo_Model_Saldo 
      */
     public function getSaldoBisher(Zend_Date $bis, $anzeigen = false) {
-        $saldo = $this->getSaldouebertrag();
-        $monate = $this->getArbeitsmonateBis($bis);
+        $uebertragenBis = $this->getUebertragenBis();
+        if ($bis->compareYear($uebertragenBis) == 1) {
+            // falls $bis nach dem letzten Übertrag liegt berechne das Saldo wie
+            // gewöhnlich, sonst ...
+            $saldo = $this->getSaldouebertrag();
+            $monate = $this->getArbeitsmonateBis($bis);
+        } else {
+            // $bis liegt vor dem letzten Übertrag, also berechne das Saldo
+            // ausgehend von den Daten des Vorjahres und berücksichtige auch
+            // Monate die schon übertragen sind
+            $saldo = $this->getVorjahr()->getSaldouebertrag();
+            $monate = $this->getArbeitsmonateBis($bis, false);
+        }
         foreach ($monate as $monat) {
-            if ($monat->getMonat()->compare($bis, Zend_Date::MONTH) == -1) {
                 $monatsSaldo = $monat->getSaldo();
                 $saldo->add($monatsSaldo, true);
-            }
         }
         if ($anzeigen && count($monate) != 0) {
             $saldoRest = $monate[count($monate) - 1]->getSaldo()->getRest();
@@ -321,6 +331,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $saldo;
     }
 
+    //TODO ÜbertragenBis berücksichtigen!!
     public function getUrlaubBisher(Zend_Date $bis) {
         $urlaub = $this->getUrlaub();
         $monate = $this->getArbeitsmonate();
@@ -332,6 +343,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $urlaub;
     }
 
+    //TODO ÜbertragenBis berücksichtigen!!
     public function getUrlaubVorjahrBisher(Zend_Date $bis) {
         $zeiten = $this->_getZeiten();
         $vorjahrRestBis = $zeiten->urlaub->resturlaubbis;
@@ -806,7 +818,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $this->_row->farbezeile = null;
         }
     }
-    
+
     /**
      * @return Azebo_Resource_Vorjahr_Item
      */
