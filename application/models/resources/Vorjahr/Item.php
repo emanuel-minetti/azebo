@@ -27,14 +27,7 @@
  */
 class Azebo_Resource_Vorjahr_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Vorjahr_Item_Interface {
 
-//    protected $_dzService;
-//
-//    public function __construct($config) {
-//        parent::__construct($config);
-//        $this->_dzService = new Azebo_Service_DatumUndZeitUmwandler();
-//    }
-
-        /**
+    /**
      *
      * @return Azebo_Model_Saldo 
      */
