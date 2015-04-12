@@ -281,7 +281,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
     }
 
     public function monatseditAction() {
-        //TODo Hier muss das Monats-Zurücknehmen richtig gemacht werden!
         $monatPara = $this->_getParam('monat');
         $monat = new Zend_Date($monatPara, 'MM_yyyy');
         $benutzername = $this->_getParam('benutzername');
@@ -295,7 +294,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         if ($request->isPost()) {
             $postDaten = $request->getPost();
             if (isset($postDaten['zurueck'])) {
-                //$zuBearbeitenderMitarbeiter->deleteArbeitsmonat($monat);
                 $zuBearbeitenderMitarbeiter->abschlussZuruecknehmen($monat);
             } elseif (isset($postDaten['ablegen'])) {
                 $zuBearbeitenderMitarbeiter->arbeitsmonatAblegen($monat);

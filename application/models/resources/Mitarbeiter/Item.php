@@ -484,7 +484,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
     }
 
-    //TODO Wieso sollen nur Abschläüsse aus dem laufenden Jahr brücksichtigt werden???
+    //TODO Wieso sollen nur Abschlüsse aus dem laufenden Jahr brücksichtigt werden???
     public function getAbgeschlossenBis() {
         $heute = new Zend_Date();
         $arbeitsmonate = $this->getArbeitsmonateNachJahr($heute);
