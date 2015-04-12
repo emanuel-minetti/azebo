@@ -221,7 +221,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     /**
      * Gibt die Arbeitsmonate des Mitarbeiters zurück. Falls $filter == true
-     * ist, werden nur nicht übertragenen Monate zurückgegeben.
+     * ist, werden nur die nicht übertragenen Monate zurückgegeben.
      * 
      * @param boolean $filter gibt an, ob übertragene Monate gefiltert werden
      * sollen 
@@ -286,7 +286,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 }
             }
         }
-        
+
         return $result;
     }
 
@@ -343,7 +343,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
         return $urlaub;
     }
-    
+
     public function getUrlaubVorjahrBisher(Zend_Date $bis) {
         $zeiten = $this->_getZeiten();
         $vorjahrRestBis = $zeiten->urlaub->resturlaubbis;
@@ -484,6 +484,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
     }
 
+    //TODO Wieso sollen nur Abschläüsse aus dem laufenden Jahr brücksichtigt werden???
     public function getAbgeschlossenBis() {
         $heute = new Zend_Date();
         $arbeitsmonate = $this->getArbeitsmonateNachJahr($heute);
@@ -835,6 +836,56 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         $vorjahrTabelle = new Azebo_Resource_Vorjahr();
         $vorjahr = $vorjahrTabelle->getVorjahrNachMitarbeiterId($this->id);
         return $vorjahr;
+    }
+
+    public function abschlussZuruecknehmen(Zend_Date $ab) {
+        $monate = $this->getArbeitsmonate(false);
+        // entferne die Monate aus der Arbeitsmonat-Tabelle, die in dem selben
+        // Jahr wie $ab liegen und nicht vor $ab sind
+        foreach ($monate as $monat) {
+            if ($monat->getMonat()->compareMonth($ab) !== -1 &&
+                    $monat->getMonat()->compareYear($ab) === 0) {
+                $this->deleteArbeitsmonat($monat->getMonat());
+            }
+        }
+
+        if ($ab->compareYear($this->getUebertragenBis()) !== 1) {
+            // $ab liegt vor dem letzten Übertrag ...
+            // also entferne die Monate aus der Tabelle, die in dem Jahr nach
+            // $ab liegen und ...
+            foreach ($monate as $monat) {
+                if ($monat->getMonat()->compareYear($ab) == 1) {
+                    $this->deleteArbeitsmonat($monat->getMonat());
+                }
+            }
+
+            // mache den Jahresabschluss rückgängig und ...
+            $vorjahr = $this->getVorjahr();
+            $saldouebertrag = $vorjahr->getSaldouebertrag();
+            $this->setSaldoUebertrag($saldouebertrag);
+            if ($saldouebertrag->getRest()) {
+                $this->setSaldo2007(new Azebo_Model_Saldo(
+                        $saldouebertrag->getRestStunden(), $saldouebertrag->getRestMinuten(), true));
+            }
+            $this->setUrlaub($vorjahr->getUrlaub());
+            $this->setUrlaubVorjahr($vorjahr->getUrlaubVorjahr());
+            $uebertragenBis = $this->getUebertragenBis();
+            $uebertragenBis->addYear(-1);
+            $this->setUebertragenbis($uebertragenBis);
+            $this->save();
+
+            // markiere die Monate des Vorjahrs als nicht übertragen und ...
+            $monate = $this->getArbeitsmonate(false);
+            foreach ($monate as $monat) {
+                if ($monat->getMonat()->compareYear($ab) === 0) {
+                    $monat->setUebertragen(false);
+                    $monat->save();
+                }
+            }
+            
+            // lösche das Vorjahr aus der Tabelle
+            $vorjahr->delete();
+        }
     }
 
 }

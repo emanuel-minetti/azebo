@@ -295,7 +295,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         if ($request->isPost()) {
             $postDaten = $request->getPost();
             if (isset($postDaten['zurueck'])) {
-                $zuBearbeitenderMitarbeiter->deleteArbeitsmonat($monat);
+                //$zuBearbeitenderMitarbeiter->deleteArbeitsmonat($monat);
+                $zuBearbeitenderMitarbeiter->abschlussZuruecknehmen($monat);
             } elseif (isset($postDaten['ablegen'])) {
                 $zuBearbeitenderMitarbeiter->arbeitsmonatAblegen($monat);
             } elseif ($postDaten['anzeigen']) {

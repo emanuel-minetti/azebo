@@ -175,4 +175,6 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
      */
     public function getVorjahr();
     
+    public function abschlussZuruecknehmen(Zend_Date $ab);
+    
 }
