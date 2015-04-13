@@ -28,6 +28,10 @@
 class Azebo_Form_Mitarbeiter_Monatsedit extends AzeboLib_Form_Abstract {
     
     public function init() {
+        
+        $this->addElementPrefixPath(
+                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
+        
         $this->addElement('SubmitButton', 'ablegen', array(
             'required' => false,
             'ignore' => true,
@@ -38,6 +42,9 @@ class Azebo_Form_Mitarbeiter_Monatsedit extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Abschluss Zurücknehmen',
+            'validators' => array(
+                'Zuruecknahme',
+                )
         ));
         
         $this->addElement('SubmitButton', 'anzeigen', array(

@@ -289,12 +289,20 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         $this->erweitereSeitenName(' ' . $zuBearbeitenderMitarbeiter->getName() .
                 ' ' . $monat->toString('MMMM yyyy'));
+        
+        $form = new Azebo_Form_Mitarbeiter_Monatsedit();
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postDaten = $request->getPost();
+            $postDaten['mitarbeiter'] = $zuBearbeitenderMitarbeiter;
+            //TODO Fertig machen!!!
+            //TODO Hier bin ich!!
+            $this->_log->debug('Post-Daten: ' . print_r($postDaten, TRUE));
             if (isset($postDaten['zurueck'])) {
-                $zuBearbeitenderMitarbeiter->abschlussZuruecknehmen($monat);
+                if($form->isValid($postDaten)) {
+                    $zuBearbeitenderMitarbeiter->abschlussZuruecknehmen($monat);
+                }
             } elseif (isset($postDaten['ablegen'])) {
                 $zuBearbeitenderMitarbeiter->arbeitsmonatAblegen($monat);
             } elseif ($postDaten['anzeigen']) {
@@ -306,7 +314,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             }
         }
 
-        $form = new Azebo_Form_Mitarbeiter_Monatsedit();
         if ($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat) === null) {
             $form->removeElement('ablegen');
             $form->removeElement('zurueck');
