@@ -484,21 +484,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
     }
 
-    //TODO Wieso sollen nur Abschlüsse aus dem laufenden Jahr brücksichtigt werden???
     public function getAbgeschlossenBis() {
-        $heute = new Zend_Date();
-        $arbeitsmonate = $this->getArbeitsmonateNachJahr($heute);
-        $letzter = null;
-        for ($index = count($arbeitsmonate) - 1; $index >= 0; $index--) {
-            if ($arbeitsmonate[$index]->getSaldo()->getStunden() !== null) {
-                $letzter = $arbeitsmonate[$index];
-                break;
-            }
-        }
-        if ($letzter !== null) {
-            return $letzter->getMonat()->toString('MMMM yyyy');
-        } else {
-            return null;
+        $arbeitsmonate = $this->getArbeitsmonate(false);
+        if (count($arbeitsmonate) !== 0) {
+            return $arbeitsmonate[count($arbeitsmonate) - 1]->getMonat()->toString('MMMM yyyy');
         }
     }
 
@@ -882,7 +871,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                     $monat->save();
                 }
             }
-            
+
             // lösche das Vorjahr aus der Tabelle
             $vorjahr->delete();
         }
