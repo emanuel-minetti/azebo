@@ -53,7 +53,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 ->setDjConfigOption('parseOnLoad', true)
                 ->requireModule('dojox.grid.DataGrid')
                 ->requireModule('dojo.data.ItemFileReadStore')
-                ->requireModule('dojo._base.connect');
+                ->requireModule('dojo._base.connect')
+                ->requireModule('dijit.Tooltip');
     }
 
     public function getSeitenName() {
@@ -296,9 +297,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         if ($request->isPost()) {
             $postDaten = $request->getPost();
             $postDaten['mitarbeiter'] = $zuBearbeitenderMitarbeiter;
-            //TODO Fertig machen!!!
-            //TODO Hier bin ich!!
-            $this->_log->debug('Post-Daten: ' . print_r($postDaten, TRUE));
+            $postDaten['monat'] = $monat;
             if (isset($postDaten['zurueck'])) {
                 if($form->isValid($postDaten)) {
                     $zuBearbeitenderMitarbeiter->abschlussZuruecknehmen($monat);

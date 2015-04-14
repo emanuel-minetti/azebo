@@ -173,13 +173,11 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         $this->view->form = $form;
     }
 
-    //TODO Kommentieren!
     public function farbenAction() {
         $this->erweitereSeitenName(' Farben einrichten');
         $this->view->dojo()->requireModule("dojox.widget.ColorPicker")
                 ->requireModule("dojo.dom");
         
-        //$this->view->farbe = '#00ff00';
         $this->view->farben = $this->mitarbeiter->getFarben();
 
         $form = new Azebo_Form_Mitarbeiter_Farben();

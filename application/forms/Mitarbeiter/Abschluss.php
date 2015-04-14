@@ -20,7 +20,6 @@
  *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
-//TODO Kommentare anpassen!
 /**
  * Dieses Formular dient als Platzhalter für die zwei Buttons für 'Monat Prüfen'
  * und 'Monat Abschließen'.

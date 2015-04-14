@@ -21,29 +21,48 @@
  */
 
 /**
- * Prüft den eingetragenen Beginn der Arbeitszeit gegen den in der DB oder der
- * Konfiguration festgelegten Rahmen- und Kernbeginn. An Feiertagen wird nicht
- * geprüft.
+ * Prüft, ob ein Monatsabschluss zurückgenommen werden kann.
+ * Es wird geprüft, ob der zurückzunehmende Abschluss vor dem letzten
+ * Übertrag liegt. und falls das der Fall ist, ob ein Eintrag in der
+ * Vorjahrestabelle vorliegt. Falls kein Eintrag vorliegt, kann der Abschluss
+ * nicht zurückgenomen werden. Außerdem kann der Monat nicht zurückgenommen
+ * werden, falls er im Jahr vor dem Vorjahr liegt.
  *
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Zuruecknahme extends Zend_Validate_Abstract {
 
-    const ZURUECK = 'JahresZuruecknahme';
+    const KEIN_VORJAHR = 'KeinVorjahr';
+    const ZU_ALT = 'ZuAlt';
 
     protected $_messageTemplates = array(
-        self::ZURUECK => 'Der Abschluss kann nicht zurückgenommen werden.
+        self::KEIN_VORJAHR => 'Der Abschluss kann nicht zurückgenommen werden.
             Es können nur Jahresabschlüsse zurückgenommen werden, die nach
-            der Version 1.24 des Arbeitszeitbogens vorgenommen wurden!',
-     );
+            dem 15.4.2015 vorgenommen wurden!',
+        self::ZU_ALT => 'Der Abschluss kann nicht zurückgenommen werden. Es
+            können nur Abschlüsse zurückgenommen werden, die höchstens ein Jahr
+            vor dem letzten Jahresabschluss liegen!',
+    );
 
     public function isValid($value, $context = null) {
-        //TODO Hier muss getestet werden, ob das Zurücknehmen einen Jahresabschluss
-        //TODO zurücknimmt. Falls das der Fall ist muss geprüft werden, ob ein Eintrag
-        //TODO für das Vorjahr vorliegt. Falls nicht, darf die Zurücknahme nicht erfolgen!!
-        $log = Zend_Registry::get('log');
-        $log->debug('Hallo vom Zurücknahme-Validator!');
-        $log->debug(print_r($context, TRUE));
+        $mitarbeiter = $context['mitarbeiter'];
+        $monat = $context['monat'];
+        if ($mitarbeiter->getUebertragenBis()->compareYear($monat) === 0) {
+            // Der Monat liegt vor dem letzten Übertrag, also prüfe, ob
+            // es ein Vorjahr für den Mitarbeiter in der DB gibt.
+            // getVorjahr() liefert immer ein Item zurück, also prüfe ob schon
+            // Daten eingetragen sind
+            if ($mitarbeiter->getVorjahr()->getUrlaub() === null) {
+                 $this->_error(self::KEIN_VORJAHR);
+                 return false;
+            }
+        } elseif ($mitarbeiter->getUebertragenBis()->compareYear(
+                        $monat) === 1) {
+            // Der Monat liegt vor dem Vorjahr.
+            $this->_error(self::ZU_ALT);
+            return false;
+        }
+        return true;
+        
     }
-
 }

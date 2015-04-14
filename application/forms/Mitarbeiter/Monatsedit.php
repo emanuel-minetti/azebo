@@ -36,12 +36,21 @@ class Azebo_Form_Mitarbeiter_Monatsedit extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Monat Ablegen',
+            'decorators' => array(
+                'DijitElement',
+                'DtDdWrapper',
+            ),
         ));
         
         $this->addElement('SubmitButton', 'zurueck', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Abschluss Zurücknehmen',
+            'decorators' => array(
+                'DijitElement',
+                'DtDdWrapper',
+                'Errors',
+            ),
             'validators' => array(
                 'Zuruecknahme',
                 )
