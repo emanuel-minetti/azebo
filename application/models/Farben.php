@@ -20,7 +20,6 @@
  *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
-//TODO Kommentieren!
 /**
  * Description of Farben
  *
