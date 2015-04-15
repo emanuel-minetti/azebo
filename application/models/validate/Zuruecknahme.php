@@ -20,6 +20,9 @@
  *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
+//TODO Kommentieren!!
+//TODO Das Copyright im Header der PHP-Dateien korrigieren!
+
 /**
  * Prüft, ob ein Monatsabschluss zurückgenommen werden kann.
  * Es wird geprüft, ob der zurückzunehmende Abschluss vor dem letzten
