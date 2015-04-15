@@ -17,7 +17,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 /**
@@ -40,4 +40,3 @@ interface Azebo_Resource_Arbeitsmonat_Interface {
     
     public function deleteArbeitsmonateBis(Zend_Date $bis, $mitarbeiterId);
 }
-

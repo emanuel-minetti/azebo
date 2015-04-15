@@ -17,14 +17,13 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
-//TODO Kommentare anpassen!
 /**
- * Dieses Formular dient als Platzhalter für die zwei Buttons für 'Monat Prüfen'
- * und 'Monat Abschließen'.
- *
+ * Das Formular in dem die Mitarbeiter Farben für die Darstellung
+ * auswählen können.
+ * 
  * @author Emanuel Minetti
  */
 class Azebo_Form_Mitarbeiter_Farben extends AzeboLib_Form_Abstract {
@@ -47,8 +46,6 @@ class Azebo_Form_Mitarbeiter_Farben extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Zurücksetzen',
-            //'decorators' => array('DijitElement', 'Errors',),
-            //'tabindex' => 1,
         ));
         
         $this->addElement('SubmitButton', 'uebernehmen', array(
@@ -56,8 +53,6 @@ class Azebo_Form_Mitarbeiter_Farben extends AzeboLib_Form_Abstract {
             'ignore' => true,
             'label' => 'Übernehmen',
             'validators' => array('Jahr',),
-            //'decorators' => array('DijitElement', 'Errors',),
-            //'tabindex' => 1,
         ));
     }
 

@@ -17,7 +17,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 /**
@@ -28,16 +28,32 @@
 class Azebo_Form_Mitarbeiter_Monatsedit extends AzeboLib_Form_Abstract {
     
     public function init() {
+        
+        $this->addElementPrefixPath(
+                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
+        
         $this->addElement('SubmitButton', 'ablegen', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Monat Ablegen',
+            'decorators' => array(
+                'DijitElement',
+                'DtDdWrapper',
+            ),
         ));
         
         $this->addElement('SubmitButton', 'zurueck', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Abschluss Zurücknehmen',
+            'decorators' => array(
+                'DijitElement',
+                'DtDdWrapper',
+                'Errors',
+            ),
+            'validators' => array(
+                'Zuruecknahme',
+                )
         ));
         
         $this->addElement('SubmitButton', 'anzeigen', array(

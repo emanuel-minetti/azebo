@@ -17,7 +17,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 /**
@@ -81,26 +81,59 @@ class Azebo_Resource_Arbeitsregel extends AzeboLib_Model_Resource_Db_Table_Abstr
         return $this->find($id)->current();
     }
 
+    /**
+     * Gibt den ersten Arbeitstag eines Mitarbeiters in einem Jahr zurück.
+     * Liegt der erste Arbeitstag des Mitarbeiters vor diesem Jahr, wird Neujahr
+     * des gegebenen Jahres zurückgegeben.
+     * 
+     * @param int $mitarbeiterId die Mitarbeiter-Id.
+     * @param Zend_Date $jahr das Jahr für den der erste Arbeitstag gesucht wird.
+     * @return Zend_Date der erste Arbeitstag in dem übergebenen Jahr, bzw.
+     * Neujahr des gegebenen Jahres.
+     */
     public function getArbeitsbeginnNachMitarbeiterIdUndJahr($mitarbeiterId, Zend_Date $jahr) {
+        // hole die Arbeitsregeln ...
         $arbeitsregeln = $this->getArbeitsregelnNachMitarbeiterId($mitarbeiterId);
+        // und filtere diejenigen heraus, die erst nach dem gegebenen Jahr
+        // beginnen
         $gefiltert = array();
         foreach ($arbeitsregeln as $arbeitsregel) {
             if ($arbeitsregel->getVon()->compareYear($jahr) != 1) {
                 $gefiltert[] = $arbeitsregel;
             }
         }
+        
+        // setze $ergebnis auf den Silvester des gegebenen Jahres ...
         $ergebis = new Zend_Date($jahr);
         $ergebis->setMonth(12);
         $ergebis->setDay(31);
+        // und laufe durch die gefilterten Regeln bis der früheste Beginn
+        // gefunden ist. Setze dieses Datum als $ergebnis.
         foreach ($gefiltert as $arbeitsregel) {
             if($arbeitsregel->getVon()->compareDate($ergebis) == -1) {
                 $ergebis = $arbeitsregel->getVon();
             }
         }
         
+        // setze $neujahr auf den Neujahr des gegebenen Jahres.
+        $neujahr = new Zend_Date($jahr);
+        $neujahr->setMonth(1);
+        $neujahr->setDay(1);
+        
+        // falls das bisherige Ergebnis vor Neujahr liegt, gib Neujahr zurück
+        if ($ergebis->compareDate($neujahr) == -1) {
+            $ergebis = $neujahr;
+        }
+        
         return $ergebis;
     }
     
+    /**
+     * Gibt den ersten Arbeitstag eines Mitarbeiters als Zend_Date zurück.
+     * 
+     * @param int $mitarbeiterId die Mitarbeiter-Id.
+     * @return Zend_Date der erste Arbeitstag.
+     */
     public function getArbeitsbeginnNachMitarbeiterId($mitarbeiterId) {
         $select = $this->select();
         $select->where('mitarbeiter_id = ?', $mitarbeiterId);

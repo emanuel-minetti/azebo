@@ -17,7 +17,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 class BueroleitungController extends AzeboLib_Controller_Abstract {
@@ -53,7 +53,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                 ->setDjConfigOption('parseOnLoad', true)
                 ->requireModule('dojox.grid.DataGrid')
                 ->requireModule('dojo.data.ItemFileReadStore')
-                ->requireModule('dojo._base.connect');
+                ->requireModule('dojo._base.connect')
+                ->requireModule('dijit.Tooltip');
     }
 
     public function getSeitenName() {
@@ -289,12 +290,18 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         $this->erweitereSeitenName(' ' . $zuBearbeitenderMitarbeiter->getName() .
                 ' ' . $monat->toString('MMMM yyyy'));
+        
+        $form = new Azebo_Form_Mitarbeiter_Monatsedit();
 
         $request = $this->getRequest();
         if ($request->isPost()) {
             $postDaten = $request->getPost();
+            $postDaten['mitarbeiter'] = $zuBearbeitenderMitarbeiter;
+            $postDaten['monat'] = $monat;
             if (isset($postDaten['zurueck'])) {
-                $zuBearbeitenderMitarbeiter->deleteArbeitsmonat($monat);
+                if($form->isValid($postDaten)) {
+                    $zuBearbeitenderMitarbeiter->abschlussZuruecknehmen($monat);
+                }
             } elseif (isset($postDaten['ablegen'])) {
                 $zuBearbeitenderMitarbeiter->arbeitsmonatAblegen($monat);
             } elseif ($postDaten['anzeigen']) {
@@ -306,7 +313,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             }
         }
 
-        $form = new Azebo_Form_Mitarbeiter_Monatsedit();
         if ($zuBearbeitenderMitarbeiter->getArbeitsmonat($monat) === null) {
             $form->removeElement('ablegen');
             $form->removeElement('zurueck');

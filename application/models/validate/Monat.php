@@ -17,27 +17,30 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 /**
- * Prüft ob an jedem Tag des Monats, an dem der Mitarbeiter eine Sollarbeitszeit
+ * Prüft, ob ein Monat abgeschlossen werden kann. Im Einzelnen werden die
+ * folgenden zwei Punkte geprüft:
+ * Erstens: Prüft, ob alle Monate vorher, die noch nicht übertragen waren,
+ * abgeschlossen sind.
+ * Zweitens: Prüft, ob an jedem Tag des Monats, an dem der Mitarbeiter eine Sollarbeitszeit
  * hat, ein Eintrag vorhanden ist. Also ob entweder eine Dienstbefreiung 
  * angegeben ist oder Beginn und Ende für diesen Tag eingetragen wurden. Wurde
  * außerdem ein Nachmittag hinzugefügt, so müssen auch bei diesem Beginn und
  * Ende eingetragen sein.
- *
+ * 
  * @author Emanuel Minetti
  */
 class Azebo_Validate_Monat extends Zend_Validate_Abstract {
     
-    const FEHLT = 'Fehlt';
-    const VORJAHR = 'Vorjahr';
+    const FEHLT_TAG = 'FehltTag';
+    const FEHLT_MONAT = 'FehltMonat';
 
     protected $_messageTemplates = array(
-        self::FEHLT => '',
-        self::VORJAHR => 'Der Monat kann nicht abgeschlossen werden, bevor das
-            Vorjahr abgeschlossen wurde.',
+        self::FEHLT_TAG => '',
+        self::FEHLT_MONAT => '',
     );
 
     public function isValid($value, $context = null) {
@@ -51,11 +54,29 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
         $arbeitstage = $model->getArbeitstageNachMonatUndMitarbeiter(
                 $monat, $mitarbeiter);
         
-        // prüfen, ob das Vorjahr abgeschlossen ist
-        if($mitarbeiter->getUebertragenBis()->get(Zend_Date::YEAR) <
-                $monat->get(Zend_Date::YEAR) - 1) {
-            $this->_error(self::VORJAHR);
+        //die nicht abgeschlossenen Monate holen ...
+        $monate = $mitarbeiter->getFehlmonateBis($monat);
+        //und die Fehlermeldung (für die Monate) zusammenbasteln
+        if (count($monate) > 0) {
             $isValid = false;
+            $message = '';
+            if (count($monate) == 1) {
+                $message = 'Der Monat ' . $monate[0]->toString('MMMM YYYY') . ' ist'
+                        . ' noch nicht abgeschlossen!';
+            } else {
+                $message = 'Die Monate ';
+                for ($i = 0; $i < count($monate) - 2; $i++) {
+                    $message .= $monate[$i]->toString('MMMM YYYY') . ', ';
+                }
+                $message .= $monate[count($monate) - 2]->toString('MMMM YYYY');
+                $message .= ' und ' . $monate[count($monate) - 1]->toString('MMMM YYYY');
+                $message .= ' sind noch nicht abgeschlossen!';
+            }
+            
+            $message .= ' Bitte schließen sie die'
+                        . ' Monate in chronologischer Reihenfolge ab.';
+            $this->setMessage($message, self::FEHLT_MONAT);
+            $this->_error(self::FEHLT_MONAT);
         }
 
         //prüfen, ob alle nötigen Tage ausgefüllt sind
@@ -83,7 +104,7 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
             }
         }
         
-        //Fehlermeldung zusammenbasteln
+        //Fehlermeldung (für die Tage) zusammenbasteln
         if(count($fehltage) > 0) {
             $isValid = false;
             if(count($fehltage) == 1) {
@@ -96,13 +117,14 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
                 for ($index = 0; $index < count($fehltage) -2 ; $index++) {
                     $message .= $fehltage[$index]->toString('dd.MM., ');
                 }
-                $message .= $fehltage[count($fehltage) -2]->toString('dd.MM') . ' und ' .
+                $message .= $fehltage[count($fehltage) -2]->toString('dd.MM') . 
+                        ' und ' .
                         $fehltage[count($fehltage) -1]->toString('dd.MM') .
                         '! Bitte tragen Sie für diese Tage Ihre Arbeitszeit
                             oder eine Dienstbefreiung ein.';
             }
-            $this->setMessage($message, self::FEHLT);
-            $this->_error(self::FEHLT);
+            $this->setMessage($message, self::FEHLT_TAG);
+            $this->_error(self::FEHLT_TAG);
         }
 
         return $isValid;

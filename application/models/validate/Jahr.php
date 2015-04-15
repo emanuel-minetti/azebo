@@ -17,12 +17,12 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 /**
- * Prüft ob durch den Abschluss eines Monats der Resturlaub des laufenden Jahres
- * negative Werte annehmen würde.
+ * Prüft ob alle Monate des abgelaufenen Jahres, in denen der Mitarbeiter
+ * eine Arbeitsregel hatte, abgeschlossen sind.
  *
  * @author Emanuel Minetti
  */
@@ -46,12 +46,6 @@ class Azebo_Validate_Jahr extends Zend_Validate_Abstract {
         $beginn = new Zend_Date($arbeitsregelTabelle->
                                 getArbeitsbeginnNachMitarbeiterIdUndJahr(
                                         $mitarbeiter->id, $monat));
-        $erster = new Zend_Date($monat);
-        $erster->setMonth(1);
-        $erster->setDay(1);
-        if ($beginn->compareDate($erster) == -1) {
-            $beginn = $erster;
-        }
 
         // teste
         $fehlMonate = array();
@@ -84,7 +78,7 @@ class Azebo_Validate_Jahr extends Zend_Validate_Abstract {
                 $meldung .= $fehlMonate[$anzahl - 2] . ' und ' .
                         $fehlMonate[$anzahl - 1];
             }
-            $meldung .= ' abschließen, bevor Sie das Jahr abschließen können!';
+            $meldung .= ' abschließen, um das Jahr abzuschließen!';
             $this->setMessage($meldung, self::FEHLEND);
             $this->_error(self::FEHLEND);
             return false;

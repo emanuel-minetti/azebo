@@ -17,7 +17,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 class MonatController extends AzeboLib_Controller_Abstract {
@@ -138,10 +138,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // Setze das Datum
         $this->zuBearbeitendesDatum = new Zend_Date(array(
-                    'day' => $this->tag,
-                    'month' => $this->monat,
-                    'year' => $this->jahr,
-                ));
+            'day' => $this->tag,
+            'month' => $this->monat,
+            'year' => $this->jahr,
+        ));
 
         // Ermittle die Anzahl der Tage des Monats
         $this->tageImMonat = $this->zuBearbeitendesDatum
@@ -160,7 +160,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
 //        $this->view->dojo()->registerModulePath('custom','/js');
 //        $this->_log->debug('Pfad2: ' . print_r($this->view->dojo()->getModulePaths(), true));
 //         $this->view->dojo()->requireModule('custom.test');
-        
         // Aktiviere Dojo
         $this->view->dojo()
                 ->enable()
@@ -183,7 +182,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->saldo = $this->mitarbeiter->getSaldo(
                 $this->zuBearbeitendesDatum, true);
         $this->view->saldo = $this->saldo->getString();
-        $this->saldoGesamt = $this->mitarbeiter->getSaldoGesamt($this->zuBearbeitendesDatum);
+        $this->saldoGesamt = $this->mitarbeiter->getSaldoGesamt(
+                $this->zuBearbeitendesDatum);
         $this->view->saldoGesamt = $this->saldoGesamt->getString();
         if ($this->mitarbeiter->getHochschule() == 'hfm' &&
                 $this->saldoBisher->getRest()) {
@@ -193,7 +193,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
 
         // Urlaubswerte setzen
-        //TODO Resturlaub: Hier scheint es zu stimmen!
         $this->urlaubBisher = $this->mitarbeiter->getUrlaubBisher(
                 $this->zuBearbeitendesDatum);
         $this->view->urlaubBisher = $this->urlaubBisher;
@@ -278,8 +277,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($valid) {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
-                    $this->view->saldo =
-                            $this->mitarbeiter->getSaldo($monat)->getString();
+                    $this->view->saldo = $this->mitarbeiter->getSaldo($monat)->getString();
                     // markiere den Monat in der Session als geprüft
                     $ns = new Zend_Session_Namespace();
                     $ns->geprueft[$monat->toString('MM-yyyy')] = true;
@@ -294,18 +292,22 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 if ($valid && $this->mitarbeiter->getArbeitsmonat($this->zuBearbeitendesDatum) === null) {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
-                    //TODO Urlaub: Codepflege!
                     $saldo = $this->mitarbeiter->getSaldo($monat);
-                    //$urlaub = $this->mitarbeiter->getUrlaubNachMonat($monat);
                     $this->view->saldo = $saldo->getString();
                     $this->mitarbeiter->saveArbeitsmonat($monat);
                     $this->bearbeitbar = false;
+                    
+                    //falls der zu bearbeitende Monat der Dezember ist,
+                    //schließe auch das Jahr ab!
+                    $dezember = new Zend_Date('01.12.2000');
+                    if ($this->zuBearbeitendesDatum->compareMonth($dezember)
+                            == 0) {
+                        $this->jahresabschlussFehlt = true;
+                        $this->_schliesseJahrAb();
+                    }
 
                     // aktualisiere den View
                     $this->view->bearbeitbar = false;
-                    //TODO Urlaub: sieht komisch aus!
-                    //$this->view->urlaubBisher = $this->mitarbeiter->
-                    //         getUrlaubBisher();
                     $abschlussForm = $this->_getMitarbeiterAbschlussForm();
                 }
             }
@@ -313,6 +315,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             if (isset($postDaten['uebertragen'])) {
                 $valid = $abschlussForm->isValid($postDaten);
                 if ($valid) {
+                    $this->_log->debug('Habe abgeschlossen!!');
                     $this->_schliesseJahrAb();
                 }
             }
@@ -347,12 +350,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Der User versucht etwas Böses!
         if (!$this->bearbeitbar) {
             $errors = new ArrayObject();
-            $errors->type =
-                    Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
+            $errors->type = Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
             $errors->request = $request;
             $errors->exception = new AzeboLib_Exception(
-                            'Auf diese Seite haben Sie keinen Zugriff!',
-                            null, null);
+                    'Auf diese Seite haben Sie keinen Zugriff!', null, null);
             $request->setParam('error_handler', $errors);
             $this->_forward('nichterlaubt', 'error');
         }
@@ -395,8 +396,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                         $daten['beginnnachmittag'] != '' &&
                                         $daten['endenachmittag'] !== null &&
                                         $daten['endenachmittag'] != '') {
-                                    $anwesendNachmittag =
-                                            $this->zeitrechner->
+                                    $anwesendNachmittag = $this->zeitrechner->
                                             anwesend(
                                             $daten['beginnnachmittag'], $daten['endenachmittag']);
                                     $anwesend->addTime($anwesendNachmittag);
@@ -416,8 +416,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                 $this->zuBearbeitendesDatum, $daten);
                         $ns = new Zend_Session_Namespace();
                         $ns->geprueft[
-                                $this->zuBearbeitendesDatum->toString('MM-yyyy')] =
-                                false;
+                                $this->zuBearbeitendesDatum->toString('MM-yyyy')
+                                ] = false;
                         $redirector = $this->_helper->getHelper('Redirector');
                         $redirector->gotoRoute(array(
                             'jahr' => $this->jahr,
@@ -488,12 +488,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Der User versucht etwas Böses!
         if (!$this->bearbeitbar) {
             $errors = new ArrayObject();
-            $errors->type =
-                    Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
+            $errors->type = Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
             $errors->request = $request;
             $errors->exception = new AzeboLib_Exception(
-                            'Auf diese Seite haben Sie keinen Zugriff!',
-                            null, null);
+                    'Auf diese Seite haben Sie keinen Zugriff!', null, null);
             $request->setParam('error_handler', $errors);
             $this->_forward('nichterlaubt', 'error');
         }
@@ -514,12 +512,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $filter = new Azebo_Filter_DatumAlsDate();
                     $tagIndex = $filter->filter($von);
                     $tagBis = $filter->filter($bis);
-                    // iterriere über die Tage
+                    // iteriere über die Tage
                     while ($tagIndex->compareDate($tagBis) != 1) {
                         $arbeitstag = $this->mitarbeiter->getArbeitstagNachTag($tagIndex);
                         // Arbeitsfreie Tage werden nicht bearbeitet
                         $arbeitsfrei = !$arbeitstag->getRegel();
-                        if(!$arbeitsfrei) {
+                        if (!$arbeitsfrei) {
                             $arbeitstag->setBeginn(null);
                             $arbeitstag->setEnde(null);
                             $arbeitstag->befreiung = $daten['befreiung'];
@@ -719,8 +717,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             }
         }
 
-        $azvTageRest =
-                $this->mitarbeiter->getAzvTage() -
+        $azvTageRest = $this->mitarbeiter->getAzvTage() -
                 $this->mitarbeiter->getAzvTageBisher(
                         $this->zuBearbeitendesDatum);
         $azvTageMonat = $this->mitarbeiter->getAzvTageNachMonat(
@@ -786,13 +783,30 @@ class MonatController extends AzeboLib_Controller_Abstract {
     private function _schliesseJahrAb() {
         // Falls das Jahr schon abgeschlossen ist, darf außer dem Redirect
         // nichts passieren
+        
         if ($this->jahresabschlussFehlt) {
-
             // Ermittle den Dezember des abzuschließenden Jahres
             $uebertragenBis = $this->mitarbeiter->getUebertragenbis();
             $jahr = $uebertragenBis->get(Zend_Date::YEAR);
             $jahr++;
             $dezember = new Zend_Date("1.12.$jahr");
+            
+            // Die zu überschreibenden Daten 'retten', also in der Tabelle
+            // 'vorjahr' abspeichern
+            $vorjahr = $this->mitarbeiter->getVorjahr();
+            $uebertrag = $this->mitarbeiter->getSaldouebertrag();
+            $vorjahr->setSaldouebertrag($uebertrag);
+            if ($this->mitarbeiter->getHochschule() == 'hfm') {
+                if ($uebertrag->getRest()) {
+                    $saldo2007 = new Azebo_Model_Saldo($uebertrag->getRestStunden(), $uebertrag->getRestMinuten(), true);
+                    $vorjahr->setSaldo2007($saldo2007);
+                } else {
+                    $this->mitarbeiter->setSaldo2007(null);
+                }
+            }
+            $vorjahr->setUrlaub($this->mitarbeiter->getUrlaub());
+            $vorjahr->setUrlaubVorjahr($this->mitarbeiter->getUrlaubVorjahr());
+            $vorjahr->save();
 
             // Saldo neu setzen
             $saldo = $this->mitarbeiter->getSaldoGesamt($dezember);
@@ -801,8 +815,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             // Saldo2007 setzen
             if ($this->mitarbeiter->getHochschule() == 'hfm') {
                 if ($saldo->getRest()) {
-                    $saldo2007 = new Azebo_Model_Saldo($saldo->getRestStunden(),
-                                    $saldo->getRestMinuten(), true);
+                    $saldo2007 = new Azebo_Model_Saldo($saldo->getRestStunden(), $saldo->getRestMinuten(), true);
                     $this->mitarbeiter->setSaldo2007($saldo2007);
                 } else {
                     $this->mitarbeiter->setSaldo2007(null);

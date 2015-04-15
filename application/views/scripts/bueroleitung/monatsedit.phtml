@@ -2,4 +2,15 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <?= $this->form ?>
+    <script type="text/javascript">
+        dojo.ready(function () {
+            var tip = new dijit.Tooltip({
+                label: '<p>Beim Zurücknehmen eines Monatsabschlusses werden\n\
+    auch alle <br/> chronologisch darauf folgenden Monatsabschlüsse zurückgenommen!</p>',
+                showDelay: 50,
+                connectId: ["zurueck"]
+            });
+        });
+
+    </script>
 </div>

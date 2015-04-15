@@ -17,7 +17,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) arcor.de)
+ *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 /**
@@ -167,5 +167,14 @@ interface Azebo_Resource_Mitarbeiter_Item_Interface {
     public function getFarben();
     
     public function setFarben($farben);
+    
+    public function getFehlmonateBis(Zend_Date $monat);
+    
+    /**
+     * @return Azebo_Resource_Vorjahr_Item
+     */
+    public function getVorjahr();
+    
+    public function abschlussZuruecknehmen(Zend_Date $ab);
     
 }
