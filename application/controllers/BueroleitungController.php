@@ -68,7 +68,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
     public function mitarbeiterAction() {
         $this->erweitereSeitenName(' Übersicht Mitarbeiter');
-
+        
         $mitarbeiterTabelleService = new Azebo_Service_MitarbeiterTabelle();
         $daten = $mitarbeiterTabelleService->_getMitarbeiterTabellenDaten(
                 $this->mitarbeiter, null);
@@ -129,6 +129,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->erweitereSeitenName(' Neuer Mitarbeiter');
         $hochschule = $this->mitarbeiter->getHochschule();
         $mitglieder = $this->model->getBenutzernamenNachHochschule($hochschule);
+        natcasesort($mitglieder);
         $form = $this->_getNeuerMitarbeiterForm($mitglieder);
         $request = $this->getRequest();
         if ($request->isPost()) {
