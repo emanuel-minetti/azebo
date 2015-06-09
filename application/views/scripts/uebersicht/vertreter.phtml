@@ -4,7 +4,7 @@
     <p style="text-align: center">
         Bitte wählen Sie einen Mitarbeiter aus, der stellvertretend für Sie Ihren Arbeitszeitbogen bearbeiten darf.
     </p>
-    <div id="gridDiv" style="width: 156px; height: <?= 38 + $this->zeilen * 24 ?>px; margin-right: 50%; float: right;"></div>
+    <div id="gridDiv" style="width: 206px; height: <?= 38 + $this->zeilen * 24 ?>px; margin-right: 50%; float: right;"></div>
 </div>
 <script type="text/javascript">
     dojo.ready(function() {
@@ -14,13 +14,14 @@
             new dojo.data.ItemFileReadStore({ data:mitarbeiterDaten });
         
         var layout =[[
-                {'name':'Mitarbeiter','field':'mitarbeitername','width':'147px'},
+                {'name':'Mitarbeiter','field':'mitarbeitername','width':'197px'},
             ]];
         
         var grid = new dojox.grid.DataGrid({
             store:dataStore,
             structure:layout,
-            selectionMode:"none"
+            selectionMode:"none",
+            autoHeight: true
         });
         
         grid.placeAt('gridDiv');

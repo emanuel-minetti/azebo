@@ -7,7 +7,7 @@
         <?= $this->url(array('controller' => 'bueroleitung', 'action' => 'neu')) ?>
            ">Neuen Mitarbeiter hinzufügen</a>
     </p>
-    <div id="gridDiv" style="width: 412px; height: <?=38 + $this->zeilen * 24 ?>px"></div>
+    <div id="gridDiv" style="width: 462px; height: <?=38 + $this->zeilen * 24 ?>px"></div>
 
 </div>
 
@@ -19,7 +19,7 @@
             new dojo.data.ItemFileReadStore({ data:mitarbeiterDaten });
         
         var layout =[[
-                {'name':'Mitarbeiter','field':'mitarbeitername','width':'147px'},
+                {'name':'Mitarbeiter','field':'mitarbeitername','width':'197px'},
                 {'name':'Abgeschlossen bis','field':'abgeschlossen','width':'120px'},
                 {'name':'Abgelegt bis','field':'abgelegt','width':'120px'},
             ]];
@@ -27,7 +27,8 @@
         var grid = new dojox.grid.DataGrid({
             store:dataStore,
             structure:layout,
-            selectionMode:"none"
+            selectionMode:"none",
+            autoHeight: true
         });
         
         grid.placeAt('gridDiv');
