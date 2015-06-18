@@ -304,6 +304,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                             == 0) {
                         $this->jahresabschlussFehlt = true;
                         $this->_schliesseJahrAb();
+                        //TODO Hier scheint der Fehler (Colden) zu ligen!!!!
                     }
 
                     // aktualisiere den View
