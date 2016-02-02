@@ -305,6 +305,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         $this->jahresabschlussFehlt = true;
                         $this->_schliesseJahrAb();
                         //TODO Hier scheint der Fehler (Colden) zu ligen!!!!
+                        // Scheint aber schon gefixt zu sein!!
                     }
 
                     // aktualisiere den View
@@ -628,7 +629,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $pdf->Cell(95, 15, 'Arbeitszeiterfassung', 0, 0, 'L');
         $pdf->Cell(95, 15, $this->mitarbeiter->getHochschulString(), 0, 0, 'R');
         $pdf->Ln(10);
-        $pdf->Cell(95, 15, $this->zuBearbeitendesDatum->toString('MMMM YYYY'), 0, 0, 'L');
+        $pdf->Cell(95, 15, $this->zuBearbeitendesDatum->toString('MMMM yyyy'), 0, 0, 'L');
         $pdf->Cell(95, 15, $this->mitarbeiter->getName(), 0, 0, 'R');
         $pdf->Ln(20);
 
