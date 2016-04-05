@@ -8,13 +8,19 @@
     <? endif; ?>
     <? if ($this->bearbeitbar): ?>
         <p style="width: 180px; text-align: center; margin-bottom: 0px;">
-            <a href=<?=
+            <a class="links"href=<?=
     $this->url(array(
         'monat' => $this->monat,
         'jahr' => $this->jahr,
             ), 'monatBlock', true);
         ?>>Einträge blockweise bearbeiten</a>
-        </p>
+            <a class="rechts" href=<?=
+    $this->url(array(
+        'monat' => $this->monat,
+        'jahr' => $this->jahr,
+            ), 'monatCSV', true);
+        ?>> CSV-Datei hochladen</a>
+        </p> <br/>
     <? endif; ?>
     <? if (!$this->jahresabschlussFehlt): ?> 
         <div class="links">

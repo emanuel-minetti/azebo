@@ -270,3 +270,13 @@ div.rechts {
 div#form {
   clear: both;
 }
+
+a.links {
+    float: left;
+    width: 10em;
+}
+
+a.rechts {
+    width:8em;
+    margin-left: 12em;
+}

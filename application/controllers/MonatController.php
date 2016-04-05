@@ -550,6 +550,74 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $form->setName('blockForm');
         $this->view->form = $form;
     }
+    
+    public function csvAction() {
+        $request = $this->getRequest();
+
+        // falls der Monat nicht bearbeitbar ist, gibt es keinen Link hierher.
+        // Der User versucht etwas Böses!
+        if (!$this->bearbeitbar) {
+            $errors = new ArrayObject();
+            $errors->type = Zend_Controller_Plugin_ErrorHandler::EXCEPTION_OTHER;
+            $errors->request = $request;
+            $errors->exception = new AzeboLib_Exception(
+                    'Auf diese Seite haben Sie keinen Zugriff!', null, null);
+            $request->setParam('error_handler', $errors);
+            $this->_forward('nichterlaubt', 'error');
+        }
+
+//        $model = new Azebo_Model_Mitarbeiter();
+//        $form = $model->getForm('mitarbeiterBlock');
+//        $monatElement = $form->getElement('monat');
+//        $monatElement->setValue($this->zuBearbeitendesDatum->toString('yyyy-MM-dd'));
+
+//        if ($request->isPost()) {
+//            $postDaten = $request->getPost();
+//            if (isset($postDaten['absenden'])) {
+//                $valid = $form->isValid($postDaten);
+//                $daten = $form->getValues();
+//                if ($valid) {
+//                    $von = $daten['von'];
+//                    $bis = $daten['bis'];
+//                    $filter = new Azebo_Filter_DatumAlsDate();
+//                    $tagIndex = $filter->filter($von);
+//                    $tagBis = $filter->filter($bis);
+//                    // iteriere über die Tage
+//                    while ($tagIndex->compareDate($tagBis) != 1) {
+//                        $arbeitstag = $this->mitarbeiter->getArbeitstagNachTag($tagIndex);
+//                        // Arbeitsfreie Tage werden nicht bearbeitet
+//                        $arbeitsfrei = !$arbeitstag->getRegel();
+//                        if (!$arbeitsfrei) {
+//                            $arbeitstag->setBeginn(null);
+//                            $arbeitstag->setEnde(null);
+//                            $arbeitstag->befreiung = $daten['befreiung'];
+//                            $arbeitstag->save();
+//                        }
+//                        $tagIndex->addDay(1);
+//                    }
+//                    // redirect
+//                    return $this->_helper->redirector->gotoRoute(array(
+//                                'monat' => $this->monat,
+//                                'jahr' => $this->jahr,
+//                                    ), 'monat');
+//                }
+//            }
+//        }
+
+        $this->erweitereSeitenName(' - ' . $this->zuBearbeitendesDatum
+                        ->toString('MMMM yyyy'));
+        $this->erweitereSeitenName(' CSV-Datei hochladen');
+
+//        $urlHelper = $this->_helper->getHelper('url');
+//        $url = $urlHelper->url(array(
+//            'monat' => $this->monat,
+//            'jahr' => $this->jahr,
+//                ), 'monatBlock', true);
+//        $form->setAction($url);
+//        $form->setMethod('post');
+//        $form->setName('blockForm');
+//        $this->view->form = $form;
+    }
 
     private function _getMitarbeiterTagForm() {
         $model = new Azebo_Model_Mitarbeiter();
