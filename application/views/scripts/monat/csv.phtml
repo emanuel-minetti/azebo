@@ -7,10 +7,10 @@
     var file = document.getElementById('file');
     var label = document.getElementById('filename');
     file.onchange = function(){
-       var filename = "";
-       filename = file.value;
-       console.log('Dateiname: ' + filename);
-       label.value = filename;
+        var pathname = file.value;
+        var index = pathname.lastIndexOf('\\');
+        var filename = pathname.substr(index + 1);
+        label.value = filename;
    };
     });
 </script>
