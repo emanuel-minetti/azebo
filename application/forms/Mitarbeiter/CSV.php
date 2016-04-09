@@ -39,6 +39,12 @@ class Azebo_Form_Mitarbeiter_CSV extends AzeboLib_Form_Abstract {
         $fileElement->getDecorator('label')->setOption('tag', 'dd');
         $fileElement->getDecorator('HtmlTag')->setOption('tag', 'dt');
         $this->addElement($fileElement);
+        
+        $this->addElement('text', 'filename', array(
+            'label' => 'Ausgewählte Datei:',
+            'value' => 'Keine Datei ausgewählt!',
+            'disabled' => 'true',
+        ));
 
         $this->addElement('SubmitButton', 'absenden', array(
             'required' => false,

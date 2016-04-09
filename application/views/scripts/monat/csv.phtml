@@ -2,3 +2,15 @@
     <h3><?= $this->seitenName ?></h3>
     <?= $this->form ?>
 </div>
+<script type="text/javascript">
+    dojo.ready(function() {
+    var file = document.getElementById('file');
+    var label = document.getElementById('filename');
+    file.onchange = function(){
+       var filename = "";
+       filename = file.value;
+       console.log('Dateiname: ' + filename);
+       label.value = filename;
+   };
+    });
+</script>
