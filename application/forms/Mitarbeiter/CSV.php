@@ -21,7 +21,7 @@
  */
 
 /**
- * Description of Block
+ * Description of CSV
  *
  * @author Emanuel Minetti
  */
@@ -38,25 +38,7 @@ class Azebo_Form_Mitarbeiter_CSV extends AzeboLib_Form_Abstract {
         $fileElement->getDecorator('label')->setOption('class', 'custom-file-upload');
         $fileElement->getDecorator('label')->setOption('tag', 'dd');
         $fileElement->getDecorator('HtmlTag')->setOption('tag', 'dt');
-        //$fileElement->setAttrib('class', 'hidden_button');
         $this->addElement($fileElement);
-        
-//        $this->addElement($fileElement, 'file', array(
-//           'required' => true,
-//            'decorators' => array(
-//                'ViewHelper',
-//                'Errors',
-//                'HtmlTag',
-//                array(
-//                    'Label',
-//                    array(
-//                        'class' => 'test',
-//                        'label' => 'Datei auswählen',
-//                        'placement' => 'APPEND'
-//                    )
-//                )
-//            )
-//        ));
 
         $this->addElement('SubmitButton', 'absenden', array(
             'required' => false,
@@ -66,10 +48,7 @@ class Azebo_Form_Mitarbeiter_CSV extends AzeboLib_Form_Abstract {
                 'DijitElement',
                 'Errors',
                 array('HtmlTag', array('tag' => 'dd')),
-            //array('HtmlTag', array('tag' => 'dt')),
             ),
-            'tabindex' => 4,
-            //TODO Decoratoren anpassen!
         ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
