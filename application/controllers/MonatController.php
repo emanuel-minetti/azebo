@@ -566,10 +566,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $this->_forward('nichterlaubt', 'error');
         }
 
-//        $model = new Azebo_Model_Mitarbeiter();
-//        $form = $model->getForm('mitarbeiterBlock');
-//        $monatElement = $form->getElement('monat');
-//        $monatElement->setValue($this->zuBearbeitendesDatum->toString('yyyy-MM-dd'));
+        $model = new Azebo_Model_Mitarbeiter();
+        $form = $model->getForm('mitarbeiterCSV');
+        $monatElement = $form->getElement('monat');
+        $monatElement->setValue($this->zuBearbeitendesDatum->toString('yyyy-MM-dd'));
 
 //        if ($request->isPost()) {
 //            $postDaten = $request->getPost();
@@ -608,15 +608,15 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         ->toString('MMMM yyyy'));
         $this->erweitereSeitenName(' CSV-Datei hochladen');
 
-//        $urlHelper = $this->_helper->getHelper('url');
-//        $url = $urlHelper->url(array(
-//            'monat' => $this->monat,
-//            'jahr' => $this->jahr,
-//                ), 'monatBlock', true);
-//        $form->setAction($url);
-//        $form->setMethod('post');
-//        $form->setName('blockForm');
-//        $this->view->form = $form;
+        $urlHelper = $this->_helper->getHelper('url');
+        $url = $urlHelper->url(array(
+            'monat' => $this->monat,
+            'jahr' => $this->jahr,
+                ), 'monatCSV', true);
+        $form->setAction($url);
+        $form->setMethod('post');
+        $form->setName('csvForm');
+        $this->view->form = $form;
     }
 
     private function _getMitarbeiterTagForm() {

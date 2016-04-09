@@ -280,3 +280,16 @@ a.rechts {
     width:8em;
     margin-left: 12em;
 }
+
+.custom-file-upload {
+    margin: 0.2em 0.2em 1.8em 0.2em;
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background: #fff url("/javascript/dijit/themes/tundra/images/buttonEnabled.png") repeat-x bottom left;
+}
+
+input[type="file"] {
+    display: none;
+}
