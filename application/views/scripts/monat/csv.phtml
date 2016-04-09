@@ -3,14 +3,14 @@
     <?= $this->form ?>
 </div>
 <script type="text/javascript">
-    dojo.ready(function() {
-    var file = document.getElementById('file');
-    var label = document.getElementById('filename');
-    file.onchange = function(){
-        var pathname = file.value;
-        var index = pathname.lastIndexOf('\\');
-        var filename = pathname.substr(index + 1);
-        label.value = filename;
-   };
+    dojo.ready(function () {
+        var file = document.getElementById('file');
+        var label = document.getElementById('filename');
+        file.onchange = function () {
+            var pathname = file.value;
+            var index = pathname.lastIndexOf('\\');
+            var filename = pathname.substr(index + 1);
+            label.value = filename;
+        };
     });
 </script>
