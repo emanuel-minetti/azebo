@@ -571,38 +571,26 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $monatElement = $form->getElement('monat');
         $monatElement->setValue($this->zuBearbeitendesDatum->toString('yyyy-MM-dd'));
 
-//        if ($request->isPost()) {
-//            $postDaten = $request->getPost();
-//            if (isset($postDaten['absenden'])) {
-//                $valid = $form->isValid($postDaten);
-//                $daten = $form->getValues();
-//                if ($valid) {
-//                    $von = $daten['von'];
-//                    $bis = $daten['bis'];
-//                    $filter = new Azebo_Filter_DatumAlsDate();
-//                    $tagIndex = $filter->filter($von);
-//                    $tagBis = $filter->filter($bis);
-//                    // iteriere über die Tage
-//                    while ($tagIndex->compareDate($tagBis) != 1) {
-//                        $arbeitstag = $this->mitarbeiter->getArbeitstagNachTag($tagIndex);
-//                        // Arbeitsfreie Tage werden nicht bearbeitet
-//                        $arbeitsfrei = !$arbeitstag->getRegel();
-//                        if (!$arbeitsfrei) {
-//                            $arbeitstag->setBeginn(null);
-//                            $arbeitstag->setEnde(null);
-//                            $arbeitstag->befreiung = $daten['befreiung'];
-//                            $arbeitstag->save();
-//                        }
-//                        $tagIndex->addDay(1);
-//                    }
+        if ($request->isPost()) {
+            $postDaten = $request->getPost();
+            if (isset($postDaten['absenden'])) {
+                $valid = $form->isValid($postDaten);
+                $form->file->receive();
+                $daten = $form->getValues();
+                if ($valid) {
+                    //TODO Große Dateien mit falscher Erweiterung und/oder
+                    //falschem MIME-Typ werden zwar nicht abgespeichert,
+                    //aber der Anwender erhält auch keine Fehlermeldung!!
+                    //KOMISCH!
+                    
 //                    // redirect
 //                    return $this->_helper->redirector->gotoRoute(array(
 //                                'monat' => $this->monat,
 //                                'jahr' => $this->jahr,
 //                                    ), 'monat');
-//                }
-//            }
-//        }
+                }
+            }
+        }
 
         $this->erweitereSeitenName(' - ' . $this->zuBearbeitendesDatum
                         ->toString('MMMM yyyy'));

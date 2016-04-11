@@ -29,15 +29,29 @@ class Azebo_Form_Mitarbeiter_CSV extends AzeboLib_Form_Abstract {
 
 
     public function init() {
-        $this->addElementPrefixPath(
-                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
+//        $this->addElementPrefixPath(
+//                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
+        $this->setAttrib('enctype', 'multipart/form-data');
         
+        // Das Input-File-Element erzeugen und konfigurieren.
+        // Dieses Element wird via CSS verborgen, da es nicht gestylt werden kann.
         $fileElement = new Zend_Form_Element_File('file');
-        $fileElement->setLabel('Datei auswählen')
-                ->setRequired(true);
+        $fileElement->setLabel('Datei auswählen');
+        $fileElement->setRequired(true);
+        $fileElement->setDestination('/var/www/data/uploads/');
+        $fileElement->setValueDisabled(true);
+        $fileElement->setAttrib('accept', 'text/csv');
+        $fileElement->addValidator('Count', false, 1);
+        $fileElement->addValidator('Size', false, 50000);
+        $fileElement->addValidator('Extension', false, 'csv');
+        $fileElement->addValidator('MimeType', false, array('text/csv', 'text/plain'));
+        
+        // Das Label zum Input-File-Element erzeugen und konfigurieren.
+        // Dieses Label wird durch CSS zum Button, der entprechend gestylt werden kann.
         $fileElement->getDecorator('label')->setOption('class', 'custom-file-upload');
         $fileElement->getDecorator('label')->setOption('tag', 'dd');
         $fileElement->getDecorator('HtmlTag')->setOption('tag', 'dt');
+        
         $this->addElement($fileElement);
         
         $this->addElement('text', 'filename', array(
