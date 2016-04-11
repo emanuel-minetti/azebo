@@ -627,6 +627,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         ));  
                     }
                     $this->_log->info('Daten: ' . print_r($termine, TRUE));
+                    
+                    //TODO Hier bin ich!
 
 //                    // redirect
 //                    return $this->_helper->redirector->gotoRoute(array(
