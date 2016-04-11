@@ -582,7 +582,52 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     //falschem MIME-Typ werden zwar nicht abgespeichert,
                     //aber der Anwender erhält auch keine Fehlermeldung!!
                     //KOMISCH!
-                    
+
+                    $termine = array();
+                    $dateiname = $form->file->getFileName();
+                    $zeilen = file($dateiname, FILE_IGNORE_NEW_LINES || FILE_SKIP_EMPTY_LINES);
+                    array_shift($zeilen);
+                    while (true) {
+                        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                            break;
+                        }
+                        $datum = strtok($zeilen[0], ';');
+                        $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+                        array_shift($zeilen);
+                        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                            break;
+                        }
+                        $letztesDatum = strtok($zeilen[0], ';');
+                        $letzesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
+                        if (!($letzesDatum->equals($datum, Zend_Date::DATES))) {
+                            continue;
+                        } else {
+                            array_shift($zeilen);
+                            $letztenEintragGefunden = false;
+                            while (!$letztenEintragGefunden) {
+                                if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                                    break;
+                                    }
+                                $naechstesDatum = strtok($zeilen[0], ';');
+                                $naechstesDatum = new Zend_Date($naechstesDatum, 'YYYY-MM-dd HH:mm');
+                                if (($letzesDatum->equals($naechstesDatum, Zend_Date::DATES))) {
+                                    $letzesDatum = $naechstesDatum;
+                                    array_shift($zeilen);
+                                    if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                                        break;
+                                    }
+                                } else {
+                                    $letztenEintragGefunden = true;
+                                }
+                            }
+                        }
+                        array_push($termine,array(
+                            'von' => $datum,
+                            'bis' => $letzesDatum,
+                        ));  
+                    }
+                    $this->_log->info('Daten: ' . print_r($termine, TRUE));
+
 //                    // redirect
 //                    return $this->_helper->redirector->gotoRoute(array(
 //                                'monat' => $this->monat,
