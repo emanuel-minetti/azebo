@@ -41,7 +41,6 @@ class Azebo_Form_Mitarbeiter_CSV extends AzeboLib_Form_Abstract {
         $this->addElement($fileElement);
         
         $this->addElement('text', 'filename', array(
-            'label' => 'Ausgewählte Datei:',
             'value' => 'Keine Datei ausgewählt!',
             'disabled' => 'true',
         ));
@@ -50,11 +49,6 @@ class Azebo_Form_Mitarbeiter_CSV extends AzeboLib_Form_Abstract {
             'required' => false,
             'ignore' => true,
             'label' => 'Absenden',
-            'decorators' => array(
-                'DijitElement',
-                'Errors',
-                array('HtmlTag', array('tag' => 'dd')),
-            ),
         ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
@@ -65,6 +59,5 @@ class Azebo_Form_Mitarbeiter_CSV extends AzeboLib_Form_Abstract {
         
          $this->addElement('Hidden', 'monat', array());
     }
-
 }
 
