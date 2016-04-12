@@ -576,7 +576,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
             if (isset($postDaten['absenden'])) {
                 $valid = $form->isValid($postDaten);
                 $form->file->receive();
-                $daten = $form->getValues();
+                $postDaten = $form->getValues();
+                //TODO Debugging entfernen und regulären Zustand wieder herstellen!
+                //$monat = new Zend_Date($postDaten['monat'], 'MM.yyyy');
+                $monat = new Zend_Date('12.2015', 'MM.yyyy');
                 if ($valid) {
                     //TODO Große Dateien mit falscher Erweiterung und/oder
                     //falschem MIME-Typ werden zwar nicht abgespeichert,
@@ -586,9 +589,28 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $termine = array();
                     $dateiname = $form->file->getFileName();
                     $zeilen = file($dateiname, FILE_IGNORE_NEW_LINES || FILE_SKIP_EMPTY_LINES);
+                    
+                    // Die Zeile mit den Spaltentiteln loswerden.
                     array_shift($zeilen);
+                    
+                    // Die Zeilen, die nicht zum Monat gehören loswerden.
+                    $indices = array();
+                    foreach ($zeilen as $index => $zeile) {
+                        $datum = strtok($zeile, ';');
+                        $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+                        if(!($monat->equals($datum, Zend_Date::MONTH) &&
+                                $monat->equals($datum, Zend_Date::YEAR))) {
+                            unset($zeilen[$index]);
+                        }
+                    }
+                    $this->_log->info('Zeilen: ' . print_r($zeilen, TRUE));
+                    
+                    //TODO '$zeilen' kopieren und nur die gültigen Einträge
+                    //übernehmen!
+                    
+                    // Die zu bearbeitenden Einträge sammeln!
                     while (true) {
-                        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                        if (!$zeilen || !isset($zeilen[0]) || !$zeilen[0] || chop($zeilen[0]) === '') {
                             break;
                         }
                         $datum = strtok($zeilen[0], ';');
