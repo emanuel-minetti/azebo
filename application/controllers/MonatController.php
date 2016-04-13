@@ -577,80 +577,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $valid = $form->isValid($postDaten);
                 $form->file->receive();
                 $postDaten = $form->getValues();
-                //TODO Debugging entfernen und regulären Zustand wieder herstellen!
-                //$monat = new Zend_Date($postDaten['monat'], 'MM.yyyy');
-                $monat = new Zend_Date('12.2015', 'MM.yyyy');
                 if ($valid) {
-                    //TODO Große Dateien mit falscher Erweiterung und/oder
-                    //falschem MIME-Typ werden zwar nicht abgespeichert,
-                    //aber der Anwender erhält auch keine Fehlermeldung!!
-                    //KOMISCH!
-
-                    $termine = array();
-                    $dateiname = $form->file->getFileName();
-                    $zeilen = file($dateiname, FILE_IGNORE_NEW_LINES || FILE_SKIP_EMPTY_LINES);
-                    
-                    // Die Zeile mit den Spaltentiteln loswerden.
-                    array_shift($zeilen);
-                    
-                    // Die Zeilen, die nicht zum Monat gehören loswerden.
-                    $indices = array();
-                    foreach ($zeilen as $index => $zeile) {
-                        $datum = strtok($zeile, ';');
-                        $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
-                        if(!($monat->equals($datum, Zend_Date::MONTH) &&
-                                $monat->equals($datum, Zend_Date::YEAR))) {
-                            unset($zeilen[$index]);
-                        }
-                    }
-                    $this->_log->info('Zeilen: ' . print_r($zeilen, TRUE));
-                    
-                    //TODO '$zeilen' kopieren und nur die gültigen Einträge
-                    //übernehmen!
-                    
-                    // Die zu bearbeitenden Einträge sammeln!
-                    while (true) {
-                        if (!$zeilen || !isset($zeilen[0]) || !$zeilen[0] || chop($zeilen[0]) === '') {
-                            break;
-                        }
-                        $datum = strtok($zeilen[0], ';');
-                        $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
-                        array_shift($zeilen);
-                        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
-                            break;
-                        }
-                        $letztesDatum = strtok($zeilen[0], ';');
-                        $letzesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
-                        if (!($letzesDatum->equals($datum, Zend_Date::DATES))) {
-                            continue;
-                        } else {
-                            array_shift($zeilen);
-                            $letztenEintragGefunden = false;
-                            while (!$letztenEintragGefunden) {
-                                if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
-                                    break;
-                                    }
-                                $naechstesDatum = strtok($zeilen[0], ';');
-                                $naechstesDatum = new Zend_Date($naechstesDatum, 'YYYY-MM-dd HH:mm');
-                                if (($letzesDatum->equals($naechstesDatum, Zend_Date::DATES))) {
-                                    $letzesDatum = $naechstesDatum;
-                                    array_shift($zeilen);
-                                    if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
-                                        break;
-                                    }
-                                } else {
-                                    $letztenEintragGefunden = true;
-                                }
-                            }
-                        }
-                        array_push($termine,array(
-                            'von' => $datum,
-                            'bis' => $letzesDatum,
-                        ));  
-                    }
+                    //TODO Debugging entfernen und regulären Zustand wieder herstellen!
+                    //$monat = new Zend_Date($postDaten['monat'], 'MM.yyyy');
+                    $monat = new Zend_Date('12.2015', 'MM.yyyy');
+                    $dateiName = $form->file->getFileName();
+                    $termine = _parseTrackWorkTime($monat, $dateiName);
                     $this->_log->info('Daten: ' . print_r($termine, TRUE));
                     
                     //TODO Hier bin ich!
+                    
 
 //                    // redirect
 //                    return $this->_helper->redirector->gotoRoute(array(
@@ -986,4 +922,76 @@ class MonatController extends AzeboLib_Controller_Abstract {
         ));
     }
 
+}
+
+function _parseTrackWorkTime($monat, $dateiName) {
+    $termine = array();
+    $zeilen = file($dateiName, FILE_IGNORE_NEW_LINES || FILE_SKIP_EMPTY_LINES);
+
+    // Die Zeile mit den Spaltentiteln loswerden.
+    array_shift($zeilen);
+
+    // Die Zeilen, die nicht zum Monat gehören loswerden.
+    $indices = array();
+    foreach ($zeilen as $index => $zeile) {
+        $datum = strtok($zeile, ';');
+        $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+        if (!($monat->equals($datum, Zend_Date::MONTH) &&
+                $monat->equals($datum, Zend_Date::YEAR))) {
+            unset($zeilen[$index]);
+        }
+    }
+
+    //'$zeilen' kopieren und nur die gültigen Einträge
+    //übernehmen!
+    $zeilenAlt = $zeilen;
+    $zeilen = array();
+    foreach ($zeilenAlt as $zeile) {
+        if (isset($zeile)) {
+            array_push($zeilen, $zeile);
+        }
+    }
+
+    // Die zu bearbeitenden Einträge sammeln: Sprich nur den ersten
+    // und den letzten Eintrag jeden Tages übernehmen.
+    while (true) {
+        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+            break;
+        }
+        $datum = strtok($zeilen[0], ';');
+        $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+        array_shift($zeilen);
+        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+            break;
+        }
+        $letztesDatum = strtok($zeilen[0], ';');
+        $letzesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
+        if (!($letzesDatum->equals($datum, Zend_Date::DATES))) {
+            continue;
+        } else {
+            array_shift($zeilen);
+            $letztenEintragGefunden = false;
+            while (!$letztenEintragGefunden) {
+                if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                    break;
+                }
+                $naechstesDatum = strtok($zeilen[0], ';');
+                $naechstesDatum = new Zend_Date($naechstesDatum, 'YYYY-MM-dd HH:mm');
+                if (($letzesDatum->equals($naechstesDatum, Zend_Date::DATES))) {
+                    $letzesDatum = $naechstesDatum;
+                    array_shift($zeilen);
+                    if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                        break;
+                    }
+                } else {
+                    $letztenEintragGefunden = true;
+                }
+            }
+        }
+        array_push($termine, array(
+            'von' => $datum,
+            'bis' => $letzesDatum,
+        ));
+    }
+    return $termine;
 }
