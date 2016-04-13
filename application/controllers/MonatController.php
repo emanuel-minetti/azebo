@@ -579,13 +579,21 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $postDaten = $form->getValues();
                 if ($valid) {
                     //TODO Debugging entfernen und regulären Zustand wieder herstellen!
-                    //$monat = new Zend_Date($postDaten['monat'], 'MM.yyyy');
-                    $monat = new Zend_Date('12.2015', 'MM.yyyy');
+                    $monat = new Zend_Date($postDaten['monat'], 'yyyy-MM-dd');
+                    //$monat = new Zend_Date('04.2016', 'MM.yyyy');
                     $dateiName = $form->file->getFileName();
-                    $termine = _parseTrackWorkTime($monat, $dateiName);
+                    $termine = $this->_parseTrackWorkTime($monat, $dateiName);
                     $this->_log->info('Daten: ' . print_r($termine, TRUE));
                     
                     //TODO Hier bin ich!
+                    foreach ($termine as $termin) {
+                        $tag = $termin['beginn'];
+                        $termin['pause'] = '-';
+                        $termin['befreiung'] = null;
+                        $termin['bemerkung'] = null;
+                        $this->mitarbeiter->saveArbeitstag($tag, $termin);
+                    }
+                    
                     
 
 //                    // redirect
@@ -922,76 +930,79 @@ class MonatController extends AzeboLib_Controller_Abstract {
         ));
     }
 
-}
+    private function _parseTrackWorkTime($monat, $dateiName) {
+        $termine = array();
+        $zeilen = file($dateiName, FILE_IGNORE_NEW_LINES || FILE_SKIP_EMPTY_LINES);
 
-function _parseTrackWorkTime($monat, $dateiName) {
-    $termine = array();
-    $zeilen = file($dateiName, FILE_IGNORE_NEW_LINES || FILE_SKIP_EMPTY_LINES);
-
-    // Die Zeile mit den Spaltentiteln loswerden.
-    array_shift($zeilen);
-
-    // Die Zeilen, die nicht zum Monat gehören loswerden.
-    $indices = array();
-    foreach ($zeilen as $index => $zeile) {
-        $datum = strtok($zeile, ';');
-        $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
-        if (!($monat->equals($datum, Zend_Date::MONTH) &&
-                $monat->equals($datum, Zend_Date::YEAR))) {
-            unset($zeilen[$index]);
-        }
-    }
-
-    //'$zeilen' kopieren und nur die gültigen Einträge
-    //übernehmen!
-    $zeilenAlt = $zeilen;
-    $zeilen = array();
-    foreach ($zeilenAlt as $zeile) {
-        if (isset($zeile)) {
-            array_push($zeilen, $zeile);
-        }
-    }
-
-    // Die zu bearbeitenden Einträge sammeln: Sprich nur den ersten
-    // und den letzten Eintrag jeden Tages übernehmen.
-    while (true) {
-        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
-            break;
-        }
-        $datum = strtok($zeilen[0], ';');
-        $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+        // Die Zeile mit den Spaltentiteln loswerden.
         array_shift($zeilen);
-        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
-            break;
+
+        // Die Zeilen, die nicht zum Monat gehören loswerden.
+        $indices = array();
+        foreach ($zeilen as $index => $zeile) {
+            $datum = strtok($zeile, ';');
+            $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+            if (!($monat->equals($datum, Zend_Date::MONTH) &&
+                    $monat->equals($datum, Zend_Date::YEAR))) {
+                unset($zeilen[$index]);
+            }
         }
-        $letztesDatum = strtok($zeilen[0], ';');
-        $letzesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
-        if (!($letzesDatum->equals($datum, Zend_Date::DATES))) {
-            continue;
-        } else {
+
+        //'$zeilen' kopieren und nur die gültigen Einträge
+        //übernehmen!
+        $zeilenAlt = $zeilen;
+        $zeilen = array();
+        foreach ($zeilenAlt as $zeile) {
+            if (isset($zeile)) {
+                array_push($zeilen, $zeile);
+            }
+        }
+        
+        $this->_log->debug('Zeilen: ' . print_r($zeilen, true));
+
+        // Die zu bearbeitenden Einträge sammeln: Sprich nur den ersten
+        // und den letzten Eintrag jeden Tages übernehmen.
+        while (true) {
+            if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                break;
+            }
+            $datum = strtok($zeilen[0], ';');
+            $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
             array_shift($zeilen);
-            $letztenEintragGefunden = false;
-            while (!$letztenEintragGefunden) {
-                if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
-                    break;
-                }
-                $naechstesDatum = strtok($zeilen[0], ';');
-                $naechstesDatum = new Zend_Date($naechstesDatum, 'YYYY-MM-dd HH:mm');
-                if (($letzesDatum->equals($naechstesDatum, Zend_Date::DATES))) {
-                    $letzesDatum = $naechstesDatum;
-                    array_shift($zeilen);
+            if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                break;
+            }
+            $letztesDatum = strtok($zeilen[0], ';');
+            $letzesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
+            if (!($letzesDatum->equals($datum, Zend_Date::DATES))) {
+                continue;
+            } else {
+                array_shift($zeilen);
+                $letztenEintragGefunden = false;
+                while (!$letztenEintragGefunden) {
                     if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                         break;
                     }
-                } else {
-                    $letztenEintragGefunden = true;
+                    $naechstesDatum = strtok($zeilen[0], ';');
+                    $naechstesDatum = new Zend_Date($naechstesDatum, 'YYYY-MM-dd HH:mm');
+                    if (($letzesDatum->equals($naechstesDatum, Zend_Date::DATES))) {
+                        $letzesDatum = $naechstesDatum;
+                        array_shift($zeilen);
+                        if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
+                            break;
+                        }
+                    } else {
+                        $letztenEintragGefunden = true;
+                    }
                 }
             }
+            array_push($termine, array(
+                'beginn' => $datum,
+                'ende' => $letzesDatum,
+            ));
         }
-        array_push($termine, array(
-            'von' => $datum,
-            'bis' => $letzesDatum,
-        ));
+        return $termine;
     }
-    return $termine;
+
 }
+
