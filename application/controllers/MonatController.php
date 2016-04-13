@@ -578,14 +578,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $form->file->receive();
                 $postDaten = $form->getValues();
                 if ($valid) {
-                    //TODO Debugging entfernen und regulären Zustand wieder herstellen!
                     $monat = new Zend_Date($postDaten['monat'], 'yyyy-MM-dd');
-                    //$monat = new Zend_Date('04.2016', 'MM.yyyy');
                     $dateiName = $form->file->getFileName();
                     $termine = $this->_parseTrackWorkTime($monat, $dateiName);
                     $this->_log->info('Daten: ' . print_r($termine, TRUE));
                     
-                    //TODO Hier bin ich!
+                    // Die ermittelten Termine in den Bogen übernehmen
                     foreach ($termine as $termin) {
                         $tag = $termin['beginn'];
                         $termin['pause'] = '-';
@@ -594,13 +592,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         $this->mitarbeiter->saveArbeitstag($tag, $termin);
                     }
                     
-                    
-
-//                    // redirect
-//                    return $this->_helper->redirector->gotoRoute(array(
-//                                'monat' => $this->monat,
-//                                'jahr' => $this->jahr,
-//                                    ), 'monat');
+                    // redirect
+                    return $this->_helper->redirector->gotoRoute(array(
+                                'monat' => $this->monat,
+                                'jahr' => $this->jahr,
+                                    ), 'monat');
                 }
             }
         }
@@ -958,8 +954,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
             }
         }
         
-        $this->_log->debug('Zeilen: ' . print_r($zeilen, true));
-
         // Die zu bearbeitenden Einträge sammeln: Sprich nur den ersten
         // und den letzten Eintrag jeden Tages übernehmen.
         while (true) {

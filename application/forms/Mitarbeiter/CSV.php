@@ -29,8 +29,6 @@ class Azebo_Form_Mitarbeiter_CSV extends AzeboLib_Form_Abstract {
 
 
     public function init() {
-//        $this->addElementPrefixPath(
-//                'Azebo_Validate', APPLICATION_PATH . '/models/validate/', 'validate');
         $this->setAttrib('enctype', 'multipart/form-data');
         
         // Das Input-File-Element erzeugen und konfigurieren.

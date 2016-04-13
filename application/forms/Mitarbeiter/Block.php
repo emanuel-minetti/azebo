@@ -80,10 +80,8 @@ class Azebo_Form_Mitarbeiter_Block extends AzeboLib_Form_Abstract {
                 'DijitElement',
                 'Errors',
                 array('HtmlTag', array('tag' => 'dd')),
-            //array('HtmlTag', array('tag' => 'dt')),
             ),
             'tabindex' => 4,
-            //TODO Decoratoren anpassen!
         ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
