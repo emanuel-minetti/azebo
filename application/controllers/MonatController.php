@@ -581,7 +581,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $monat = new Zend_Date($postDaten['monat'], 'yyyy-MM-dd');
                     $dateiName = $form->file->getFileName();
                     $termine = $this->_parseTrackWorkTime($monat, $dateiName);
-                    $this->_log->info('Daten: ' . print_r($termine, TRUE));
                     
                     // Die ermittelten Termine in den Bogen übernehmen
                     foreach ($termine as $termin) {
