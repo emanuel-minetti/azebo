@@ -137,6 +137,25 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                 ));
         Zend_Validate_Abstract::setDefaultTranslator($translator);
     }
+    
+    /**
+     *  Given a file, i.e. /css/base.css, replaces it with a string containing the
+     *  file's mtime, i.e. /css/base.1221534296.css.
+     *  See 'http://stackoverflow.com/questions/118884/how-to-force-browser-to-reload-cached-css-js-files'
+     *  for more info.
+     *  See also 'public/.htaccess'.
+     *  
+     *  @param $file  The file to be loaded.  Must be an absolute path (i.e.
+     *                starting with slash).
+     *  @return string The extended filename.
+     */
+    private function __auto_version($file) {
+        if (strpos($file, '/') !== 0 || !file_exists($_SERVER['DOCUMENT_ROOT'] . $file))
+            return $file;
+
+        $mtime = filemtime($_SERVER['DOCUMENT_ROOT'] . $file);
+        return preg_replace('{\\.([^./]+)$}', ".$mtime.\$1", $file);
+    }
 
     protected function _initViewSettings() {
         $this->bootstrap('view');
@@ -158,7 +177,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $this->_view->headTitle()->setSeparator(' - ');
 
         //CSS-Link setzen
-        $this->_view->headLink()->appendStylesheet('/css/style.css');
+        $this->_view->headLink()->appendStylesheet($this->__auto_version('/css/style.css'));
 
         //JS einbinden
         $this->_view->headScript()->appendFile('/js/nav.js');
