@@ -7,27 +7,27 @@
     <div id="gridDiv" style="width: 206px; height: <?= 38 + $this->zeilen * 24 ?>px; margin-right: 50%; float: right;"></div>
 </div>
 <script type="text/javascript">
-    dojo.ready(function() {
+    dojo.ready(function () {
         var mitarbeiterDaten = <?= $this->mitarbeiterDaten->toJson() ?>;
-        
+
         var dataStore =
-            new dojo.data.ItemFileReadStore({ data:mitarbeiterDaten });
-        
-        var layout =[[
-                {'name':'Mitarbeiter','field':'mitarbeitername','width':'197px'},
+                new dojo.data.ItemFileReadStore({data: mitarbeiterDaten});
+
+        var layout = [[
+                {'name': 'Mitarbeiter', 'field': 'mitarbeitername', 'width': '197px'},
             ]];
-        
+
         var grid = new dojox.grid.DataGrid({
-            store:dataStore,
-            structure:layout,
-            selectionMode:"none",
+            store: dataStore,
+            structure: layout,
+            selectionMode: "none",
             autoHeight: true
         });
-        
+
         grid.placeAt('gridDiv');
         grid.startup();
-        
-        dojo.connect(grid, "onRowClick", null, function(e){
+
+        dojo.connect(grid, "onRowClick", null, function (e) {
             var url = "<?=
 $this->url(array('vertreter' => ''), 'vertreter', true);
 ?>";

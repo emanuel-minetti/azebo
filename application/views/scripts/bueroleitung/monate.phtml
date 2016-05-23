@@ -1,42 +1,42 @@
 <br /><br />
 <div id="view-content">
-	<h3><?= $this->seitenName ?></h3>
+    <h3><?= $this->seitenName ?></h3>
     <div id="gridDiv" style="width: 395px; height: 600px"></div>
 </div>
 
-  <script type="text/javascript">
-        dojo.ready(function() {
-            var monatsDaten = <?= $this->monatsDaten->toJson() ?>;
-                    
-            var dataStore =
-                new dojo.data.ItemFileReadStore({ data:monatsDaten });
-                    
-            var layout =[[
-                    {'name':'Monat','field':'monat','width':'150px'},
-                    {'name':'Abgeschlossen','field':'abgeschlossen','width':'120px'},
-                    {'name':'Abgelegt','field':'abgelegt','width':'100px'},
-                ]];
-                    
-            var grid = new dojox.grid.DataGrid({
-                store:dataStore,
-                structure:layout,
-                selectionMode:"none"
-            });
-                    
-            grid.placeAt('gridDiv');
-            grid.startup();
-                    
-            dojo.connect(grid, "onRowClick", null, function(e){
-                var url = "<?=
-    $this->url(array(
-        'monat' => 0,
-            ), 'monatsdetail', true);
-    ?>";
-                var id = grid._getItemAttr(e.rowIndex, 'id');
-                url += id;
-                console.debug(url);
-                location.href = url;
-            });
-                    
+<script type="text/javascript">
+    dojo.ready(function () {
+        var monatsDaten = <?= $this->monatsDaten->toJson() ?>;
+
+        var dataStore =
+                new dojo.data.ItemFileReadStore({data: monatsDaten});
+
+        var layout = [[
+                {'name': 'Monat', 'field': 'monat', 'width': '150px'},
+                {'name': 'Abgeschlossen', 'field': 'abgeschlossen', 'width': '120px'},
+                {'name': 'Abgelegt', 'field': 'abgelegt', 'width': '100px'},
+            ]];
+
+        var grid = new dojox.grid.DataGrid({
+            store: dataStore,
+            structure: layout,
+            selectionMode: "none"
         });
-    </script>
+
+        grid.placeAt('gridDiv');
+        grid.startup();
+
+        dojo.connect(grid, "onRowClick", null, function (e) {
+            var url = "<?=
+$this->url(array(
+    'monat' => 0,
+        ), 'monatsdetail', true);
+?>";
+            var id = grid._getItemAttr(e.rowIndex, 'id');
+            url += id;
+            console.debug(url);
+            location.href = url;
+        });
+
+    });
+</script>

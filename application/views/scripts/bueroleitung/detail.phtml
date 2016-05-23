@@ -2,7 +2,7 @@
 <div id="view-content">
 
     <h3><?= $this->seitenName ?></h3>
-    <? if (!$this->neu): ?>
+    <?php if (!$this->neu): ?>
         <h4>Arbeitszeiten</h4>
         <div id="gridDiv" style="width: 799px; height: <?= $this->zeilen * 25 + 37 ?>px"></div>
         <p>
@@ -14,44 +14,44 @@
                ?>
                ">Neue Arbeitszeit hinzufügen</a>
         </p>
-    <? endif ?>
+    <?php endif ?>
     <h4>Stammdaten</h4>
-<?= $this->form ?>
+    <?= $this->form ?>
 
 
 </div>
 
-<? if (!$this->neu): ?>
+<?php if (!$this->neu): ?>
     <script type="text/javascript">
-        dojo.ready(function() {
+        dojo.ready(function () {
             var zeitDaten = <?= $this->zeitDaten->toJson() ?>;
-                    
+
             var dataStore =
-                new dojo.data.ItemFileReadStore({ data:zeitDaten });
-                    
-            var layout =[[
-                    {'name':'Lfd.-Nr.','field':'lfdNr','width':'50px'},
-                    {'name':'Gültig Von','field':'von','width':'75px'},
-                    {'name':'Gültig Bis','field':'bis','width':'80px'},
-                    {'name':'Wochentag','field':'wochentag','width':'78px'},
-                    {'name':'Kalender- woche','field':'kw','width':'80px'},
-                    {'name':'Rahmen- Anfang','field':'rahmenanfang','width':'70px'},
-                    {'name':'Kern- Anfang','field':'kernanfang','width':'70px'},
-                    {'name':'Kern- Ende','field':'kernende','width':'70px'},
-                    {'name':'Rahmen- Ende','field':'rahmenende','width':'70px'},
-                    {'name':'Soll- Arbeitszeit','field':'soll','width':'75px'},
+                    new dojo.data.ItemFileReadStore({data: zeitDaten});
+
+            var layout = [[
+                    {'name': 'Lfd.-Nr.', 'field': 'lfdNr', 'width': '50px'},
+                    {'name': 'Gültig Von', 'field': 'von', 'width': '75px'},
+                    {'name': 'Gültig Bis', 'field': 'bis', 'width': '80px'},
+                    {'name': 'Wochentag', 'field': 'wochentag', 'width': '78px'},
+                    {'name': 'Kalender- woche', 'field': 'kw', 'width': '80px'},
+                    {'name': 'Rahmen- Anfang', 'field': 'rahmenanfang', 'width': '70px'},
+                    {'name': 'Kern- Anfang', 'field': 'kernanfang', 'width': '70px'},
+                    {'name': 'Kern- Ende', 'field': 'kernende', 'width': '70px'},
+                    {'name': 'Rahmen- Ende', 'field': 'rahmenende', 'width': '70px'},
+                    {'name': 'Soll- Arbeitszeit', 'field': 'soll', 'width': '75px'},
                 ]];
-                    
+
             var grid = new dojox.grid.DataGrid({
-                store:dataStore,
-                structure:layout,
-                selectionMode:"none"
+                store: dataStore,
+                structure: layout,
+                selectionMode: "none"
             });
-                    
+
             grid.placeAt('gridDiv');
             grid.startup();
-                    
-            dojo.connect(grid, "onRowClick", null, function(e){
+
+            dojo.connect(grid, "onRowClick", null, function (e) {
                 var url = "<?=
     $this->url(array(
         'mitarbeiter' => $this->mitarbeiter,
@@ -63,7 +63,8 @@
                 console.debug(url);
                 location.href = url;
             });
-                    
+
         });
     </script>
-    <?endif ?>
+    <?php
+ endif ?>

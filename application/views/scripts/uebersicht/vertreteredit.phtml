@@ -1,7 +1,7 @@
 <br /><br />
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
-    <?
+    <?php
     if (!$this->erfolg) {
         if ($this->neu) {
             echo "$this->vertreter als Vertreter einrichten";
@@ -13,7 +13,7 @@
         echo "$this->form";
     } else {
         // erfolg == true
-        if($this->neu) {
+        if ($this->neu) {
             echo "$this->vertreter wurde erfolgreich als Vertreter eingerichtet.";
         } else {
             echo "$this->vertreter wurde erfolgreich als Vertreter entfernt.";

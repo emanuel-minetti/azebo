@@ -2,54 +2,54 @@
 <div id="view-content">
     <h3><?= $this->seitenName ?></h3>
     <div id="view-content">
-        <? if ($this->hochschule != 'hfm'): ?>
+        <?php if ($this->hochschule != 'hfm'): ?>
             <div id="gridObenDiv" style="width: 881px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
-        <? else: ?>
+        <?php else: ?>
             <div id="gridObenDiv" style="width: 830px; height: <?= ($this->tag - 1 + $this->extraZeilenOben) * 40 + $this->hoheTageImMonatOben * 16 + 37 ?>px"></div>
-        <? endif; ?>
+        <?php endif; ?>
         <a name="form"></a>
         <h4>Daten für den <?= $this->tag; ?>.<?= $this->monat; ?>. bearbeiten</h4>
         <?= $this->tagForm; ?>
 
-        <? if ($this->hochschule != 'hfm'): ?>
+        <?php if ($this->hochschule != 'hfm'): ?>
             <div id="gridUntenDiv" style="width: 881px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
-        <? else: ?>
+        <?php else: ?>
             <div id="gridUntenDiv" style="width: 830px; height: <?= ($this->tageImMonat - $this->tag + $this->extraZeilenUnten) * 40 + $this->hoheTageImMonatUnten * 16 + 37 ?>px"></div>
-        <? endif; ?>
+        <?php endif; ?>
     </div>
-    <? if (!$this->jahresabschlussFehlt): ?>
+    <?php if (!$this->jahresabschlussFehlt): ?>
         <div id="links">
             <p>Saldo Vormonat: <?= $this->saldoBisher; ?>
-                <? if ($this->hatRest): ?>
+                <?php if ($this->hatRest): ?>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoBisher2007; ?>)
-                <? endif; ?>
+                <?php endif; ?>
             </p>
             <p>Saldo dieses Monats: <?= $this->saldo; ?></p>
             <p>Saldo gesamt: <?= $this->saldoGesamt; ?>
-                <? if ($this->hatRest): ?>
+                <?php if ($this->hatRest): ?>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest 2007: <?= $this->saldoGesamt2007; ?>)
-                <? endif; ?>
+                <?php endif; ?>
             </p>
             <p>Resturlaub Vormonat: <?= $this->urlaubBisher; ?>
-                <? if ($this->hatVorjahrRest): ?>
-                    <? if ($this->hochschule != 'hfm'): ?>
+                <?php if ($this->hatVorjahrRest): ?>
+                    <?php if ($this->hochschule != 'hfm'): ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestBisher; ?>)
-                    <? else: ?>
+                    <?php else: ?>
                         + Vorjahr: <?= $this->vorjahrRestBisher; ?> = <?= $this->urlaubZusammenBisher; ?>
-                    <? endif; ?>
-                <? endif; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
             </p>
             <p>Urlaub dieses Monats: <?= $this->urlaub; ?></p>
             <p>Resturlaub gesamt: <?= $this->urlaubGesamt; ?>
-                <? if ($this->hatVorjahrRest): ?>
-                    <? if ($this->hochschule != 'hfm'): ?>
+                <?php if ($this->hatVorjahrRest): ?>
+                    <?php if ($this->hochschule != 'hfm'): ?>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(Rest Vorjahr: <?= $this->vorjahrRestGesamt; ?>)
-                    <? else: ?>
+                    <?php else: ?>
                         + Vorjahr: <?= $this->vorjahrRestGesamt; ?> = <?= $this->urlaubZusammenGesamt; ?>
-                    <? endif; ?>
-                <? endif; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
             </p>
-            <?
+            <?php
             if ($this->azvAnzeigen) {
                 echo "<p>AZV-Tage-Rest:  $this->azvRest</p>";
                 echo "<p>AZV-Tage dieses Monats:  $this->azvMonat</p>";
@@ -57,7 +57,7 @@
             ?>
         </div>
         <div id="rechts">
-            <?
+            <?php
             if ($this->hochschule == 'hfs') {
                 foreach ($this->kwZeiten as $kw => $istZeit) {
                     echo "<p>Ist-Arbeitszeit in der KW $kw: ";
@@ -67,102 +67,101 @@
             }
             ?>
         </div>
-    <? else: ?>
+    <?php else: ?>
         Das Vorjahr ist noch nicht abgeschlossen, also können keine korrekten
         Salden angezeigt werden.
-    <? endif; ?>
+    <?php endif; ?>
 </div>
 <script type="text/javascript">
-    dojo.ready(function() {
-        var layout =[[
-                {'name':'Datum','field':'datum','width':'87px'},
-                {'name':'Beginn','field':'beginn','width':'55px'},
-                {'name':'Ende','field':'ende','width':'55px'},
-                {'name':'Dienstbefreiung','field':'befreiung','width':'120px'},
-                {'name':'Bemerkung','field':'bemerkung','width':'220px'},
-<? if ($this->hochschule != 'hfm'): ?>
-                    {'name':'ohne Pause','field':'pause','width':'43px','styles':'text-align: center;'},
-<? endif; ?>
-                {'name':'An- wesend','field':'anwesend','width':'55px'},
-                {'name':'Ist','field':'ist','width':'55px'},
-                {'name':'Soll','field':'soll','width':'55px','formatter': function(val, rowIdx, cell) {cell.customClasses.push('erg'); return val;}},
-                {'name':'+/-','field':'summe','width':'55px'},
-            ]];
-        
-<? if ($this->monatsDatenOben !== null): ?>
-                                                    
-            var monatsDatenOben = <?= $this->monatsDatenOben->toJson() ?>;
-                                             
-            var dataStoreOben =
-                new dojo.data.ItemFileReadStore({ data:monatsDatenOben });
-                                                    
-            var gridOben = new dojox.grid.DataGrid({
-                store:dataStoreOben,
-                structure:layout,
-                selectionMode:"none"
-            });
-                                                     
-            dojo.connect(gridOben, "onStyleRow", function(row){
-                var item = gridOben.getItem(row.index);
-                if(item) {
-                    var istFeiertag = dataStoreOben.getValue(item,"feiertag",null);
-                    if(!!istFeiertag) {
-                        row.customStyles += "color: #fe3c1a;";
-                    }
+    dojo.ready(function () {
+        var layout = [[
+        {'name':'Datum', 'field':'datum', 'width':'87px'},
+        {'name':'Beginn', 'field':'beginn', 'width':'55px'},
+        {'name':'Ende', 'field':'ende', 'width':'55px'},
+        {'name':'Dienstbefreiung', 'field':'befreiung', 'width':'120px'},
+        {'name':'Bemerkung', 'field':'bemerkung', 'width':'220px'},
+<?php if ($this->hochschule != 'hfm'): ?>
+            {'name':'ohne Pause', 'field':'pause', 'width':'43px', 'styles':'text-align: center;'},
+<?php endif; ?>
+        {'name':'An- wesend', 'field':'anwesend', 'width':'55px'},
+        {'name':'Ist', 'field':'ist', 'width':'55px'},
+        {'name':'Soll', 'field':'soll', 'width':'55px', 'formatter': function(val, rowIdx, cell) {cell.customClasses.push('erg'); return val;
+    }},
+    {'name':'+/-', 'field':'summe', 'width':'55px'},
+    ]];
+<?php if ($this->monatsDatenOben !== null): ?>
+
+        var monatsDatenOben = <?= $this->monatsDatenOben->toJson() ?>;
+
+        var dataStoreOben =
+                new dojo.data.ItemFileReadStore({data: monatsDatenOben});
+
+        var gridOben = new dojox.grid.DataGrid({
+            store: dataStoreOben,
+            structure: layout,
+            selectionMode: "none"
+        });
+
+        dojo.connect(gridOben, "onStyleRow", function (row) {
+            var item = gridOben.getItem(row.index);
+            if (item) {
+                var istFeiertag = dataStoreOben.getValue(item, "feiertag", null);
+                if (!!istFeiertag) {
+                    row.customStyles += "color: #fe3c1a;";
                 }
-                gridOben.focus.styleRow(row);
-                gridOben.edit.styleRow(row);
-            });
-                                                    
-            gridOben.placeAt('gridObenDiv');
-            gridOben.startup();
-                                                        
-            dojo.connect(gridOben, "onRowClick", null, function(e){
-                var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
-                url += "/" + gridOben._getItemAttr(e.rowIndex, 'tag') + "#form";
-                location.href = url;
-            });        
-<? endif; ?>
-<? if ($this->monatsDatenUnten !== null): ?>
-                                                    
-            var monatsDatenUnten = <?= $this->monatsDatenUnten->toJson() ?>;
-                                             
-            var dataStoreUnten =
-                new dojo.data.ItemFileReadStore({ data:monatsDatenUnten });
-                                                    
-            var gridUnten = new dojox.grid.DataGrid({
-                store:dataStoreUnten,
-                structure:layout,
-                selectionMode:"none"
-            });
-                                                     
-            dojo.connect(gridUnten, "onStyleRow", function(row){
-                var item = gridUnten.getItem(row.index);
-                if(item) {
-                    var istFeiertag = dataStoreUnten.getValue(item,"feiertag",null);
-                    if(!!istFeiertag) {
-                        row.customStyles += "color: #fe3c1a;";
-                    }
+            }
+            gridOben.focus.styleRow(row);
+            gridOben.edit.styleRow(row);
+        });
+
+        gridOben.placeAt('gridObenDiv');
+        gridOben.startup();
+
+        dojo.connect(gridOben, "onRowClick", null, function (e) {
+            var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
+            url += "/" + gridOben._getItemAttr(e.rowIndex, 'tag') + "#form";
+            location.href = url;
+        });
+<?php endif; ?>
+<?php if ($this->monatsDatenUnten !== null): ?>
+
+        var monatsDatenUnten = <?= $this->monatsDatenUnten->toJson() ?>;
+
+        var dataStoreUnten =
+                new dojo.data.ItemFileReadStore({data: monatsDatenUnten});
+
+        var gridUnten = new dojox.grid.DataGrid({
+            store: dataStoreUnten,
+            structure: layout,
+            selectionMode: "none"
+        });
+
+        dojo.connect(gridUnten, "onStyleRow", function (row) {
+            var item = gridUnten.getItem(row.index);
+            if (item) {
+                var istFeiertag = dataStoreUnten.getValue(item, "feiertag", null);
+                if (!!istFeiertag) {
+                    row.customStyles += "color: #fe3c1a;";
                 }
-                gridUnten.focus.styleRow(row);
-                gridUnten.edit.styleRow(row);
-            });
-                                                    
-            gridUnten.placeAt('gridUntenDiv');
-            gridUnten.startup();
-                                                        
-            dojo.connect(gridUnten, "onRowClick", null, function(e){
-                var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
-                url += "/" + gridUnten._getItemAttr(e.rowIndex, 'tag') + "#form";
-                location.href = url;
-            });        
-<? endif; ?>
-        var tip = new dijit.Tooltip({
-            label: '<p>Falls gewünscht, fügen Sie bitte zunächst den Nachmittag\
+            }
+            gridUnten.focus.styleRow(row);
+            gridUnten.edit.styleRow(row);
+        });
+
+        gridUnten.placeAt('gridUntenDiv');
+        gridUnten.startup();
+
+        dojo.connect(gridUnten, "onRowClick", null, function (e) {
+            var url = "<?= $this->url(array('monat' => $this->monat, 'jahr' => $this->jahr,), 'monat', true); ?>";
+            url += "/" + gridUnten._getItemAttr(e.rowIndex, 'tag') + "#form";
+            location.href = url;
+        });
+<?php endif; ?>
+    var tip = new dijit.Tooltip({
+    label: '<p>Falls gewünscht, fügen Sie bitte zunächst den Nachmittag\
     hinzu, und tragen Sie dann Ihre Daten für diesen Arbeitstag ein.</p>',
             showDelay: 50,
             connectId: ["nachmittag"]
-        });
-    }); 
- 
+    });
+    });
 </script>

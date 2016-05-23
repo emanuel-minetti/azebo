@@ -1,43 +1,43 @@
 <br /><br />
 <div id="view-content">
-	<h3><?= $this->seitenName ?></h3>
-    <div id="gridDiv" style="width: 462px; height: <?=38 + $this->zeilen * 24 ?>px"></div>
+    <h3><?= $this->seitenName ?></h3>
+    <div id="gridDiv" style="width: 462px; height: <?= 38 + $this->zeilen * 24 ?>px"></div>
 </div>
 
- <script type="text/javascript">
-    dojo.ready(function() {
+<script type="text/javascript">
+    dojo.ready(function () {
         var mitarbeiterDaten = <?= $this->mitarbeiterDaten->toJson() ?>;
-        
+
         var dataStore =
-            new dojo.data.ItemFileReadStore({ data:mitarbeiterDaten });
-        
-        var layout =[[
-                {'name':'Mitarbeiter','field':'mitarbeitername','width':'197px'},
-                {'name':'Abgeschlossen','field':'abgeschlossen','width':'120px'},
-                {'name':'Abgelegt','field':'abgelegt','width':'120px'},
+                new dojo.data.ItemFileReadStore({data: mitarbeiterDaten});
+
+        var layout = [[
+                {'name': 'Mitarbeiter', 'field': 'mitarbeitername', 'width': '197px'},
+                {'name': 'Abgeschlossen', 'field': 'abgeschlossen', 'width': '120px'},
+                {'name': 'Abgelegt', 'field': 'abgelegt', 'width': '120px'},
             ]];
-        
+
         var grid = new dojox.grid.DataGrid({
-            store:dataStore,
-            structure:layout,
-            selectionMode:"none",
+            store: dataStore,
+            structure: layout,
+            selectionMode: "none",
             autoHeight: true
         });
-        
+
         grid.placeAt('gridDiv');
         grid.startup();
-        
-        dojo.connect(grid, "onRowClick", null, function(e){
+
+        dojo.connect(grid, "onRowClick", null, function (e) {
             var url = "<?=
-        $this->url(array(
-            'monat' => $this->monat,
-            'benutzername' => '',
-                ), 'monatsedit', true);
-        ?>";
-                        var mitarbeiter = grid._getItemAttr(e.rowIndex, 'mitarbeiter');
-                        url += mitarbeiter;
-                        console.debug(url);
-                        location.href = url;
-                    });
-                });
+$this->url(array(
+    'monat' => $this->monat,
+    'benutzername' => '',
+        ), 'monatsedit', true);
+?>";
+            var mitarbeiter = grid._getItemAttr(e.rowIndex, 'mitarbeiter');
+            url += mitarbeiter;
+            console.debug(url);
+            location.href = url;
+        });
+    });
 </script>

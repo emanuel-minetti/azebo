@@ -5,7 +5,7 @@
         <?= $this->headTitle(); ?>
         <?= $this->headLink(); ?>
         <?= $this->headScript(); ?>
-        <?
+        <?php
         if ($this->dojo()->isEnabled()) {
             $this->dojo()->setLocalPath('/javascript/dojo/dojo.js')
                     ->addStyleSheetModule('dijit.themes.tundra')
@@ -16,7 +16,7 @@
         }
         ?>
 
-        <?
+        <?php
         $this->setHelperPath(APPLICATION_PATH . '/layouts/helpers');
         $farben = $this->farbe();
         ?>
@@ -72,10 +72,10 @@
             .tundra .dojoxGridRowOver .dojoxGridCell {
                 background-color: <?= $farben->zeile ?> !important;
             }
-            </style>
+        </style>
 
-        </head>
-        <body class="tundra">
+    </head>
+    <body class="tundra">
         <div id="Seite">
             <div id="Kopfzeile">
                 <h1><a href="

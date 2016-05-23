@@ -7,37 +7,37 @@
 </div>
 
 <script type="text/javascript">
-    dojo.ready(function() {
-        var layout =[[
-                {'name':'Lfd.-Nr.','field':'lfdNr','width':'50px'},
-                {'name':'Gültig Von','field':'von','width':'75px'},
-                {'name':'Gültig Bis','field':'bis','width':'80px'},
-                {'name':'Wochentag','field':'wochentag','width':'78px'},
-                {'name':'Kalender- woche','field':'kw','width':'80px'},
-                {'name':'Rahmen- Anfang','field':'rahmenanfang','width':'70px'},
-                {'name':'Kern- Anfang','field':'kernanfang','width':'70px'},
-                {'name':'Kern- Ende','field':'kernende','width':'70px'},
-                {'name':'Rahmen- Ende','field':'rahmenende','width':'70px'},
-                {'name':'Soll- Arbeitszeit','field':'soll','width':'75px'},
+    dojo.ready(function () {
+        var layout = [[
+                {'name': 'Lfd.-Nr.', 'field': 'lfdNr', 'width': '50px'},
+                {'name': 'Gültig Von', 'field': 'von', 'width': '75px'},
+                {'name': 'Gültig Bis', 'field': 'bis', 'width': '80px'},
+                {'name': 'Wochentag', 'field': 'wochentag', 'width': '78px'},
+                {'name': 'Kalender- woche', 'field': 'kw', 'width': '80px'},
+                {'name': 'Rahmen- Anfang', 'field': 'rahmenanfang', 'width': '70px'},
+                {'name': 'Kern- Anfang', 'field': 'kernanfang', 'width': '70px'},
+                {'name': 'Kern- Ende', 'field': 'kernende', 'width': '70px'},
+                {'name': 'Rahmen- Ende', 'field': 'rahmenende', 'width': '70px'},
+                {'name': 'Soll- Arbeitszeit', 'field': 'soll', 'width': '75px'},
             ]];
-            
-<? if ($this->zeitDatenOben !== null): ?>
-                    var zeitDatenOben = <?= $this->zeitDatenOben->toJson() ?>;
-                        
-                    var dataStoreOben =
-                        new dojo.data.ItemFileReadStore({ data:zeitDatenOben });
-                                
-                    var gridOben = new dojox.grid.DataGrid({
-                        store:dataStoreOben,
-                        structure:layout,
-                        selectionMode:"none"
-                    });
-                        
-                    gridOben.placeAt('gridDivOben');
-                    gridOben.startup();
-                        
-                    dojo.connect(gridOben, "onRowClick", null, function(e){
-                        var url = "<?=
+
+<?php if ($this->zeitDatenOben !== null): ?>
+            var zeitDatenOben = <?= $this->zeitDatenOben->toJson() ?>;
+
+            var dataStoreOben =
+                    new dojo.data.ItemFileReadStore({data: zeitDatenOben});
+
+            var gridOben = new dojox.grid.DataGrid({
+                store: dataStoreOben,
+                structure: layout,
+                selectionMode: "none"
+            });
+
+            gridOben.placeAt('gridDivOben');
+            gridOben.startup();
+
+            dojo.connect(gridOben, "onRowClick", null, function (e) {
+                var url = "<?=
     $this->url(array(
         'mitarbeiter' => $this->mitarbeiter,
         'id' => '',
@@ -48,24 +48,24 @@
                 console.debug(url);
                 location.href = url;
             });
-<? endif ?>
-<? if ($this->zeitDatenUnten !== null): ?>
-                    var zeitDatenUnten = <?= $this->zeitDatenUnten->toJson() ?>;
-                        
-                    var dataStoreUnten =
-                        new dojo.data.ItemFileReadStore({ data:zeitDatenUnten });
-                                
-                    var gridUnten = new dojox.grid.DataGrid({
-                        store:dataStoreUnten,
-                        structure:layout,
-                        selectionMode:"none"
-                    });
-                        
-                    gridUnten.placeAt('gridDivUnten');
-                    gridUnten.startup();
-                        
-                    dojo.connect(gridUnten, "onRowClick", null, function(e){
-                        var url = "<?=
+<?php endif ?>
+<?php if ($this->zeitDatenUnten !== null): ?>
+            var zeitDatenUnten = <?= $this->zeitDatenUnten->toJson() ?>;
+
+            var dataStoreUnten =
+                    new dojo.data.ItemFileReadStore({data: zeitDatenUnten});
+
+            var gridUnten = new dojox.grid.DataGrid({
+                store: dataStoreUnten,
+                structure: layout,
+                selectionMode: "none"
+            });
+
+            gridUnten.placeAt('gridDivUnten');
+            gridUnten.startup();
+
+            dojo.connect(gridUnten, "onRowClick", null, function (e) {
+                var url = "<?=
     $this->url(array(
         'mitarbeiter' => $this->mitarbeiter,
         'id' => '',
@@ -76,7 +76,7 @@
                 console.debug(url);
                 location.href = url;
             });
-<? endif ?>
-                    
-            });
+<?php endif ?>
+
+    });
 </script>

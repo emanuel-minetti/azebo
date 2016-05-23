@@ -5,14 +5,16 @@
     <?= $this->bueroleitung() ?>
     <li>
         <a
-            href="<?
-$date = new Zend_Date();
-$url = $this->url(array('jahr' => $date->toString('yyyy'),), 'uebersicht', true);
-echo $url;
-?>"
+            href="<?php
+            $date = new Zend_Date();
+            $url = $this->url(array('jahr' => $date->toString('yyyy'),), 'uebersicht', true);
+            echo $url;
+            ?>"
             onmouseover="azeboopen('Nav_Jahre')"
             onmouseout="azeboclosetime()"
-            <?if($url == $this->requestURI) {echo 'style="font-weight:bold;"';} ?>
+            <?php if ($url == $this->requestURI) {
+                echo 'style="font-weight:bold;"';
+            } ?>
             >
             Übersicht
         </a>
@@ -22,16 +24,18 @@ echo $url;
         </ul>
     </li>
     <li>
-        <a href="<?
-$url = $this->url(array(
-    'jahr' => $date->toString('yyyy'),
-    'monat' => $date->toString('M'),
-), 'monat', true);                    
-echo $url;
-                    ?>"
+        <a href="<?php
+        $url = $this->url(array(
+            'jahr' => $date->toString('yyyy'),
+            'monat' => $date->toString('M'),
+                ), 'monat', true);
+        echo $url;
+        ?>"
            onmouseover="azeboopen('Nav_Monate')"
            onmouseout="azeboclosetime()"
-           <?if($url == $this->requestURI) {echo 'style="font-weight:bold;"';} ?>
+<?php if ($url == $this->requestURI) {
+    echo 'style="font-weight:bold;"';
+} ?>
            >
             Monate
         </a>
