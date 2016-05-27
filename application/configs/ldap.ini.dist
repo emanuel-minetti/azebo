@@ -9,6 +9,7 @@ ldap.physalis.useSsl = true
 ldap.gruppen.mitglied.hfs = "azebohfs"
 ldap.gruppen.mitglied.hfm = "azebohfm"
 ldap.gruppen.mitglied.khb = "azebokhb"
+ldap.gruppen.mitglied.khb.studi = "KHB-StudHK"
 ldap.gruppen.buero.hfs = "HFS-Zeit"
 ldap.gruppen.buero.hfm = "HFM-Zeit"
 ldap.gruppen.buero.khb = "KHB-Zeit"

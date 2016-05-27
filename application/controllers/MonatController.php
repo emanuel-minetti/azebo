@@ -346,6 +346,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function editAction() {
+        //TODO Neuen Button für "Absenden und nächster Tag" einfügen!
         $request = $this->getRequest();
 
         // falls der Monat nicht bearbeitbar ist, gibt es keinen Link hierher.
@@ -591,6 +592,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         $this->mitarbeiter->saveArbeitstag($tag, $termin);
                     }
                     
+                    //TODO Datei löschen!!!
+
                     // redirect
                     return $this->_helper->redirector->gotoRoute(array(
                                 'monat' => $this->monat,
@@ -838,6 +841,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             '', "_____________________________\n     Unterschrift Fachvorgesetzte/r"), false, false);
 
         // Rendern und senden des Bogens
+        //TODO Neuen Tab für das PDF öffnen!
         $pdf->AutoPrint();
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();
@@ -955,12 +959,21 @@ class MonatController extends AzeboLib_Controller_Abstract {
         
         // Die zu bearbeitenden Einträge sammeln: Sprich nur den ersten
         // und den letzten Eintrag jeden Tages übernehmen.
+        //TODO Bemerkungen übernehmen!
+        //TODO statt 'strtok' 'explode' verwenden!
         while (true) {
             if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                 break;
             }
-            $datum = strtok($zeilen[0], ';');
+            //$datum = strtok($zeilen[0], ';');
+            $tokens = explode(';',$zeilen[0]);
+            $datum = $tokens[0];
+//            foreach ($tokens as $token) {
+//                $this->_log->info($token);
+//            }
             $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+            $bemerkung = $tokens[$tokens.length - 1];
+            $this->_log->info('Datum: ' . $datum . 'Bemerkung: ' . $bemerkung);
             array_shift($zeilen);
             if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                 break;
