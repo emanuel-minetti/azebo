@@ -155,6 +155,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     
     //TODO 'Studi' setzen!!
     //TODO 'Studi-Semesteranfang' nach 'zeiten.ini' auslagern!
+    //TODO SVN_TEST
 
     //TODO Die Namen der Hochschulen in die Konfig-Datei auslagern!
     //TODO Kommentieren!
