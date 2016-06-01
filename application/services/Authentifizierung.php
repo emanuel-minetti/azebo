@@ -105,10 +105,11 @@ class Azebo_Service_Authentifizierung {
             return 'FehlerDB';
         }
 
-        //TODO ggf. 'Studi' setzen!!
-        //Setze Rolle, Hochschule, Vor- und Nachname
+        
+        //Setze Rolle, Hochschule, Studi-Status, Vor- und Nachname
         $mitarbeiter->setRolle($gruppen);
         $mitarbeiter->setHochschule($gruppen);
+        $mitarbeiter->setStudiHK($gruppen);
         $mitarbeiter->setVorname($vorname);
         $mitarbeiter->setNachname($nachname);
 

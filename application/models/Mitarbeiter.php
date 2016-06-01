@@ -122,7 +122,29 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
 
         return $hochschule;
     }
+  
+    public function getStudiHKNachBenutzernamen($benutzername) {
+        $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
+        $options = $config->ldap->physalis->toArray();
+        $gruppenNamen = Zend_Registry::get('gruppen');
+        $gruppen = array();
+        $attributes = array('cn');
+        $ldap = new Zend_Ldap($options);
+        $users = $ldap->search(
+                '(&(objectClass=posixGroup)(memberUid=' . $benutzername . '))', 'OU=Groups,DC=verwaltung,DC=kh-berlin,DC=de', Zend_Ldap::SEARCH_SCOPE_SUB, $attributes);
+        foreach ($users as $user) {
+            $gruppen[] = $user['cn'][0];
+        }
+        $studiHK = false;
+        foreach ($gruppen as $gruppe) {
+            if ($gruppe == $gruppenNamen->mitglied->khbstudi) {
+                $studiHK = true;
+            }
+        }
 
+        return $studiHK;
+    }
+    
     /**
      * Gibt ein Array mit den Benutzernamen aller Mitarbeiter einer Hochschule
      * zurück. Die Hochschule wird als 'khb', 'hfm' oder 'hfs' übergeben.

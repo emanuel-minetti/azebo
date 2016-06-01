@@ -31,6 +31,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     private $_nachname = null;
     private $_rolle = null;
     private $_hochschule = null;
+    private $_studiHK = null;
     private $_zeiten = null;
     private $_farben = null;
 
@@ -153,9 +154,38 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $this->_hochschule;
     }
     
-    //TODO 'Studi' setzen!!
     //TODO 'Studi-Semesteranfang' nach 'zeiten.ini' auslagern!
-    //TODO SVN_TEST
+    /**
+     * Setze StudiHK für diejenigen Mitglieder der KHB, die
+     * 'Stdentische Hilfskräfte sind.
+     * 
+     * @param array $gruppen die LDAP-Gruppen zu denen der Mitarbeiter gehört.
+     */
+    public function setStudiHK(array $gruppen) {
+        $gruppenNamen = Zend_Registry::get('gruppen');
+        
+        $this->_studiHK = false;
+        foreach ($gruppen as $gruppe) {
+            if ($gruppe == $gruppenNamen->mitglied->khbstudi) {
+                $this->_studiHK = true;
+            }
+        }
+    }
+    
+    /**
+     * Gibt zurück, ob der Mitarbeiter 'Studentische Hilfskraft ist oder nicht.
+     * 
+     * @return boolean Der Wahrheitswert, ob der Mitarbeiter
+     *                  'Stdentische Hilfskraft ist oder nicht.
+     */
+    public function getStudiHK() {
+        if ($this->_studiHK === null) {
+            $model = new Azebo_Model_Mitarbeiter();
+            $this->_studiHK = $model->
+                    getStudiHKNachBenutzernamen($this->benutzername);
+        }
+        return $this->_studiHK;
+    }
 
     //TODO Die Namen der Hochschulen in die Konfig-Datei auslagern!
     //TODO Kommentieren!
