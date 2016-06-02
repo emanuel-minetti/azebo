@@ -304,8 +304,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
                             == 0) {
                         $this->jahresabschlussFehlt = true;
                         $this->_schliesseJahrAb();
-                        //TODO Hier scheint der Fehler (Colden) zu ligen!!!!
-                        // Scheint aber schon gefixt zu sein!!
                     }
 
                     // aktualisiere den View
@@ -317,7 +315,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             if (isset($postDaten['uebertragen'])) {
                 $valid = $abschlussForm->isValid($postDaten);
                 if ($valid) {
-                    $this->_log->debug('Habe abgeschlossen!!');
+                    //$this->_log->debug('Habe abgeschlossen!!');
                     $this->_schliesseJahrAb();
                 }
             }

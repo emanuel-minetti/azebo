@@ -64,3 +64,12 @@ kappung.monat.minuten = 0
 
 tagdotuer.sa.jahr2013 = "13.7.2013"
 tagdotuer.so.jahr2013 = "14.7.2013"
+
+semesteranfang.sommer.jahr2015 = "1.4.2015"
+semesteranfang.winter.jahr2015 = "1.10.2015"
+
+semesteranfang.sommer.jahr2016 = "1.4.2016"
+semesteranfang.winter.jahr2016 = "1.10.2016"
+
+semesteranfang.sommer.jahr2017 = "1.4.2017"
+semesteranfang.winter.jahr2017 = "1.10.2017"

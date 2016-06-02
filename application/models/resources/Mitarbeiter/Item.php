@@ -331,6 +331,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      * @return Azebo_Model_Saldo 
      */
     public function getSaldoBisher(Zend_Date $bis, $anzeigen = false) {
+        
+        //TODO Debugging entfernen!
+       $log = Zend_Registry::get('log');
+        
         $uebertragenBis = $this->getUebertragenBis();
         if ($bis->compareYear($uebertragenBis) == 1) {
             // falls $bis nach dem letzten Übertrag liegt berechne das Saldo wie
@@ -344,6 +348,28 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $saldo = $this->getVorjahr()->getSaldouebertrag();
             $monate = $this->getArbeitsmonateBis($bis, false);
         }
+        // Prüfe ob der Mitarbeiter eine StudiHK ist. Falls ja dürfen nur die 
+        // Monate bis zum letzten Semesteranfang berücksichtigt werden.
+        if ($this->getStudiHK()) {
+            // Hole die Semesteranfänge des Jahres
+            $zeiten = $this->_getZeiten();
+            $jahr = 'jahr' . $bis->toString('yyyy');
+            $soSeAnfang = $zeiten->semesteranfang->sommer->$jahr;
+            $wiSeAnfang = $zeiten->semesteranfang->winter->$jahr;
+            $soSeAnfang = new Zend_Date($soSeAnfang, 'dd.MM.yyyy');
+            $wiSeAnfang = new Zend_Date($wiSeAnfang, 'dd.MM.yyyy');
+            $neujahr = '1.1.' . $bis->toString('yyyy');
+            $neujahr = new Zend_Date($neujahr);
+            if ($bis->compareMonth($neujahr) !== -1 && $bis->compareMonth($soSeAnfang) === -1) {
+                //TODO Noch nicht richtig! Der April liegt *nicht* vorm Semesteranfang!!
+                $log->info('Abschnitt 1-3');
+            } else if ($bis->compareMonth($soSeAnfang) !== -1 && $bis->compareMonth($wiSeAnfang) === -1){
+                $log->info('Abschnitt 4-9');
+            } else {
+                $log->info('Abschnitt 10-12');
+            }
+        }
+        
         foreach ($monate as $monat) {
             $monatsSaldo = $monat->getSaldo();
             $saldo->add($monatsSaldo, true);
