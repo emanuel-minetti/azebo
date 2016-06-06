@@ -154,7 +154,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         return $this->_hochschule;
     }
     
-    //TODO 'Studi-Semesteranfang' nach 'zeiten.ini' auslagern!
     /**
      * Setze StudiHK für diejenigen Mitglieder der KHB, die
      * 'Stdentische Hilfskräfte sind.
