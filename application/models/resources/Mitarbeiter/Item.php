@@ -332,9 +332,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      */
     public function getSaldoBisher(Zend_Date $bis, $anzeigen = false) {
         
-        //TODO Debugging entfernen!
-       $log = Zend_Registry::get('log');
-        
         $uebertragenBis = $this->getUebertragenBis();
         if ($bis->compareYear($uebertragenBis) == 1) {
             // falls $bis nach dem letzten Übertrag liegt berechne das Saldo wie
@@ -348,6 +345,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $saldo = $this->getVorjahr()->getSaldouebertrag();
             $monate = $this->getArbeitsmonateBis($bis, false);
         }
+        
         // Prüfe ob der Mitarbeiter eine StudiHK ist. Falls ja dürfen nur die 
         // Monate bis zum letzten Semesteranfang berücksichtigt werden.
         if ($this->getStudiHK()) {
@@ -358,15 +356,41 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $wiSeAnfang = $zeiten->semesteranfang->winter->$jahr;
             $soSeAnfang = new Zend_Date($soSeAnfang, 'dd.MM.yyyy');
             $wiSeAnfang = new Zend_Date($wiSeAnfang, 'dd.MM.yyyy');
+            // Hole Neujahr
             $neujahr = '1.1.' . $bis->toString('yyyy');
             $neujahr = new Zend_Date($neujahr);
-            if ($bis->compareMonth($neujahr) !== -1 && $bis->compareMonth($soSeAnfang) === -1) {
-                //TODO Noch nicht richtig! Der April liegt *nicht* vorm Semesteranfang!!
-                $log->info('Abschnitt 1-3');
-            } else if ($bis->compareMonth($soSeAnfang) !== -1 && $bis->compareMonth($wiSeAnfang) === -1){
-                $log->info('Abschnitt 4-9');
+            // Besorge ein 'Null'-Saldo
+            $nullsaldo = new Azebo_Model_Saldo(0, 0, true);
+            // Wandle '$monate' in ein array um
+            $monateArray = array();
+            foreach ($monate as $monat) {
+                array_push($monateArray, $monat);
+            }
+            $monate = $monateArray;                
+            if ($bis->compareMonth($neujahr) !== -1 &&
+                    $bis->compareMonth($soSeAnfang) === -1) {
+                // '$bis' liegt zwischen Januar und März: berücksichtige alle Monate
+                // wie bisher, und beücksichtige den Übertrag. Im Klartext:
+                // tue nichts
+            } else if ($bis->compareMonth($soSeAnfang) !== -1 &&
+                    $bis->compareMonth($wiSeAnfang) === -1) {
+                // '$bis' liegt zwischen April und September: berücksichtige alle Monate
+                // seit dem April und keinen Übertrag
+                $saldo = $nullsaldo;
+                while (count($monate) > 0 &&
+                        $monate[0]->
+                        getMonat()->compareMonth($soSeAnfang) === -1) {
+                    array_shift($monate);
+                }
             } else {
-                $log->info('Abschnitt 10-12');
+                // '$bis' liegt zwischen Oktober und Neujahr: berücksichtige alle Monate
+                // seit dem Oktober und keinen Übertrag
+                $saldo = $nullsaldo;
+                while (count($monate) > 0 &&
+                        $monate[0]->
+                        getMonat()->compareMonth($wiSeAnfang) === -1) {
+                    array_shift($monate);
+                }
             }
         }
         
