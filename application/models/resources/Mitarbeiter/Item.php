@@ -156,7 +156,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     
     /**
      * Setze StudiHK für diejenigen Mitglieder der KHB, die
-     * 'Stdentische Hilfskräfte sind.
+     * 'Studentische Hilfskräfte' sind.
      * 
      * @param array $gruppen die LDAP-Gruppen zu denen der Mitarbeiter gehört.
      */
