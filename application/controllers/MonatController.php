@@ -927,8 +927,30 @@ class MonatController extends AzeboLib_Controller_Abstract {
         ));
     }
 
+    /**
+     * Liest Arbeitsanfang und -ende sowie evevntuelle Bemerkungen aus einer
+     * mit der APP 'TrackWorkTime' erstellten CSV-Datei in ein Array ein.
+     * 
+     * Es wird pro Tag immer nur die erste Anmeldung und die letzte Abmeldung
+     * als Anfang bzw. Ende der Arbeitszeit gewertet. Die Bemerkungen der
+     * einzelnen Einträge eines Tages werden gesammelt und aneinander angehägt,
+     * um schließlich eine Bemerkung für den Arbeitstag zu generieren.
+     *     Es werden immer nur die Tage des Monats berücksichtigt, die in dem
+     * angegeben Monat liegen.
+     *     Das Parsen der CSV-Datei wurde in eigene Funktion ausgelagert, um die
+     * zukünftige Erweiterbarkeit der Lösung (andere Apps) zu gewährleisten.
+     * 
+     * @param Zend_Date $monat der Monat, der geparst werden soll.
+     * @param String $dateiName der Name der Datei, die geparst werden soll.
+     * @return array ein array von arrays das die einzelnen Arbeitstage als
+     * Einträge enthält. Die einzelnen Einträge enthalten die Schlüssel
+     * 'Beginn', 'Ende' und 'Bemerkung'. Hierbei sind Beginn und Ende jeweils
+     * vom Typ Zend_Date und Bemerkung ist vom Typ String.
+     */
     private function _parseTrackWorkTime($monat, $dateiName) {
+        // Ein leeres array für die gesammelten Termine bereitstellen
         $termine = array();
+        // Die Zeilen der hochgeladenen Datei in ein array einlesen
         $zeilen = file($dateiName, FILE_IGNORE_NEW_LINES || FILE_SKIP_EMPTY_LINES);
 
         // Die Zeile mit den Spaltentiteln loswerden.
