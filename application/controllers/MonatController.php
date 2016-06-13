@@ -586,7 +586,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         $tag = $termin['beginn'];
                         $termin['pause'] = '-';
                         $termin['befreiung'] = null;
-                        $termin['bemerkung'] = null;
                         $this->mitarbeiter->saveArbeitstag($tag, $termin);
                     }
                     
@@ -979,40 +978,40 @@ class MonatController extends AzeboLib_Controller_Abstract {
         
         // Die zu bearbeitenden Einträge sammeln: Sprich nur den ersten
         // und den letzten Eintrag jeden Tages übernehmen.
-        //TODO Bemerkungen übernehmen!
-        //TODO statt 'strtok' 'explode' verwenden!
+        //TODO Kommentieren!
         while (true) {
             if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                 break;
             }
-            //$datum = strtok($zeilen[0], ';');
             $tokens = explode(';',$zeilen[0]);
             $datum = $tokens[0];
-//            foreach ($tokens as $token) {
-//                $this->_log->info($token);
-//            }
             $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
-            $bemerkung = $tokens[$tokens.length - 1];
-            $this->_log->info('Datum: ' . $datum . 'Bemerkung: ' . $bemerkung);
+            $bemerkung = chop($tokens[count($tokens) - 1]);
             array_shift($zeilen);
             if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                 break;
             }
-            $letztesDatum = strtok($zeilen[0], ';');
-            $letzesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
-            if (!($letzesDatum->equals($datum, Zend_Date::DATES))) {
+            $tokens = explode(';',$zeilen[0]);
+            $letztesDatum = $tokens[0];
+            $letztesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
+            $letzteBemerkung = $tokens[count($tokens) - 1];
+            if (!($letztesDatum->equals($datum, Zend_Date::DATES))) {
                 continue;
             } else {
+                $bemerkung .= ' ' . chop($letzteBemerkung);
                 array_shift($zeilen);
                 $letztenEintragGefunden = false;
                 while (!$letztenEintragGefunden) {
                     if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                         break;
                     }
-                    $naechstesDatum = strtok($zeilen[0], ';');
+                    $tokens = explode(';',$zeilen[0]);
+                    $naechstesDatum = $tokens[0];
                     $naechstesDatum = new Zend_Date($naechstesDatum, 'YYYY-MM-dd HH:mm');
-                    if (($letzesDatum->equals($naechstesDatum, Zend_Date::DATES))) {
-                        $letzesDatum = $naechstesDatum;
+                    $naechsteBemerkung = $tokens[count($tokens) - 1];
+                    if (($letztesDatum->equals($naechstesDatum, Zend_Date::DATES))) {
+                        $letztesDatum = $naechstesDatum;
+                        $bemerkung .=  ' ' . chop($naechsteBemerkung);
                         array_shift($zeilen);
                         if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                             break;
@@ -1024,7 +1023,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
             }
             array_push($termine, array(
                 'beginn' => $datum,
-                'ende' => $letzesDatum,
+                'ende' => $letztesDatum,
+                'bemerkung' => $bemerkung,
             ));
         }
         return $termine;
