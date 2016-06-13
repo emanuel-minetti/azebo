@@ -966,7 +966,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             }
         }
 
-        //'$zeilen' kopieren und nur die gültigen Einträge
+        //'$zeilen' kopieren und nur die nicht-leeren Einträge
         //übernehmen!
         $zeilenAlt = $zeilen;
         $zeilen = array();
@@ -978,28 +978,44 @@ class MonatController extends AzeboLib_Controller_Abstract {
         
         // Die zu bearbeitenden Einträge sammeln: Sprich nur den ersten
         // und den letzten Eintrag jeden Tages übernehmen.
-        //TODO Kommentieren!
+        
+        // Die Schleife, die über alle Zeile läuft
         while (true) {
             if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                 break;
             }
+            // Ein neuer Arbeitstag wird bearbeitet, sprich Datum und Bemerkung
+            // werden (vorläufig) gespeichert.
             $tokens = explode(';',$zeilen[0]);
             $datum = $tokens[0];
             $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
             $bemerkung = chop($tokens[count($tokens) - 1]);
+            // Die Zeile ist fertig bearbeitet und kann entfernt werden
             array_shift($zeilen);
+            // Falls keine weitere (nicht-leere) Zeile existiert,
+            // springe aus der Schleife über die Zeilen raus und vergiss
+            // dsa gerade bearbeitete Datum
             if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                 break;
             }
+            // Bearbeite die nächste Zeile
             $tokens = explode(';',$zeilen[0]);
             $letztesDatum = $tokens[0];
             $letztesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
             $letzteBemerkung = $tokens[count($tokens) - 1];
+            // Falls die nächste Zeile ein anderes Datum enthält, war die 
+            // bearbeitete Zeile ungültig (kein Ende). Also wirf die Zeile weg
+            // und bearbeite die nächste Zeile
             if (!($letztesDatum->equals($datum, Zend_Date::DATES))) {
                 continue;
             } else {
+                // Die nächste Zeile gehört zum bearbeiteten Datum, also
+                // füge die Bemerkung zum berbeiteten Datum hoinzu.
                 $bemerkung .= ' ' . chop($letzteBemerkung);
+                // Die Zeile ist fertig bearbeitet, also entferne sie
                 array_shift($zeilen);
+                // Prüfe ob die beabeitete Zeile, die letzte für das bearbeitete
+                // Datum ist
                 $letztenEintragGefunden = false;
                 while (!$letztenEintragGefunden) {
                     if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
@@ -1009,18 +1025,26 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $naechstesDatum = $tokens[0];
                     $naechstesDatum = new Zend_Date($naechstesDatum, 'YYYY-MM-dd HH:mm');
                     $naechsteBemerkung = $tokens[count($tokens) - 1];
+                    // Falls die nächste Zeile zum bearbeiteten Datum gehört,
+                    // vergiss die vorige Zeile und füge die Bemerkung hinzu
                     if (($letztesDatum->equals($naechstesDatum, Zend_Date::DATES))) {
                         $letztesDatum = $naechstesDatum;
                         $bemerkung .=  ' ' . chop($naechsteBemerkung);
+                        // Die Zeile ist bearbeitet und wird entfernt
                         array_shift($zeilen);
+                        // Falls keine weiteren (nicht-leeren) Zeilen mehr folgen,
+                        // sind wir fertig
                         if (!$zeilen || !$zeilen[0] || chop($zeilen[0]) === '') {
                             break;
                         }
                     } else {
+                        // Der Tag ist fertig bearbeitet,
+                        // also gehe zum nächsten Tag
                         $letztenEintragGefunden = true;
                     }
                 }
             }
+            // Hier werden die in den Bogen zu übernehmenden Tage gesammelt.
             array_push($termine, array(
                 'beginn' => $datum,
                 'ende' => $letztesDatum,
