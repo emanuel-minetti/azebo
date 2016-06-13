@@ -590,6 +590,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     }
                     
                     //TODO Datei löschen!!!
+                    unlink($dateiName);
 
                     // redirect
                     return $this->_helper->redirector->gotoRoute(array(
