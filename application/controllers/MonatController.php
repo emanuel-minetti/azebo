@@ -589,7 +589,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
                         $this->mitarbeiter->saveArbeitstag($tag, $termin);
                     }
                     
-                    //TODO Datei löschen!!!
                     unlink($dateiName);
 
                     // redirect
