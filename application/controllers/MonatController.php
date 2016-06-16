@@ -156,10 +156,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $ns->feiertagsservice = $feiertagsservice;
         $this->ns = $ns;
 
-//        $this->_log->debug('Pfad: ' . print_r($this->view->dojo()->getModulePaths(), true));
-//        $this->view->dojo()->registerModulePath('custom','/js');
-//        $this->_log->debug('Pfad2: ' . print_r($this->view->dojo()->getModulePaths(), true));
-//         $this->view->dojo()->requireModule('custom.test');
         // Aktiviere Dojo
         $this->view->dojo()
                 ->enable()
@@ -289,7 +285,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 // lege den Monat in der DB ab, falls er noch nicht vorhanden
                 // ist (= möglich bei 'Resend')
                 $valid = $abschlussForm->isValid($postDaten);
-                if ($valid && $this->mitarbeiter->getArbeitsmonat($this->zuBearbeitendesDatum) === null) {
+                if (
+                        $valid &&
+                        $this->mitarbeiter->
+                        getArbeitsmonat($this->zuBearbeitendesDatum) === null) {
                     $daten = $abschlussForm->getValues();
                     $monat = new Zend_Date($daten['monat'], 'MM.yyyy');
                     $saldo = $this->mitarbeiter->getSaldo($monat);

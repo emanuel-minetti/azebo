@@ -64,19 +64,11 @@ class Azebo_Service_Authentifizierung {
         //TODO Hier schlägt #ZF-9378 zu!
         $ergebnis = $auth->authenticate($adapter);
 
-        //logge die Nachrichten des LDAP-Servers
-//        $nachrichten = $ergebnis->getMessages();
-//        foreach ($nachrichten as $i => $nachricht) {
-//            if ($i-- > 1) { // $messages[2] and up are log messages
-//                $nachricht = str_replace("\n", "\n  ", $nachricht);
-//                $this->_log->log("Ldap: $i: $nachricht", Zend_Log::DEBUG);
-//            }
-//        }
-
+        // Den folgenden Absatz auskommentieren, falls zu Debugging-Zwecken
+        // keine Passwort-Prüfung stattfinden soll
         if (!$ergebnis->isValid()) {
             return 'FehlerLDAP';
         }
-
 
         //hole die Gruppen in denen der Benutzer Mitglied ist
         $config = new Zend_Config_Ini(APPLICATION_PATH . '/configs/ldap.ini');
@@ -88,15 +80,13 @@ class Azebo_Service_Authentifizierung {
         foreach ($users as $user) {
             $gruppen[] = $user['cn'][0];
         }
-        //$this->_log->debug('Gruppen: ' . print_r($gruppen, true));
 
         //Hole den Namen aus dem LDAP
         $ldap->bind();
         $benutzer = $ldap->getEntry('uid=' . $daten['benutzername'] . ',ou=Users,dc=verwaltung,dc=kh-berlin,dc=de');
         $vorname = $benutzer['givenname'][0];
         $nachname = $benutzer['sn'][0];
-//        $this->_log->debug('Vorname: ' . $vorname);
-//        $this->_log->debug('Nachname: ' . $nachname);
+
         //Hole den Mitarbeiter aus dem Modell
         $mitarbeiter = $this->_mitarbeiterModell
                 ->getMitarbeiterNachBenutzername($daten['benutzername']);
@@ -182,8 +172,6 @@ class Azebo_Service_Authentifizierung {
                 'physalis' => $options,
             );
 
-            //$this->_log->debug('Optionen: ' . print_r($options, true));
-            
             $authAdapter = new Zend_Auth_Adapter_Ldap($options, $daten['benutzername'], $daten['passwort']); 
             $this->setAuthAdapter($authAdapter);
         }

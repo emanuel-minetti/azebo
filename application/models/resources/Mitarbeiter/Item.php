@@ -330,7 +330,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      * @return Azebo_Model_Saldo 
      */
     public function getSaldoBisher(Zend_Date $bis, $anzeigen = false) {
-        
+
         $uebertragenBis = $this->getUebertragenBis();
         if ($bis->compareYear($uebertragenBis) == 1) {
             // falls $bis nach dem letzten Übertrag liegt berechne das Saldo wie
@@ -397,6 +397,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $monatsSaldo = $monat->getSaldo();
             $saldo->add($monatsSaldo, true);
         }
+        
         if ($anzeigen && count($monate) != 0) {
             $saldoRest = $monate[count($monate) - 1]->getSaldo()->getRest();
             if ($saldoRest) {
