@@ -132,7 +132,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                         'BefreiungArbeitsfrei',
                         'BefreiungNachmittag',
                         ),
-                    'tabindex' => 8,
+                    'tabindex' => 9,
                 ));
 
         $bemerkungElement = new Zend_Dojo_Form_Element_Textarea('bemerkung', array(
@@ -142,18 +142,18 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                     'filters' => array('StringTrim'),
                     'validators' => array(
                         array('StringLength', false, array(0, 255),)),
-                    'tabindex' => 9,
+                    'tabindex' => 10,
                 ));
 
 
         $pauseElement = new Zend_Dojo_Form_Element_CheckBox('pause', array(
-                    'label' => 'Ohne Pause',
-                    'required' => false,
-                    'checkedValue' => 'x',
-                    'uncheckedValue' => '-',
-                    'filters' => array('StringTrim'),
-                    'validators' => array('Pause',),
-                ));
+            'label' => 'Ohne Pause',
+            'required' => false,
+            'checkedValue' => 'x',
+            'uncheckedValue' => '-',
+            'filters' => array('StringTrim'),
+            'validators' => array('Pause',),
+        ));
 
         // für HfM ausblenden
         if ($this->_mitarbeiter->getHochschule() == 'hfm') {
@@ -223,18 +223,25 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
             'label' => 'Absenden',
             'tabindex' => 5,
         ));
+        
+        $this->addElement('SubmitButton', 'absendenWeiter', array(
+            'required' => false,
+            'ignore' => true,
+            'label' => 'Absenden <br/> und nächsten Tag bearbeiten',
+            'tabindex' => 6,
+        ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
             'required' => false,
             'ignore' => true,
             'label' => 'Zurücksetzen',
-            'tabindex' => 6,
+            'tabindex' => 7,
         ));
 
         $this->addElement('SubmitButton', 'nachmittagButton', array(
             'required' => false,
             'ignore' => true,
-            'tabindex' => 7,
+            'tabindex' => 8,
         ));
     }
 

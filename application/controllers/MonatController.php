@@ -343,7 +343,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
     }
 
     public function editAction() {
-        //TODO Neuen Button für "Absenden und nächster Tag" einfügen!
         $request = $this->getRequest();
 
         // falls der Monat nicht bearbeitbar ist, gibt es keinen Link hierher.
@@ -378,8 +377,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                     filter($postDaten['endenachmittag']), true);
                 }
 
-                if (isset($postDaten['absenden'])) {
-                    // 'absenden' wurde gedrückt, also Daten filtern und validieren!
+                if (isset($postDaten['absenden']) ||
+                        isset($postDaten['absendenWeiter'])) {
+                    // 'absenden' oder 'absendenWeiter' wurde gedrückt,
+                    // also Daten filtern und validieren!
                     $valid = $form->isValid($postDaten);
                     $daten = $form->getValues();
 
@@ -410,19 +411,43 @@ class MonatController extends AzeboLib_Controller_Abstract {
                             }
                         }
 
-                        // speichern, in der Session als ungeprüft
-                        // markieren und redirect
+                        // speichern und in der Session als ungeprüft
+                        // markieren
                         $this->mitarbeiter->saveArbeitstag(
                                 $this->zuBearbeitendesDatum, $daten);
                         $ns = new Zend_Session_Namespace();
                         $ns->geprueft[
                                 $this->zuBearbeitendesDatum->toString('MM-yyyy')
                                 ] = false;
+                        
+                        // Redirect: je nachdem, ob 'absenden' oder
+                        // 'absendenWeiter' gedrückt wurde, auf die
+                        // entsprechende Seite weiterleiten.
                         $redirector = $this->_helper->getHelper('Redirector');
+                        if(isset($postDaten['absenden'])) {
                         $redirector->gotoRoute(array(
                             'jahr' => $this->jahr,
                             'monat' => $this->monat,
                                 ), 'monat');
+                        } else {
+                            // 'absendenWeiter' wurde gedrückt: Ermittle den
+                            // nächsten Arbeitstag
+                            $naechsterTag = $this->zuBearbeitendesDatum->add(
+                                    '1', Zend_Date::DAY);
+                            $feiertagsservice = $this->ns->feiertagsservice;
+                            while ($feiertagsservice->
+                                    feiertag($naechsterTag)['feiertag']) {
+                                $naechsterTag = $this->zuBearbeitendesDatum->
+                                        add('1', Zend_Date::DAY);
+                            }
+                            // und leite weiter
+                            $redirector->gotoRoute(array(
+                                'jahr' => $this->jahr,
+                                'monat' => $this->monat,
+                                'tag' => $naechsterTag->get(
+                                        Zend_Date::DAY_SHORT),
+                            ), 'monatEdit');
+                        }
                     }
                     // nicht valide, also tue nichts und rendere die Seite mit
                     // Fehlermeldungen neu.
@@ -435,7 +460,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $form->setNachmittag();
                 }
             }
-            // 'zurücksetzen' wurde gedrückt, also tue nichts sondern, rendere
+            // 'zurücksetzen' wurde gedrückt, also tue nichts und rendere
             // einfach die Seite neu
         }
 
