@@ -863,7 +863,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
             '', "_____________________________\n     Unterschrift Fachvorgesetzte/r"), false, false);
 
         // Rendern und senden des Bogens
-        //TODO Neuen Tab für das PDF öffnen!
         $pdf->AutoPrint();
         $this->_helper->viewRenderer->setNoRender();
         $this->_helper->layout->disableLayout();
