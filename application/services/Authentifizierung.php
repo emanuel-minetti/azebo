@@ -113,6 +113,14 @@ class Azebo_Service_Authentifizierung {
         $hs = $mitarbeiter->getHochschule();
         $ns->zeiten = new Zend_Config_Ini(
                         APPLICATION_PATH . '/configs/zeiten.ini', $hs);
+        
+        //TODO Hier müssen die Strings aus der Konfiguration in die Session des
+        // Mitarbeiters eingelesen werden!
+        // die configs/strings.ini einlesen und in die Session geben
+        $ns->strings = new Zend_Config_Ini(
+                        APPLICATION_PATH . '/configs/strings.ini', $hs);
+        //TODO Debugging entfernen!!!
+        //$this->_log->info('Hochschulname: ' . $ns->strings->hochschule->name);
 
         return 'Erfolg';
     }

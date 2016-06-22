@@ -1,0 +1,15 @@
+[alle]
+
+hochschule.name = ""
+
+[khb : alle]
+
+hochschule.name = "weißensee kunsthochschule berlin"
+
+[hfm : alle]
+
+hochschule.name = "Hochschule für Musik \"Hanns Eisler\""
+
+[hfs : alle]
+
+hochschule.name = "Hochschule für Schauspielkunst 'Ernst Busch'"
