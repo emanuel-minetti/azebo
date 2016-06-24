@@ -17,11 +17,10 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012 Emanuel Minetti (e.minetti (at) posteo.de)
+ *     Copyright 2012-16 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 //TODO Kommentieren!!
-//TODO Das Copyright im Header der PHP-Dateien korrigieren!
 
 /**
  * Prüft, ob ein Monatsabschluss zurückgenommen werden kann.
