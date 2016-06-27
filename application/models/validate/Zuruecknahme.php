@@ -20,8 +20,6 @@
  *     Copyright 2012-16 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
-//TODO Kommentieren!!
-
 /**
  * Prüft, ob ein Monatsabschluss zurückgenommen werden kann.
  * Es wird geprüft, ob der zurückzunehmende Abschluss vor dem letzten

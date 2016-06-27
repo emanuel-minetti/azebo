@@ -42,7 +42,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'invalidMessage' => self::UNGUELTIGES_DATUM,
             'required' => true,
             'missingMessage' => 'Bitte geben Sie einen Wert ein!',
-            //'filters' => array('StringTrim', 'DatumAlsDate', ),
             'autofocus' =>true,
         ));
 
@@ -50,7 +49,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'label' => 'Gültig Bis: (Für "Bis auf Weiteres" bitte leer lassen)',
             'datePattern' => 'dd.MM.yyyy',
             'invalidMessage' => self::UNGUELTIGES_DATUM,
-            //'filters' => array('StringTrim', 'DatumAlsDate'),
             'validators' => array('BisNachVon'),
         ));
 
@@ -79,7 +77,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'ungerade' => 'Ungerade',
         );
 
-        //TODO Mehrfachauswahl zulassen und bearbeiten!
         $this->addElement('FilteringSelect', 'kw', array(
             'label' => 'Kalenderwoche: ',
             'multiOptions' => $kalenderwochen,
@@ -98,7 +95,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'visibleIncrement' => 'T00:10:00',
             'clickableIncrement' => 'T00:10:00',
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
-            //'filters' => array('StringTrim', 'ZeitAlsDate'),
         ));
 
         $this->addElement('TimeTextBox', 'kernAnfang', array(
@@ -109,7 +105,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'visibleIncrement' => 'T00:10:00',
             'clickableIncrement' => 'T00:10:00',
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
-            //'filters' => array('StringTrim', 'ZeitAlsDate'),
             'validators' => array('KernNachRahmen'),
         ));
 
@@ -121,7 +116,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'visibleIncrement' => 'T00:10:00',
             'clickableIncrement' => 'T00:10:00',
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
-            //'filters' => array('StringTrim', 'ZeitAlsDate'),
             'validators' => array('KernEndeNachAnfang', 'RahmenNachKern'),
         ));
 
@@ -133,7 +127,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'visibleIncrement' => 'T00:10:00',
             'clickableIncrement' => 'T00:10:00',
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
-            //'filters' => array('StringTrim', 'ZeitAlsDate'),
             'validators' => array('RahmenEndeNachAnfang'),
         ));
         
@@ -164,10 +157,8 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
                 'DijitElement',
                 'Errors',
                 array('HtmlTag', array('tag' => 'dd')),
-                //array('HtmlTag', array('tag' => 'dt')),
                 ),
             'validators' => array('RegelEindeutig'),
-            //TODO Decoratoren anpassen!
         ));
 
         $this->addElement('SubmitButton', 'zuruecksetzen', array(
