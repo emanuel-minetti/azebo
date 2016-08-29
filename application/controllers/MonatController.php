@@ -402,6 +402,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                             $daten['beginnnachmittag'], $daten['endenachmittag']);
                                     $anwesend->addTime($anwesendNachmittag);
                                 }
+                                //TODO Falls 'anwesend' und 'anwesendNachmittag' zusammen
+                                // mehr als 
                                 $pause = $this->ns->zeiten->pause;
                                 if ($anwesend->compareTime($pause->kurz->ab) != 1) {
                                     $daten['pause'] = 'x';

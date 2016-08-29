@@ -33,7 +33,6 @@ class Azebo_Validate_Pause extends Zend_Validate_Abstract {
 
     protected $_messageTemplates = array(
         self::OHNE_ZEIT => 'Um "Ohne Pause" auswählen zu können, müssen "Beginn" und "Ende" gesetzt sein!',
-        self::ZU_KURZ => 'Die eingetragene Arbeitszeit ist zu kurz, um "Ohne Pause" auswählen zu können!',
         self::ZU_LANG => 'Die eingetragene Arbeitszeit ist zu lang, um "Ohne Pause" auswählen zu können!',
     );
 
@@ -73,11 +72,6 @@ class Azebo_Validate_Pause extends Zend_Validate_Abstract {
             $mitarbeiter = $ns->mitarbeiter;
 
             //prüfe
-            //TODO Warum muss 'zu kurz' bei Pause eigentlich geprüft werden?
-            if ($anwesend->compareTime($pause->kurz->dauer) != 1) {
-                $this->_error(self::ZU_KURZ);
-                return false;
-            }
             if ($mitarbeiter->getHochschule() == 'khb') {
                 if ($anwesend->compareTime($pause->kurz->ab) == 1) {
                     $this->_error(self::ZU_LANG);
