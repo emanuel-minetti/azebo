@@ -28,7 +28,6 @@
 class Azebo_Validate_Pause extends Zend_Validate_Abstract {
 
     const OHNE_ZEIT = 'OhneZeit';
-    const ZU_KURZ = 'ZuKurz';
     const ZU_LANG = 'ZuLang';
 
     protected $_messageTemplates = array(

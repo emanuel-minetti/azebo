@@ -400,12 +400,16 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                     $anwesendNachmittag = $this->zeitrechner->
                                             anwesend(
                                             $daten['beginnnachmittag'], $daten['endenachmittag']);
+                                    //TODO Neue Variable 'anwesendZusammen' einführen.
                                     $anwesend->addTime($anwesendNachmittag);
                                 }
+                                //TODO Neue Variable 'zwischen' einführen!
+                                //
                                 //TODO Falls 'anwesend' und 'anwesendNachmittag' kürzer als 
                                 // pauseKurzAb sind *und* 'anwesend' und 'anwesendNachmittag' zusammen
                                 // mehr als pauseKurzAb sind *und* die Zeit zwischen
                                 // 'ende' und 'beginnNachmittag' größer als pauseKurzDauer
+                                // bzw., falls angebracht, größer als pauseLangDauer,
                                 // ist, soll keine Pause abgezogen werden. 
                                 $pause = $this->ns->zeiten->pause;
                                 if ($anwesend->compareTime($pause->kurz->ab) != 1) {
