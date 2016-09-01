@@ -393,6 +393,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                     $daten['ende'] != '') {
                                 $anwesend = $this->zeitrechner->
                                         anwesend($daten['beginn'], $daten['ende']);
+                                $anwesendZusammen = new Zend_Date($anwesend);
+                                $anwesendNachmittag = NULL;
+                                $zwischenzeit = NULL;
+                                $pause = $this->ns->zeiten->pause;
+                                
                                 if ($daten['beginnnachmittag'] !== null &&
                                         $daten['beginnnachmittag'] != '' &&
                                         $daten['endenachmittag'] !== null &&
@@ -400,23 +405,41 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                     $anwesendNachmittag = $this->zeitrechner->
                                             anwesend(
                                             $daten['beginnnachmittag'], $daten['endenachmittag']);
-                                    //TODO Neue Variable 'anwesendZusammen' einführen.
-                                    $anwesend->addTime($anwesendNachmittag);
+                                    $anwesendZusammen = new Zend_Date($anwesend);
+                                    $anwesendZusammen->addTime($anwesendNachmittag);
+                                    $zwischenzeit = $this->zeitrechner->anwesend($daten['ende'], $daten['beginnnachmittag']);
                                 }
-                                //TODO Neue Variable 'zwischen' einführen!
-                                //
-                                //TODO Falls 'anwesend' und 'anwesendNachmittag' kürzer als 
+                                
+                                // Falls 'anwesend' und 'anwesendNachmittag' kürzer als 
                                 // pauseKurzAb sind *und* 'anwesend' und 'anwesendNachmittag' zusammen
                                 // mehr als pauseKurzAb sind *und* die Zeit zwischen
                                 // 'ende' und 'beginnNachmittag' größer als pauseKurzDauer
                                 // bzw., falls angebracht, größer als pauseLangDauer,
                                 // ist, soll keine Pause abgezogen werden. 
-                                $pause = $this->ns->zeiten->pause;
-                                if ($anwesend->compareTime($pause->kurz->ab) != 1) {
-                                    $daten['pause'] = 'x';
-                                } else {
+                                if ($anwesend->compareTime($pause->kurz->ab) === 1) {
+                                    $daten['pause'] = '-';    //=> Pause wird abgezogen
+                                } elseif ($anwesendNachmittag !== NULL &&
+                                        $anwesendNachmittag->compareTime($pause->kurz->ab) === 1) {
                                     $daten['pause'] = '-';
-                                }
+                                } elseif ($anwesendZusammen->compareTime($pause->kurz->ab) === 1) {
+                                    if ($anwesendZusammen->compareTime($pause->lang->ab) === 1) {
+                                        if ($zwischenzeit !== NULL &&
+                                                $zwischenzeit->compareTime($pause->lang->dauer) !== -1) {
+                                            $daten['pause'] = 'x';  //=> Pause wird nicht abgezogen
+                                        } else {
+                                            $daten['pause'] = '-';
+                                        }
+                                    } else {
+                                        if ($zwischenzeit !== NULL &&
+                                                $zwischenzeit->compareTime($pause->kurz->dauer) !== -1) {
+                                            $daten['pause'] = 'x';
+                                        } else {
+                                            $daten['pause'] = '-';
+                                        }
+                                    }
+                                } else {
+                                    $daten['pause'] = 'x';
+                                }   
                             }
                         }
 
