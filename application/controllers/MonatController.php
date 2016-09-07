@@ -239,7 +239,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         }
 
         // übergebe dem View die AZV-Tage, falls passend 
-        if ($this->mitarbeiter->getBeamter() && $this->zuBearbeitendesDatum->compareDate('31.12.2013', 'dd.MM.YYYY') == 1) {
+        if ($this->mitarbeiter->getBeamter() && $this->zuBearbeitendesDatum->compareDate('31.12.2013', 'dd.MM.yyyy') == 1) {
             $this->azvAnzeigen = true;
             $this->view->azvAnzeigen = true;
             $this->view->azvRest = $this->mitarbeiter->getAzvTage() - $this->mitarbeiter->getAzvTageBisher($this->zuBearbeitendesDatum);
@@ -1015,7 +1015,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $indices = array();
         foreach ($zeilen as $index => $zeile) {
             $datum = strtok($zeile, ';');
-            $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+            $datum = new Zend_Date($datum, 'yyyy-MM-dd HH:mm');
             if (!($monat->equals($datum, Zend_Date::MONTH) &&
                     $monat->equals($datum, Zend_Date::YEAR))) {
                 unset($zeilen[$index]);
@@ -1044,7 +1044,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             // werden (vorläufig) gespeichert.
             $tokens = explode(';',$zeilen[0]);
             $datum = $tokens[0];
-            $datum = new Zend_Date($datum, 'YYYY-MM-dd HH:mm');
+            $datum = new Zend_Date($datum, 'yyyy-MM-dd HH:mm');
             $bemerkung = chop($tokens[count($tokens) - 1]);
             // Die Zeile ist fertig bearbeitet und kann entfernt werden
             array_shift($zeilen);
@@ -1057,7 +1057,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             // Bearbeite die nächste Zeile
             $tokens = explode(';',$zeilen[0]);
             $letztesDatum = $tokens[0];
-            $letztesDatum = new Zend_Date($letztesDatum, 'YYYY-MM-dd HH:mm');
+            $letztesDatum = new Zend_Date($letztesDatum, 'yyyy-MM-dd HH:mm');
             $letzteBemerkung = $tokens[count($tokens) - 1];
             // Falls die nächste Zeile ein anderes Datum enthält, war die 
             // bearbeitete Zeile ungültig (kein Ende). Also wirf die Zeile weg
@@ -1079,7 +1079,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     }
                     $tokens = explode(';',$zeilen[0]);
                     $naechstesDatum = $tokens[0];
-                    $naechstesDatum = new Zend_Date($naechstesDatum, 'YYYY-MM-dd HH:mm');
+                    $naechstesDatum = new Zend_Date($naechstesDatum, 'yyyy-MM-dd HH:mm');
                     $naechsteBemerkung = $tokens[count($tokens) - 1];
                     // Falls die nächste Zeile zum bearbeiteten Datum gehört,
                     // vergiss die vorige Zeile und füge die Bemerkung hinzu

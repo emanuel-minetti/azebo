@@ -405,7 +405,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         // übergebe dem View die AZV-Tage, falls passend 
         if ($mitarbeiter->getBeamter() &&
-                $monat->compareDate('31.12.2013', 'dd.MM.YYYY')) {
+                $monat->compareDate('31.12.2013', 'dd.MM.yyyy')) {
             $this->view->azvAnzeigen = true;
             $this->view->azvRest =
                     $mitarbeiter->getAzvTage() - $this->mitarbeiter->

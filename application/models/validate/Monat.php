@@ -61,15 +61,15 @@ class Azebo_Validate_Monat extends Zend_Validate_Abstract {
             $isValid = false;
             $message = '';
             if (count($monate) == 1) {
-                $message = 'Der Monat ' . $monate[0]->toString('MMMM YYYY') . ' ist'
+                $message = 'Der Monat ' . $monate[0]->toString('MMMM yyyy') . ' ist'
                         . ' noch nicht abgeschlossen!';
             } else {
                 $message = 'Die Monate ';
                 for ($i = 0; $i < count($monate) - 2; $i++) {
-                    $message .= $monate[$i]->toString('MMMM YYYY') . ', ';
+                    $message .= $monate[$i]->toString('MMMM yyyy') . ', ';
                 }
-                $message .= $monate[count($monate) - 2]->toString('MMMM YYYY');
-                $message .= ' und ' . $monate[count($monate) - 1]->toString('MMMM YYYY');
+                $message .= $monate[count($monate) - 2]->toString('MMMM yyyy');
+                $message .= ' und ' . $monate[count($monate) - 1]->toString('MMMM yyyy');
                 $message .= ' sind noch nicht abgeschlossen!';
             }
             
