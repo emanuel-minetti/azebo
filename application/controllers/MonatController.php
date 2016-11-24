@@ -387,6 +387,8 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     if ($valid) {
                         // für HfM die Pause setzen
                         if ($this->mitarbeiter->getHochschule() == 'hfm') {
+                            $log = Zend_Registry::get('log');
+                            $log->info('Pause wird brechnet ...');
                             if ($daten['beginn'] !== null &&
                                     $daten['beginn'] != '' &&
                                     $daten['ende'] !== null &&
@@ -416,28 +418,44 @@ class MonatController extends AzeboLib_Controller_Abstract {
                                 // 'ende' und 'beginnNachmittag' größer als pauseKurzDauer
                                 // bzw., falls angebracht, größer als pauseLangDauer,
                                 // ist, soll keine Pause abgezogen werden. 
+                                if($zwischenzeit) {
+                                    $log->info('Zwischnzeit: ' . $zwischenzeit->toString());
+                                }
+                                else {
+                                    $log->info('Zwischnzeit: keine');
+                                }
                                 if ($anwesend->compareTime($pause->kurz->ab) === 1) {
+                                    $log->info('Fall 1');
                                     $daten['pause'] = '-';    //=> Pause wird abgezogen
                                 } elseif ($anwesendNachmittag !== NULL &&
                                         $anwesendNachmittag->compareTime($pause->kurz->ab) === 1) {
+                                    $log->info('Fall 2');
                                     $daten['pause'] = '-';
                                 } elseif ($anwesendZusammen->compareTime($pause->kurz->ab) === 1) {
+                                    $log->info('Fall 3');
                                     if ($anwesendZusammen->compareTime($pause->lang->ab) === 1) {
+                                        $log->info('Fall 3A');
                                         if ($zwischenzeit !== NULL &&
                                                 $zwischenzeit->compareTime($pause->lang->dauer) !== -1) {
+                                            $log->info('Fall 3AA');
                                             $daten['pause'] = 'x';  //=> Pause wird nicht abgezogen
                                         } else {
+                                            $log->info('Fall 3AB');
                                             $daten['pause'] = '-';
                                         }
                                     } else {
+                                        $log->info('Fall 3B');
                                         if ($zwischenzeit !== NULL &&
                                                 $zwischenzeit->compareTime($pause->kurz->dauer) !== -1) {
+                                            $log->info('Fall 3BA');
                                             $daten['pause'] = 'x';
                                         } else {
+                                            $log->info('Fall 3BB');
                                             $daten['pause'] = '-';
                                         }
                                     }
                                 } else {
+                                    $log->info('Fall 4');
                                     $daten['pause'] = 'x';
                                 }   
                             }

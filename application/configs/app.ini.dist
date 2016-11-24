@@ -22,8 +22,8 @@ resources.layout.layout = "main"
 resources.db.adapter = "PDO_MYSQL"
 resources.db.isdefaulttableadapter = true
 resources.db.params.dbname = "azebo"
-resources.db.params.username = "azebo"
-resources.db.params.password = "Jza2LuNb44mx7mZ8"
+resources.db.params.username = "username"
+resources.db.params.password = "geheim"
 resources.db.params.hostname = "localhost"
 resources.db.params.charset = "UTF8"
 
