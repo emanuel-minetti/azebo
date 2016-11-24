@@ -71,28 +71,43 @@ class Azebo_Service_Zeitrechner {
      * Erwartet eine Anwesenheitszeit und optional eine Angabe, ob eine Pause
      * abgezogen werden soll oder nicht.
      * 
-     * @param Zend_Date $anwesend
-     * @param boolean $ohnePause
+     * @param Zend_Date $anwesend Die Zeit, die der Mitarbeiter an diesem Tag
+     * anwesend war.
+     * @param boolean $ohnePause Optinal, ob ohne Pause gerechnet werden
+     * soll oder nicht. Standard falsch.
+     * @param null|boolean $pauseLang Falls die Länge der Pause nicht
+     * standartmäßig berechnet werden soll (z.B. bei Nachmittagsarbeitszeit
+     * für die HfM), kann hier angegeben werden ob die Pause kurz oder lang
+     * sein soll.
      * @return Zend_Date 
      */
-    public function ist(Zend_Date $anwesend, $ohnePause = false) {
-        
+    public function ist(
+    Zend_Date $anwesend, $ohnePause = false, $pauseLang = null) {
+
         $ns = new Zend_Session_Namespace();
         $pause = $ns->zeiten->pause;
-        
+
         $ist = new Zend_Date($anwesend);
         if (!$ohnePause) {
-            if ($anwesend->compare(
-                            $pause->lang->ab, Zend_Date::TIMES) != 1) {
-                //weniger als lang anwesend
-                if ($anwesend->compareTime($pause->kurz->dauer) == 1) {
-                    //mehr als eine kurze Pause anwesend, also ziehe Pause ab
-                    $ist->sub($pause->kurz->dauer, Zend_Date::TIMES);
+            if ($pauseLang == null) {
+                if ($anwesend->compare(
+                                $pause->lang->ab, Zend_Date::TIMES) != 1) {
+                    //weniger als lang anwesend
+                    if ($anwesend->compareTime($pause->kurz->dauer) == 1) {
+                        //mehr als eine kurze Pause anwesend, also ziehe Pause ab
+                        $ist->sub($pause->kurz->dauer, Zend_Date::TIMES);
+                    }
+                } else {
+                    $ist->sub($pause->lang->dauer, Zend_Date::TIMES);
                 }
             } else {
-                $ist->sub($pause->lang->dauer, Zend_Date::TIMES);
+                if ($pauseLang == false) {
+                    $ist->sub($pause->kurz->dauer, Zend_Date::TIMES);
+                } else {
+                    $ist->sub($pause->lang->dauer, Zend_Date::TIMES);
+                }
             }
-        }        
+        }
         return $ist;
     }
 
