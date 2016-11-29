@@ -78,7 +78,9 @@ class Azebo_Service_Zeitrechner {
      * @param null|boolean $pauseLang Falls die Länge der Pause nicht
      * standartmäßig berechnet werden soll (z.B. bei Nachmittagsarbeitszeit
      * für die HfM), kann hier angegeben werden ob die Pause kurz oder lang
-     * sein soll.
+     * sein soll. Dieser Parameter ist optional und der Standard ist null, also
+     * das standardmäßige Berechnen der Pausenlänge.
+     * 
      * @return Zend_Date 
      */
     public function ist(

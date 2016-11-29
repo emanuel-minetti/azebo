@@ -27,6 +27,7 @@
  */
 class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Row_Abstract implements Azebo_Resource_Arbeitstag_Item_Interface {
 
+    protected $_session;
     protected $_feiertagsService;
     protected $_dzService;
     protected $_zeitrechnerService;
@@ -39,8 +40,8 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     public function __construct($config) {
         parent::__construct($config);
         $this->_dzService = new Azebo_Service_DatumUndZeitUmwandler();
-        $ns = new Zend_Session_Namespace();
-        $this->_feiertagsService = $ns->feiertagsservice;
+        $this->_session = new Zend_Session_Namespace();
+        $this->_feiertagsService = $this->_session->feiertagsservice;
         $this->_zeitrechnerService = new Azebo_Service_Zeitrechner();
     }
 
@@ -48,6 +49,13 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_dzService->zeitSqlZuPhp($this->_row->beginn);
     }
 
+    /**
+     * Gibt den Beginn der nachmittäglichen Anwesenheit als Zend_Date zurück
+     * oder null, falls der Mitarbeiter an diesem Tag keinen Nachmittagsbeginn
+     * eingegeben hat.
+     * 
+     * @return null|Zend_Date
+     */
     public function getBeginnNachmittag() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->nachmittagbeginn);
     }
@@ -56,6 +64,13 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_dzService->zeitSqlZuPhp($this->_row->ende);
     }
 
+    /**
+     * Gibt das Ende der nachmittäglichen Anwesenheit als Zend_Date zurück
+     * oder null, falls der Mitarbeiter an diesem Tag keinen Nachmittagsende
+     * eingegeben hat.
+     * 
+     * @return null|Zend_Date
+     */
     public function getEndeNachmittag() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->nachmittagende);
     }
@@ -186,15 +201,76 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_anwesend;
     }
 
+    /**
+     * Gibt die Ist-Arbeitszeit für diesen Arbeitstag zurück.
+     * 
+     * Für Mitarbeiter der HfM wird hier berechnet, ob eine Pause abgezogen
+     * werden soll und wenn ja in welcher Länge.
+     * 
+     * @return Zend_Date Die Ist-Arbeitszeit für diesen Arbeitstag
+     */
     public function getIst() {
-        if ($this->_ist === null) {
-            if ($this->getAnwesend() !== null) {
-                $ohnePause = $this->pause == '-' ? false : true;
-                $this->_ist = $this->_zeitrechnerService->ist(
-                        $this->_anwesend, $ohnePause);
+        $model = new Azebo_Model_Mitarbeiter();
+        $mitarbeiter = $model->getMitarbeiterNachId($this->mitarbeiter_id);
+        $hochschule = $mitarbeiter->getHochschule();
+        if ($hochschule != 'hfm') {
+            if ($this->_ist === null) {
+                if ($this->getAnwesend() !== null) {
+                    $ohnePause = $this->pause == '-' ? false : true;
+                    $this->_ist = $this->_zeitrechnerService->ist(
+                            $this->_anwesend, $ohnePause);
+                }
             }
         }
+        else {
+            //Hier wird die Pause für die Mitarbeiter der HfM berechnet.
+            $log = Zend_Registry::get('log');
+            $log->info('getIst() aufgerufen!');
+            $pausenzeiten = $this->_session->zeiten->pause;
+            if ($this->getAnwesend() !== null &&
+                    $this->_anwesend->compareTime($pausenzeiten->kurz->ab) == 1) {
+                //Pause muss berechnet werden, denn der Mitarbeiter war
+                //(insgesammt) länger als $pausenzeiten->kurz->ab anwesend.
+                
+                $log->info('Die Pause muss berechnet werden!! Tag: '
+                        . $this->getTag()->toString('dd.MM.YYYY'));
+                
+                $anwesendVormittag = $this->_zeitrechnerService->anwesend(
+                        $this->getBeginn(), $this->getEnde());
+                $log->info('Anwesend Vormittag: ' . $anwesendVormittag->toString('hh.mm'));
+                
+                if ($this->getNachmittag() && 
+                        $this->getBeginnNachmittag() !== null &&
+                        $this->getEndeNachmittag() !== null) {
+                    $log->info('Nachmittag muss berücksichtigt werden');
+                    $anwesendNachmittag = $this->_zeitrechnerService->anwesend(
+                            $this->getBeginnNachmittag(), $this->getEndeNachmittag());
+                    $log->info('Anwesend Nachmittag: ' . $anwesendNachmittag->toString('hh.mm'));
 
+                    $zwischenzeit = $this->_zeitrechnerService->anwesend(
+                            $this->getEnde(), $this->getBeginnNachmittag());
+                    $log->info('Zwischenzeit: ' . $zwischenzeit->toString('hh.mm'));
+                    $this->_ist = $this->_zeitrechnerService->ist(
+                            $this->_anwesend, true);
+                    //TODO Hier muss die Arbeit erledigt werden!!!!
+                }
+                else { //Nachmittag muss nicht berücksichtigt werden!
+                    if($this->getAnwesend() !== null &&
+                            $this->_anwesend->compareTime($pausenzeiten->lang->ab) == 1) {
+                        $this->_ist = $this->_zeitrechnerService->ist(
+                                $this->_anwesend, false, true);
+                    }
+                    else {
+                        $this->_ist = $this->_zeitrechnerService->ist(
+                                $this->_anwesend, false, false);
+                    }
+                }
+            }
+            if($this->getAnwesend() !== null) {
+            $this->_ist = $this->_zeitrechnerService->ist(
+                    $this->_anwesend, true);
+            }
+        }
         return $this->_ist;
     }
 
@@ -229,6 +305,11 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_saldo;
     }
 
+    /**
+     * Gibt zurück, ob der Nachmittag in der Tabelle gesetzt ist oder nicht.
+     * 
+     * @return boolean
+     */
     public function getNachmittag() {
         return $this->_row->nachmittag == 'ja' ? true : false;
     }

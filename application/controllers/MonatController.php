@@ -385,81 +385,82 @@ class MonatController extends AzeboLib_Controller_Abstract {
                     $daten = $form->getValues();
 
                     if ($valid) {
-                        // für HfM die Pause setzen
-                        if ($this->mitarbeiter->getHochschule() == 'hfm') {
-                            $log = Zend_Registry::get('log');
-                            $log->info('Pause wird brechnet ...');
-                            if ($daten['beginn'] !== null &&
-                                    $daten['beginn'] != '' &&
-                                    $daten['ende'] !== null &&
-                                    $daten['ende'] != '') {
-                                $anwesend = $this->zeitrechner->
-                                        anwesend($daten['beginn'], $daten['ende']);
-                                $anwesendZusammen = new Zend_Date($anwesend);
-                                $anwesendNachmittag = NULL;
-                                $zwischenzeit = NULL;
-                                $pause = $this->ns->zeiten->pause;
-                                
-                                if ($daten['beginnnachmittag'] !== null &&
-                                        $daten['beginnnachmittag'] != '' &&
-                                        $daten['endenachmittag'] !== null &&
-                                        $daten['endenachmittag'] != '') {
-                                    $anwesendNachmittag = $this->zeitrechner->
-                                            anwesend(
-                                            $daten['beginnnachmittag'], $daten['endenachmittag']);
-                                    $anwesendZusammen = new Zend_Date($anwesend);
-                                    $anwesendZusammen->addTime($anwesendNachmittag);
-                                    $zwischenzeit = $this->zeitrechner->anwesend($daten['ende'], $daten['beginnnachmittag']);
-                                }
-                                
-                                // Falls 'anwesend' und 'anwesendNachmittag' kürzer als 
-                                // pauseKurzAb sind *und* 'anwesend' und 'anwesendNachmittag' zusammen
-                                // mehr als pauseKurzAb sind *und* die Zeit zwischen
-                                // 'ende' und 'beginnNachmittag' größer als pauseKurzDauer
-                                // bzw., falls angebracht, größer als pauseLangDauer,
-                                // ist, soll keine Pause abgezogen werden. 
-                                if($zwischenzeit) {
-                                    $log->info('Zwischnzeit: ' . $zwischenzeit->toString());
-                                }
-                                else {
-                                    $log->info('Zwischnzeit: keine');
-                                }
-                                if ($anwesend->compareTime($pause->kurz->ab) === 1) {
-                                    $log->info('Fall 1');
-                                    $daten['pause'] = '-';    //=> Pause wird abgezogen
-                                } elseif ($anwesendNachmittag !== NULL &&
-                                        $anwesendNachmittag->compareTime($pause->kurz->ab) === 1) {
-                                    $log->info('Fall 2');
-                                    $daten['pause'] = '-';
-                                } elseif ($anwesendZusammen->compareTime($pause->kurz->ab) === 1) {
-                                    $log->info('Fall 3');
-                                    if ($anwesendZusammen->compareTime($pause->lang->ab) === 1) {
-                                        $log->info('Fall 3A');
-                                        if ($zwischenzeit !== NULL &&
-                                                $zwischenzeit->compareTime($pause->lang->dauer) !== -1) {
-                                            $log->info('Fall 3AA');
-                                            $daten['pause'] = 'x';  //=> Pause wird nicht abgezogen
-                                        } else {
-                                            $log->info('Fall 3AB');
-                                            $daten['pause'] = '-';
-                                        }
-                                    } else {
-                                        $log->info('Fall 3B');
-                                        if ($zwischenzeit !== NULL &&
-                                                $zwischenzeit->compareTime($pause->kurz->dauer) !== -1) {
-                                            $log->info('Fall 3BA');
-                                            $daten['pause'] = 'x';
-                                        } else {
-                                            $log->info('Fall 3BB');
-                                            $daten['pause'] = '-';
-                                        }
-                                    }
-                                } else {
-                                    $log->info('Fall 4');
-                                    $daten['pause'] = 'x';
-                                }   
-                            }
-                        }
+                        //TODO Hier muss die alte Lösung für die Pausenregelung der HfM entfernt werden!!!
+//                        // für HfM die Pause setzen
+//                        if ($this->mitarbeiter->getHochschule() == 'hfm') {
+//                            $log = Zend_Registry::get('log');
+//                            $log->info('Pause wird brechnet ...');
+//                            if ($daten['beginn'] !== null &&
+//                                    $daten['beginn'] != '' &&
+//                                    $daten['ende'] !== null &&
+//                                    $daten['ende'] != '') {
+//                                $anwesend = $this->zeitrechner->
+//                                        anwesend($daten['beginn'], $daten['ende']);
+//                                $anwesendZusammen = new Zend_Date($anwesend);
+//                                $anwesendNachmittag = NULL;
+//                                $zwischenzeit = NULL;
+//                                $pause = $this->ns->zeiten->pause;
+//                                
+//                                if ($daten['beginnnachmittag'] !== null &&
+//                                        $daten['beginnnachmittag'] != '' &&
+//                                        $daten['endenachmittag'] !== null &&
+//                                        $daten['endenachmittag'] != '') {
+//                                    $anwesendNachmittag = $this->zeitrechner->
+//                                            anwesend(
+//                                            $daten['beginnnachmittag'], $daten['endenachmittag']);
+//                                    $anwesendZusammen = new Zend_Date($anwesend);
+//                                    $anwesendZusammen->addTime($anwesendNachmittag);
+//                                    $zwischenzeit = $this->zeitrechner->anwesend($daten['ende'], $daten['beginnnachmittag']);
+//                                }
+//                                
+//                                // Falls 'anwesend' und 'anwesendNachmittag' kürzer als 
+//                                // pauseKurzAb sind *und* 'anwesend' und 'anwesendNachmittag' zusammen
+//                                // mehr als pauseKurzAb sind *und* die Zeit zwischen
+//                                // 'ende' und 'beginnNachmittag' größer als pauseKurzDauer
+//                                // bzw., falls angebracht, größer als pauseLangDauer,
+//                                // ist, soll keine Pause abgezogen werden. 
+//                                if($zwischenzeit) {
+//                                    $log->info('Zwischnzeit: ' . $zwischenzeit->toString());
+//                                }
+//                                else {
+//                                    $log->info('Zwischnzeit: keine');
+//                                }
+//                                if ($anwesend->compareTime($pause->kurz->ab) === 1) {
+//                                    $log->info('Fall 1');
+//                                    $daten['pause'] = '-';    //=> Pause wird abgezogen
+//                                } elseif ($anwesendNachmittag !== NULL &&
+//                                        $anwesendNachmittag->compareTime($pause->kurz->ab) === 1) {
+//                                    $log->info('Fall 2');
+//                                    $daten['pause'] = '-';
+//                                } elseif ($anwesendZusammen->compareTime($pause->kurz->ab) === 1) {
+//                                    $log->info('Fall 3');
+//                                    if ($anwesendZusammen->compareTime($pause->lang->ab) === 1) {
+//                                        $log->info('Fall 3A');
+//                                        if ($zwischenzeit !== NULL &&
+//                                                $zwischenzeit->compareTime($pause->lang->dauer) !== -1) {
+//                                            $log->info('Fall 3AA');
+//                                            $daten['pause'] = 'x';  //=> Pause wird nicht abgezogen
+//                                        } else {
+//                                            $log->info('Fall 3AB');
+//                                            $daten['pause'] = '-';
+//                                        }
+//                                    } else {
+//                                        $log->info('Fall 3B');
+//                                        if ($zwischenzeit !== NULL &&
+//                                                $zwischenzeit->compareTime($pause->kurz->dauer) !== -1) {
+//                                            $log->info('Fall 3BA');
+//                                            $daten['pause'] = 'x';
+//                                        } else {
+//                                            $log->info('Fall 3BB');
+//                                            $daten['pause'] = '-';
+//                                        }
+//                                    }
+//                                } else {
+//                                    $log->info('Fall 4');
+//                                    $daten['pause'] = 'x';
+//                                }   
+//                            }
+//                        }
 
                         // speichern und in der Session als ungeprüft
                         // markieren
