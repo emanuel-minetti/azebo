@@ -91,7 +91,7 @@ class Azebo_Service_Zeitrechner {
 
         $ist = new Zend_Date($anwesend);
         if (!$ohnePause) {
-            if ($pauseLang == null) {
+            if ($pauseLang === null) {
                 if ($anwesend->compare(
                                 $pause->lang->ab, Zend_Date::TIMES) != 1) {
                     //weniger als lang anwesend

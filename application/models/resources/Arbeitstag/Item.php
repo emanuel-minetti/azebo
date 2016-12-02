@@ -109,8 +109,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
      */
     public function getFeiertag() {
         if ($this->_feiertag === null && $this->_feiertagsService !== null) {
-            $this->_feiertag =
-                    $this->_feiertagsService->feiertag($this->getTag());
+            $this->_feiertag = $this->_feiertagsService->feiertag($this->getTag());
         }
         return $this->_feiertag;
     }
@@ -154,8 +153,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                         }
                     } else {
                         //Regel gilt für einen Wochentag
-                        if ($arbeitsregel->wochentag ==
-                                $this->getTag()->get(Zend_Date::WEEKDAY)) {
+                        if ($arbeitsregel->wochentag == $this->getTag()->get(Zend_Date::WEEKDAY)) {
                             if ($arbeitsregel->kalenderwoche == 'alle') {
                                 $this->_regel = $arbeitsregel;
                                 break;
@@ -221,54 +219,64 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                             $this->_anwesend, $ohnePause);
                 }
             }
-        }
-        else {
+        } else {
             //Hier wird die Pause für die Mitarbeiter der HfM berechnet.
-            $log = Zend_Registry::get('log');
-            $log->info('getIst() aufgerufen!');
             $pausenzeiten = $this->_session->zeiten->pause;
-            if ($this->getAnwesend() !== null &&
-                    $this->_anwesend->compareTime($pausenzeiten->kurz->ab) == 1) {
-                //Pause muss berechnet werden, denn der Mitarbeiter war
-                //(insgesammt) länger als $pausenzeiten->kurz->ab anwesend.
-                
-                $log->info('Die Pause muss berechnet werden!! Tag: '
-                        . $this->getTag()->toString('dd.MM.YYYY'));
-                
-                $anwesendVormittag = $this->_zeitrechnerService->anwesend(
-                        $this->getBeginn(), $this->getEnde());
-                $log->info('Anwesend Vormittag: ' . $anwesendVormittag->toString('hh.mm'));
-                
-                if ($this->getNachmittag() && 
-                        $this->getBeginnNachmittag() !== null &&
-                        $this->getEndeNachmittag() !== null) {
-                    $log->info('Nachmittag muss berücksichtigt werden');
-                    $anwesendNachmittag = $this->_zeitrechnerService->anwesend(
-                            $this->getBeginnNachmittag(), $this->getEndeNachmittag());
-                    $log->info('Anwesend Nachmittag: ' . $anwesendNachmittag->toString('hh.mm'));
+            $gesamt = $this->getAnwesend();
+            $vormittag = $gesamt ?
+                    $this->_zeitrechnerService->anwesend(
+                            $this->getBeginn(), $this->getEnde()) :
+                    null;
+            $nachmittag = ($this->getNachmittag() &&
+                    $this->getBeginnNachmittag() && $this->getEndeNachmittag()) ?
+                        $this->_zeitrechnerService->anwesend(
+                            $this->getBeginnNachmittag(), $this->getEndeNachmittag()) :
+                            null;
+            $zwischenzeit = ($vormittag && $nachmittag) ?
+                    $this->_zeitrechnerService->anwesend(
+                            $this->getEnde(), $this->getBeginnNachmittag()) :
+                            null;
 
-                    $zwischenzeit = $this->_zeitrechnerService->anwesend(
-                            $this->getEnde(), $this->getBeginnNachmittag());
-                    $log->info('Zwischenzeit: ' . $zwischenzeit->toString('hh.mm'));
-                    $this->_ist = $this->_zeitrechnerService->ist(
-                            $this->_anwesend, true);
-                    //TODO Hier muss die Arbeit erledigt werden!!!!
-                }
-                else { //Nachmittag muss nicht berücksichtigt werden!
-                    if($this->getAnwesend() !== null &&
-                            $this->_anwesend->compareTime($pausenzeiten->lang->ab) == 1) {
-                        $this->_ist = $this->_zeitrechnerService->ist(
-                                $this->_anwesend, false, true);
+            if(!$gesamt) {
+                $this->_ist = null;
+            }
+            else {
+                if($gesamt->compareTime($pausenzeiten->kurz->ab) !== 1) {
+                    $this->_ist = $this->_zeitrechnerService->ist($gesamt, true);
+                } else {
+                    if($gesamt->compareTime($pausenzeiten->lang->ab) !== 1) {
+                        if($vormittag->compareTime($pausenzeiten->kurz->ab) === 1 ||
+                                ($nachmittag && $nachmittag->compareTime($pausenzeiten->kurz->ab) === 1)) {
+                            $this->_ist = $this->_zeitrechnerService->ist($gesamt, false, false);
+                        }
+                        else {
+                            if($zwischenzeit && $zwischenzeit->compareTime($pausenzeiten->kurz->dauer) !== -1) {
+                                $this->_ist = $this->_zeitrechnerService->ist($gesamt, true);
+                            }
+                            else {
+                                $this->_ist = $this->_zeitrechnerService->ist($gesamt, false);
+                            }
+                        }
                     }
                     else {
-                        $this->_ist = $this->_zeitrechnerService->ist(
-                                $this->_anwesend, false, false);
+                        if($vormittag->compareTime($pausenzeiten->lang->ab) === 1 || ($nachmittag && $nachmittag->compareTime($pausenzeiten->lang->ab) === 1)) {
+                            $this->_ist = $this->_zeitrechnerService->ist($gesamt, false, true);
+                        }
+                        else {
+                            if($zwischenzeit->compareTime($pausenzeiten->lang->dauer) === -1) {
+                                $this->_ist = $this->_zeitrechnerService->ist($gesamt, false, true);
+                            }
+                            else {
+                                if($vormittag->compareTime($pausenzeiten->kurz->ab) === 1 || ($nachmittag && $nachmittag->compareTime($pausenzeiten->kurz->ab) === 1)) {
+                                    $this->_ist = $this->_zeitrechnerService->ist($gesamt, false, false);
+                                }
+                                else {
+                                    $this->_ist = $this->_zeitrechnerService->ist($gesamt, true);
+                                }
+                            }
+                        }
                     }
                 }
-            }
-            if($this->getAnwesend() !== null) {
-            $this->_ist = $this->_zeitrechnerService->ist(
-                    $this->_anwesend, true);
             }
         }
         return $this->_ist;
@@ -289,14 +297,14 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                 }
             }
         }
-        
+
         // für die KHB den Tag der offenen Tür (So) doppelt berechnen.
         $ns = new Zend_Session_Namespace();
         $mitarbeiter = $ns->mitarbeiter;
-        if($mitarbeiter->getHochschule() == 'khb') {
+        if ($mitarbeiter->getHochschule() == 'khb') {
             $feiertag = $this->getFeiertag();
             $tag = $this->getTag();
-            if($feiertag['name'] == 'Tag der offenen Tür' &&
+            if ($feiertag['name'] == 'Tag der offenen Tür' &&
                     $tag->get(Zend_Date::WEEKDAY_DIGIT) == 0) {
                 $this->_saldo->add($this->_saldo);
             }
