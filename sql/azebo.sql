@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `mitarbeiter` (
 `id` int(11) unsigned NOT NULL,
   `benutzername` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `beamter` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
-  `tarifvertrag` enum('ja','nein') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `vollzeit` enum('ja','nein') COLLATE utf8_unicode_ci DEFAULT NULL,
   `saldouebertragstunden` int(11) NOT NULL,
   `saldouebertragminuten` int(11) NOT NULL,
   `saldouebertragpositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
