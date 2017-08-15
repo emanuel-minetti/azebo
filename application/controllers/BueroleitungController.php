@@ -447,6 +447,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $mitarbeiter =
                     $this->model->getMitarbeiterNachBenutzername($benutzername);
             $beamter = $mitarbeiter->getBeamter() == 'ja' ? true : false;
+            //TODO hier muss vollzeit gesetzt werden
             $saldo = $mitarbeiter->getSaldouebertrag();
             $urlaubVorjahr = $mitarbeiter->getUrlaubVorjahr();
             $urlaub = $mitarbeiter->getUrlaub();
@@ -514,6 +515,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         // bevölkere den Rest der Form, falls die Regel nicht neu ist und
         // entferne die 'Ohne Kernarbeitszeit'-Checkbox, falls nicht an der HfS
+        // TODO Hier muss vollzeit befüllt weren
         if ($id != 0) {
             $von = $arbeitsregel->getVon()->toString('dd.MM.yyyy');
             $bis = $arbeitsregel->getBis() === null ? '' :

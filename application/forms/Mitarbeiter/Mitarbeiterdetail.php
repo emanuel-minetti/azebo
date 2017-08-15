@@ -38,7 +38,9 @@ class Azebo_Form_Mitarbeiter_Mitarbeiterdetail extends AzeboLib_Form_Abstract {
             'uncheckedValue' => 'nein',
             'filters' => array('StringTrim'),
         ));
-        
+
+        //TODO Hier muss die Checkbox (und ein Validation) für die Vollzeit eingefügt werden
+
         $this->addElement('Text', 'saldo', array(
             'label' => 'Saldo Übertrag',
             'required' => false,
