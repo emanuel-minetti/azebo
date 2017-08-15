@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Erstellungszeit: 11. Aug 2017 um 17:16
--- Server Version: 5.5.49-0+deb8u1-log
--- PHP-Version: 5.6.20-0+deb8u1
+-- Generation Time: Aug 15, 2017 at 04:00 PM
+-- Server version: 5.5.49-0+deb8u1-log
+-- PHP Version: 5.6.20-0+deb8u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,13 +17,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Datenbank: `azebo`
+-- Database: `azebo`
 --
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `arbeitsmonat`
+-- Table structure for table `arbeitsmonat`
 --
 
 CREATE TABLE IF NOT EXISTS `arbeitsmonat` (
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsmonat` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `arbeitsregel`
+-- Table structure for table `arbeitsregel`
 --
 
 CREATE TABLE IF NOT EXISTS `arbeitsregel` (
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsregel` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `arbeitstag`
+-- Table structure for table `arbeitstag`
 --
 
 CREATE TABLE IF NOT EXISTS `arbeitstag` (
@@ -86,14 +86,14 @@ CREATE TABLE IF NOT EXISTS `arbeitstag` (
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `mitarbeiter`
+-- Table structure for table `mitarbeiter`
 --
 
 CREATE TABLE IF NOT EXISTS `mitarbeiter` (
 `id` int(11) unsigned NOT NULL,
   `benutzername` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `beamter` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
-  `vollzeit` enum('ja','nein') COLLATE utf8_unicode_ci DEFAULT NULL,
+  `vollzeit` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   `saldouebertragstunden` int(11) NOT NULL,
   `saldouebertragminuten` int(11) NOT NULL,
   `saldouebertragpositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
@@ -111,12 +111,12 @@ CREATE TABLE IF NOT EXISTS `mitarbeiter` (
   `farbehoover` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL,
   `farbelink` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL,
   `farbezeile` varchar(6) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=288 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=289 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Tabellenstruktur für Tabelle `vorjahr`
+-- Table structure for table `vorjahr`
 --
 
 CREATE TABLE IF NOT EXISTS `vorjahr` (
@@ -132,65 +132,65 @@ CREATE TABLE IF NOT EXISTS `vorjahr` (
 ) ENGINE=MyISAM AUTO_INCREMENT=212 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- Indizes der exportierten Tabellen
+-- Indexes for dumped tables
 --
 
 --
--- Indizes für die Tabelle `arbeitsmonat`
+-- Indexes for table `arbeitsmonat`
 --
 ALTER TABLE `arbeitsmonat`
  ADD PRIMARY KEY (`id`), ADD KEY `mitarbeiter_id` (`mitarbeiter_id`);
 
 --
--- Indizes für die Tabelle `arbeitsregel`
+-- Indexes for table `arbeitsregel`
 --
 ALTER TABLE `arbeitsregel`
  ADD PRIMARY KEY (`id`), ADD KEY `mitarbeiter_id` (`mitarbeiter_id`);
 
 --
--- Indizes für die Tabelle `arbeitstag`
+-- Indexes for table `arbeitstag`
 --
 ALTER TABLE `arbeitstag`
  ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `mitarbeiter-tag` (`mitarbeiter_id`,`tag`);
 
 --
--- Indizes für die Tabelle `mitarbeiter`
+-- Indexes for table `mitarbeiter`
 --
 ALTER TABLE `mitarbeiter`
  ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `benutzername` (`benutzername`);
 
 --
--- Indizes für die Tabelle `vorjahr`
+-- Indexes for table `vorjahr`
 --
 ALTER TABLE `vorjahr`
  ADD PRIMARY KEY (`id`), ADD UNIQUE KEY `mitarbeiter_id` (`mitarbeiter_id`);
 
 --
--- AUTO_INCREMENT für exportierte Tabellen
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT für Tabelle `arbeitsmonat`
+-- AUTO_INCREMENT for table `arbeitsmonat`
 --
 ALTER TABLE `arbeitsmonat`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6767;
 --
--- AUTO_INCREMENT für Tabelle `arbeitsregel`
+-- AUTO_INCREMENT for table `arbeitsregel`
 --
 ALTER TABLE `arbeitsregel`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=661;
 --
--- AUTO_INCREMENT für Tabelle `arbeitstag`
+-- AUTO_INCREMENT for table `arbeitstag`
 --
 ALTER TABLE `arbeitstag`
 MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=118527;
 --
--- AUTO_INCREMENT für Tabelle `mitarbeiter`
+-- AUTO_INCREMENT for table `mitarbeiter`
 --
 ALTER TABLE `mitarbeiter`
-MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=288;
+MODIFY `id` int(11) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=289;
 --
--- AUTO_INCREMENT für Tabelle `vorjahr`
+-- AUTO_INCREMENT for table `vorjahr`
 --
 ALTER TABLE `vorjahr`
 MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=212;

@@ -1,0 +1,1 @@
+UPDATE mitarbeiter SET vollzeit = 'nein' WHERE vollzeit IS NULL 

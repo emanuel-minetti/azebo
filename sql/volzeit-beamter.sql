@@ -1,4 +1,4 @@
-SELECT soll, mitarbeiter_id FROM arbeitsregel, mitarbeiter
+SELECT mitarbeiter_id FROM arbeitsregel, mitarbeiter
 WHERE mitarbeiter.id = mitarbeiter_id
       AND beamter = 'ja'
       AND `von` < '2017-1-12'
