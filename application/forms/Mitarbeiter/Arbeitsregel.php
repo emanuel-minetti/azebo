@@ -133,7 +133,7 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
         ));
         
         $this->addElement('TimeTextBox', 'soll', array(
-            'label' => 'Soll-Arbeitszeit',
+            'label' => 'Soll-Arbeitszeit: (Bei Mitarbeitern in Vollzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
             'required' => true,
             'missingMessage' => 'Bitte geben Sie einen Wert ein!',
