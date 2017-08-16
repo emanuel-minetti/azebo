@@ -102,9 +102,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $postDaten = $request->getPost();
             if (isset($postDaten['absenden'])) {
                 $valid = $formDetail->isValid($postDaten);
-                //$this->_log->debug('Valide: ' . "$valid");
                 if ($valid) {
-                    //$this->_log->debug('Hallo2!');
                     $daten = $formDetail->getValues();
                     $this->model->saveMitarbeiter(
                             $zuBearbeitenderMitarbeiter, $daten);
@@ -448,7 +446,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     $this->model->getMitarbeiterNachBenutzername($benutzername);
             //$beamter = $mitarbeiter->getBeamter() == 'ja' ? true : false;
             $beamter = $mitarbeiter->getBeamter();
-            //TODO hier muss vollzeit gesetzt werden
             $vollzeit = $mitarbeiter->getVollzeit();
             $saldo = $mitarbeiter->getSaldouebertrag();
             $urlaubVorjahr = $mitarbeiter->getUrlaubVorjahr();
