@@ -446,8 +446,10 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         if (!$neu) {
             $mitarbeiter =
                     $this->model->getMitarbeiterNachBenutzername($benutzername);
-            $beamter = $mitarbeiter->getBeamter() == 'ja' ? true : false;
+            //$beamter = $mitarbeiter->getBeamter() == 'ja' ? true : false;
+            $beamter = $mitarbeiter->getBeamter();
             //TODO hier muss vollzeit gesetzt werden
+            $vollzeit = $mitarbeiter->getVollzeit();
             $saldo = $mitarbeiter->getSaldouebertrag();
             $urlaubVorjahr = $mitarbeiter->getUrlaubVorjahr();
             $urlaub = $mitarbeiter->getUrlaub();
@@ -457,6 +459,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
             $mitarbeiter = $mitarbeiterTabelle->createRow();
             $beamter = false;
+            $vollzeit = true;
             $saldo = new Azebo_Model_Saldo(0, 0, true);
             $urlaubVorjahr = 0;
             $urlaub = $this->ns->zeiten->urlaub->tage;
@@ -473,6 +476,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         $elemente = $form->getElements();
         $elemente['beamter']->setAttrib('checked', $beamter);
+        $elemente['vollzeit']->setAttrib('checked', $vollzeit);
         $elemente['saldo']->setValue($saldo->getString());
         $elemente['urlaubVorjahr']->setValue($urlaubVorjahr);
         $elemente['urlaub']->setValue($urlaub);

@@ -938,7 +938,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             $this->setUebertragenbis($uebertragenBis);
             $this->save();
 
-            // markiere die Monate des Vorjahrs als nicht übertragen und ...
+            // markiere die Monate des Vorjahres als nicht übertragen und ...
             $monate = $this->getArbeitsmonate(false);
             foreach ($monate as $monat) {
                 if ($monat->getMonat()->compareYear($ab) === 0) {
@@ -950,6 +950,10 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
             // lösche das Vorjahr aus der Tabelle
             $vorjahr->delete();
         }
+    }
+
+    public function getVollzeit() {
+        return $this->getRow()->vollzeit == 'ja' ? true : false;
     }
 
 }
