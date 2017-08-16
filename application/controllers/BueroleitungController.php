@@ -444,7 +444,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         if (!$neu) {
             $mitarbeiter =
                     $this->model->getMitarbeiterNachBenutzername($benutzername);
-            //$beamter = $mitarbeiter->getBeamter() == 'ja' ? true : false;
             $beamter = $mitarbeiter->getBeamter();
             $vollzeit = $mitarbeiter->getVollzeit();
             $saldo = $mitarbeiter->getSaldouebertrag();
