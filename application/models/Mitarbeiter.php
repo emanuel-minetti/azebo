@@ -199,6 +199,7 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
         $mitarbeiter->setUrlaubVorjahr($daten['urlaubVorjahr']);
         $mitarbeiter->setUrlaub($daten['urlaub']);
         $mitarbeiter->beamter = $daten['beamter'];
+        $mitarbeiter->vollzeit = $daten['vollzeit'];
 
         // Saldo setzen
         $saldoString = $daten['saldo'];
