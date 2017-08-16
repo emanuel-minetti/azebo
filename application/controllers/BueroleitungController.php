@@ -515,7 +515,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         // bevölkere den Rest der Form, falls die Regel nicht neu ist und
         // entferne die 'Ohne Kernarbeitszeit'-Checkbox, falls nicht an der HfS
-        // TODO Hier muss vollzeit befüllt weren
+        // TODO Hier muss vollzeit befüllt weren, oder nicht?
         if ($id != 0) {
             $von = $arbeitsregel->getVon()->toString('dd.MM.yyyy');
             $bis = $arbeitsregel->getBis() === null ? '' :
