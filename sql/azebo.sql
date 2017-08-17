@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 15, 2017 at 04:00 PM
+-- Generation Time: Aug 17, 2017 at 03:15 PM
 -- Server version: 5.5.49-0+deb8u1-log
 -- PHP Version: 5.6.20-0+deb8u1
 
@@ -58,7 +58,7 @@ CREATE TABLE IF NOT EXISTS `arbeitsregel` (
   `ohnekern` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   `kernanfang` time DEFAULT NULL,
   `kernende` time DEFAULT NULL,
-  `soll` time NOT NULL,
+  `soll` time DEFAULT NULL,
   `von` date NOT NULL,
   `bis` date DEFAULT NULL
 ) ENGINE=MyISAM AUTO_INCREMENT=661 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -93,7 +93,6 @@ CREATE TABLE IF NOT EXISTS `mitarbeiter` (
 `id` int(11) unsigned NOT NULL,
   `benutzername` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `beamter` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
-  `vollzeit` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'nein',
   `saldouebertragstunden` int(11) NOT NULL,
   `saldouebertragminuten` int(11) NOT NULL,
   `saldouebertragpositiv` enum('ja','nein') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'ja',
