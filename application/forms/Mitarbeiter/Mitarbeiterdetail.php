@@ -39,14 +39,6 @@ class Azebo_Form_Mitarbeiter_Mitarbeiterdetail extends AzeboLib_Form_Abstract {
             'filters' => array('StringTrim'),
         ));
 
-        $this->addElement('CheckBox', 'vollzeit', array(
-            'label' => 'Vollzeit',
-            'required' => false,
-            'checkedValue' => 'ja',
-            'uncheckedValue' => 'nein',
-            'filters' => array('StringTrim'),
-        ));
-
         $this->addElement('Text', 'saldo', array(
             'label' => 'Saldo Übertrag',
             'required' => false,

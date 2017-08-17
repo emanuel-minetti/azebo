@@ -445,7 +445,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $mitarbeiter =
                     $this->model->getMitarbeiterNachBenutzername($benutzername);
             $beamter = $mitarbeiter->getBeamter();
-            $vollzeit = $mitarbeiter->getVollzeit();
             $saldo = $mitarbeiter->getSaldouebertrag();
             $urlaubVorjahr = $mitarbeiter->getUrlaubVorjahr();
             $urlaub = $mitarbeiter->getUrlaub();
@@ -455,7 +454,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $mitarbeiterTabelle = new Azebo_Resource_Mitarbeiter();
             $mitarbeiter = $mitarbeiterTabelle->createRow();
             $beamter = false;
-            $vollzeit = true;
             $saldo = new Azebo_Model_Saldo(0, 0, true);
             $urlaubVorjahr = 0;
             $urlaub = $this->ns->zeiten->urlaub->tage;
@@ -472,7 +470,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         $elemente = $form->getElements();
         $elemente['beamter']->setAttrib('checked', $beamter);
-        $elemente['vollzeit']->setAttrib('checked', $vollzeit);
         $elemente['saldo']->setValue($saldo->getString());
         $elemente['urlaubVorjahr']->setValue($urlaubVorjahr);
         $elemente['urlaub']->setValue($urlaub);
@@ -515,7 +512,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
 
         // bevölkere den Rest der Form, falls die Regel nicht neu ist und
         // entferne die 'Ohne Kernarbeitszeit'-Checkbox, falls nicht an der HfS
-        // TODO Hier muss vollzeit befüllt weren, oder nicht?
         if ($id != 0) {
             $von = $arbeitsregel->getVon()->toString('dd.MM.yyyy');
             $bis = $arbeitsregel->getBis() === null ? '' :

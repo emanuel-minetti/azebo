@@ -952,8 +952,4 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
         }
     }
 
-    public function getVollzeit() {
-        return $this->getRow()->vollzeit == 'ja' ? true : false;
-    }
-
 }
