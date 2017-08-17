@@ -561,10 +561,11 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $zuBearbeitenderMitarbeiter = $this->model->
                     getMitarbeiterNachBenutzername($benutzername);
             $beamter = $zuBearbeitenderMitarbeiter->getBeamter();
-            $soll = $beamter ? $zeiten->soll->beamter : $zeiten->soll->normal;
-            $soll = new Zend_Date($soll, 'HH:mm:ss');
-            $form->getElement('soll')->
-                    setDijitParam('displayedValue', $soll->toString('HHmm'));
+            //TODO aufräumen und entscheiden was angezeigt werden soll!
+            //$soll = $beamter ? $zeiten->soll->beamter : $zeiten->soll->normal;
+            //$soll = new Zend_Date($soll, 'HH:mm:ss');
+//            $form->getElement('soll')->
+//                    setDijitParam('displayedValue', $soll->toString('HHmm'));
             if ($this->mitarbeiter->getHochschule() != 'hfs') {
                 $form->removeElement('ohneKern');
             }
