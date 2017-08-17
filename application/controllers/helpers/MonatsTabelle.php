@@ -40,6 +40,8 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         $anzahlHoheTage = 0;
         $extraZeilen = 0;
 
+        //TODO default-Arbeitszeit holen und speichern!
+
         // Iteriere über die Tage
         foreach ($arbeitstage as $arbeitstag) {
             if ($arbeitstag->tag->compare($erster, Zend_Date::DATE_MEDIUM)
@@ -78,8 +80,9 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 if ($arbeitstag->befreiung !== null) {
                     $befreiung = $befreiungOptionen[$arbeitstag->befreiung];
                 }
+                //TODO Hier muss die default-zeit rein!
                 if ($arbeitstag->getRegel() !== null && !$nachmittag) {
-                    $soll = $arbeitstag->regel->soll->toString('HH:mm');
+                    $soll = $arbeitstag->regel->getSoll()->toString('HH:mm');
                 }
 
                 $anwesend = $arbeitstag->getAnwesend();
