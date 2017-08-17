@@ -30,8 +30,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
     const UNGUELTIGE_UHRZEIT = 'Bitte geben Sie die Uhrzeit als vierstellige Zahl ein!';
     const UNGUELTIGES_DATUM = 'Bitte geben Sie das Datum im Format dd.mm.jjjj an!';
 
-    //TODO Hier muss vollzeit geprüft werden
-    //TODO Und schließlich muss die Konfiguration angepasst werden!!!
     public function init() {
         $this->addElementPrefixPath(
                 'Azebo_Filter', APPLICATION_PATH . '/models/filter/', 'filter');
@@ -131,7 +129,8 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'invalidMessage' => self::UNGUELTIGE_UHRZEIT,
             'validators' => array('RahmenEndeNachAnfang'),
         ));
-        
+
+        //TODO Hier muss geprüft werden, ob nicht '0000' eingegeben wurde! (Validator!)
         $this->addElement('TimeTextBox', 'soll', array(
             'label' => 'Soll-Arbeitszeit: (Bei Mitarbeitern in Vollzeit bitte leer lassen)',
             'timePattern' => 'HHmm',

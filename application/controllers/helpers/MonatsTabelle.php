@@ -40,6 +40,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         $anzahlHoheTage = 0;
         $extraZeilen = 0;
 
+        //TODO default-Arbeistszeit in der Konfiguration muss angepasst werden!
         //TODO default-Arbeitszeit holen und speichern!
 
         // Iteriere über die Tage
