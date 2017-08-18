@@ -42,6 +42,11 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
 
         //TODO default-Arbeistszeit in der Konfiguration muss angepasst werden!
         //TODO default-Arbeitszeit holen und speichern!
+        //TODO Richti machen!
+        // Hole die Session (für die Vollzeit-Mitarbeiter
+        $ns = new Zend_Session_Namespace();
+        $soll_default = $ns->zeiten->soll->normal;
+        $soll_default = new Zend_Date($soll_default, 'HH:mm:ss');
 
         // Iteriere über die Tage
         foreach ($arbeitstage as $arbeitstag) {
@@ -81,9 +86,15 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 if ($arbeitstag->befreiung !== null) {
                     $befreiung = $befreiungOptionen[$arbeitstag->befreiung];
                 }
-                //TODO Hier muss die default-zeit rein!
+
+                //TODO $soll_default sollte über eine eigene (cachende) Funktion geholt werden!
                 if ($arbeitstag->getRegel() !== null && !$nachmittag) {
-                    $soll = $arbeitstag->regel->getSoll()->toString('HH:mm');
+                    $soll = $arbeitstag->regel->getSoll();
+                    if($soll === null) {
+                        $soll = $soll_default->toString('HH:mm');
+                    } else {
+                        $soll = $arbeitstag->regel->getSoll()->toString('HH:mm');
+                    }
                 }
 
                 $anwesend = $arbeitstag->getAnwesend();
