@@ -29,7 +29,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
 
     public function direct(Zend_Date $erster, Zend_Date $letzter, Azebo_Resource_Mitarbeiter_Item_Interface $mitarbeiter) {
 
-        // Hole die Befreiungsoptionen für diesen Mitarbeiter
+        // Hole die Befreiungsoptionen und Arbeitstage für diesen Mitarbeiter
         $befreiungService = new Azebo_Service_Befreiung();
         $befreiungOptionen = $befreiungService->getOptionen($mitarbeiter);
         $arbeitstage = $mitarbeiter->getArbeitstageNachMonat($erster);
@@ -40,10 +40,10 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         $anzahlHoheTage = 0;
         $extraZeilen = 0;
 
-        //TODO default-Arbeistszeit in der Konfiguration muss angepasst werden!
+        //TODO default-Arbeitszeit in der Konfiguration muss angepasst werden!
         //TODO default-Arbeitszeit holen und speichern!
-        //TODO Richti machen!
-        // Hole die Session (für die Vollzeit-Mitarbeiter
+        //TODO Richtig machen!
+        // Hole die Session (für die Vollzeit-Mitarbeiter)
         $ns = new Zend_Session_Namespace();
         $soll_default = $ns->zeiten->soll->normal;
         $soll_default = new Zend_Date($soll_default, 'HH:mm:ss');
