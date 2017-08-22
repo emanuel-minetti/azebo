@@ -40,13 +40,18 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         $anzahlHoheTage = 0;
         $extraZeilen = 0;
 
-        //TODO default-Arbeitszeit in der Konfiguration muss angepasst werden!
         //TODO default-Arbeitszeit holen und speichern!
         //TODO Richtig machen!
         // Hole die Session (für die Vollzeit-Mitarbeiter)
         $ns = new Zend_Session_Namespace();
-        $soll_default = $ns->zeiten->soll->normal;
-        $soll_default = new Zend_Date($soll_default, 'HH:mm:ss');
+        $vollzeitStringArray = $ns->zeiten->vollzeit->normal->ab->toArray();
+        //TODO Debugging entfernen
+        $log = Zend_Registry::get('log');
+        $log->debug("Vollzeit ab: " . print_r($vollzeitStringArray, true));
+        $log->debug("Vollzeit Länge: " . count($vollzeitStringArray));
+        $log->debug("Vollzeit Letzter: " . $vollzeitStringArray[1]);
+        $log->debug("Fertig");
+        //$vollzeit = new Zend_Date($vollzeitStringArray, 'HH:mm:ss');
 
         // Iteriere über die Tage
         foreach ($arbeitstage as $arbeitstag) {
@@ -91,7 +96,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 if ($arbeitstag->getRegel() !== null && !$nachmittag) {
                     $soll = $arbeitstag->regel->getSoll();
                     if($soll === null) {
-                        $soll = $soll_default->toString('HH:mm');
+                        $soll = $vollzeit->toString('HH:mm');
                     } else {
                         $soll = $arbeitstag->regel->getSoll()->toString('HH:mm');
                     }

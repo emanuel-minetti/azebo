@@ -6,8 +6,29 @@ kern.beginn = "09:30:00"
 kern.ende.normal = "14:30:00"
 kern.ende.freitag = "14:00:00"
 
-soll.normal = "07:48:00"
-soll.beamter = "08:00:00"
+vollzeit.normal.ab[] = "31.12.2011"
+
+vollzeit.normal.mo[] = "07:48:00"
+vollzeit.normal.di[] = "07:48:00"
+vollzeit.normal.mi[] = "07:48:00"
+vollzeit.normal.do[] = "07:48:00"
+vollzeit.normal.fr[] = "07:48:00"
+
+vollzeit.normal.ab[] = "30.11.2017"
+
+vollzeit.normal.mo[] = "07:53:00"
+vollzeit.normal.di[] = "07:53:00"
+vollzeit.normal.mi[] = "07:53:00"
+vollzeit.normal.do[] = "07:53:00"
+vollzeit.normal.fr[] = "07:52:00"
+
+vollzeit.beamter.ab[] = "31.12.2011"
+
+vollzeit.beamter.mo[] = "08:00:00"
+vollzeit.beamter.di[] = "08:00:00"
+vollzeit.beamter.mi[] = "08:00:00"
+vollzeit.beamter.do[] = "08:00:00"
+vollzeit.beamter.fr[] = "08:00:00"
 
 pause.kurz.ab = "06:00:00"
 pause.kurz.dauer = "00:30:00"
