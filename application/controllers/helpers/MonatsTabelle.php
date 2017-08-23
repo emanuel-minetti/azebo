@@ -40,11 +40,13 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         $anzahlHoheTage = 0;
         $extraZeilen = 0;
 
-        //TODO Das ganze auch für Beamte machen!
+        // Beschäftigungsart ermitteln
+        $art = $mitarbeiter->getBeamter() ? 'beamter' : 'normal';
+
         // Hole die Session und die Startdaten der Vollzeit
         // (für die Vollzeit-Mitarbeiter)
         $ns = new Zend_Session_Namespace();
-        $vollzeitAbStringArray = $ns->zeiten->vollzeit->normal->ab->toArray();
+        $vollzeitAbStringArray = $ns->zeiten->vollzeit->$art->ab->toArray();
 
         // Ermittle, welcher Index des Vollzeit-Array verwendet werden muss
         // Da nur einmal im Jahr die Vollzeit wechseln kann,
@@ -56,19 +58,19 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         }
 
         // Vollzeit-Arbeitszeit holen und speichern!
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->Mo->toArray();
+        $vollzeitArray = $ns->zeiten->vollzeit->$art->Mo->toArray();
         $vollzeit['Mo'] = $vollzeitArray[$vollzeitIndex];
         $vollzeit['Mo'] = new Zend_Date($vollzeit['Mo'], 'HH:mm:ss');
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->Di->toArray();
+        $vollzeitArray = $ns->zeiten->vollzeit->$art->Di->toArray();
         $vollzeit['Di'] = $vollzeitArray[$vollzeitIndex];
         $vollzeit['Di'] = new Zend_Date($vollzeit['Di'], 'HH:mm:ss');
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->Mi->toArray();
+        $vollzeitArray = $ns->zeiten->vollzeit->$art->Mi->toArray();
         $vollzeit['Mi'] = $vollzeitArray[$vollzeitIndex];
         $vollzeit['Mi'] = new Zend_Date($vollzeit['Mi'], 'HH:mm:ss');
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->Do->toArray();
+        $vollzeitArray = $ns->zeiten->vollzeit->$art->Do->toArray();
         $vollzeit['Do'] = $vollzeitArray[$vollzeitIndex];
         $vollzeit['Do'] = new Zend_Date($vollzeit['Do'], 'HH:mm:ss');
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->Fr->toArray();
+        $vollzeitArray = $ns->zeiten->vollzeit->$art->Fr->toArray();
         $vollzeit['Fr'] = $vollzeitArray[$vollzeitIndex];
         $vollzeit['Fr'] = new Zend_Date($vollzeit['Fr'], 'HH:mm:ss');
 
