@@ -40,6 +40,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         $anzahlHoheTage = 0;
         $extraZeilen = 0;
 
+        //TODO Das ganze auch für Beamte machen!
         // Hole die Session und die Startdaten der Vollzeit
         // (für die Vollzeit-Mitarbeiter)
         $ns = new Zend_Session_Namespace();
@@ -55,21 +56,21 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         }
 
         // Vollzeit-Arbeitszeit holen und speichern!
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->mo->toArray();
-        $vollzeit['mo'] = $vollzeitArray[$vollzeitIndex];
-        $vollzeit['mo'] = new Zend_Date($vollzeit['mo'], 'HH:mm:ss');
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->di->toArray();
-        $vollzeit['di'] = $vollzeitArray[$vollzeitIndex];
-        $vollzeit['di'] = new Zend_Date($vollzeit['di'], 'HH:mm:ss');
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->mi->toArray();
-        $vollzeit['mi'] = $vollzeitArray[$vollzeitIndex];
-        $vollzeit['mi'] = new Zend_Date($vollzeit['mi'], 'HH:mm:ss');
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->do->toArray();
-        $vollzeit['do'] = $vollzeitArray[$vollzeitIndex];
-        $vollzeit['do'] = new Zend_Date($vollzeit['do'], 'HH:mm:ss');
-        $vollzeitArray = $ns->zeiten->vollzeit->normal->fr->toArray();
-        $vollzeit['fr'] = $vollzeitArray[$vollzeitIndex];
-        $vollzeit['fr'] = new Zend_Date($vollzeit['fr'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->Mo->toArray();
+        $vollzeit['Mo'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['Mo'] = new Zend_Date($vollzeit['Mo'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->Di->toArray();
+        $vollzeit['Di'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['Di'] = new Zend_Date($vollzeit['Di'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->Mi->toArray();
+        $vollzeit['Mi'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['Mi'] = new Zend_Date($vollzeit['Mi'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->Do->toArray();
+        $vollzeit['Do'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['Do'] = new Zend_Date($vollzeit['Do'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->Fr->toArray();
+        $vollzeit['Fr'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['Fr'] = new Zend_Date($vollzeit['Fr'], 'HH:mm:ss');
 
         // Iteriere über die Tage
         foreach ($arbeitstage as $arbeitstag) {
@@ -91,6 +92,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
 
                 $datum = $feiertag['name'] . ' ' . $tag->toString('EE, dd.MM.yyyy');
                 $pdfTag = $tag->toString('EE');
+                $kurzTagString = substr($pdfTag, 0,2);
                 $pdfDatum = $feiertag['name'] != '' ?
                         $feiertag['name'] . ' ' . $tag->toString('dd.MM.') :
                         $tag->toString('dd.MM.');
@@ -110,12 +112,11 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                     $befreiung = $befreiungOptionen[$arbeitstag->befreiung];
                 }
 
-                //TODO $soll_default sollte über eine eigene (cachende) Funktion geholt werden!
+                // Soll-Arbeitszeit ermitteln
                 if ($arbeitstag->getRegel() !== null && !$nachmittag) {
                     $soll = $arbeitstag->regel->getSoll();
                     if($soll === null) {
-
-                        $soll = $vollzeit->toString('HH:mm');
+                        $soll = $vollzeit[$kurzTagString]->toString('HH:mm');
                     } else {
                         $soll = $arbeitstag->regel->getSoll()->toString('HH:mm');
                     }
