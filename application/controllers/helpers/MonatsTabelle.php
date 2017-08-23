@@ -45,13 +45,6 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         $ns = new Zend_Session_Namespace();
         $vollzeitAbStringArray = $ns->zeiten->vollzeit->normal->ab->toArray();
 
-        //TODO Debugging entfernen
-        $log = Zend_Registry::get('log');
-//        $log->debug("Vollzeit ab: " . print_r($vollzeitAbStringArray, true));
-//        $log->debug("Vollzeit Länge: " . count($vollzeitAbStringArray));
-//        $log->debug("Vollzeit Letzter: " . $vollzeitAbStringArray[count($vollzeitAbStringArray) - 1]);
-//        $log->debug("Fertig");
-
         // Ermittle, welcher Index des Vollzeit-Array verwendet werden muss
         // Da nur einmal im Jahr die Vollzeit wechseln kann,
         //müssen nur die beiden letzten Zeiten geprüft werden
@@ -60,9 +53,23 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         if($letzter->compareDate($vollzeitAbLetzte) === -1) {
             $vollzeitIndex--;
         }
-        $log->debug('Gewählter Index: ' . $vollzeitIndex);
 
-        //TODO default-Arbeitszeit holen und speichern!
+        // Vollzeit-Arbeitszeit holen und speichern!
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->mo->toArray();
+        $vollzeit['mo'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['mo'] = new Zend_Date($vollzeit['mo'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->di->toArray();
+        $vollzeit['di'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['di'] = new Zend_Date($vollzeit['di'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->mi->toArray();
+        $vollzeit['mi'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['mi'] = new Zend_Date($vollzeit['mi'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->do->toArray();
+        $vollzeit['do'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['do'] = new Zend_Date($vollzeit['do'], 'HH:mm:ss');
+        $vollzeitArray = $ns->zeiten->vollzeit->normal->fr->toArray();
+        $vollzeit['fr'] = $vollzeitArray[$vollzeitIndex];
+        $vollzeit['fr'] = new Zend_Date($vollzeit['fr'], 'HH:mm:ss');
 
         // Iteriere über die Tage
         foreach ($arbeitstage as $arbeitstag) {
@@ -107,6 +114,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 if ($arbeitstag->getRegel() !== null && !$nachmittag) {
                     $soll = $arbeitstag->regel->getSoll();
                     if($soll === null) {
+
                         $soll = $vollzeit->toString('HH:mm');
                     } else {
                         $soll = $arbeitstag->regel->getSoll()->toString('HH:mm');
