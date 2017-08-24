@@ -526,7 +526,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     $arbeitsregel->getKernEnde()->toString('HHmm');
             $rahmenEnde = $arbeitsregel->getRahmenEnde() === null ? '' :
                     $arbeitsregel->getRahmenEnde()->toString('HHmm');
-            $soll = $arbeitsregel->getSoll()->toString('HHmm');
+            $soll = $arbeitsregel->getSoll();
+            $soll = $soll === null ? 'Vollzeit' : $soll->toString('HHmm');
             $elemente['von']->setDijitParam('displayedValue', $von);
             $elemente['bis']->setDijitParam('displayedValue', $bis);
             $elemente['wochentag']->setValue($wochentag);
@@ -557,15 +558,6 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             // Soll vor
             $form->removeElement('loeschen');
 
-            $zeiten = $this->ns->zeiten;
-            $zuBearbeitenderMitarbeiter = $this->model->
-                    getMitarbeiterNachBenutzername($benutzername);
-            $beamter = $zuBearbeitenderMitarbeiter->getBeamter();
-            //TODO aufräumen und entscheiden was angezeigt werden soll!
-            //$soll = $beamter ? $zeiten->soll->beamter : $zeiten->soll->normal;
-            //$soll = new Zend_Date($soll, 'HH:mm:ss');
-//            $form->getElement('soll')->
-//                    setDijitParam('displayedValue', $soll->toString('HHmm'));
             if ($this->mitarbeiter->getHochschule() != 'hfs') {
                 $form->removeElement('ohneKern');
             }
@@ -609,7 +601,8 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $rahmenEnde = $arbeitsregel->getRahmenEnde();
             $rahmenEnde = $rahmenEnde === null ? 'normal' :
                     $rahmenEnde->toString('HH:mm');
-            $soll = $arbeitsregel->getSoll()->toString('HH:mm');
+            $soll = $arbeitsregel->getSoll();
+            $soll = $soll === null ? 'Vollzeit' : $soll->toString('HH:mm');
             // 'ohneKern'
             if ($this->mitarbeiter->getHochschule() == 'hfs') {
                 if ($arbeitsregel->getOhneKern() == 'ja') {

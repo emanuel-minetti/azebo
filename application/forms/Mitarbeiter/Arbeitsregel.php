@@ -130,8 +130,6 @@ class Azebo_Form_Mitarbeiter_Arbeitsregel extends AzeboLib_Form_Abstract {
             'validators' => array('RahmenEndeNachAnfang'),
         ));
 
-        //TODO Hier muss geprüft werden, ob nicht '0000' eingegeben wurde! (Validator!)
-        //TODO Was ist mit den studentischen Hilfskräften?
         $this->addElement('TimeTextBox', 'soll', array(
             'label' => 'Soll-Arbeitszeit: (Bei Mitarbeitern in Vollzeit bitte leer lassen)',
             'timePattern' => 'HHmm',
