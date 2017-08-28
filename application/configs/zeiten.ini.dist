@@ -6,7 +6,7 @@ kern.beginn = "09:30:00"
 kern.ende.normal = "14:30:00"
 kern.ende.freitag = "14:00:00"
 
-vollzeit.normal.ab[] = "31.12.2011"
+vollzeit.normal.ab[] = "1.1.2012"
 
 vollzeit.normal.Mo[] = "07:48:00"
 vollzeit.normal.Di[] = "07:48:00"
@@ -14,7 +14,7 @@ vollzeit.normal.Mi[] = "07:48:00"
 vollzeit.normal.Do[] = "07:48:00"
 vollzeit.normal.Fr[] = "07:48:00"
 
-vollzeit.normal.ab[] = "30.11.2017"
+vollzeit.normal.ab[] = "1.12.2017"
 
 vollzeit.normal.Mo[] = "07:53:00"
 vollzeit.normal.Di[] = "07:53:00"
@@ -22,7 +22,7 @@ vollzeit.normal.Mi[] = "07:53:00"
 vollzeit.normal.Do[] = "07:53:00"
 vollzeit.normal.Fr[] = "07:52:00"
 
-vollzeit.beamter.ab[] = "31.12.2011"
+vollzeit.beamter.ab[] = "1.1.2012"
 
 vollzeit.beamter.Mo[] = "08:00:00"
 vollzeit.beamter.Di[] = "08:00:00"

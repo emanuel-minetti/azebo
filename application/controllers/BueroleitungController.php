@@ -527,7 +527,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $rahmenEnde = $arbeitsregel->getRahmenEnde() === null ? '' :
                     $arbeitsregel->getRahmenEnde()->toString('HHmm');
             $soll = $arbeitsregel->getSoll();
-            $soll = $soll === null ? 'Vollzeit' : $soll->toString('HHmm');
+            $soll = $soll === null ? '' : $soll->toString('HHmm');
             $elemente['von']->setDijitParam('displayedValue', $von);
             $elemente['bis']->setDijitParam('displayedValue', $bis);
             $elemente['wochentag']->setValue($wochentag);
