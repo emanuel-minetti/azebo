@@ -284,7 +284,44 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
     //TODO Implementieren!
     public function getSoll() {
+        if ($this->getRegel() === null) {
+            $soll = '00:00';
+            $soll = new Zend_Date($soll, 'HH:mm');
+        }
+        else {
+            $soll = $this->getRegel()->getSoll();
+            if ($soll == null) {
+                // Beschäftigungsart ermitteln
+                $mitarbeiterModel = new Azebo_Model_Mitarbeiter();
+                $mitarbeiter = $mitarbeiterModel->getMitarbeiterNachId($this->_row->mitarbeiter_id);
+                $art = $mitarbeiter->getBeamter() ? 'beamter' : 'normal';
 
+                // Hole die Session und die Startdaten der Vollzeit
+                // (für die Vollzeit-Mitarbeiter)
+                $ns = new Zend_Session_Namespace();
+                $vollzeitAbStringArray = $ns->zeiten->vollzeit->$art->ab->toArray();
+
+                // Ermittle, welcher Index des Vollzeit-Array verwendet werden muss
+                // Da nur einmal im Jahr die Vollzeit wechseln kann,
+                //müssen nur die beiden letzten Zeiten geprüft werden
+                $vollzeitIndex = count($vollzeitAbStringArray) - 1;
+                $vollzeitAbLetzte = new Zend_Date($vollzeitAbStringArray[$vollzeitIndex], 'dd.MM.YYYY');
+                if ($this->getTag()->compareDate($vollzeitAbLetzte) === -1) {
+                    $vollzeitIndex--;
+                }
+
+                // Wochentag ermitteln
+                $kurzTagString = $this->getTag()->toString('EE');
+                $kurzTagString = substr($kurzTagString, 0, 2);
+
+                // Vollzeit-Arbeitszeit holen und speichern!
+                $vollzeitArray = $ns->zeiten->vollzeit->$art->$kurzTagString->toArray();
+                $soll = $vollzeitArray[$vollzeitIndex];
+                $soll = new Zend_Date($soll, 'HH:mm:ss');
+
+            }
+        }
+        return $soll;
     }
 
     public function getSaldo() {
