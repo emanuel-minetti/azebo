@@ -123,6 +123,7 @@ class Azebo_Service_Zeitrechner {
      * @param Azebo_Resource_Arbeitsregel_Item_Interface|null $regel
      * @return Azebo_Model_Saldo
      */
+    //TODO Statt der Regel sollte das Soll übergeben werden!
     public function saldo($ist, $regel) {
         if ($ist !== null) {
             $saldo = new Zend_Date($ist);

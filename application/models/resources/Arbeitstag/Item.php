@@ -282,6 +282,11 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_ist;
     }
 
+    //TODO Implementieren!
+    public function getSoll() {
+
+    }
+
     public function getSaldo() {
         if ($this->_saldo === null) {
             if ($this->getIst() !== null) {
