@@ -282,7 +282,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_ist;
     }
 
-    //TODO Implementieren!
+    //TODO Testen!
     public function getSoll() {
         if ($this->getRegel() === null) {
             $soll = '00:00';

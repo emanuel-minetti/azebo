@@ -124,12 +124,14 @@ class Azebo_Service_Zeitrechner {
      * @return Azebo_Model_Saldo
      */
     //TODO Statt der Regel sollte das Soll übergeben werden!
+
     public function saldo($ist, $regel) {
         if ($ist !== null) {
             $saldo = new Zend_Date($ist);
             $positiv = true;
             if ($regel !== null) {
-                $soll = new Zend_Date($regel->soll);
+                $soll = new Zend_Date($regel->getSoll());
+                //TODO Prüfen, wie es möglich ist, dass ein Saldo zurückgegeben wird falls das soll gleich NULL ist!!!!
                 if ($ist->compare($soll, Zend_Date::TIMES) == -1) {
                     // 'ist' < 'soll'
                     $saldo = $soll->sub($ist, Zend_Date::TIMES);
@@ -147,6 +149,7 @@ class Azebo_Service_Zeitrechner {
             if ($regel === null) {
                 $erg = new Azebo_Model_Saldo(0, 0, true);
             } else {
+                //TODO Was passiert bei soll === NULL???
                 $soll = $regel->getSoll();
                 $saldoArray = $soll->toArray();
                 $stunden = (int) $saldoArray['hour'];
