@@ -35,6 +35,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     protected $_regel;
     protected $_ist;
     protected $_anwesend;
+    protected $_soll;
     protected $_saldo;
 
     public function __construct($config) {
@@ -284,56 +285,58 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
     //TODO Testen!
     public function getSoll() {
-        if ($this->getRegel() === null) {
-            $soll = '00:00';
-            $soll = new Zend_Date($soll, 'HH:mm');
-        }
-        else {
-            $soll = $this->getRegel()->getSoll();
-            if ($soll == null) {
-                // Beschäftigungsart ermitteln
-                $mitarbeiterModel = new Azebo_Model_Mitarbeiter();
-                $mitarbeiter = $mitarbeiterModel->getMitarbeiterNachId($this->_row->mitarbeiter_id);
-                $art = $mitarbeiter->getBeamter() ? 'beamter' : 'normal';
+        if ($this->_soll === null ) {
+            if ($this->getRegel() === null) {
+                $soll = '00:00';
+                $soll = new Zend_Date($soll, 'HH:mm');
+            } else {
+                $soll = $this->getRegel()->getSoll();
+                if ($soll == null) {
+                    // Beschäftigungsart ermitteln
+                    $mitarbeiterModel = new Azebo_Model_Mitarbeiter();
+                    $mitarbeiter = $mitarbeiterModel->getMitarbeiterNachId($this->_row->mitarbeiter_id);
+                    $art = $mitarbeiter->getBeamter() ? 'beamter' : 'normal';
 
-                // Hole die Session und die Startdaten der Vollzeit
-                // (für die Vollzeit-Mitarbeiter)
-                $ns = new Zend_Session_Namespace();
-                $vollzeitAbStringArray = $ns->zeiten->vollzeit->$art->ab->toArray();
+                    // Hole die Session und die Startdaten der Vollzeit
+                    // (für die Vollzeit-Mitarbeiter)
+                    $ns = new Zend_Session_Namespace();
+                    $vollzeitAbStringArray = $ns->zeiten->vollzeit->$art->ab->toArray();
 
-                // Ermittle, welcher Index des Vollzeit-Array verwendet werden muss
-                // Da nur einmal im Jahr die Vollzeit wechseln kann,
-                //müssen nur die beiden letzten Zeiten geprüft werden
-                $vollzeitIndex = count($vollzeitAbStringArray) - 1;
-                $vollzeitAbLetzte = new Zend_Date($vollzeitAbStringArray[$vollzeitIndex], 'dd.MM.YYYY');
-                if ($this->getTag()->compareDate($vollzeitAbLetzte) === -1) {
-                    $vollzeitIndex--;
+                    // Ermittle, welcher Index des Vollzeit-Array verwendet werden muss
+                    // Da nur einmal im Jahr die Vollzeit wechseln kann,
+                    //müssen nur die beiden letzten Zeiten geprüft werden
+                    $vollzeitIndex = count($vollzeitAbStringArray) - 1;
+                    $vollzeitAbLetzte = new Zend_Date($vollzeitAbStringArray[$vollzeitIndex], 'dd.MM.YYYY');
+                    if ($this->getTag()->compareDate($vollzeitAbLetzte) === -1) {
+                        $vollzeitIndex--;
+                    }
+
+                    // Wochentag ermitteln
+                    $kurzTagString = $this->getTag()->toString('EE');
+                    $kurzTagString = substr($kurzTagString, 0, 2);
+
+                    // Vollzeit-Arbeitszeit holen und speichern!
+                    $vollzeitArray = $ns->zeiten->vollzeit->$art->$kurzTagString->toArray();
+                    $soll = $vollzeitArray[$vollzeitIndex];
+                    $soll = new Zend_Date($soll, 'HH:mm:ss');
+
                 }
-
-                // Wochentag ermitteln
-                $kurzTagString = $this->getTag()->toString('EE');
-                $kurzTagString = substr($kurzTagString, 0, 2);
-
-                // Vollzeit-Arbeitszeit holen und speichern!
-                $vollzeitArray = $ns->zeiten->vollzeit->$art->$kurzTagString->toArray();
-                $soll = $vollzeitArray[$vollzeitIndex];
-                $soll = new Zend_Date($soll, 'HH:mm:ss');
-
             }
+            $this->_soll = $soll;
         }
-        return $soll;
+        return $this->_soll;
     }
 
     public function getSaldo() {
         if ($this->_saldo === null) {
             if ($this->getIst() !== null) {
                 $this->_saldo = $this->_zeitrechnerService->saldo(
-                        $this->_ist, $this->getRegel());
+                        $this->_ist, $this->getSoll());
             } else {
                 //Gleitzeittage anrechnen
                 if ($this->befreiung == 'fa') {
                     $this->_saldo = $this->_zeitrechnerService->saldo(
-                            $this->_ist, $this->getRegel());
+                            $this->_ist, $this->getSoll());
                 } else {
                     $this->_saldo = new Azebo_Model_Saldo(0, 0, true);
                 }

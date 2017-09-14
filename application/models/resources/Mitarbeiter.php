@@ -33,6 +33,10 @@ implements Azebo_Resource_Mitarbeiter_Interface {
     protected $_primary = 'id';
     protected $_rowClass = 'Azebo_Resource_Mitarbeiter_Item';
 
+    /**
+     * @param $id die 'id' des Mitarbeiters
+     * @return \Azebo_Resource_Mitarbeiter_Item der Mitarbeiter
+     */
     public function getMitarbeiterNachId($id) {
         return $this->find($id)->current();
     }

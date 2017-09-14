@@ -489,7 +489,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      * so wird die in der Monatstabelle einzutragende Differenz zurückgegeben.
      * 
      * @param Zend_Date $monat der Monat
-     * @param type $differenz
+     * @param  $differenz
      * @return \Azebo_Model_Saldo 
      */
     public function getSaldoGesamt(Zend_Date $monat, $differenz = false) {

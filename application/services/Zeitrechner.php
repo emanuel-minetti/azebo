@@ -113,53 +113,30 @@ class Azebo_Service_Zeitrechner {
         return $ist;
     }
 
-    /**
-     * Gibt den Saldo eines Tages als Azebo_Model_Saldo zurück.
-     * Die Funktion erwartet ein Zend_Date oder NULL mit der Ist-Zeit und eine Regel,
-     * die entweder Azebo_Resource_Arbeitsregel_Item_Interface implementiert
-     * oder NULL ist.
-     *
-     * @param Zend_Date|null $ist
-     * @param Azebo_Resource_Arbeitsregel_Item_Interface|null $regel
-     * @return Azebo_Model_Saldo
-     */
-    //TODO Statt der Regel sollte das Soll übergeben werden!
 
-    public function saldo($ist, $regel) {
+    //TODO Kommentieren!
+
+    public function saldo($ist, $soll)
+    {
+        $sollKopie = new Zend_Date($soll);
+        $istKopie = new Zend_Date($ist);
         if ($ist !== null) {
-            $saldo = new Zend_Date($ist);
-            $positiv = true;
-            if ($regel !== null) {
-                $soll = new Zend_Date($regel->getSoll());
-                //TODO Prüfen, wie es möglich ist, dass ein Saldo zurückgegeben wird falls das soll gleich NULL ist!!!!
-                if ($ist->compare($soll, Zend_Date::TIMES) == -1) {
-                    // 'ist' < 'soll'
-                    $saldo = $soll->sub($ist, Zend_Date::TIMES);
-                    $positiv = false;
-                } else {
-                    $saldo->sub($soll, Zend_Date::TIMES);
-                }
-            }
-            $saldoArray = $saldo->toArray();
-            $stunden = (int) $saldoArray['hour'];
-            $minuten = (int) $saldoArray['minute'];
-            $erg = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
-        } else {
-            // $ist === null
-            if ($regel === null) {
-                $erg = new Azebo_Model_Saldo(0, 0, true);
+            if ($istKopie->compareTime($sollKopie) == -1) {
+                // 'ist' < 'soll'
+                $positiv = false;
+                $saldo = $sollKopie->sub($istKopie, Zend_Date::TIMES);
             } else {
-                //TODO Was passiert bei soll === NULL???
-                $soll = $regel->getSoll();
-                $saldoArray = $soll->toArray();
-                $stunden = (int) $saldoArray['hour'];
-                $minuten = (int) $saldoArray['minute'];
-                $erg = new Azebo_Model_Saldo($stunden, $minuten, false);
+                $positiv = true;
+                $saldo = $istKopie->sub($soll, Zend_Date::TIMES);
             }
+        } else {
+            $positiv = false;
+            $saldo = $sollKopie;
         }
-
-        return $erg;
+        $stunden = $saldo->get(Zend_Date::HOUR_SHORT);
+        $minuten = $saldo->get(Zend_Date::MINUTE_SHORT);
+        $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
+        return $saldo;
     }
-
 }
 
