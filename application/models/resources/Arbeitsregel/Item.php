@@ -52,7 +52,7 @@ class Azebo_Resource_Arbeitsregel_Item extends AzeboLib_Model_Resource_Db_Table_
     }
 
     // TODO rename!
-    public function getSoll() {
+    public function getSollOrNull() {
         return $this->_dzService->zeitSqlZuPhp($this->_row->soll);
     }
 

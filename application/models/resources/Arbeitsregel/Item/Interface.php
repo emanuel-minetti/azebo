@@ -34,7 +34,7 @@ interface Azebo_Resource_Arbeitsregel_Item_Interface {
     
     public function setBis($bis);
     
-    public function getSoll();
+    public function getSollOrNull();
     
     public function getRahmenAnfang();
     

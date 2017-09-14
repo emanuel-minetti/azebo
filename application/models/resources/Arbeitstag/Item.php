@@ -290,7 +290,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
                 $soll = '00:00';
                 $soll = new Zend_Date($soll, 'HH:mm');
             } else {
-                $soll = $this->getRegel()->getSoll();
+                $soll = $this->getRegel()->getSollOrNull();
                 if ($soll == null) {
                     // Beschäftigungsart ermitteln
                     $mitarbeiterModel = new Azebo_Model_Mitarbeiter();

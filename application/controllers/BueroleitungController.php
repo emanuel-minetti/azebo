@@ -526,7 +526,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
                     $arbeitsregel->getKernEnde()->toString('HHmm');
             $rahmenEnde = $arbeitsregel->getRahmenEnde() === null ? '' :
                     $arbeitsregel->getRahmenEnde()->toString('HHmm');
-            $soll = $arbeitsregel->getSoll();
+            $soll = $arbeitsregel->getSollOrNull();
             $soll = $soll === null ? '' : $soll->toString('HHmm');
             $elemente['von']->setDijitParam('displayedValue', $von);
             $elemente['bis']->setDijitParam('displayedValue', $bis);
@@ -601,7 +601,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $rahmenEnde = $arbeitsregel->getRahmenEnde();
             $rahmenEnde = $rahmenEnde === null ? 'normal' :
                     $rahmenEnde->toString('HH:mm');
-            $soll = $arbeitsregel->getSoll();
+            $soll = $arbeitsregel->getSollOrNull();
             $soll = $soll === null ? 'Vollzeit' : $soll->toString('HH:mm');
             // 'ohneKern'
             if ($this->mitarbeiter->getHochschule() == 'hfs') {

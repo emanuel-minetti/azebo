@@ -118,14 +118,7 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 $soll = $arbeitstag->getSoll()->toString('HH:mm');
                 if ($soll === '00:00')
                     $soll = '';
-//                if ($arbeitstag->getRegel() !== null && !$nachmittag) {
-//                    $soll = $arbeitstag->regel->getSoll();
-//                    if($soll === null) {
-//                        $soll = $vollzeit[$kurzTagString]->toString('HH:mm');
-//                    } else {
-//                        $soll = $arbeitstag->regel->getSoll()->toString('HH:mm');
-//                    }
-//                }
+
 
                 $anwesend = $arbeitstag->getAnwesend();
                 $ist = $arbeitstag->getIst();
