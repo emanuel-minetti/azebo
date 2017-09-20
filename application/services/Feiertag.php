@@ -72,6 +72,7 @@ class Azebo_Service_Feiertag {
         }
     }
 
+    //TODO Den 31.10.2017 als 'Reformationstag (zum 500. Jahrestag der Reformation)' einfügen!
     /**
      * Prüft ob ein Datum ein gesetzlicher Feiertag in Berlin ist.
      * Berücksichtigt auch Samstage und Sonntage.
