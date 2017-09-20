@@ -113,13 +113,18 @@ class Azebo_Service_Zeitrechner {
         return $ist;
     }
 
-
-    //TODO Kommentieren!
-
+    /**
+     * Gibt das Saldo (von ist und soll) zurück.
+     *
+     * @param  Zend_Date $ist die Ist-Zeit
+     * @param  Zend_Date $soll die Soll-zeit
+     * @return Azebo_Model_Saldo das Saldo
+     */
     public function saldo($ist, $soll)
     {
         $sollKopie = new Zend_Date($soll);
         $istKopie = new Zend_Date($ist);
+        // berechne das Saldo als Zend_Date
         if ($ist !== null) {
             if ($istKopie->compareTime($sollKopie) == -1) {
                 // 'ist' < 'soll'
@@ -133,6 +138,7 @@ class Azebo_Service_Zeitrechner {
             $positiv = false;
             $saldo = $sollKopie;
         }
+        // wandle das Zend_Date in Azebo_Model_Saldo um
         $stunden = $saldo->get(Zend_Date::HOUR_SHORT);
         $minuten = $saldo->get(Zend_Date::MINUTE_SHORT);
         $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);

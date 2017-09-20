@@ -181,6 +181,14 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_regel;
     }
 
+    /**
+     * Gibt die Anwesenheitszeit des Mitarbeiters an diesem Tag zurück. Falls der
+     * Mitarbeiter an diesem Tag nicht anwesend war, wird NULL zurück gegeben.
+     *
+     * Die Anwesenheitszeit ist die Zeit, in der ein Mitarbeiter anwesend war.
+     *
+     * @return null|Zend_Date
+     */
     public function getAnwesend() {
         if ($this->_anwesend === null) {
             if ($this->getBeginn() !== null && $this->getEnde() !== null) {
@@ -202,6 +210,9 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
     /**
      * Gibt die Ist-Arbeitszeit für diesen Arbeitstag zurück.
+     *
+     * Die Ist-Zeit bezeichnet die Zeit, die dem Beschäftigten als Arbeits-
+     * zeit angerechnet wird.
      * 
      * Für Mitarbeiter der HfM wird hier berechnet, ob eine Pause abgezogen
      * werden soll und wenn ja in welcher Länge.
@@ -283,22 +294,34 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         return $this->_ist;
     }
 
-    //TODO Testen!
+    /**
+     * Gibt das Soll für diesen Arbeitstag des Mitarbeiters zurück.
+     *
+     * In der Tabelle 'Arbeitsregel' der DB ist bei Vollzeit für das Soll
+     * NULL abgelegt. In diesem Fall muss das effektive Soll berechnet werden!
+     * Das Soll wird lazy berechnet und für spätere Abfragen als Eigenschaft
+     * des Arbeitstages gespeichert.
+     *
+     * @return Zend_Date Das Soll für diesen Arbeitstag Im Zeit-Teil des Rückgabewertes
+     */
     public function getSoll() {
         if ($this->_soll === null ) {
+            // soll für diesen Arbeitstag noch nicht gesetzt, also ermittle es
             if ($this->getRegel() === null) {
+                // keine Regel, also auch kein Arbeitstag
                 $soll = '00:00';
                 $soll = new Zend_Date($soll, 'HH:mm');
             } else {
                 $soll = $this->getRegel()->getSollOrNull();
                 if ($soll == null) {
-                    // Beschäftigungsart ermitteln
+                    // Beschäftigter arbeitet Vollzeit an diesem Tag, also
+                    // ermittle Vollzeit für diesen Beschäftigten für diesen Tag:
+                    // zunächst Beschäftigungsart ermitteln
                     $mitarbeiterModel = new Azebo_Model_Mitarbeiter();
                     $mitarbeiter = $mitarbeiterModel->getMitarbeiterNachId($this->_row->mitarbeiter_id);
                     $art = $mitarbeiter->getBeamter() ? 'beamter' : 'normal';
 
                     // Hole die Session und die Startdaten der Vollzeit
-                    // (für die Vollzeit-Mitarbeiter)
                     $ns = new Zend_Session_Namespace();
                     $vollzeitAbStringArray = $ns->zeiten->vollzeit->$art->ab->toArray();
 
@@ -322,11 +345,19 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
                 }
             }
+            // Soll für spätere Abfragen speichern
             $this->_soll = $soll;
         }
         return $this->_soll;
     }
 
+    /**
+     * Gibt das Saldo dieses Arbeitstages zurück.
+     *
+     * Das Saldo wird lazy berechnet und in einer Eigenschaft gespeichert.
+     *
+     * @return Azebo_Model_Saldo das Saldo
+     */
     public function getSaldo() {
         if ($this->_saldo === null) {
             if ($this->getIst() !== null) {
