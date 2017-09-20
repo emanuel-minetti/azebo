@@ -17,7 +17,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with azebo.  If not, see <http://www.gnu.org/licenses/>.
  *  
- *     Copyright 2012-16 Emanuel Minetti (e.minetti (at) posteo.de)
+ *     Copyright 2012-17 Emanuel Minetti (e.minetti (at) posteo.de)
  */
 
 require('fpdf.php');
