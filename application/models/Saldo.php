@@ -208,17 +208,18 @@ class Azebo_Model_Saldo {
         return $this->_restMinuten;
     }
 
+    //TODO Richtig machen! (War ein schneller Fix!)
     public function getString() {
         if ($this->_stunden === null) {
             return '+ 0:00';
         } else {
             $saldoString = $this->_positiv == true ? '+ ' : '- ';
             $saldoString .= $this->_stunden . ':';
-            if ($this->_minuten <= 9) {
-                $saldoString .= '0' . $this->_minuten;
-            } else {
+    //        if ($this->_minuten <= 9) {
+    //            $saldoString .= '0' . $this->_minuten;
+    //        } else {
                 $saldoString .= $this->_minuten;
-            }
+    //        }
             return $saldoString;
         }
     }
