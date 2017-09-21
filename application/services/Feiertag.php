@@ -72,7 +72,6 @@ class Azebo_Service_Feiertag {
         }
     }
 
-    //TODO Den 31.10.2017 als 'Reformationstag (zum 500. Jahrestag der Reformation)' einfügen!
     /**
      * Prüft ob ein Datum ein gesetzlicher Feiertag in Berlin ist.
      * Berücksichtigt auch Samstage und Sonntage.
@@ -92,6 +91,7 @@ class Azebo_Service_Feiertag {
          * -Neujahr (1.1.)
          * -Tag der Arbeit (1.5.)
          * -Tag der dt. Einheit (3.10.)
+         * -Einmalig der Reformationstag 2017 (31.10.2017)
          * -1. Weihnachtsfeiertag (25.12.)
          * -2. Weihnachtsfeiertag (26.12.)
          * 
@@ -133,6 +133,17 @@ class Azebo_Service_Feiertag {
                 $feiertag['name'] = 'Tag der dt. Einheit';
                 $feiertag['feiertag'] = true;
                 return $feiertag;
+            }
+        }
+
+        //Einmalig der Reformationstag 2017
+        if ($datum->get(Zend_Date::YEAR) == 2017) {
+            if ($datum->get(Zend_Date::MONTH) == 10) {
+                if ($datum->get(Zend_Date::DAY) == 31) {
+                    $feiertag['name'] = 'Reformationstag (500. Jahrestag)';
+                    $feiertag['feiertag'] = true;
+                    return $feiertag;
+                }
             }
         }
 

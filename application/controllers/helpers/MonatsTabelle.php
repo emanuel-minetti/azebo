@@ -40,39 +40,6 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
         $anzahlHoheTage = 0;
         $extraZeilen = 0;
 
-//        // Beschäftigungsart ermitteln
-//        $art = $mitarbeiter->getBeamter() ? 'beamter' : 'normal';
-//
-//        // Hole die Session und die Startdaten der Vollzeit
-//        // (für die Vollzeit-Mitarbeiter)
-//        $ns = new Zend_Session_Namespace();
-//        $vollzeitAbStringArray = $ns->zeiten->vollzeit->$art->ab->toArray();
-//
-//        // Ermittle, welcher Index des Vollzeit-Array verwendet werden muss
-//        // Da nur einmal im Jahr die Vollzeit wechseln kann,
-//        //müssen nur die beiden letzten Zeiten geprüft werden
-//        $vollzeitIndex = count($vollzeitAbStringArray) - 1;
-//        $vollzeitAbLetzte = new Zend_Date($vollzeitAbStringArray[$vollzeitIndex], 'dd.MM.YYYY');
-//        if($letzter->compareDate($vollzeitAbLetzte) === -1) {
-//            $vollzeitIndex--;
-//        }
-//
-//        // Vollzeit-Arbeitszeit holen und speichern!
-//        $vollzeitArray = $ns->zeiten->vollzeit->$art->Mo->toArray();
-//        $vollzeit['Mo'] = $vollzeitArray[$vollzeitIndex];
-//        $vollzeit['Mo'] = new Zend_Date($vollzeit['Mo'], 'HH:mm:ss');
-//        $vollzeitArray = $ns->zeiten->vollzeit->$art->Di->toArray();
-//        $vollzeit['Di'] = $vollzeitArray[$vollzeitIndex];
-//        $vollzeit['Di'] = new Zend_Date($vollzeit['Di'], 'HH:mm:ss');
-//        $vollzeitArray = $ns->zeiten->vollzeit->$art->Mi->toArray();
-//        $vollzeit['Mi'] = $vollzeitArray[$vollzeitIndex];
-//        $vollzeit['Mi'] = new Zend_Date($vollzeit['Mi'], 'HH:mm:ss');
-//        $vollzeitArray = $ns->zeiten->vollzeit->$art->Do->toArray();
-//        $vollzeit['Do'] = $vollzeitArray[$vollzeitIndex];
-//        $vollzeit['Do'] = new Zend_Date($vollzeit['Do'], 'HH:mm:ss');
-//        $vollzeitArray = $ns->zeiten->vollzeit->$art->Fr->toArray();
-//        $vollzeit['Fr'] = $vollzeitArray[$vollzeitIndex];
-//        $vollzeit['Fr'] = new Zend_Date($vollzeit['Fr'], 'HH:mm:ss');
 
         // Iteriere über die Tage
         foreach ($arbeitstage as $arbeitstag) {
@@ -157,10 +124,11 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                 //sind also keine 'hohen' Tage.
                 if ($feiertag['name'] != '') {
                     if ($feiertag['name'] != 'Neujahr' &&
-                            $feiertag['name'] != 'Karfreitag' && $feiertag['name'] != 'Weihnachten') {
+                        $feiertag['name'] != 'Karfreitag' && $feiertag['name'] != 'Weihnachten') {
                         $anzahlHoheTage++;
-                        // 'Tag der offenen Tür braucht zwei Zeilen'
-                        if ($feiertag['name'] == 'Tag der offenen Tür') {
+                        // 'Tag der offenen Tür' und 'Reformationstag (500. Jahrestag)' brauchen zwei Zeilen
+                        if ($feiertag['name'] == 'Tag der offenen Tür' or
+                            $feiertag['name'] = 'Reformationstag (500. Jahrestag)') {
                             $anzahlHoheTage++;
                         }
                     }
