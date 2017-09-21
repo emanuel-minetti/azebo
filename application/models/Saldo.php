@@ -208,7 +208,6 @@ class Azebo_Model_Saldo {
         return $this->_restMinuten;
     }
 
-    //TODO Nach dem Anpassen auch Version und SVN-Tag anpassen!!
     public function getString() {
         if ($this->_stunden === null) {
             return '+ 0:00';
