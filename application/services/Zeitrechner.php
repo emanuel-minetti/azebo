@@ -139,8 +139,8 @@ class Azebo_Service_Zeitrechner {
             $saldo = $sollKopie;
         }
         // wandle das Zend_Date in Azebo_Model_Saldo um
-        $stunden = $saldo->get(Zend_Date::HOUR_SHORT);
-        $minuten = $saldo->get(Zend_Date::MINUTE_SHORT);
+        $stunden = (int) $saldo->get(Zend_Date::HOUR_SHORT);
+        $minuten = (int) $saldo->get(Zend_Date::MINUTE_SHORT);
         $saldo = new Azebo_Model_Saldo($stunden, $minuten, $positiv);
         return $saldo;
     }

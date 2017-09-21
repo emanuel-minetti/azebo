@@ -208,7 +208,6 @@ class Azebo_Model_Saldo {
         return $this->_restMinuten;
     }
 
-    //TODO Richtig machen! (War ein schneller Fix!)
     //TODO Nach dem Anpassen auch Version und SVN-Tag anpassen!!
     public function getString() {
         if ($this->_stunden === null) {
@@ -216,11 +215,11 @@ class Azebo_Model_Saldo {
         } else {
             $saldoString = $this->_positiv == true ? '+ ' : '- ';
             $saldoString .= $this->_stunden . ':';
-    //        if ($this->_minuten <= 9) {
-    //            $saldoString .= '0' . $this->_minuten;
-    //        } else {
+            if ($this->_minuten <= 9) {
+                $saldoString .= '0' . $this->_minuten;
+            } else {
                 $saldoString .= $this->_minuten;
-    //        }
+            }
             return $saldoString;
         }
     }
