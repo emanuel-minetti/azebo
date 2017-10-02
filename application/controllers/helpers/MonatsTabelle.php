@@ -158,9 +158,9 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                     if ($arbeitstag->getEndeNachmittag() !== null) {
                         $ende = $arbeitstag->getEndeNachmittag()->toString('HH:mm');
                     }
-                    if ($arbeitstag->getRegel() !== null) {
-                        $soll = $arbeitstag->regel->soll->toString('HH:mm');
-                    }
+                    $soll = $arbeitstag->getSoll()->toString('HH:mm');
+                    if ($soll === '00:00')
+                        $soll = '';
                     $anwesend = $arbeitstag->getAnwesend();
                     $ist = $arbeitstag->getIst();
                     $saldoErg = $arbeitstag->getSaldo();
