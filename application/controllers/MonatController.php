@@ -354,6 +354,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $errors->exception = new AzeboLib_Exception(
                     'Auf diese Seite haben Sie keinen Zugriff!', null, null);
             $request->setParam('error_handler', $errors);
+            //TODO remove deprecated method!
             $this->_forward('nichterlaubt', 'error');
         }
 

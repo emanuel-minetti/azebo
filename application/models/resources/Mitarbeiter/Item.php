@@ -421,7 +421,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
 
     public function getUrlaubVorjahrBisher(Zend_Date $bis) {
         $zeiten = $this->_getZeiten();
-        $vorjahrRestBis = $zeiten->urlaub->resturlaubbis;
+        $vorjahrRestBis = $zeiten->urlaub->normal->resturlaubbis;
         $vorjahrRestBisDate = new Zend_Date($vorjahrRestBis, 'dd.MM.');
         $uebertragenBis = $this->getUebertragenBis();
         if ($bis->compareMonth($vorjahrRestBisDate) != 1) {
