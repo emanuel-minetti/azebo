@@ -420,10 +420,12 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function getUrlaubVorjahrBisher(Zend_Date $bis) {
-        //TODO Hier muss zwischen 'normal' und 'beamter' unterschieden werden!
-        //TODO Absichern, dass der Urlaub der Beamten nicht über zwei Jahre übertragen werden kann!!
         $zeiten = $this->_getZeiten();
-        $vorjahrRestBis = $zeiten->urlaub->normal->resturlaubbis;
+        if ($this->getBeamter()) {
+            $vorjahrRestBis = $zeiten->urlaub->beamter->resturlaubbis;
+        } else {
+            $vorjahrRestBis = $zeiten->urlaub->normal->resturlaubbis;
+        }
         $vorjahrRestBisDate = new Zend_Date($vorjahrRestBis, 'dd.MM.');
         $uebertragenBis = $this->getUebertragenBis();
         if ($bis->compareMonth($vorjahrRestBisDate) != 1) {
