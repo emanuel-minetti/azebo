@@ -1,7 +1,9 @@
 SELECT mitarbeiter_id,
   mitarbeiter.benutzername,
   kalenderwoche,
-  TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC( `soll`))),'%H:%i') AS soll_gesamt
+  TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC( `soll`))),'%H:%i') AS soll_gesamt,
+  TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC( `soll`)) * 1.0059829),'%H:%i') AS soll_neu,
+  TIME_FORMAT(SEC_TO_TIME(SUM(TIME_TO_SEC( `soll`)) * 0.0059829), '%H:%i')  AS soll_diff
 FROM arbeitsregel, mitarbeiter, Azebo_HFM_27_11_2017
 WHERE (soll IS NOT NULL
        AND soll != '00:00:00'
@@ -10,3 +12,4 @@ WHERE (soll IS NOT NULL
        AND mitarbeiter.id = mitarbeiter_id
        AND mitarbeiter.benutzername = Azebo_HFM_27_11_2017.benutzername)
 GROUP BY mitarbeiter_id, kalenderwoche;
+

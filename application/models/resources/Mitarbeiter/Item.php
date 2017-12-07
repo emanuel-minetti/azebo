@@ -175,7 +175,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      * Gibt zurück, ob der Mitarbeiter 'Studentische Hilfskraft ist oder nicht.
      * 
      * @return boolean Der Wahrheitswert, ob der Mitarbeiter
-     *                  'Stdentische Hilfskraft ist oder nicht.
+     *                  'Studentische Hilfskraft ist oder nicht.
      */
     public function getStudiHK() {
         if ($this->_studiHK === null) {
@@ -319,7 +319,6 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
      * @return Azebo_Model_Saldo 
      */
     public function getSaldoBisher(Zend_Date $bis, $anzeigen = false) {
-
         $uebertragenBis = $this->getUebertragenBis();
         if ($bis->compareYear($uebertragenBis) == 1) {
             // falls $bis nach dem letzten Übertrag liegt berechne das Saldo wie
