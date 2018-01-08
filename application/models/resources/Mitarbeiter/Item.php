@@ -380,7 +380,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 }
             }
         }
-        
+
+        //TODO Hier müssen die gekappten Salden mitberücksichtigt werden!
         foreach ($monate as $monat) {
             $monatsSaldo = $monat->getSaldo();
             $saldo->add($monatsSaldo, true);
