@@ -51,9 +51,12 @@ class Azebo_Model_Mitarbeiter extends AzeboLib_Model_Abstract {
     /**
      * Gibt ein Array mit den Mitarbeiter-Items aller Mitarbeiter einer Hochschule
      * zurück. Die Hochschule wird als 'khb', 'hfm' oder 'hfs' übergeben.
-     * 
+     *
      * @param string $hochschule
      * @return array
+     * @throws Zend_Config_Exception
+     * @throws Zend_Exception
+     * @throws Zend_Ldap_Exception
      */
     public function getMitarbeiterNachHochschule($hochschule) {
 
