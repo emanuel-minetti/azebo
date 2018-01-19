@@ -202,7 +202,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function saveArbeitsmonat(Zend_Date $monat) {
-        //TODO Hier muss die Kappung des Monats mitgespeichert werden!
+        //TODO Hier muss die Kappung des Monats berechnet und mitgespeichert werden!
         $saldo = $this->getSaldoGesamt($monat, true);
         $urlaubGesamt = $this->getUrlaubGesamt($monat);
         $azv = $this->getAzvTageNachMonat($monat);
