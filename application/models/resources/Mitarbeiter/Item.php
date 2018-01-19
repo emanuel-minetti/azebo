@@ -189,7 +189,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     /**
      * Gibt den vollständigen Namen der Hochschule des Mitarbeiters zurück.
      * 
-     * @return string Der Name (vollständige) Name der Hochschule
+     * @return string Der (vollständige) Name der Hochschule
      */
     public function getHochschulString() {
         $ns = new Zend_Session_Namespace();
