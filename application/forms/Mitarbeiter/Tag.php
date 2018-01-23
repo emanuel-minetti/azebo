@@ -64,7 +64,7 @@ class Azebo_Form_Mitarbeiter_Tag extends AzeboLib_Form_Abstract {
                         'BefreiungZeiten',
                     ),
                     'tabindex' => 1,
-                    'autofocus' => true,
+                    'autofocus' => "autofocus",
                 ));
 
         $endeElement = new Zend_Dojo_Form_Element_TimeTextBox('ende', array(

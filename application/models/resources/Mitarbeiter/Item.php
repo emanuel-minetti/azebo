@@ -202,7 +202,7 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
     }
 
     public function saveArbeitsmonat(Zend_Date $monat) {
-        //TODO Hier muss die Kappung des Monats berechnet und mitgespeichert werden!
+        //TODO Hier muss die Kappung des Monats berechnet und mitgespeichert werden! (Siehe Zeile 520!)
         $saldo = $this->getSaldoGesamt($monat, true);
         $urlaubGesamt = $this->getUrlaubGesamt($monat);
         $azv = $this->getAzvTageNachMonat($monat);
@@ -517,6 +517,8 @@ class Azebo_Resource_Mitarbeiter_Item extends AzeboLib_Model_Resource_Db_Table_R
                 $saldoGesamt->vergleiche($kappungGesamt) == 1) {
             // $saldoGesamt darf nicht einfach überschrieben werden,
             // sonst geht u.U. der Rest 2007 bei der HfM verloren!
+            //TODO Hier wird die gesammt-Kappung angewendet, hier sollte sie also auch gespeichert werden!
+            //TODO Am besten im Saldo speichern?!
             $saldoGesamt = new Azebo_Model_Saldo($kappungGesamt->getStunden(), $kappungGesamt->getMinuten(), true, $saldoGesamt->getRest(), $saldoGesamt->getRestStunden(), $saldoGesamt->getRestMinuten());
         }
 
