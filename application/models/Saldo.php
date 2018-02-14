@@ -57,12 +57,12 @@ class Azebo_Model_Saldo {
     
     /**
      * Addiert $saldo zu $this. Falls $monat == true ist, Wird auch die
-     * 2007er-Regelung der HfM brücksichtigt. Gibt $this zurück für
+     * 2007er-Regelung der HfM berücksichtigt. Gibt $this zurück für
      * zusammengesetzte Anweisungen.
      * 
      * @param Azebo_Model_Saldo $saldo
-     * @param type $monat
-     * @return \Azebo_Model_Saldo 
+     * @param bool $monat
+     * @return Azebo_Model_Saldo
      */
     public function add(Azebo_Model_Saldo $saldo, $monat = false) {
 
