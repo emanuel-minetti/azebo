@@ -70,18 +70,20 @@ class Azebo_Service_Zeitrechner {
      * Gibt die Ist-Arbeitszeit zurück.
      * Erwartet eine Anwesenheitszeit und optional eine Angabe, ob eine Pause
      * abgezogen werden soll oder nicht.
-     * 
+     *
      * @param Zend_Date $anwesend Die Zeit, die der Mitarbeiter an diesem Tag
      * anwesend war.
-     * @param boolean $ohnePause Optinal, ob ohne Pause gerechnet werden
+     * @param boolean $ohnePause Optional, ob ohne Pause gerechnet werden
      * soll oder nicht. Standard falsch.
      * @param null|boolean $pauseLang Falls die Länge der Pause nicht
-     * standartmäßig berechnet werden soll (z.B. bei Nachmittagsarbeitszeit
+     * standardmäßig berechnet werden soll (z.B. bei Nachmittagsarbeitszeit
      * für die HfM), kann hier angegeben werden ob die Pause kurz oder lang
      * sein soll. Dieser Parameter ist optional und der Standard ist null, also
      * das standardmäßige Berechnen der Pausenlänge.
-     * 
-     * @return Zend_Date 
+     *
+     * @return Zend_Date Die einzutragende Ist-Zeit
+     * @throws Zend_Date_Exception
+     * @throws Zend_Session_Exception
      */
     public function ist(
     Zend_Date $anwesend, $ohnePause = false, $pauseLang = null) {
