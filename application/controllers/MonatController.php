@@ -862,7 +862,6 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $vorjahr = $this->mitarbeiter->getVorjahr();
             $uebertrag = $this->mitarbeiter->getSaldouebertrag();
             $vorjahr->setSaldouebertrag($uebertrag);
-            //TODO Jahresabschluss: Kappung berücksichtigen und gleich ausrechnen!
             if ($this->mitarbeiter->getHochschule() == 'hfm') {
                 if ($uebertrag->getRest()) {
                     $saldo2007 = new Azebo_Model_Saldo($uebertrag->getRestStunden(), $uebertrag->getRestMinuten(), true);
