@@ -89,6 +89,7 @@ class Azebo_Service_Feiertag {
          * Die festen gesetzlichen Feiertage in Berlin sind:
          * 
          * -Neujahr (1.1.)
+         * -Internationaler Frauentag (8.3)
          * -Tag der Arbeit (1.5.)
          * -Tag der dt. Einheit (3.10.)
          * -Einmalig der Reformationstag 2017 (31.10.2017)
@@ -113,6 +114,15 @@ class Azebo_Service_Feiertag {
         if ($datum->get(Zend_Date::MONTH) == 1) {
             if ($datum->get(Zend_Date::DAY) == 1) {
                 $feiertag['name'] = 'Neujahr';
+                $feiertag['feiertag'] = true;
+                return $feiertag;
+            }
+        }
+
+        //Internationaler Frauentag
+        if ($datum->get(Zend_Date::MONTH) == 3) {
+            if ($datum->get(Zend_Date::DAY) == 8) {
+                $feiertag['name'] = 'Internationaler Frauentag';
                 $feiertag['feiertag'] = true;
                 return $feiertag;
             }
