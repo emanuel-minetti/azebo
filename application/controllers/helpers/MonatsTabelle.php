@@ -126,9 +126,11 @@ class Azebo_Action_Helper_MonatsTabelle extends Zend_Controller_Action_Helper_Ab
                     if ($feiertag['name'] != 'Neujahr' &&
                         $feiertag['name'] != 'Karfreitag' && $feiertag['name'] != 'Weihnachten') {
                         $anzahlHoheTage++;
-                        // 'Tag der offenen Tür' und 'Reformationstag (500. Jahrestag)' brauchen zwei Zeilen
+                        // 'Tag der offenen Tür', 'Reformationstag (500. Jahrestag)' und 'Internsationaler Frauentag'
+                        //brauchen zwei Zeilen
                         if ($feiertag['name'] == 'Tag der offenen Tür' or
-                            $feiertag['name'] = 'Reformationstag (500. Jahrestag)') {
+                            $feiertag['name'] == 'Reformationstag (500. Jahrestag)' or
+                            $feiertag['name'] == 'Internationaler Frauentag') {
                             $anzahlHoheTage++;
                         }
                     }
