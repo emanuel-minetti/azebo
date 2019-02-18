@@ -91,6 +91,7 @@ class Azebo_Service_Feiertag {
          * -Neujahr (1.1.)
          * -Internationaler Frauentag (8.3. ab dem Jahr 2019)
          * -Tag der Arbeit (1.5.)
+         * -Einmalig der Tag der Befreiung 2020 (8.5.2020)
          * -Tag der dt. Einheit (3.10.)
          * -Einmalig der Reformationstag 2017 (31.10.2017)
          * -1. Weihnachtsfeiertag (25.12.)
@@ -136,6 +137,17 @@ class Azebo_Service_Feiertag {
                 $feiertag['name'] = 'Tag der Arbeit';
                 $feiertag['feiertag'] = true;
                 return $feiertag;
+            }
+        }
+
+        //Einmalig der tag der Befreiung 2020
+        if ($datum->get(Zend_Date::MONTH) == 5) {
+            if ($datum->get(Zend_Date::DAY) == 8) {
+                if ($datum->get(Zend_Date::YEAR) == 2020) {
+                    $feiertag['name'] = 'Tag der Befreiung';
+                    $feiertag['feiertag'] = true;
+                    return $feiertag;
+                }
             }
         }
 
