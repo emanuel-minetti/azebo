@@ -24,7 +24,7 @@ This software is licensed under the GPLv3 - see the
 [License](https://github.com/emanuel-minetti/azebo/blob/master/LICENSE) file
 for details.
 
-## Todos
+## TODOs
 - Update project to use PHP 7.* and Zend Framework 2.
 - Create a REST API.
 - Rewrite as a SPA (Single Page Application) using Angular
