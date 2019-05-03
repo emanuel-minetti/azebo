@@ -11,7 +11,7 @@ is an acronym for the german "**A**rbeits**ze**iterfassungs**bo**gen".
 ### Dependencies
 Azebo depends depends on PHP 5.6 and  the
 [Zend Framework 1.12](https://github.com/zendframework/zf1). These are no longer
-maintained and is first priority to be updated.
+maintained and are first priority to be updated.
 ### Installing
 Azebo ist installed as any other LAMP Application.
 <!--- TODO Installationsanweisung schreiben! --->
