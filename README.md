@@ -4,14 +4,14 @@ by the [Kunsthochschule Berlin Weißensee](https://www.kh-berlin.de/), the [Hoch
 für Musik Hanns Eisler Berlin](https://www.hfm-berlin.de/) and the [Hochschule für
 Schauspielkunst Ernst Busch](https://www.hfs-berlin.de/index.html). It is meant to
 create PDF documents with monthly working times for each employee. It runs on a
-[LAMP](https://en.wikipedia.org/wiki/LAMP_(software_bundle) architecture. The name
+[LAMP](https://en.wikipedia.org/wiki/LAMP_software_bundle) architecture. The name
 is an acronym for the german "**A**rbeits**ze**iterfassungs**bo**gen".
 
 ## Getting Started
 ### Dependencies
 Azebo depends depends on PHP 5.6 and  the
 [Zend Framework 1.12](https://github.com/zendframework/zf1). These are no longer
-maintained and is first priority to be updated.
+maintained and are first priority to be updated.
 ### Installing
 Azebo ist installed as any other LAMP Application.
 <!--- TODO Installationsanweisung schreiben! --->
