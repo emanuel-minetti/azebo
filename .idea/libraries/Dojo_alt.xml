@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="Dojo-alt" type="javaScript">
+    <properties>
+      <option name="frameworkName" value="Dojo" />
+      <option name="frameworkVersion" value="1" />
+      <sourceFilesUrls>
+        <item url="file://$USER_HOME$/Dojo/dijit" />
+        <item url="file://$USER_HOME$/Dojo/dojo" />
+        <item url="file://$USER_HOME$/Dojo/dojox" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$USER_HOME$/Dojo/dijit" />
+      <root url="file://$USER_HOME$/Dojo/dojo" />
+      <root url="file://$USER_HOME$/Dojo/dojox" />
+    </CLASSES>
+    <SOURCES />
+  </library>
+</component>
