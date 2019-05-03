@@ -1,8 +1,8 @@
-ldap.physalis.host = physalis
-ldap.physalis.accountDomainName = verwaltung.kh-berlin.de
-ldap.physalis.accountDomainNameShort = VERWALTUNG
+ldap.physalis.host = nameOfLDAPHost
+ldap.physalis.accountDomainName = FQDNofLDAPHost
+ldap.physalis.accountDomainNameShort = nameofLDAPDomain
 ldap.physalis.accountCanonicalForm = 4
-ldap.physalis.baseDn = "OU=Users,DC=verwaltung,DC=kh-berlin,DC=de"
+ldap.physalis.baseDn = "baseDNofLDAPDomain"
 ldap.physalis.bindRequiresDn = true
 ldap.physalis.useSsl = true
 
