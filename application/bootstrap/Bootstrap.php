@@ -49,6 +49,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         $this->_logger = $logger;
         Zend_Registry::set('log', $logger);
+        $logger->log("Hallo aus Bootstrap.php", Zend_Log::INFO);
         
         //Der Login-Logger
         $loginLogger = new Zend_Log();
@@ -145,7 +146,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
      *  for more info.
      *  See also 'public/.htaccess'.
      *  
-     *  @param $file  The file to be loaded.  Must be an absolute path (i.e.
+     *  @param $file  Zend_Reflection_File The file to be loaded.  Must be an absolute path (i.e.
      *                starting with slash).
      *  @return string The extended filename.
      */
