@@ -2,5 +2,10 @@
 .idea/dataSources.local.xml
 .idea/dataSources/
 .idea/workspace.xml
-/.idea/deployment.xml
-/.idea/webServers.xml
+.idea/deployment.xml
+.idea/webServers.xml
+application/application.php
+application/configs/*.ini
+library/Zend
+data/
+
