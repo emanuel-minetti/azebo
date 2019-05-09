@@ -49,7 +49,7 @@ Adjust the remaining `.ini` files to your convenience.
 #### Initialise log files
 In root directory of the application create a directory named `data` and a subdirectory
 called `logs`. Inside that directory create two files named `azebo.log` and `loginLog.log`.
-Make thes files writable for the apache user.
+Make these files writable for the apache user.
 ## Contributing
 Feel free to e-mail me in case you want to contribute.
 
