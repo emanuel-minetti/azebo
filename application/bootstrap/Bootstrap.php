@@ -49,8 +49,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         $this->_logger = $logger;
         Zend_Registry::set('log', $logger);
-        $logger->log("Hallo aus Bootstrap.php", Zend_Log::INFO);
-        
+
         //Der Login-Logger
         $loginLogger = new Zend_Log();
         $loginStreamWriter = new Zend_Log_Writer_Stream(APPLICATION_PATH .
