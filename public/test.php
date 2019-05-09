@@ -6,3 +6,4 @@
  * Time: 14:44
  */
 echo 'test works';
+phpinfo();

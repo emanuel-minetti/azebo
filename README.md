@@ -46,6 +46,9 @@ If you plan to use a LDAP-Server adjust server name and domain name and group na
 
 Adjust the remaining `.ini` files to your convenience.
 
+#### Remove debugging 
+For a production environment remove [`test.php`](https://github.com/emanuel-minetti/azebo/blob/master/public/test.php).
+
 #### Initialise log files
 In root directory of the application create a directory named `data` and a subdirectory
 called `logs`. Inside that directory create two files named `azebo.log` and `loginLog.log`.
