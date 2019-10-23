@@ -37,6 +37,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     protected $_anwesend;
     protected $_soll;
     protected $_saldo;
+    protected $_ns;
 
     public function __construct($config) {
         parent::__construct($config);
@@ -44,6 +45,7 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         $this->_session = new Zend_Session_Namespace();
         $this->_feiertagsService = $this->_session->feiertagsservice;
         $this->_zeitrechnerService = new Azebo_Service_Zeitrechner();
+        $this->_ns = new Zend_Session_Namespace();
     }
 
     public function getBeginn() {
@@ -222,7 +224,8 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
     public function getIst() {
         $model = new Azebo_Model_Mitarbeiter();
         $mitarbeiter = $model->getMitarbeiterNachId($this->mitarbeiter_id);
-        $hochschule = $mitarbeiter->getHochschule();
+        //$hochschule = $mitarbeiter->getHochschule();
+        $hochschule = $this->_ns->mitarbeiter->hochschule;
         if ($hochschule != 'hfm') {
             if ($this->_ist === null) {
                 if ($this->getAnwesend() !== null) {
@@ -377,7 +380,9 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
         // für die KHB den Tag der offenen Tür (So) doppelt berechnen.
         $ns = new Zend_Session_Namespace();
         $mitarbeiter = $ns->mitarbeiter;
-        if ($mitarbeiter->getHochschule() == 'khb') {
+        $hochschule = $this->_ns->mitarbeiter->hochschule;
+        //&if ($mitarbeiter->getHochschule() == 'khb') {
+        if ($hochschule == 'khb') {
             $feiertag = $this->getFeiertag();
             $tag = $this->getTag();
             if ($feiertag['name'] == 'Tag der offenen Tür' &&
