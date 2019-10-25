@@ -223,9 +223,9 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
      */
     public function getIst() {
         $model = new Azebo_Model_Mitarbeiter();
-        $mitarbeiter = $model->getMitarbeiterNachId($this->mitarbeiter_id);
+        //$mitarbeiter = $model->getMitarbeiterNachId($this->mitarbeiter_id);
         //$hochschule = $mitarbeiter->getHochschule();
-        $hochschule = $this->_ns->mitarbeiter->hochschule;
+        $hochschule = $this->_ns->hochschule;
         if ($hochschule != 'hfm') {
             if ($this->_ist === null) {
                 if ($this->getAnwesend() !== null) {
@@ -379,9 +379,9 @@ class Azebo_Resource_Arbeitstag_Item extends AzeboLib_Model_Resource_Db_Table_Ro
 
         // für die KHB den Tag der offenen Tür (So) doppelt berechnen.
         $ns = new Zend_Session_Namespace();
-        $mitarbeiter = $ns->mitarbeiter;
-        $hochschule = $this->_ns->mitarbeiter->hochschule;
-        //&if ($mitarbeiter->getHochschule() == 'khb') {
+        //$mitarbeiter = $ns->mitarbeiter;
+        $hochschule = $this->_ns->hochschule;
+        //if ($mitarbeiter->getHochschule() == 'khb') {
         if ($hochschule == 'khb') {
             $feiertag = $this->getFeiertag();
             $tag = $this->getTag();

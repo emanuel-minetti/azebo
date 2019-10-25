@@ -122,6 +122,11 @@ class MonatController extends AzeboLib_Controller_Abstract {
      */
     public $jahresabschlussFehlt;
 
+    /**
+     * @var string
+     */
+    public $hochschule;
+
     public function init() {
         parent::init();
 
@@ -171,6 +176,9 @@ class MonatController extends AzeboLib_Controller_Abstract {
         // Stelle den Zeitrechner-Service zur Verfügung
         $this->zeitrechner = new Azebo_Service_Zeitrechner();
 
+        // Setze die Hochschule
+        $this->hochschule = $ns->hochschule;
+
         // Salden setzen
         $this->saldoBisher = $this->mitarbeiter->getSaldoBisher(
                 $this->zuBearbeitendesDatum, true);
@@ -181,7 +189,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->saldoGesamt = $this->mitarbeiter->getSaldoGesamt(
                 $this->zuBearbeitendesDatum);
         $this->view->saldoGesamt = $this->saldoGesamt->getString();
-        if ($this->mitarbeiter->getHochschule() == 'hfm' &&
+        if ($this->hochschule == 'hfm' &&
                 $this->saldoBisher->getRest()) {
             $this->view->hatRest = true;
             $this->view->saldoBisher2007 = $this->saldoBisher->getRestString();
@@ -228,10 +236,10 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $this->view->bearbeitbar = $this->bearbeitbar;
 
         //übergebe dem View die Hochschule
-        $this->view->hochschule = $this->mitarbeiter->getHochschule();
+        $this->view->hochschule = $this->hochschule;
 
         // füge für die HfS die wochenarbeitszeiten hinzu
-        if ($this->mitarbeiter->getHochschule() == 'hfs') {
+        if ($this->hochschule == 'hfs') {
             $kwService = new Azebo_Service_KWnachMonat();
             $kwZeiten = $kwService->getIstKwNachMonatundMitarbeiterId(
                     $this->zuBearbeitendesDatum, $this->mitarbeiter->id);
@@ -744,7 +752,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
 
         // Hohlen der Daten für den Fuß des Bogens
         $saldoString = $this->saldo->getString();
-        if ($this->mitarbeiter->getHochschule() == 'hfm' &&
+        if ($this->hochschule == 'hfm' &&
                 $this->saldoBisher->getRest()) {
             $saldoBisherString = $this->saldoBisher->getString() .
                     '     (Rest 2007: ' . $this->saldoBisher->getRestString() .
@@ -761,12 +769,12 @@ class MonatController extends AzeboLib_Controller_Abstract {
         $urlaubMonatString = $this->urlaubMonat;
         $urlaubGesamtString = $this->urlaubGesamt;
         if ($this->vorjahrRestBisher != 0) {
-            if ($this->mitarbeiter->getHochschule() == 'khb') {
+            if ($this->hochschule == 'khb') {
                 $urlaubBisherString .= '     (+ Rest Vorjahr: ' .
                         $this->vorjahrRestBisher . ')';
                 $urlaubGesamtString .= '     (+ Rest Vorjahr: ' .
                         $this->vorjahrRestGesamt . ')';
-            } elseif ($this->mitarbeiter->getHochschule() == 'hfm') {
+            } elseif ($this->hochschule == 'hfm') {
                 $urlaubBisherString .= ' + Vorjahr: ' .
                         $this->vorjahrRestBisher . ' = ';
                 $urlaubBisherString .=
@@ -790,7 +798,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
                 $this->zuBearbeitendesDatum);
 
         // Setzen von Textbausteinen
-        if ($this->mitarbeiter->getHochschule() == 'khb') {
+        if ($this->hochschule == 'khb') {
             $vormonatSaldoText = 'Saldo Vormonat: ';
             $monatSaldoText = 'Saldo dieses Monat: ';
             $gesamtSaldoText = 'Übertrag Folgemonat: ';
@@ -862,7 +870,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $vorjahr = $this->mitarbeiter->getVorjahr();
             $uebertrag = $this->mitarbeiter->getSaldouebertrag();
             $vorjahr->setSaldouebertrag($uebertrag);
-            if ($this->mitarbeiter->getHochschule() == 'hfm') {
+            if ($this->hochschule == 'hfm') {
                 if ($uebertrag->getRest()) {
                     $saldo2007 = new Azebo_Model_Saldo($uebertrag->getRestStunden(), $uebertrag->getRestMinuten(), true);
                     $vorjahr->setSaldo2007($saldo2007);
@@ -879,7 +887,7 @@ class MonatController extends AzeboLib_Controller_Abstract {
             $this->mitarbeiter->setSaldoUebertrag($saldo);
 
             // Saldo2007 setzen
-            if ($this->mitarbeiter->getHochschule() == 'hfm') {
+            if ($this->hochschule == 'hfm') {
                 if ($saldo->getRest()) {
                     $saldo2007 = new Azebo_Model_Saldo($saldo->getRestStunden(), $saldo->getRestMinuten(), true);
                     $this->mitarbeiter->setSaldo2007($saldo2007);

@@ -103,20 +103,22 @@ class Azebo_Service_Authentifizierung {
         $mitarbeiter->setVorname($vorname);
         $mitarbeiter->setNachname($nachname);
 
-        //sicherstellen, dass ein Azebo_Mitarbeiter_Resource_Item in der
+        //sicherstellen, dass ein Azebo_Mitarbeiter_Resource_Item
+        //und die Hochschule in der
         //Session gespeichert wird. Darauf wird häufig zugegriffen.
         $auth->getStorage()->write($mitarbeiter);
         $ns = new Zend_Session_Namespace();
         $ns->mitarbeiter = $mitarbeiter;
+        $hochschule = $mitarbeiter->getHochschule();
+        $ns->hochschule = $hochschule;
 
         // die configs/zeiten.ini einlesen und in die Session geben
-        $hs = $mitarbeiter->getHochschule();
         $ns->zeiten = new Zend_Config_Ini(
-                        APPLICATION_PATH . '/configs/zeiten.ini', $hs);
+                        APPLICATION_PATH . '/configs/zeiten.ini', $hochschule);
         
         // die configs/strings.ini einlesen und in die Session geben
         $ns->strings = new Zend_Config_Ini(
-                        APPLICATION_PATH . '/configs/strings.ini', $hs);
+                        APPLICATION_PATH . '/configs/strings.ini', $hochschule);
 
         return 'Erfolg';
     }

@@ -244,7 +244,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         }
 
         $mitarbeiterModell = $this->model;
-        $hochschule = $this->mitarbeiter->getHochschule();
+        $hochschule = $this->ns->hochschule;
         $monatsDaten = new Zend_Dojo_Data();
         $monatsDaten->setIdentifier('id');
         foreach ($monate as $monat) {
@@ -355,7 +355,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->extraZeilen = $tabelle['extraZeilen'];
 
         // übergebe dem View die Hochschule
-        $this->view->hochschule = $mitarbeiter->getHochschule();
+        $this->view->hochschule = $this->ns->hochschule;
 
         // setze die Salden
         $saldoBisher = $mitarbeiter->getSaldoBisher($monat);
@@ -364,7 +364,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->saldo = $saldo->getString();
         $saldoGesamt = $mitarbeiter->getSaldoGesamt($monat);
         $this->view->saldoGesamt = $saldoGesamt->getString();
-        if ($mitarbeiter->getHochschule() == 'hfm' &&
+        if ($this->ns->hochschule == 'hfm' &&
                 $saldoBisher->getRest()) {
             $this->view->hatRest = true;
             $this->view->saldoBisher2007 = $saldoBisher->getRestString();
@@ -394,7 +394,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
         $this->view->urlaubZusammenGesamt = $urlaubZusammenGesamt;
 
         // füge für die HfS die wochenarbeitszeiten hinzu
-        if ($this->mitarbeiter->getHochschule() == 'hfs') {
+        if ($this->ns->hochschule == 'hfs') {
             $kwService = new Azebo_Service_KWnachMonat();
             $kwZeiten = $kwService->getIstKwNachMonatundMitarbeiterId(
                     $monat, $mitarbeiter->id);
@@ -604,7 +604,7 @@ class BueroleitungController extends AzeboLib_Controller_Abstract {
             $soll = $arbeitsregel->getSollOrNull();
             $soll = $soll === null ? 'Vollzeit' : $soll->toString('HH:mm');
             // 'ohneKern'
-            if ($this->mitarbeiter->getHochschule() == 'hfs') {
+            if ($this->ns->hochschule == 'hfs') {
                 if ($arbeitsregel->getOhneKern() == 'ja') {
                     $kernAnfang = 'ohne';
                     $kernEnde = 'ohne';

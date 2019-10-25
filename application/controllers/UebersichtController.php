@@ -36,6 +36,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
      * @var Azebo_Resource_Mitarbeiter_Item_Interface 
      */
     public $mitarbeiter;
+    public $hochschule;
     public $arbeitsmonate;
 
     public function init() {
@@ -48,6 +49,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         // Lade den Mitarbeiter und die Monate
         $ns = new Zend_Session_Namespace();
         $this->mitarbeiter = $ns->mitarbeiter;
+        $this->hochschule = $ns->hochschule;
         $this->arbeitsmonate = $this->mitarbeiter->
                 getArbeitsmonateNachJahr($this->jahr);
 
@@ -92,7 +94,7 @@ class UebersichtController extends AzeboLib_Controller_Abstract {
         // Falls der Mitarbeiter zur HfS gehört, soll der Vertreter-Link
         // angezeigt werden.
         // Also übergebe den Mitarbeiter und die Hochschule an den View
-        $this->view->hochschule = $this->mitarbeiter->getHochschule();
+        $this->view->hochschule = $this->hochschule;
     }
 
     public function vertreterAction() {
