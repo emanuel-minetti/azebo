@@ -48,6 +48,7 @@ class Azebo_Validate_ZehnStunden extends Zend_Validate_Abstract {
                 $beginn = $filter->filter($context['beginn']);
                 $zeitService = new Azebo_Service_Zeitrechner();
                 $anwesend = $zeitService->anwesend($beginn, $ende);
+                $anwesendNachmittag = null;
                 if (isset($context['nachmittag']) &&
                         isset($context['beginnnachmittag']) &&
                         isset($context['endenachmittag']) &&
